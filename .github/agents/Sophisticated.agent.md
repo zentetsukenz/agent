@@ -237,13 +237,63 @@ When delegating to subagent via `runSubagent`, always provide maximum context:
 ### 💾 CHECKPOINT MODE
 
 **Triggers**: "checkpoint/memorize/memory [codebase/project/file]"
-**Process**:
 
-1. Complete architecture scan and current state documentation
-2. Decision log (architectural decisions and rationale)
-3. Progress report (changes made, issues resolved, lessons learned)
-4. Create comprehensive project summary
-5. **Require approval** before saving to `/memory/` directory
+**Purpose**: Create persistent knowledge snapshots using the memory knowledge graph system.
+
+**Process using `memory/*` tools:**
+
+1. **Create Project Entity** - Use `mcp_memory_create_entities`
+
+   - Entity: Project name
+   - Type: "project" or domain-specific ("react_app", "nodejs_api", etc.)
+   - Observations: Purpose, tech stack, current phase, last update
+
+2. **Create Architecture Entity** - Use `mcp_memory_create_entities`
+
+   - Entity: "[Project]\_Architecture"
+   - Type: "system_architecture"
+   - Observations: Component structure, data flows, key patterns, integration points
+
+3. **Create Decision Log Entity** - Use `mcp_memory_create_entities`
+
+   - Entity: "[Project]\_Decisions"
+   - Type: "architectural_decisions"
+   - Observations: Each major decision with rationale, trade-offs, alternatives considered
+
+4. **Create Delegation Summary Entity** - Use `mcp_memory_create_entities`
+
+   - Entity: "[Project]\_Delegations"
+   - Type: "agent_work_log"
+   - Observations: Which agents worked on what, outcomes, lessons learned
+
+5. **Create Progress Entity** - Use `mcp_memory_create_entities`
+
+   - Entity: "[Project]\_Progress"
+   - Type: "development_status"
+   - Observations: Completed work, pending items, blockers, next steps
+
+6. **Create Relations** - Use `mcp_memory_create_relations`
+   - Link all entities to main project entity
+   - Create semantic relationships ("depends_on", "implements", "documented_in")
+
+**Tools to Use:**
+
+- `mcp_memory_create_entities` - Create structured knowledge entities
+- `mcp_memory_add_observations` - Incrementally add to existing entities
+- `mcp_memory_create_relations` - Establish entity relationships
+- `mcp_memory_read_graph` - Retrieve complete knowledge graph
+- `mcp_memory_search_nodes` - Query specific information
+- `mcp_memory_open_nodes` - Access specific entities by name
+
+**Best Practices:**
+
+- Use consistent naming: `[ProjectName]_[EntityType]`
+- Add timestamps in observations: "[2025-12-03] Implemented feature X"
+- Keep observations atomic and specific
+- Create relations to show dependencies and flows
+- Update existing entities rather than creating duplicates
+
+**Require approval** before creating checkpoint entities in knowledge graph
 
 ### 🧠 REFLECTION MODE
 
@@ -367,7 +417,28 @@ When delegating to subagent via `runSubagent`, always provide maximum context:
 - **Validate Subagent Work**: Review code quality, security, performance
 - **Test**: Comprehensive testing using `runTests` and `runCommands`
 - **Review**: Final check against QA Rule and completion criteria
+- **Checkpoint** (optional): Create knowledge snapshot if significant milestone
 - **Deliver**: Present solution via `attempt_completion`
+
+### Phase 4.5: Checkpoint (When Appropriate)
+
+**When to Checkpoint:**
+
+- Major feature completion before moving to next phase
+- Before significant architectural changes
+- Complex project requiring knowledge preservation
+- Team handoff or context switching scenarios
+- User explicitly requests checkpoint
+
+**What to Capture using `memory/*` tools:**
+
+- **Entities**: Create project, architecture, decisions, delegations, progress entities
+- **Observations**: Architecture decisions and rationale, delegated work summary (which agents did what), key learnings and trade-offs made, current project state and next steps, important patterns and conventions established
+- **Relations**: Link entities together to show dependencies and information flow
+
+**Tools**: `mcp_memory_create_entities`, `mcp_memory_add_observations`, `mcp_memory_create_relations`
+
+**Deliverable:** Persistent knowledge graph entities that can be queried and updated incrementally
 
 ### Phase 5: Reflection (When Feature Complete)
 

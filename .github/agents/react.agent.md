@@ -454,19 +454,105 @@ function ErrorFallback({ error, resetErrorBoundary }) {
 
 **Triggers**: "checkpoint/memorize [feature/component/project]"
 
-**Purpose**: Create a snapshot of current work for knowledge preservation and handoff clarity.
+**Purpose**: Create a knowledge snapshot using the memory knowledge graph for feature milestones, handoffs, or before major refactoring.
 
-**Process:**
+**Process using `memory/*` tools:**
 
-1. **Component Inventory** - List all components built with their purposes
-2. **Architecture Documentation** - Data flow, state management patterns
-3. **Decision Log** - Why certain approaches were chosen
-4. **Progress Report** - What's complete, what's pending, known issues
-5. **Setup Instructions** - How to run, test, and build the project
+1. **Create Project Entity** - Use `mcp_memory_create_entities`
 
-**Deliverable:** Comprehensive project summary in `/memory/` directory (or similar)
+   ```typescript
+   // Create main project entity
+   Entity: "ProjectName_React";
+   Type: "react_project";
+   Observations: -"Project purpose: [description]" -
+     "Tech stack: React 19, TypeScript, Vite, Tailwind CSS, Shadcn UI" -
+     "Current phase: [development/testing/production]" -
+     "Last checkpoint: [date]";
+   ```
 
-**Usage**: Before major refactors, when switching contexts, or for team handoff
+2. **Create Component Inventory Entity** - Use `mcp_memory_create_entities`
+
+   ```typescript
+   Entity: "ProjectName_Components";
+   Type: "component_inventory";
+   Observations: -"Button - Reusable button with variants (primary, secondary, ghost)" -
+     "UserProfile - User profile card with edit capability" -
+     "ProductList - Virtualized product grid with filtering" -
+     "CheckoutForm - Multi-step form with validation";
+   ```
+
+3. **Create Architecture Entity** - Use `mcp_memory_create_entities`
+
+   ```typescript
+   Entity: "ProjectName_Architecture";
+   Type: "frontend_architecture";
+   Observations: -"Component structure: Atomic design (atoms → molecules → organisms)" -
+     "State management: Zustand for global, Context for UI state" -
+     "Data fetching: TanStack Query for server state" -
+     "Routing: React Router v6 with lazy loading" -
+     "Styling: Tailwind CSS with custom design tokens" -
+     "Forms: React Hook Form with Zod validation";
+   ```
+
+4. **Create Decision Log Entity** - Use `mcp_memory_create_entities`
+
+   ```typescript
+   Entity: "ProjectName_Decisions";
+   Type: "architectural_decisions";
+   Observations: -"Chose Vite over CRA for 10x faster HMR" -
+     "Using Shadcn UI for composable, customizable components" -
+     "Server Components avoided - client-side rendering sufficient for MVP" -
+     "Trade-off: Zustand over Redux for simpler state management" -
+     "Accessibility: WCAG AA compliance enforced via automated tests";
+   ```
+
+5. **Create Progress Entity** - Use `mcp_memory_create_entities`
+
+   ```typescript
+   Entity: "ProjectName_Progress";
+   Type: "development_status";
+   Observations: -"Completed: User authentication flow (100% test coverage)" -
+     "Completed: Product catalog with filtering and search" -
+     "Technical debt: Need to implement error boundaries for all routes" -
+     "Known issue: Mobile nav menu animation janky on iOS Safari" -
+     "Performance: Lighthouse score 95, LCP 1.8s, CLS 0.05" -
+     "Accessibility: All critical paths keyboard navigable" -
+     "Next: Implement checkout flow with payment integration";
+   ```
+
+6. **Create Relations** - Use `mcp_memory_create_relations`
+   ```typescript
+   Relations:
+   - ProjectName_React → contains_components → ProjectName_Components
+   - ProjectName_React → follows_architecture → ProjectName_Architecture
+   - ProjectName_React → documented_in → ProjectName_Decisions
+   - ProjectName_React → current_state → ProjectName_Progress
+   ```
+
+**Tools to Use:**
+
+- `mcp_memory_create_entities` - Create project, component, architecture, decision, progress entities
+- `mcp_memory_add_observations` - Add new components or observations to existing entities
+- `mcp_memory_create_relations` - Link entities together
+- `mcp_memory_read_graph` - Retrieve checkpoint for review
+- `mcp_memory_search_nodes` - Find specific components or decisions
+
+**Benefits of Knowledge Graph Approach:**
+
+- ✅ **Component Tracking** - Easy lookup of what components exist and their purposes
+- ✅ **Queryable** - Search for specific features or decisions
+- ✅ **Relational** - Understand component dependencies and data flows
+- ✅ **Incremental** - Add new components without rewriting entire checkpoint
+- ✅ **Persistent** - Knowledge survives session boundaries
+- ✅ **Structured** - Consistent documentation patterns
+
+**Usage Scenarios:**
+
+- Before major component refactoring
+- When switching between features
+- Team handoff or onboarding new developers
+- Before deploying to production
+- After completing major milestones
 
 ---
 

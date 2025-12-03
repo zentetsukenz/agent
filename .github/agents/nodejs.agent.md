@@ -361,6 +361,108 @@ process.on("SIGINT", () => gracefulShutdown("SIGINT"));
 
 ---
 
+### 📍 CHECKPOINT MODE
+
+**Triggers**: "checkpoint/memorize [API/feature/service/project]"
+
+**Purpose**: Create a knowledge snapshot using the memory knowledge graph for major milestones, handoffs, or before significant refactoring.
+
+**Process using `memory/*` tools:**
+
+1. **Create Project Entity** - Use `mcp_memory_create_entities`
+
+   ```typescript
+   // Create main project entity
+   Entity: "ProjectName_API";
+   Type: "nodejs_project";
+   Observations: -"Project purpose: [description]" -
+     "Framework: Express/Fastify/NestJS" -
+     "Current phase: [development/testing/production]" -
+     "Last checkpoint: [date]";
+   ```
+
+2. **Create API Endpoint Entities** - For each major endpoint group
+
+   ```typescript
+   Entity: "UserAPI_Endpoints";
+   Type: "api_endpoint_group";
+   Observations: -"POST /users - Create user (201, 400, 409)" -
+     "GET /users/:id - Fetch user (200, 404)" -
+     "PUT /users/:id - Update user (200, 400, 404)" -
+     "DELETE /users/:id - Delete user (204, 404)";
+   ```
+
+3. **Create Architecture Entity** - Use `mcp_memory_create_entities`
+
+   ```typescript
+   Entity: "ProjectName_Architecture";
+   Type: "system_architecture";
+   Observations: -"Layer structure: Routes → Services → Repositories" -
+     "Database: PostgreSQL with Prisma ORM" -
+     "External dependencies: Stripe API, SendGrid" -
+     "Auth strategy: JWT with refresh tokens" -
+     "Error handling: Centralized middleware with AppError class";
+   ```
+
+4. **Create Decision Log Entity** - Use `mcp_memory_create_entities`
+
+   ```typescript
+   Entity: "ProjectName_Decisions";
+   Type: "architectural_decisions";
+   Observations: -"Chose Fastify over Express for 5x performance gain" -
+     "Using Zod for validation - better TypeScript integration" -
+     "Implemented rate limiting at 100 req/min per IP" -
+     "Trade-off: Chose simplicity over microservices for MVP";
+   ```
+
+5. **Create Progress Entity** - Use `mcp_memory_create_entities`
+
+   ```typescript
+   Entity: "ProjectName_Progress";
+   Type: "development_status";
+   Observations: -"Completed: User CRUD API (100% test coverage)" -
+     "Completed: Authentication system with JWT" -
+     "Technical debt: Need to implement proper logging" -
+     "Known issue: Rate limiter not distributed (Redis needed)" -
+     "Performance: 95th percentile response time 45ms" -
+     "Next: Implement payment processing integration";
+   ```
+
+6. **Create Relations** - Use `mcp_memory_create_relations`
+   ```typescript
+   Relations:
+   - ProjectName_API → has_endpoints → UserAPI_Endpoints
+   - ProjectName_API → follows_architecture → ProjectName_Architecture
+   - ProjectName_API → documented_in → ProjectName_Decisions
+   - ProjectName_API → current_state → ProjectName_Progress
+   ```
+
+**Tools to Use:**
+
+- `mcp_memory_create_entities` - Create project, architecture, decision, progress entities
+- `mcp_memory_add_observations` - Add new observations to existing entities
+- `mcp_memory_create_relations` - Link entities together
+- `mcp_memory_read_graph` - Retrieve checkpoint for review
+- `mcp_memory_search_nodes` - Find specific checkpoint information
+
+**Benefits of Knowledge Graph Approach:**
+
+- ✅ **Queryable** - Search for specific decisions or features
+- ✅ **Relational** - Understand how components connect
+- ✅ **Incremental** - Add observations without rewriting
+- ✅ **Persistent** - Knowledge survives session boundaries
+- ✅ **Structured** - Enforces consistent documentation patterns
+
+**Usage Scenarios:**
+
+- Before major refactoring efforts
+- When handing off to another developer
+- At project milestone completions
+- Before deploying to production
+- When switching contexts for extended periods
+
+---
+
 ## Workflow Best Practices
 
 ### 🎯 **Always Start With Tests**
