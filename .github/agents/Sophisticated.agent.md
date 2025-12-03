@@ -3,7 +3,6 @@ description: "Sophisticated: An advanced autonomous meta-agent and orchestrator,
 tools:
   [
     "edit",
-    "runNotebooks",
     "search",
     "new",
     "runCommands",
