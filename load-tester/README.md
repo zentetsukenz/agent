@@ -1,337 +1,366 @@
-# Load Tester
+# Load Tester - Monorepo
 
-A simple, powerful load testing application built with Express.js and server-side rendering. Test your API endpoints with configurable load scenarios and get detailed performance metrics.
+A powerful load testing application with separated frontend and backend architecture. Test your API endpoints with configurable load scenarios and get detailed performance metrics through a modern React interface.
 
-## Features
+## 🎯 Features
 
 - ✅ **Endpoint Management**: Add, edit, delete, and list API endpoints
 - ✅ **Load Test Configuration**: Configure duration, concurrent connections, and requests per second
-- ✅ **Real-time Test Execution**: Run load tests with instant feedback
-- ✅ **Detailed Results**: View response times (min/avg/max/p95), success rates, and throughput
-- ✅ **Server-Side Rendering**: Fast, accessible EJS templates
+- ✅ **Real-time Test Execution**: Run load tests with live status polling
+- ✅ **Detailed Results**: View response times (min/avg/max/percentiles), success rates, and throughput
+- ✅ **Modern React UI**: Fast, responsive SPA built with Vite
+- ✅ **REST API Backend**: Clean API-first architecture
 - ✅ **SQLite Database**: Simple, zero-configuration data persistence
-- ✅ **TDD Approach**: 80%+ code coverage with comprehensive tests
+- ✅ **TDD Approach**: Comprehensive test coverage
 
-## Tech Stack
+## 📦 Monorepo Structure
 
-- **Backend**: Express.js 4.x
-- **View Engine**: EJS
+```
+load-tester/
+├── package.json              # Workspace root configuration
+├── README.md                 # This file
+├── apps/
+│   ├── backend/              # Node.js REST API
+│   │   ├── src/
+│   │   ├── tests/
+│   │   ├── prisma/
+│   │   ├── package.json
+│   │   └── README.md
+│   └── frontend/             # React SPA
+│       ├── src/
+│       ├── public/
+│       ├── package.json
+│       └── README.md
+└── docs/
+    └── API_DESIGN.md
+```
+
+## 🛠️ Tech Stack
+
+### Backend
+- **Framework**: Express.js 4.x
 - **Database**: SQLite with Prisma ORM
 - **Load Testing**: Autocannon
 - **Testing**: Jest + Supertest
-- **Session Management**: express-session + connect-flash
+- **API**: RESTful JSON API with CORS
 
-## Prerequisites
+### Frontend
+- **Framework**: React 18
+- **Build Tool**: Vite
+- **Routing**: React Router v6
+- **Styling**: Tailwind CSS
+- **HTTP Client**: Axios
+- **Forms**: React Hook Form
+- **Testing**: Vitest + React Testing Library
 
-- Node.js 18+ and npm
+## 🚀 Quick Start
+
+### Prerequisites
+
+- Node.js 18+ and npm 9+
 - Basic understanding of HTTP and REST APIs
 
-## Installation
+### Installation
 
 1. **Clone or navigate to the project directory**:
    ```bash
    cd load-tester
    ```
 
-2. **Install dependencies**:
+2. **Install all dependencies** (workspace + apps):
    ```bash
-   npm install
+   npm run install:all
    ```
 
-3. **Set up environment variables**:
+3. **Set up backend environment**:
    ```bash
-   cp .env.example .env
-   ```
-   
-   Edit `.env` and update the `SESSION_SECRET` for production:
-   ```
-   DATABASE_URL="file:./dev.db"
-   PORT=3000
-   NODE_ENV=development
-   SESSION_SECRET=your-secure-secret-key-here
+   cp apps/backend/.env.example apps/backend/.env
    ```
 
-4. **Set up the database**:
+4. **Set up frontend environment**:
    ```bash
+   cp apps/frontend/.env.example apps/frontend/.env
+   ```
+
+5. **Initialize database**:
+   ```bash
+   cd apps/backend
    npm run db:setup
+   cd ../..
    ```
-   
-   This will:
-   - Create the SQLite database
-   - Run Prisma migrations
-   - Generate the Prisma Client
 
-## Usage
+### Running the Application
 
-### Development Mode
-
-Start the server with auto-reload:
+#### Option 1: Run both applications together (recommended)
 
 ```bash
 npm run dev
 ```
 
-The application will be available at `http://localhost:3000`
+This starts both backend (http://localhost:3001) and frontend (http://localhost:5173) concurrently.
 
-### Production Mode
+#### Option 2: Run applications separately
 
+**Backend only:**
 ```bash
-npm start
+npm run backend
+# or
+cd apps/backend
+npm run dev
 ```
 
-## Testing
-
-### Run all tests with coverage:
-
+**Frontend only:**
 ```bash
-npm test
+npm run frontend
+# or
+cd apps/frontend
+npm run dev
 ```
 
-### Run tests in watch mode:
+### Access the Application
 
-```bash
-npm run test:watch
-```
+- **Frontend UI**: http://localhost:5173
+- **Backend API**: http://localhost:3001
+- **API Health Check**: http://localhost:3001/api/health
 
-### Run only unit tests:
+## 📖 Usage
 
-```bash
-npm run test:unit
-```
+### Creating an Endpoint
 
-### Run only integration tests:
-
-```bash
-npm run test:integration
-```
-
-## Application Workflow
-
-### 1. Add an Endpoint
-
-1. Click "**+ Add Endpoint**" on the home page
+1. Click **"+ Add Endpoint"** on the dashboard
 2. Fill in the endpoint details:
-   - **Name**: A descriptive name (e.g., "User API")
-   - **URL**: The full endpoint URL (e.g., "https://api.example.com/users")
-   - **Method**: HTTP method (GET, POST, PUT, DELETE, PATCH)
-   - **Headers** (optional): JSON object with headers (e.g., `{"Authorization": "Bearer token"}`)
-   - **Body** (optional): JSON object for request body
-3. Click "**Create Endpoint**"
+   - Name (e.g., "My API")
+   - URL (e.g., "https://api.example.com/users")
+   - Method (GET, POST, PUT, DELETE, PATCH)
+   - Headers (optional, JSON format)
+   - Body (optional, JSON format)
+3. Click **"Create"**
 
-### 2. Configure and Run a Load Test
+### Running a Load Test
 
-1. From the home page, click "**Test**" on any endpoint
-2. Configure the test parameters:
-   - **Duration**: Test duration in seconds (1-300)
-   - **Concurrent Connections**: Number of parallel connections (1-1000)
-   - **Requests Per Second** (optional): Target RPS (1-100000)
-3. Click "**Start Load Test**"
+1. Click **"Run Test"** on any endpoint
+2. Configure the test:
+   - Duration: 1-300 seconds
+   - Connections: 1-1000 concurrent
+   - Requests/sec: 1-100000 (optional)
+3. Click **"Start Test"**
+4. View real-time status and results
 
-### 3. View Test Results
+### Viewing Results
 
-- The results page will auto-refresh while the test is running
-- Once completed, you'll see:
-  - **Request Statistics**: Total requests, average RPS, success rate
-  - **Latency Metrics**: Min, mean, max, p50, p90, p95, p99
-  - **Throughput**: Average and total data transferred
-  - **Error Counts**: Errors and timeouts
+Test results show:
+- Total requests and average RPS
+- Latency metrics (min, max, mean, p50, p90, p95, p99)
+- Throughput (bytes/sec)
+- Error count and success rate
 
-### 4. Manage Endpoints
+## 🧪 Testing
 
-- **Edit**: Modify endpoint configuration
-- **Delete**: Remove endpoint and all associated tests
-- **View History**: See all previous tests for an endpoint
+### Run all tests
 
-## API Routes
-
-| Method | Path | Description |
-|--------|------|-------------|
-| GET | `/` | Home page with endpoint list |
-| GET | `/endpoints/new` | New endpoint form |
-| POST | `/endpoints` | Create endpoint |
-| GET | `/endpoints/:id/edit` | Edit endpoint form |
-| PUT | `/endpoints/:id` | Update endpoint |
-| DELETE | `/endpoints/:id` | Delete endpoint |
-| GET | `/endpoints/:id/test` | Test configuration form |
-| POST | `/endpoints/:id/test` | Execute load test |
-| GET | `/tests/:id/results` | View test results |
-
-## Database Schema
-
-### Endpoint Model
-```prisma
-model Endpoint {
-  id        Int      @id @default(autoincrement())
-  name      String
-  url       String
-  method    String   @default("GET")
-  headers   String?
-  body      String?
-  createdAt DateTime @default(now())
-  tests     Test[]
-}
+```bash
+npm run test:all
 ```
 
-### Test Model
-```prisma
-model Test {
-  id          Int       @id @default(autoincrement())
-  endpointId  Int
-  endpoint    Endpoint  @relation(fields: [endpointId], references: [id], onDelete: Cascade)
-  duration    Int
-  connections Int
-  rps         Int?
-  status      String    @default("pending")
-  results     String?
-  createdAt   DateTime  @default(now())
-  completedAt DateTime?
-}
+### Backend tests only
+
+```bash
+npm run backend:test
+# or unit tests only
+npm run backend:test:unit
+# or integration tests only
+npm run backend:test:integration
 ```
 
-## Project Structure
+### Frontend tests only
 
-```
-load-tester/
-├── src/
-│   ├── features/
-│   │   ├── endpoints/
-│   │   │   ├── endpoints.service.js      # Business logic
-│   │   │   └── endpoints.controller.js   # HTTP handlers
-│   │   └── tests/
-│   │       ├── tests.service.js          # Load test logic
-│   │       └── tests.controller.js       # HTTP handlers
-│   ├── views/
-│   │   ├── endpoints/
-│   │   │   ├── new.ejs                   # New endpoint form
-│   │   │   └── edit.ejs                  # Edit endpoint form
-│   │   ├── test/
-│   │   │   ├── configure.ejs             # Test config form
-│   │   │   └── results.ejs               # Test results
-│   │   ├── index.ejs                     # Home page
-│   │   ├── layout.ejs                    # Layout template
-│   │   └── error.ejs                     # Error page
-│   ├── public/
-│   │   └── css/
-│   │       └── style.css                 # Styles
-│   ├── app.js                            # Express app
-│   └── server.js                         # Server entry
-├── prisma/
-│   ├── schema.prisma                     # Database schema
-│   └── migrations/                       # Database migrations
-├── tests/
-│   ├── unit/                             # Unit tests
-│   ├── integration/                      # Integration tests
-│   └── setup.js                          # Test configuration
-├── package.json
-├── .env                                  # Environment variables
-└── README.md
+```bash
+npm run frontend:test
 ```
 
-## Configuration
+## 📚 API Documentation
 
-### Environment Variables
+### Base URL
 
-- `DATABASE_URL`: SQLite database file path (default: `file:./dev.db`)
-- `PORT`: Server port (default: `3000`)
-- `NODE_ENV`: Environment mode (`development` or `production`)
-- `SESSION_SECRET`: Secret key for session encryption
+```
+http://localhost:3001/api
+```
 
-### Load Test Limits
+### Endpoints
 
-- **Duration**: 1-300 seconds
-- **Connections**: 1-1000 concurrent connections
-- **RPS**: 1-100,000 requests per second (optional)
+#### Health Check
+```
+GET /api/health
+```
 
-## Development
+#### Endpoint Management
+```
+GET    /api/endpoints           # List all endpoints
+GET    /api/endpoints/:id       # Get single endpoint
+POST   /api/endpoints           # Create endpoint
+PUT    /api/endpoints/:id       # Update endpoint
+DELETE /api/endpoints/:id       # Delete endpoint
+```
+
+#### Load Testing
+```
+POST   /api/endpoints/:id/test  # Execute load test
+GET    /api/tests/:id           # Get test results
+GET    /api/tests/:id/status    # Get test status (for polling)
+```
+
+For detailed API documentation, see [apps/backend/README.md](apps/backend/README.md).
+
+## 🏗️ Development
+
+### Project Scripts
+
+| Command | Description |
+|---------|-------------|
+| `npm run dev` | Start both backend and frontend in dev mode |
+| `npm run backend` | Start backend in dev mode |
+| `npm run backend:start` | Start backend in production mode |
+| `npm run frontend` | Start frontend in dev mode |
+| `npm run frontend:build` | Build frontend for production |
+| `npm run frontend:preview` | Preview production build |
+| `npm run test:all` | Run all tests (backend + frontend) |
+| `npm run install:all` | Install all dependencies |
 
 ### Adding New Features
 
-1. Write tests first (TDD approach)
-2. Implement the feature
-3. Ensure tests pass
-4. Maintain 80%+ code coverage
+1. **Backend**: See [apps/backend/README.md](apps/backend/README.md)
+2. **Frontend**: See [apps/frontend/README.md](apps/frontend/README.md)
 
-### Database Changes
+### Code Quality
 
-1. Update `prisma/schema.prisma`
-2. Create migration:
-   ```bash
-   npx prisma migrate dev --name your_migration_name
-   ```
-3. Generate Prisma Client:
-   ```bash
-   npm run prisma:generate
-   ```
+- Backend: 80%+ test coverage required
+- Frontend: Component tests + integration tests
+- Linting: ESLint configured for both apps
 
-### Viewing the Database
+## 🔧 Environment Variables
 
-Use Prisma Studio to explore the database:
+### Backend (`apps/backend/.env`)
+
+```env
+DATABASE_URL="file:./prisma/dev.db"
+PORT=3001
+NODE_ENV=development
+CORS_ORIGIN="http://localhost:5173"
+```
+
+### Frontend (`apps/frontend/.env`)
+
+```env
+VITE_API_URL=http://localhost:3001
+```
+
+## 📁 Database Management
+
+### Migrations
 
 ```bash
+cd apps/backend
+npm run prisma:migrate
+```
+
+### Prisma Studio (DB GUI)
+
+```bash
+cd apps/backend
 npm run prisma:studio
 ```
 
-## Troubleshooting
+### Reset Database
 
-### Tests Failing
-
-1. Ensure test database is clean:
-   ```bash
-   rm -f prisma/test.db
-   ```
-
-2. Regenerate Prisma Client:
-   ```bash
-   npm run prisma:generate
-   ```
-
-### Database Issues
-
-1. Delete the database and recreate:
-   ```bash
-   rm -f prisma/dev.db
-   npm run db:setup
-   ```
-
-### Port Already in Use
-
-Change the port in `.env`:
-```
-PORT=3001
+```bash
+cd apps/backend
+rm prisma/dev.db
+npm run db:setup
 ```
 
-## Performance Tips
+## 🏛️ Architecture
 
-1. **Start with lower connection counts** (10-50) to avoid overwhelming your target
-2. **Use RPS limiting** to control load more precisely
-3. **Monitor your target server** during tests
-4. **Run tests from the same network** as your target for accurate results
+### Backend Architecture
 
-## Security Considerations
+```
+apps/backend/
+├── src/
+│   ├── app.js                 # Express app + routes
+│   ├── server.js              # Server entry point
+│   └── features/
+│       ├── endpoints/         # Endpoint CRUD
+│       └── tests/             # Load test execution
+```
 
-- ⚠️ **Do not test endpoints you don't own** without permission
-- ⚠️ **Change SESSION_SECRET** in production
-- ⚠️ **Use HTTPS** in production
-- ⚠️ **Consider rate limiting** for the application itself
-- ⚠️ **Validate all URLs** before testing
+**Pattern**: Controller → Service → Prisma Client
 
-## License
+### Frontend Architecture
+
+```
+apps/frontend/
+├── src/
+│   ├── App.jsx               # Router configuration
+│   ├── pages/                # Route pages
+│   ├── components/           # Reusable components
+│   ├── services/             # API client
+│   ├── hooks/                # Custom React hooks
+│   └── utils/                # Helper functions
+```
+
+**Pattern**: Component-driven development with service layer
+
+## 🔄 Migration from SSR
+
+This project was migrated from a server-side rendered Express application to a separated frontend/backend architecture:
+
+- **Before**: Express + EJS templates
+- **After**: React SPA + REST API
+
+**Migration Benefits**:
+- ✅ Better separation of concerns
+- ✅ Independent deployment of frontend/backend
+- ✅ Modern React development experience
+- ✅ API can serve multiple clients
+- ✅ Improved scalability
+
+## 🚢 Deployment
+
+### Backend Deployment
+
+1. Build: No build step needed (Node.js)
+2. Deploy: Any Node.js hosting (Heroku, Render, Railway, etc.)
+3. Database: SQLite (or migrate to PostgreSQL for production)
+
+### Frontend Deployment
+
+1. Build:
+   ```bash
+   cd apps/frontend
+   npm run build
+   ```
+2. Deploy: `dist/` folder to any static hosting (Vercel, Netlify, Cloudflare Pages)
+3. Environment: Set `VITE_API_URL` to production backend URL
+
+## 🤝 Contributing
+
+1. Follow the existing code structure
+2. Write tests for new features
+3. Update documentation
+4. Run linting before committing
+
+## 📝 License
 
 MIT
 
-## Contributing
+## 🙋 Support
 
-1. Fork the repository
-2. Create a feature branch
-3. Write tests for your changes
-4. Implement your changes
-5. Ensure all tests pass
-6. Submit a pull request
-
-## Support
-
-For issues and questions, please create an issue in the repository.
+For issues or questions:
+1. Check the [Backend README](apps/backend/README.md)
+2. Check the [Frontend README](apps/frontend/README.md)
+3. Review [API Design Documentation](docs/API_DESIGN.md)
 
 ---
 
-Built with ❤️ using Express.js and the TDD workflow.
+**Version**: 2.0.0  
+**Architecture**: Monorepo with separated frontend/backend  
+**Last Updated**: December 2025

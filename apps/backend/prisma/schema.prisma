@@ -1,0 +1,35 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Endpoint {
+  id        Int      @id @default(autoincrement())
+  name      String
+  url       String
+  method    String   @default("GET")
+  headers   String?
+  body      String?
+  createdAt DateTime @default(now())
+  tests     Test[]
+}
+
+model Test {
+  id          Int       @id @default(autoincrement())
+  endpointId  Int
+  endpoint    Endpoint  @relation(fields: [endpointId], references: [id], onDelete: Cascade)
+  duration    Int
+  connections Int
+  rps         Int?
+  status      String    @default("pending")
+  results     String?
+  createdAt   DateTime  @default(now())
+  completedAt DateTime?
+}
