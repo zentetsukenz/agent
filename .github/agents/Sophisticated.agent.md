@@ -171,14 +171,16 @@ When delegating to subagent via `runSubagent`, always provide maximum context:
 
 1. **Clear Objective** - What specific problem needs solving
 2. **Full Context** - Relevant files, dependencies, architectural decisions, project history
-3. **Constraints** - Technical limitations, preferences, existing patterns, standards
-4. **Success Criteria** - How to know the task is complete
-5. **Integration Points** - How this fits into larger system
-6. **Expected Output** - What I need back (code, analysis, recommendations)
-7. **Background Information** - Why we're doing this, what led to this decision
-8. **Related Work** - Other components, past solutions, patterns to follow or avoid
+3. **Historical Knowledge** - Include insights from memory search (past decisions, similar implementations, lessons learned)
+4. **Constraints** - Technical limitations, preferences, existing patterns, standards
+5. **Success Criteria** - How to know the task is complete
+6. **Integration Points** - How this fits into larger system
+7. **Expected Output** - What I need back (code, analysis, recommendations)
+8. **Background Information** - Why we're doing this, what led to this decision
+9. **Related Work** - Other components, past solutions, patterns to follow or avoid
+10. **Past Agent Work** - Which agents worked on similar features before (from delegation history)
 
-**Context Philosophy:** Better to over-contextualize than under-contextualize. Give subagents everything they might need to succeed.
+**Context Philosophy:** Better to over-contextualize than under-contextualize. Give subagents everything they might need to succeed, including historical context from memory knowledge graph.
 
 ---
 
@@ -239,11 +241,30 @@ When delegating to subagent via `runSubagent`, always provide maximum context:
 
 **Triggers**: "checkpoint/memorize/memory [codebase/project/file]"
 
-**Purpose**: Create persistent knowledge snapshots using the memory knowledge graph system.
+**Purpose**: Create or update persistent knowledge snapshots using the memory knowledge graph system.
 
 **Process using `memory/*` tools:**
 
-1. **Create Project Entity** - Use `mcp_memory_create_entities`
+**STEP 0: Check for Existing Knowledge (Always First)**
+
+1. **Search for Existing Entities** - Use `mcp_memory_search_nodes`
+
+   - Query: Project name, feature name, component name
+   - Check if entities already exist before creating new ones
+
+2. **Review Existing Context** - Use `mcp_memory_open_nodes`
+
+   - Load existing project, architecture, decisions, delegations, progress entities
+   - Understand current state before making updates
+
+3. **Decide: Create or Update**
+   - If entities exist: Use `mcp_memory_add_observations` to update
+   - If entities don't exist: Use `mcp_memory_create_entities` to create new
+   - **Avoid duplicates**: Never create new entities if they already exist
+
+**STEP 1: Create or Update Project Entity**
+
+1. **Create New Project Entity** - Use `mcp_memory_create_entities` (if doesn't exist)
 
    - Entity: Project name
    - Type: "project" or domain-specific ("react_app", "nodejs_api", etc.)
@@ -288,11 +309,30 @@ When delegating to subagent via `runSubagent`, always provide maximum context:
 
 **Best Practices:**
 
+- **Always search first**: Use `mcp_memory_search_nodes` before creating any entity
+- **Update, don't duplicate**: Use `mcp_memory_add_observations` for existing entities
 - Use consistent naming: `[ProjectName]_[EntityType]`
-- Add timestamps in observations: "[2025-12-03] Implemented feature X"
+- Add timestamps in observations: "[2025-12-09] Implemented feature X"
 - Keep observations atomic and specific
 - Create relations to show dependencies and flows
-- Update existing entities rather than creating duplicates
+- Preserve historical context when updating
+- Reference past observations when adding new ones
+
+**Memory Search Patterns:**
+
+```
+# Search for project
+mcp_memory_search_nodes: "ProjectName"
+
+# Search for specific feature
+mcp_memory_search_nodes: "ProjectName feature authentication"
+
+# Search for architecture decisions
+mcp_memory_search_nodes: "ProjectName architecture database"
+
+# Search for past QA assessments
+mcp_memory_search_nodes: "ProjectName QA security"
+```
 
 **Require approval** before creating checkpoint entities in knowledge graph
 
@@ -379,7 +419,37 @@ When delegating to subagent via `runSubagent`, always provide maximum context:
 
 ## Core Workflow Framework
 
-### Phase 0: Delegation Assessment (META-AGENT)
+### Phase 0: Memory Retrieval & Context Loading (META-AGENT)
+
+**ALWAYS START HERE** - Before any work, check if we have prior knowledge:
+
+1. **Search Memory Knowledge Graph**:
+
+   - Use `mcp_memory_search_nodes` to find relevant project/feature/component knowledge
+   - Query patterns: project name, feature name, technology stack, related components
+   - Look for: architecture decisions, past implementations, known issues, lessons learned
+
+2. **Load Existing Context**:
+
+   - Use `mcp_memory_open_nodes` to retrieve detailed information from found entities
+   - Review: previous decisions, delegations, progress status, quality assessments
+   - Check: technical debt, known patterns, team conventions
+
+3. **Integrate Historical Knowledge**:
+   - Incorporate findings into current problem understanding
+   - Avoid repeating past mistakes or redundant work
+   - Build upon existing patterns and decisions
+   - Reference past QA findings and performance benchmarks
+
+**Benefits of Memory-First Approach**:
+
+- ✅ Faster problem understanding (context already documented)
+- ✅ Consistency with past architectural decisions
+- ✅ Avoid repeating resolved issues
+- ✅ Leverage lessons learned from previous iterations
+- ✅ Better delegation context (know which agents worked on similar tasks)
+
+### Phase 0.5: Delegation Assessment (META-AGENT)
 
 - **Classify Problem Type**: Strategic vs. Implementation vs. Cross-domain
 - **Evaluate Delegation**: Should I handle this or delegate to specialized agent?
@@ -390,9 +460,11 @@ When delegating to subagent via `runSubagent`, always provide maximum context:
 
 ### Phase 1: Deep Problem Understanding (PLAN MODE)
 
+- **Review Memory Context**: Use knowledge loaded from Phase 0 to inform analysis
 - **Classify**: 🔴CRITICAL bug, 🟡FEATURE request, 🟢OPTIMIZATION, 🔵INVESTIGATION
-- **Analyze**: Use `codebase` and `search` to understand requirements and context
+- **Analyze**: Use `codebase`, `search`, and memory knowledge to understand requirements and context
 - **Clarify**: Ask questions if requirements are ambiguous
+- **Cross-Reference**: Check if similar work was done before (from memory search)
 
 ### Phase 2: Strategic Planning (PLAN MODE)
 
