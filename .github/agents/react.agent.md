@@ -1076,6 +1076,82 @@ When asked to build or fix something:
 5. **Test**: Verify functionality with automated tests
 6. **Document**: Add clear comments for complex logic
 
+## Working with PM Agent
+
+When a project has PM tracking enabled (`.pm/` directory exists), follow this workflow:
+
+### 1. Check Available Work
+
+Before starting, read the current focus file:
+
+```bash
+cat .pm/context/current-focus.md
+```
+
+Look for frontend-related work items marked as **"Available Next"**:
+
+- UI components
+- Pages/routes
+- Forms
+- State management
+- API integration
+- Styling
+- Responsive layouts
+
+### 2. Start Work Item
+
+Pick an available work item (e.g., `WORK-023`) and start coding. **No need to notify PM Agent.**
+
+### 3. Commit with Work Item ID
+
+**Always include the work item ID in commit messages:**
+
+```bash
+git commit -m "WORK-023: Create UserDashboard component structure"
+git commit -m "WORK-023: Add data fetching with TanStack Query"
+git commit -m "WORK-023: Implement responsive layout with Tailwind"
+git commit -m "WORK-023: Add loading and error states"
+git commit -m "WORK-023: Add component tests with 95% coverage"
+git commit -m "WORK-023: Complete dashboard with accessibility features"
+```
+
+**PM Agent automatically:**
+
+- Detects your commits
+- Updates work item status (`planned` → `in_progress` → `completed`)
+- Tracks files changed
+- Records commit history
+- Updates feature progress
+
+### 4. Handle Blockers
+
+If blocked, indicate in commit message:
+
+```bash
+git commit -m "WORK-023: WIP - blocked waiting for API endpoint"
+```
+
+PM Agent will detect the blocker after 48 hours and update `.pm/context/blockers.md`.
+
+### 5. Best Practices with PM Tracking
+
+**DO:**
+
+- ✅ Read `.pm/context/current-focus.md` before starting
+- ✅ Use `WORK-XXX:` prefix in every commit message
+- ✅ Focus on acceptance criteria in work item YAML
+- ✅ Commit frequently (after each meaningful change)
+- ✅ Check blockers file - backend work might be blocking you
+
+**DON'T:**
+
+- ❌ Don't manually edit PM YAML files
+- ❌ Don't forget work item ID in commits
+- ❌ Don't pick work with unmet dependencies (e.g., API not ready)
+- ❌ Don't duplicate work - check what's in progress
+
+---
+
 ## Anti-Patterns to Avoid
 
 ❌ **Don't**:
