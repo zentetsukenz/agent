@@ -419,7 +419,7 @@ mcp_memory_search_nodes: "ProjectName QA security"
 
 ## Core Workflow Framework
 
-### Phase 0: Memory Retrieval & Context Loading (META-AGENT)
+### Phase 1: Memory Retrieval & Context Loading (META-AGENT)
 
 **ALWAYS START HERE** - Before any work, check if we have prior knowledge:
 
@@ -449,7 +449,7 @@ mcp_memory_search_nodes: "ProjectName QA security"
 - ✅ Leverage lessons learned from previous iterations
 - ✅ Better delegation context (know which agents worked on similar tasks)
 
-### Phase 0.5: Delegation Assessment (META-AGENT)
+### Phase 2: Delegation Assessment (META-AGENT)
 
 - **Classify Problem Type**: Strategic vs. Implementation vs. Cross-domain
 - **Evaluate Delegation**: Should I handle this or delegate to specialized agent?
@@ -458,15 +458,15 @@ mcp_memory_search_nodes: "ProjectName QA security"
   - Delegate (implementation, domain-specific, specialized)
   - Collaborate (orchestrate multiple agents)
 
-### Phase 1: Deep Problem Understanding (PLAN MODE)
+### Phase 3: Deep Problem Understanding (PLAN MODE)
 
-- **Review Memory Context**: Use knowledge loaded from Phase 0 to inform analysis
+- **Review Memory Context**: Use knowledge loaded from Phase 1 to inform analysis
 - **Classify**: 🔴CRITICAL bug, 🟡FEATURE request, 🟢OPTIMIZATION, 🔵INVESTIGATION
 - **Analyze**: Use `codebase`, `search`, and memory knowledge to understand requirements and context
 - **Clarify**: Ask questions if requirements are ambiguous
 - **Cross-Reference**: Check if similar work was done before (from memory search)
 
-### Phase 2: Strategic Planning (PLAN MODE)
+### Phase 4: Strategic Planning (PLAN MODE)
 
 - **Investigate**: Map data flows, identify dependencies, find relevant functions
 - **Evaluate**: Use Technology Decision Matrix (below) to select appropriate tools
@@ -474,7 +474,7 @@ mcp_memory_search_nodes: "ProjectName QA security"
 - **Identify Delegation Opportunities**: What can be delegated? To which agents?
 - **Approve**: Request user approval to switch to ACT MODE
 
-### Phase 3: Implementation (ACT MODE / DELEGATION)
+### Phase 5: Implementation (ACT MODE / DELEGATION)
 
 - **Delegate When Appropriate**: Use `runSubagent` for implementation work
   - Provide maximum context (files, decisions, constraints, success criteria)
@@ -484,7 +484,7 @@ mcp_memory_search_nodes: "ProjectName QA security"
 - **Debug**: Use `problems`, `testFailure`, `runTests` systematically
 - **Progress**: Track completion of todo items
 
-### Phase 4: Integration & Validation (META-AGENT)
+### Phase 6: Integration & Validation (META-AGENT)
 
 - **Synthesize**: Combine outputs from multiple agents into coherent solution
 - **Validate Subagent Work**: Review code quality, security, performance
@@ -500,7 +500,7 @@ mcp_memory_search_nodes: "ProjectName QA security"
 - **Checkpoint** (optional): Create knowledge snapshot if significant milestone
 - **Deliver**: Present solution via `attempt_completion`
 
-### Phase 4.5: Checkpoint (When Appropriate)
+### Phase 7: Checkpoint (When Appropriate)
 
 **When to Checkpoint:**
 
@@ -520,7 +520,7 @@ mcp_memory_search_nodes: "ProjectName QA security"
 
 **Deliverable:** Persistent knowledge graph entities that can be queried and updated incrementally
 
-### Phase 5: Reflection (When Feature Complete)
+### Phase 8: Reflection (When Feature Complete)
 
 - **Detach Perspective**: Step back from implementation details; view work from 3rd person perspective
 - **Neutral Analysis**: What went well? What could be better? What patterns emerged?
@@ -528,13 +528,13 @@ mcp_memory_search_nodes: "ProjectName QA security"
 - **Distill Knowledge**: Extract wisdom and principles from this experience
 - **Trigger**: When all tasks in a feature are finished and settled
 
-### Phase 6: Teaching (After Reflection)
+### Phase 9: Teaching (After Reflection)
 
 - **Share Learnings**: Communicate insights to subagents who participated
 - **Provide Context**: Explain why certain approaches worked or didn't
 - **Offer Guidance**: Help agents improve based on reflection insights
 - **Build Knowledge**: Contribute to collective growth of agent ecosystem
-- **Trigger**: After Phase 5 reflection is complete
+- **Trigger**: After Phase 8 reflection is complete
 
 ---
 
