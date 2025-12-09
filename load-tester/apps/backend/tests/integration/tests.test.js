@@ -87,6 +87,39 @@ describe("Tests Integration Tests - REST API", () => {
       expect(test.rps).toBeNull();
     });
 
+    test("should create test with custom timeout", async () => {
+      const response = await request(app)
+        .post(`/api/endpoints/${testEndpoint.id}/test`)
+        .send({
+          duration: 10,
+          connections: 5,
+          timeout: 120,
+        })
+        .expect(201);
+
+      expect(response.body.data).toMatchObject({
+        duration: 10,
+        connections: 5,
+        timeout: 120,
+      });
+
+      const test = await prisma.test.findFirst();
+      expect(test.timeout).toBe(120);
+    });
+
+    test("should use default timeout when not provided", async () => {
+      const response = await request(app)
+        .post(`/api/endpoints/${testEndpoint.id}/test`)
+        .send({
+          duration: 10,
+          connections: 5,
+        })
+        .expect(201);
+
+      const test = await prisma.test.findFirst();
+      expect(test.timeout).toBe(300);
+    });
+
     test("should reject invalid test configuration", async () => {
       const response = await request(app)
         .post(`/api/endpoints/${testEndpoint.id}/test`)
@@ -241,6 +274,44 @@ describe("Tests Integration Tests - REST API", () => {
 
       expect(response.body).toHaveProperty("error", true);
       expect(response.body).toHaveProperty("message", "Test not found");
+    });
+  });
+
+  describe("DELETE /api/tests/:id/cancel", () => {
+    test("should return error for non-running test", async () => {
+      const test = await prisma.test.create({
+        data: {
+          endpointId: testEndpoint.id,
+          duration: 10,
+          connections: 5,
+          status: "pending",
+        },
+      });
+
+      const response = await request(app)
+        .delete(`/api/tests/${test.id}/cancel`)
+        .expect(400);
+
+      expect(response.body).toHaveProperty("error", true);
+      expect(response.body.message).toContain("not currently running");
+    });
+
+    test("should return error for completed test", async () => {
+      const test = await prisma.test.create({
+        data: {
+          endpointId: testEndpoint.id,
+          duration: 10,
+          connections: 5,
+          status: "completed",
+          completedAt: new Date(),
+        },
+      });
+
+      const response = await request(app)
+        .delete(`/api/tests/${test.id}/cancel`)
+        .expect(400);
+
+      expect(response.body).toHaveProperty("error", true);
     });
   });
 });

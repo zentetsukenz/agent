@@ -3,9 +3,11 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { endpointsAPI } from '../services/endpoints';
 import { testsAPI } from '../services/tests';
 import { TestConfigForm } from '../components/tests/TestConfigForm';
+import RequestTemplates from '../components/RequestTemplates';
 import { Card, CardTitle } from '../components/ui/Card';
 import { Loading } from '../components/ui/Loading';
 import { ErrorMessage } from '../components/ui/ErrorMessage';
+import toast from 'react-hot-toast';
 
 export const ConfigureTest = () => {
   const { id } = useParams();
@@ -14,6 +16,7 @@ export const ConfigureTest = () => {
   const [loading, setLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(null);
+  const [templateConfig, setTemplateConfig] = useState(null);
 
   useEffect(() => {
     const fetchEndpoint = async () => {
@@ -39,15 +42,23 @@ export const ConfigureTest = () => {
         duration: parseInt(data.duration),
         connections: parseInt(data.connections),
         rps: data.rps ? parseInt(data.rps) : undefined,
+        timeout: data.timeout ? parseInt(data.timeout) : undefined,
       };
       
       const result = await testsAPI.execute(id, config);
+      toast.success('Load test started successfully!');
       navigate(`/tests/${result.id}/results`);
     } catch (err) {
       setError(err.message);
+      toast.error(err.message || 'Failed to start test');
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const handleApplyTemplate = (config) => {
+    setTemplateConfig(config);
+    toast.success('Template applied!');
   };
 
   const handleCancel = () => {
@@ -98,12 +109,17 @@ export const ConfigureTest = () => {
         </div>
       )}
 
+      <div className="mb-6">
+        <RequestTemplates onApplyTemplate={handleApplyTemplate} />
+      </div>
+
       <Card>
         <CardTitle className="mb-4">Test Configuration</CardTitle>
         <TestConfigForm
           onSubmit={handleSubmit}
           onCancel={handleCancel}
           isSubmitting={isSubmitting}
+          templateConfig={templateConfig}
         />
       </Card>
     </div>

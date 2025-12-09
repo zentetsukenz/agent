@@ -1,17 +1,25 @@
 import { useForm } from 'react-hook-form';
+import { useEffect } from 'react';
 import { Input } from '../ui/Input';
 import { Button } from '../ui/Button';
 import { TEST_LIMITS } from '../../utils/constants';
 import { validateNumber } from '../../utils/validators';
 
-export const TestConfigForm = ({ onSubmit, onCancel, isSubmitting }) => {
-  const { register, handleSubmit, formState: { errors } } = useForm({
+export const TestConfigForm = ({ onSubmit, onCancel, isSubmitting, templateConfig }) => {
+  const { register, handleSubmit, formState: { errors }, reset } = useForm({
     defaultValues: {
       duration: 30,
       connections: 10,
       rps: '',
+      timeout: 300,
     },
   });
+
+  useEffect(() => {
+    if (templateConfig) {
+      reset(templateConfig);
+    }
+  }, [templateConfig, reset]);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -57,6 +65,23 @@ export const TestConfigForm = ({ onSubmit, onCancel, isSubmitting }) => {
               TEST_LIMITS.RPS.MIN,
               TEST_LIMITS.RPS.MAX,
               'RPS'
+            );
+          },
+        })}
+      />
+
+      <Input
+        label="Timeout (seconds)"
+        type="number"
+        error={errors.timeout?.message}
+        {...register('timeout', {
+          validate: (value) => {
+            if (!value) return true;
+            return validateNumber(
+              value,
+              1,
+              3600,
+              'Timeout'
             );
           },
         })}

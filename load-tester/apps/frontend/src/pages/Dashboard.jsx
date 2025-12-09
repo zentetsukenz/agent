@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import toast from 'react-hot-toast';
 import { useEndpoints } from '../hooks/useEndpoints';
 import { endpointsAPI } from '../services/endpoints';
 import { EndpointList } from '../components/endpoints/EndpointList';
@@ -21,9 +22,11 @@ export const Dashboard = () => {
   const performDelete = async () => {
     try {
       await endpointsAPI.delete(deleteId);
+      toast.success('Endpoint deleted successfully');
       await refetch();
     } catch (err) {
       console.error('Delete error:', err);
+      toast.error('Failed to delete endpoint');
     }
   };
 

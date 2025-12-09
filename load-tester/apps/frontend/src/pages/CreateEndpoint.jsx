@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
 import { endpointsAPI } from '../services/endpoints';
 import { EndpointForm } from '../components/endpoints/EndpointForm';
 import { Card, CardTitle } from '../components/ui/Card';
@@ -16,9 +17,11 @@ export const CreateEndpoint = () => {
     
     try {
       await endpointsAPI.create(data);
+      toast.success('Endpoint created successfully!');
       navigate('/');
     } catch (err) {
       setError(err.message);
+      toast.error(err.message || 'Failed to create endpoint');
     } finally {
       setIsSubmitting(false);
     }

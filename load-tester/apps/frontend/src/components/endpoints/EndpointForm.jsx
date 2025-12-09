@@ -1,11 +1,12 @@
 import { useForm } from 'react-hook-form';
 import { Input, TextArea, Select } from '../ui/Input';
 import { Button } from '../ui/Button';
+import { AuthTemplates } from './AuthTemplates';
 import { HTTP_METHODS } from '../../utils/constants';
 import { validateUrl, validateJSON } from '../../utils/validators';
 
 export const EndpointForm = ({ initialData, onSubmit, onCancel, isSubmitting }) => {
-  const { register, handleSubmit, formState: { errors } } = useForm({
+  const { register, handleSubmit, formState: { errors }, setValue, watch } = useForm({
     defaultValues: initialData || {
       name: '',
       url: '',
@@ -14,6 +15,21 @@ export const EndpointForm = ({ initialData, onSubmit, onCancel, isSubmitting }) 
       body: '',
     },
   });
+
+  const currentHeaders = watch('headers');
+
+  const handleApplyAuthTemplate = (templateHeaders, note) => {
+    try {
+      const existing = currentHeaders ? JSON.parse(currentHeaders) : {};
+      const merged = { ...existing, ...templateHeaders };
+      setValue('headers', JSON.stringify(merged, null, 2));
+      if (note) {
+        // Could show a toast here if needed
+      }
+    } catch (err) {
+      setValue('headers', JSON.stringify(templateHeaders, null, 2));
+    }
+  };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -39,12 +55,19 @@ export const EndpointForm = ({ initialData, onSubmit, onCancel, isSubmitting }) 
         {...register('method', { required: 'Method is required' })}
       />
 
-      <TextArea
-        label="Headers (JSON)"
-        placeholder='{"Content-Type": "application/json"}'
-        error={errors.headers?.message}
-        {...register('headers', { validate: validateJSON })}
-      />
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Headers (JSON)
+        </label>
+        <div className="mb-2">
+          <AuthTemplates onApplyTemplate={handleApplyAuthTemplate} />
+        </div>
+        <TextArea
+          placeholder='{"Content-Type": "application/json"}'
+          error={errors.headers?.message}
+          {...register('headers', { validate: validateJSON })}
+        />
+      </div>
 
       <TextArea
         label="Body (JSON)"

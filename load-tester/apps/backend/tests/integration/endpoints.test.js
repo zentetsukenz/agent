@@ -152,6 +152,92 @@ describe("Endpoints Integration Tests - REST API", () => {
       expect(endpoints).toHaveLength(0);
     });
 
+    test("should reject invalid URL formats", async () => {
+      const invalidUrls = [
+        "not-a-url",
+        "ftp://example.com",
+        "javascript:alert(1)",
+        "file:///etc/passwd",
+        "",
+      ];
+
+      for (const url of invalidUrls) {
+        const response = await request(app)
+          .post("/api/endpoints")
+          .send({
+            name: "Test",
+            url,
+            method: "GET",
+          })
+          .expect(400);
+
+        expect(response.body).toHaveProperty("error", true);
+      }
+
+      // Verify no endpoints were created
+      const endpoints = await prisma.endpoint.findMany();
+      expect(endpoints).toHaveLength(0);
+    });
+
+    test("should reject invalid JSON in headers", async () => {
+      const response = await request(app)
+        .post("/api/endpoints")
+        .send({
+          name: "Test API",
+          url: "https://api.example.com",
+          method: "GET",
+          headers: "{invalid json}",
+        })
+        .expect(400);
+
+      expect(response.body).toHaveProperty("error", true);
+      expect(response.body.details).toEqual(
+        expect.arrayContaining([
+          expect.stringContaining("Headers must be valid JSON"),
+        ])
+      );
+
+      const endpoints = await prisma.endpoint.findMany();
+      expect(endpoints).toHaveLength(0);
+    });
+
+    test("should reject invalid JSON in body", async () => {
+      const response = await request(app)
+        .post("/api/endpoints")
+        .send({
+          name: "Test API",
+          url: "https://api.example.com",
+          method: "POST",
+          body: "{invalid: json}",
+        })
+        .expect(400);
+
+      expect(response.body).toHaveProperty("error", true);
+      expect(response.body.details).toEqual(
+        expect.arrayContaining([
+          expect.stringContaining("Body must be valid JSON"),
+        ])
+      );
+
+      const endpoints = await prisma.endpoint.findMany();
+      expect(endpoints).toHaveLength(0);
+    });
+
+    test("should sanitize HTML in endpoint name", async () => {
+      const response = await request(app)
+        .post("/api/endpoints")
+        .send({
+          name: "<script>alert('xss')</script>Test",
+          url: "https://api.example.com",
+          method: "GET",
+        })
+        .expect(201);
+
+      const endpoint = await prisma.endpoint.findFirst();
+      expect(endpoint.name).not.toContain("<script>");
+      expect(endpoint.name).toContain("&lt;script&gt;");
+    });
+
     test("should handle missing required fields", async () => {
       const response = await request(app)
         .post("/api/endpoints")

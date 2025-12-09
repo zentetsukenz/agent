@@ -85,8 +85,30 @@ async function status(req, res, next) {
   }
 }
 
+/**
+ * DELETE /api/tests/:id/cancel - Cancel running test
+ */
+async function cancel(req, res, next) {
+  try {
+    const result = await testsService.cancelTest(req.params.id);
+    res.json({
+      data: result.test,
+      message: result.message,
+    });
+  } catch (error) {
+    if (error.message.includes("not currently running")) {
+      return res.status(400).json({
+        error: true,
+        message: error.message,
+      });
+    }
+    next(error);
+  }
+}
+
 module.exports = {
   execute,
   show,
   status,
+  cancel,
 };

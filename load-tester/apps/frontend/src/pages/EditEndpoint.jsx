@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import toast from 'react-hot-toast';
 import { endpointsAPI } from '../services/endpoints';
 import { EndpointForm } from '../components/endpoints/EndpointForm';
 import { Card } from '../components/ui/Card';
@@ -35,9 +36,11 @@ export const EditEndpoint = () => {
     
     try {
       await endpointsAPI.update(id, data);
+      toast.success('Endpoint updated successfully!');
       navigate('/');
     } catch (err) {
       setError(err.message);
+      toast.error(err.message || 'Failed to update endpoint');
     } finally {
       setIsSubmitting(false);
     }

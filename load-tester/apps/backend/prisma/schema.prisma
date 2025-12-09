@@ -28,6 +28,7 @@ model Test {
   duration    Int
   connections Int
   rps         Int?
+  timeout     Int       @default(300)
   status      String    @default("pending")
   results     String?
   createdAt   DateTime  @default(now())

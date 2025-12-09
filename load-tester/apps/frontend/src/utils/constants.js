@@ -5,6 +5,7 @@ export const TEST_STATUS = {
   RUNNING: "running",
   COMPLETED: "completed",
   FAILED: "failed",
+  CANCELLED: "cancelled",
 };
 
 export const TEST_LIMITS = {

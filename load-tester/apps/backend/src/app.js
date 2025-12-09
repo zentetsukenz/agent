@@ -41,6 +41,7 @@ app.delete("/api/endpoints/:id", endpointsController.destroy);
 app.post("/api/endpoints/:id/test", testsController.execute);
 app.get("/api/tests/:id", testsController.show);
 app.get("/api/tests/:id/status", testsController.status);
+app.delete("/api/tests/:id/cancel", testsController.cancel);
 
 // 404 handler
 app.use((req, res) => {

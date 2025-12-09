@@ -1,7 +1,11 @@
+import { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import toast from 'react-hot-toast';
 import { useTestStatus } from '../hooks/useTestStatus';
+import { testsAPI } from '../services/tests';
 import { TestStatusBadge } from '../components/tests/TestStatusBadge';
 import { TestMetrics } from '../components/tests/TestMetrics';
+import ResultsChart from '../components/ResultsChart';
 import { Card, CardTitle, CardContent } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { Loading } from '../components/ui/Loading';
@@ -12,6 +16,22 @@ import { formatDate } from '../utils/formatters';
 export const TestResults = () => {
   const { id } = useParams();
   const { test, loading, error, refetch } = useTestStatus(id);
+  const [isCancelling, setIsCancelling] = useState(false);
+  const [showCancelConfirm, setShowCancelConfirm] = useState(false);
+
+  const handleCancelTest = async () => {
+    setIsCancelling(true);
+    try {
+      await testsAPI.cancelTest(id);
+      toast.success('Test cancelled successfully');
+      setShowCancelConfirm(false);
+      await refetch();
+    } catch (err) {
+      toast.error(err.message || 'Failed to cancel test');
+    } finally {
+      setIsCancelling(false);
+    }
+  };
 
   if (loading && !test) {
     return <Loading text="Loading test results..." />;
@@ -32,10 +52,49 @@ export const TestResults = () => {
     <div className="max-w-6xl mx-auto">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-3xl font-bold text-gray-900">Test Results</h2>
-        <Link to="/">
-          <Button variant="secondary">Back to Dashboard</Button>
-        </Link>
+        <div className="flex gap-2">
+          {isRunning && (
+            <Button
+              variant="secondary"
+              onClick={() => setShowCancelConfirm(true)}
+              className="bg-red-600 text-white hover:bg-red-700"
+            >
+              Cancel Test
+            </Button>
+          )}
+          <Link to="/">
+            <Button variant="secondary">Back to Dashboard</Button>
+          </Link>
+        </div>
       </div>
+
+      {/* Cancel Confirmation Modal */}
+      {showCancelConfirm && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <Card className="max-w-md">
+            <CardTitle className="mb-4">Cancel Test?</CardTitle>
+            <p className="text-gray-700 mb-6">
+              Are you sure you want to cancel this test? This action cannot be undone.
+            </p>
+            <div className="flex gap-4">
+              <Button
+                onClick={handleCancelTest}
+                disabled={isCancelling}
+                className="bg-red-600 text-white hover:bg-red-700"
+              >
+                {isCancelling ? 'Cancelling...' : 'Yes, Cancel Test'}
+              </Button>
+              <Button
+                variant="secondary"
+                onClick={() => setShowCancelConfirm(false)}
+                disabled={isCancelling}
+              >
+                No, Keep Running
+              </Button>
+            </div>
+          </Card>
+        </div>
+      )}
 
       {/* Test Status Card */}
       <Card className="mb-6">
@@ -101,6 +160,12 @@ export const TestResults = () => {
         </Card>
       ) : test?.status === TEST_STATUS.COMPLETED && results ? (
         <>
+          {/* Results Chart */}
+          <div className="mb-6">
+            <ResultsChart results={results} />
+          </div>
+
+          {/* Detailed Metrics */}
           <TestMetrics results={results} />
           
           <div className="mt-6 flex gap-4">
