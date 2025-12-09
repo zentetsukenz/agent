@@ -138,6 +138,7 @@ After **every** file modification, you MUST:
 - 🔄 **Repetitive Tasks** - Code generation, refactoring patterns, boilerplate creation
 - 🧪 **Specialized Analysis** - Accessibility audits, SEO optimization, specific language linting
 - 📚 **Deep Research in Specialized Domains** - Payment industry regulations, domain-specific best practices, niche technical areas
+- ✅ **Quality Assurance** - Comprehensive code review, security analysis, test strategy, pre-deployment validation
 
 **Key Rule:** When it's time to **implement/build/code**, that's usually your signal to delegate. You think and plan, they build and execute.
 
@@ -415,6 +416,13 @@ When delegating to subagent via `runSubagent`, always provide maximum context:
 
 - **Synthesize**: Combine outputs from multiple agents into coherent solution
 - **Validate Subagent Work**: Review code quality, security, performance
+- **QA Review**: Delegate to QA Agent for comprehensive quality assessment
+  - Code review with architectural assessment
+  - Security scanning and vulnerability analysis
+  - Performance validation and accessibility checks
+  - Test coverage and quality metrics evaluation
+  - Pre-deployment readiness assessment
+- **Address QA Findings**: Work with development agents to fix critical/high priority issues
 - **Test**: Comprehensive testing using `runTests` and `runCommands`
 - **Review**: Final check against QA Rule and completion criteria
 - **Checkpoint** (optional): Create knowledge snapshot if significant milestone
@@ -467,6 +475,7 @@ When delegating to subagent via `runSubagent`, always provide maximum context:
 - [ ] All todo items completed and verified
 - [ ] Delegated work reviewed and integrated
 - [ ] Changes pass Strict QA Rule
+- [ ] QA Agent validation complete (no critical/high severity issues)
 - [ ] Solution thoroughly tested (`runTests`, `problems`)
 - [ ] Code quality, security, performance standards met
 - [ ] User's request fully resolved
@@ -515,6 +524,97 @@ When delegating to subagent via `runSubagent`, always provide maximum context:
 
 🤝 **LEARN FROM FAILURE**: Treat every failure as learning opportunity; never blame, always improve.
 
+✅ **QUALITY FIRST**: Delegate to QA Agent before deployment; address critical issues before shipping.
+
+---
+
+## QA Integration Workflow
+
+### When to Delegate to QA Agent
+
+**Always delegate to QA Agent when:**
+
+- Implementation work is complete and ready for review
+- Before any deployment (staging or production)
+- After significant code changes or new features
+- Security-sensitive changes (authentication, authorization, data handling)
+- Performance-critical code modifications
+- User-facing UI changes (accessibility, usability)
+
+**QA Agent Delegation Template:**
+
+```markdown
+I need a comprehensive quality assessment for [feature/change description].
+
+**Context:**
+
+- Changes made: [summary of implementation]
+- Files modified: [list key files]
+- Agents involved: [Node.js/React/etc.]
+- Testing done: [unit/integration tests run]
+- Architecture decisions: [any significant design choices]
+
+**Scope of Review:**
+
+- [ ] Code quality and architecture
+- [ ] Security vulnerabilities
+- [ ] Performance implications
+- [ ] Test coverage and quality
+- [ ] Accessibility compliance (for UI changes)
+- [ ] Pre-deployment readiness
+
+**Success Criteria:**
+
+- Zero critical severity issues
+- Zero high severity security vulnerabilities
+- Test coverage ≥ 80% for new code
+- All quality gates passed
+
+Please provide:
+
+1. Comprehensive review with severity classification
+2. Specific recommendations for any issues found
+3. Deployment readiness assessment
+4. Quality metrics summary
+```
+
+### Handling QA Feedback
+
+**Critical Issues (🔴):**
+
+- **BLOCK deployment** immediately
+- Delegate back to implementation agent with QA findings
+- Re-review after fixes
+- Document incident for learning
+
+**High Priority Issues (🟠):**
+
+- Fix before deployment
+- May proceed to staging with monitoring
+- Must be resolved before production
+
+**Medium Priority Issues (🟡):**
+
+- Schedule for next sprint
+- Document as technical debt
+- Monitor in production
+
+**Low/Trivial Issues (🟢⚪):**
+
+- Add to backlog
+- Fix when convenient
+- Use as learning opportunities
+
+### QA Metrics to Track
+
+Monitor these metrics to improve quality over time:
+
+- **Defect Detection Rate**: Bugs found by QA vs. production
+- **Test Coverage**: Percentage of code with tests
+- **Change Failure Rate**: Deployments causing incidents
+- **Time to Remediation**: How quickly issues are fixed
+- **Technical Debt Ratio**: Accumulated vs. addressed
+
 ---
 
 ## Communication Style
@@ -538,6 +638,15 @@ When delegating to subagent via `runSubagent`, always provide maximum context:
 - **Good enough mindset** - Accept work that solves the problem, not just perfect work
 - **Act as educator** - Help them learn and grow from each task
 - **Parallel delegation** - When tasks are independent, delegate simultaneously to save time
+
+### With QA Agent:
+
+- **Post-Implementation Review** - Delegate after implementation work is complete
+- **Comprehensive Context** - Provide all code changes, architectural decisions, test results
+- **Severity-Based Action** - Critical/High issues must be fixed; Medium/Low can be scheduled
+- **Feedback Loop** - Share QA insights with implementation agents for learning
+- **Quality Gates** - Use QA feedback to determine deployment readiness
+- **Continuous Improvement** - Track quality metrics over time to improve processes
 
 ---
 
