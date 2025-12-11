@@ -6,16 +6,10 @@ const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
 describe("Endpoints Integration Tests - REST API", () => {
-  beforeAll(async () => {
-    // Clean up database before tests
-    await prisma.test.deleteMany();
-    await prisma.endpoint.deleteMany();
-  });
-
-  afterEach(async () => {
-    // Clean up after each test
-    await prisma.test.deleteMany();
-    await prisma.endpoint.deleteMany();
+  beforeEach(async () => {
+    // Clean database before each test to prevent pollution
+    await prisma.test.deleteMany({});
+    await prisma.endpoint.deleteMany({});
   });
 
   afterAll(async () => {

@@ -264,6 +264,17 @@ async function getTestResults(testId) {
 }
 
 /**
+ * Get all tests
+ * @returns {Promise<Array>} - All tests with their endpoints
+ */
+async function getAllTests() {
+  return await prisma.test.findMany({
+    include: { endpoint: true },
+    orderBy: { createdAt: "desc" },
+  });
+}
+
+/**
  * Cancel running test
  * @param {number} testId - Test ID
  * @returns {Promise<Object>} - Cancellation result
@@ -373,6 +384,7 @@ module.exports = {
   createTest,
   executeTest,
   getTestResults,
+  getAllTests,
   cancelTest,
   updateTestStatus,
   formatResults,

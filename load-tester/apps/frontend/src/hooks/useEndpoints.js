@@ -10,8 +10,8 @@ export const useEndpoints = () => {
     setLoading(true);
     setError(null);
     try {
-      const data = await endpointsAPI.getAll();
-      setEndpoints(data);
+      const response = await endpointsAPI.getAll();
+      setEndpoints(response.data || []);
     } catch (err) {
       setError(err.message);
     } finally {

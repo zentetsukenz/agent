@@ -38,6 +38,7 @@ app.put("/api/endpoints/:id", endpointsController.update);
 app.delete("/api/endpoints/:id", endpointsController.destroy);
 
 // Tests API routes
+app.get("/api/tests", testsController.index);
 app.post("/api/endpoints/:id/test", testsController.execute);
 app.get("/api/tests/:id", testsController.show);
 app.get("/api/tests/:id/status", testsController.status);

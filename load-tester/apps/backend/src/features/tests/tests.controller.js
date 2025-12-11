@@ -6,6 +6,18 @@
 const testsService = require("./tests.service");
 
 /**
+ * GET /api/tests - Get all tests
+ */
+async function index(req, res, next) {
+  try {
+    const tests = await testsService.getAllTests();
+    res.json({ data: tests });
+  } catch (error) {
+    next(error);
+  }
+}
+
+/**
  * POST /api/endpoints/:id/test - Execute load test
  */
 async function execute(req, res, next) {
@@ -107,6 +119,7 @@ async function cancel(req, res, next) {
 }
 
 module.exports = {
+  index,
   execute,
   show,
   status,

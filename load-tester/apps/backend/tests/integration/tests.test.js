@@ -8,13 +8,14 @@ const prisma = new PrismaClient();
 describe("Tests Integration Tests - REST API", () => {
   let testEndpoint;
 
-  beforeAll(async () => {
-    await prisma.test.deleteMany();
-    await prisma.endpoint.deleteMany();
-  });
-
   beforeEach(async () => {
-    // Create a test endpoint
+    // Wait a bit to let any background processes from previous tests settle
+    await new Promise((resolve) => setTimeout(resolve, 100));
+
+    // Clean database and create a fresh test endpoint for each test
+    await prisma.test.deleteMany({});
+    await prisma.endpoint.deleteMany({});
+
     testEndpoint = await prisma.endpoint.create({
       data: {
         name: "Test API",
@@ -22,17 +23,6 @@ describe("Tests Integration Tests - REST API", () => {
         method: "GET",
       },
     });
-  });
-
-  afterEach(async () => {
-    // Clean up tests first (foreign key constraint)
-    await prisma.test.deleteMany();
-    // Then delete the endpoint created in beforeEach
-    if (testEndpoint) {
-      await prisma.endpoint
-        .delete({ where: { id: testEndpoint.id } })
-        .catch(() => {});
-    }
   });
 
   afterAll(async () => {
@@ -312,6 +302,113 @@ describe("Tests Integration Tests - REST API", () => {
         .expect(400);
 
       expect(response.body).toHaveProperty("error", true);
+    });
+  });
+
+  describe("GET /api/tests", () => {
+    test("should return all tests", async () => {
+      // Create multiple tests
+      await prisma.test.create({
+        data: {
+          endpointId: testEndpoint.id,
+          duration: 10,
+          connections: 5,
+          status: "completed",
+        },
+      });
+
+      await prisma.test.create({
+        data: {
+          endpointId: testEndpoint.id,
+          duration: 20,
+          connections: 10,
+          status: "pending",
+        },
+      });
+
+      const response = await request(app).get("/api/tests").expect(200);
+
+      expect(response.body.data).toHaveLength(2);
+      expect(response.body.data[0]).toHaveProperty("endpoint");
+      expect(response.body.data[0].endpoint.name).toBe("Test API");
+    });
+
+    test("should return empty array when no tests exist", async () => {
+      const response = await request(app).get("/api/tests").expect(200);
+
+      expect(response.body.data).toEqual([]);
+    });
+  });
+
+  describe("Edge cases", () => {
+    test("should handle validation errors with empty body", async () => {
+      const response = await request(app)
+        .post(`/api/endpoints/${testEndpoint.id}/test`)
+        .send({})
+        .expect(400);
+
+      expect(response.body).toHaveProperty("error", true);
+      expect(response.body).toHaveProperty("message", "Validation failed");
+      expect(response.body.details).toContain("Duration is required");
+      expect(response.body.details).toContain("Connections is required");
+    });
+
+    test("should execute test with endpoint that has headers", async () => {
+      // Create endpoint with headers
+      const endpointWithHeaders = await prisma.endpoint.create({
+        data: {
+          name: "API with Headers",
+          url: "https://httpbin.org/get",
+          method: "GET",
+          headers: JSON.stringify({ "X-Custom-Header": "test-value" }),
+        },
+      });
+
+      const response = await request(app)
+        .post(`/api/endpoints/${endpointWithHeaders.id}/test`)
+        .send({
+          duration: 5,
+          connections: 2,
+        })
+        .expect(201);
+
+      expect(response.body.message).toBe("Test started successfully");
+      expect(response.body.data.status).toBe("pending");
+    });
+
+    test("should execute test with endpoint that has body", async () => {
+      // Create endpoint with body
+      const endpointWithBody = await prisma.endpoint.create({
+        data: {
+          name: "API with Body",
+          url: "https://httpbin.org/post",
+          method: "POST",
+          body: JSON.stringify({ key: "value" }),
+        },
+      });
+
+      const response = await request(app)
+        .post(`/api/endpoints/${endpointWithBody.id}/test`)
+        .send({
+          duration: 5,
+          connections: 2,
+        })
+        .expect(201);
+
+      expect(response.body.message).toBe("Test started successfully");
+    });
+
+    test("should handle test with RPS parameter", async () => {
+      const response = await request(app)
+        .post(`/api/endpoints/${testEndpoint.id}/test`)
+        .send({
+          duration: 5,
+          connections: 2,
+          rps: 10,
+        })
+        .expect(201);
+
+      expect(response.body.data.rps).toBe(10);
     });
   });
 });
