@@ -1,122 +1,81 @@
 /**
  * Tests Controller
  * HTTP request handlers for load test execution - REST API
+ * Validation is handled by middleware - controllers focus on business logic
  */
 
 const testsService = require("./tests.service");
+const asyncHandler = require("../../utils/asyncHandler");
+const { getPrismaClient } = require("../../config/database");
+
+const prisma = getPrismaClient();
 
 /**
  * GET /api/tests - Get all tests
  */
-async function index(req, res, next) {
-  try {
-    const tests = await testsService.getAllTests();
-    res.json({ data: tests });
-  } catch (error) {
-    next(error);
-  }
-}
+const index = asyncHandler(async (req, res) => {
+  const tests = await testsService.getAllTests(prisma);
+  res.json({ data: tests });
+});
 
 /**
  * POST /api/endpoints/:id/test - Execute load test
+ * Validation and rate limiting handled by middleware
  */
-async function execute(req, res, next) {
-  try {
-    const validation = testsService.validateTestConfig(req.body);
-    if (!validation.valid) {
-      return res.status(400).json({
-        error: true,
-        message: "Validation failed",
-        details: validation.errors,
-      });
-    }
+const execute = asyncHandler(async (req, res) => {
+  const test = await testsService.createTest(prisma, req.params.id, req.body);
 
-    const test = await testsService.createTest(req.params.id, req.body);
+  // Execute test asynchronously
+  testsService.executeTest(prisma, test.id).catch((err) => {
+    console.error("Test execution error:", err);
+  });
 
-    // Execute test asynchronously
-    testsService.executeTest(test.id).catch((err) => {
-      console.error("Test execution error:", err);
-    });
-
-    res.status(201).json({
-      data: test,
-      message: "Test started successfully",
-    });
-  } catch (error) {
-    next(error);
-  }
-}
+  res.status(201).json({
+    data: test,
+    message: "Test started successfully",
+  });
+});
 
 /**
  * GET /api/tests/:id - Get test results
  */
-async function show(req, res, next) {
-  try {
-    const test = await testsService.getTestResults(req.params.id);
-    if (!test) {
-      return res.status(404).json({
-        error: true,
-        message: "Test not found",
-      });
-    }
+const show = asyncHandler(async (req, res) => {
+  const test = await testsService.getTestResults(prisma, req.params.id);
 
-    // Parse results if they exist
-    const data = {
-      ...test,
-      results: test.results ? JSON.parse(test.results) : null,
-    };
+  // Parse results if they exist
+  const data = {
+    ...test,
+    results: test.results ? JSON.parse(test.results) : null,
+  };
 
-    res.json({ data });
-  } catch (error) {
-    next(error);
-  }
-}
+  res.json({ data });
+});
 
 /**
  * GET /api/tests/:id/status - Get test status (for polling)
  */
-async function status(req, res, next) {
-  try {
-    const test = await testsService.getTestResults(req.params.id);
-    if (!test) {
-      return res.status(404).json({
-        error: true,
-        message: "Test not found",
-      });
-    }
+const status = asyncHandler(async (req, res) => {
+  const test = await testsService.getTestResults(prisma, req.params.id);
 
-    res.json({
-      data: {
-        id: test.id,
-        status: test.status,
-        completedAt: test.completedAt,
-      },
-    });
-  } catch (error) {
-    next(error);
-  }
-}
+  res.json({
+    data: {
+      id: test.id,
+      status: test.status,
+      completedAt: test.completedAt,
+    },
+  });
+});
 
 /**
  * DELETE /api/tests/:id/cancel - Cancel running test
  */
-async function cancel(req, res, next) {
-  try {
-    const result = await testsService.cancelTest(req.params.id);
-    res.json({
-      data: result.test,
-      message: result.message,
-    });
-  } catch (error) {
-    if (error.message.includes("not currently running")) {
-      return res.status(400).json({
-        error: true,
-        message: error.message,
-      });
-    }
-    next(error);
-  }
-}
+const cancel = asyncHandler(async (req, res) => {
+  const result = await testsService.cancelTest(prisma, req.params.id);
+  res.json({
+    data: result.test,
+    message: result.message,
+  });
+});
 
 module.exports = {
   index,

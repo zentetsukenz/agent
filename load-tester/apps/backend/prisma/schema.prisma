@@ -18,7 +18,14 @@ model Endpoint {
   headers   String?
   body      String?
   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
   tests     Test[]
+
+  // Unique constraint to prevent duplicate endpoints
+  @@unique([url, method], name: "endpoint_url_method_unique")
+  // Indexes for performance
+  @@index([createdAt(sort: Desc)])
+  @@index([method])
 }
 
 model Test {
@@ -33,4 +40,9 @@ model Test {
   results     String?
   createdAt   DateTime  @default(now())
   completedAt DateTime?
+
+  // Indexes for performance
+  @@index([endpointId, createdAt(sort: Desc)])
+  @@index([status])
+  @@index([createdAt(sort: Desc)])
 }

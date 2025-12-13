@@ -2,11 +2,15 @@
  * Server Entry Point
  */
 
-const app = require('./app');
+const app = require("./app");
+const config = require("./config");
 
-const PORT = process.env.PORT || 3000;
-
-app.listen(PORT, () => {
-  console.log(`Load Tester server running on http://localhost:${PORT}`);
-  console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
+app.listen(config.port, () => {
+  console.log(
+    `🚀 Load Tester server running on http://localhost:${config.port}`
+  );
+  console.log(`📊 Environment: ${config.env}`);
+  console.log(
+    `🗄️  Database: ${config.database.url.replace(/\/.*\//, "/.../")}`
+  );
 });

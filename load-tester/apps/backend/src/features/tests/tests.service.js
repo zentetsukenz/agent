@@ -3,10 +3,13 @@
  * Business logic for load test execution
  */
 
-const { PrismaClient } = require("@prisma/client");
 const autocannon = require("autocannon");
-
-const prisma = new PrismaClient();
+const config = require("../../config");
+const {
+  ValidationError,
+  NotFoundError,
+  TimeoutError,
+} = require("../../utils/errors");
 
 // In-memory store for running test processes
 // Map: testId -> { instance: autocannonInstance, startTime: Date }
@@ -17,71 +20,84 @@ const runningTests = new Map();
  * @param {Object} config - Test configuration
  * @returns {Object} - { valid: boolean, errors: string[] }
  */
-function validateTestConfig(config) {
+function validateTestConfig(testConfig) {
   const errors = [];
 
   // Validate duration
   if (
-    config.duration === undefined ||
-    config.duration === null ||
-    config.duration === ""
+    testConfig.duration === undefined ||
+    testConfig.duration === null ||
+    testConfig.duration === ""
   ) {
     errors.push("Duration is required");
   } else if (
-    typeof config.duration !== "number" &&
-    isNaN(Number(config.duration))
+    typeof testConfig.duration !== "number" &&
+    isNaN(Number(testConfig.duration))
   ) {
     errors.push("Duration must be a number");
   } else {
-    const duration = Number(config.duration);
-    if (duration < 1 || duration > 300) {
-      errors.push("Duration must be between 1 and 300 seconds");
+    const duration = Number(testConfig.duration);
+    if (duration < 1 || duration > config.loadTest.maxDuration) {
+      errors.push(
+        `Duration must be between 1 and ${config.loadTest.maxDuration} seconds`
+      );
     }
   }
 
   // Validate connections
   if (
-    config.connections === undefined ||
-    config.connections === null ||
-    config.connections === ""
+    testConfig.connections === undefined ||
+    testConfig.connections === null ||
+    testConfig.connections === ""
   ) {
     errors.push("Connections is required");
   } else if (
-    typeof config.connections !== "number" &&
-    isNaN(Number(config.connections))
+    typeof testConfig.connections !== "number" &&
+    isNaN(Number(testConfig.connections))
   ) {
     errors.push("Connections must be a number");
   } else {
-    const connections = Number(config.connections);
-    if (connections < 1 || connections > 1000) {
-      errors.push("Connections must be between 1 and 1000");
+    const connections = Number(testConfig.connections);
+    if (connections < 1 || connections > config.loadTest.maxConnections) {
+      errors.push(
+        `Connections must be between 1 and ${config.loadTest.maxConnections}`
+      );
     }
   }
 
   // Validate rps (optional)
-  if (config.rps !== undefined && config.rps !== null && config.rps !== "") {
-    if (typeof config.rps !== "number" && isNaN(Number(config.rps))) {
+  if (
+    testConfig.rps !== undefined &&
+    testConfig.rps !== null &&
+    testConfig.rps !== ""
+  ) {
+    if (typeof testConfig.rps !== "number" && isNaN(Number(testConfig.rps))) {
       errors.push("RPS must be a number");
     } else {
-      const rps = Number(config.rps);
-      if (rps < 1 || rps > 100000) {
-        errors.push("RPS must be between 1 and 100000");
+      const rps = Number(testConfig.rps);
+      if (rps < 1 || rps > config.loadTest.maxRPS) {
+        errors.push(`RPS must be between 1 and ${config.loadTest.maxRPS}`);
       }
     }
   }
 
   // Validate timeout (optional)
   if (
-    config.timeout !== undefined &&
-    config.timeout !== null &&
-    config.timeout !== ""
+    testConfig.timeout !== undefined &&
+    testConfig.timeout !== null &&
+    testConfig.timeout !== ""
   ) {
-    if (typeof config.timeout !== "number" && isNaN(Number(config.timeout))) {
+    if (
+      typeof testConfig.timeout !== "number" &&
+      isNaN(Number(testConfig.timeout))
+    ) {
       errors.push("Timeout must be a number");
     } else {
-      const timeout = Number(config.timeout);
-      if (timeout < 1 || timeout > 600) {
-        errors.push("Timeout must be between 1 and 600 seconds");
+      const timeout = Number(testConfig.timeout);
+      if (timeout < 1 || timeout > config.loadTest.maxTimeout) {
+        errors.push(
+          `Timeout must be between 1 and ${config.loadTest.maxTimeout} seconds`
+        );
       }
     }
   }
@@ -94,11 +110,12 @@ function validateTestConfig(config) {
 
 /**
  * Create test record
+ * @param {PrismaClient} prisma - Prisma client instance
  * @param {number} endpointId - Endpoint ID
  * @param {Object} config - Test configuration
  * @returns {Promise<Object>} - Created test
  */
-async function createTest(endpointId, config) {
+async function createTest(prisma, endpointId, config) {
   return await prisma.test.create({
     data: {
       endpointId: parseInt(endpointId),
@@ -113,15 +130,16 @@ async function createTest(endpointId, config) {
 
 /**
  * Execute load test
+ * @param {PrismaClient} prisma - Prisma client instance
  * @param {number} testId - Test ID
  * @returns {Promise<void>}
  */
-async function executeTest(testId) {
+async function executeTest(prisma, testId) {
   let timeoutHandle = null;
 
   try {
     // Update status to running
-    await updateTestStatus(testId, "running");
+    await updateTestStatus(prisma, testId, "running");
 
     // Get test and endpoint details
     const test = await prisma.test.findUnique({
@@ -130,7 +148,7 @@ async function executeTest(testId) {
     });
 
     if (!test) {
-      throw new Error("Test not found");
+      throw new NotFoundError("Test");
     }
 
     // Prepare autocannon options
@@ -167,10 +185,12 @@ async function executeTest(testId) {
     }
 
     // Create timeout promise
-    const timeoutSeconds = test.timeout || 300;
+    const timeoutSeconds = test.timeout || config.loadTest.maxTimeout;
     const timeoutPromise = new Promise((_, reject) => {
       timeoutHandle = setTimeout(() => {
-        reject(new Error(`Test exceeded timeout of ${timeoutSeconds} seconds`));
+        reject(
+          new TimeoutError(`Test exceeded timeout of ${timeoutSeconds} seconds`)
+        );
       }, timeoutSeconds * 1000);
     });
 
@@ -253,21 +273,29 @@ async function executeTest(testId) {
 
 /**
  * Get test results
+ * @param {PrismaClient} prisma - Prisma client instance
  * @param {number} testId - Test ID
  * @returns {Promise<Object|null>} - Test with results
  */
-async function getTestResults(testId) {
-  return await prisma.test.findUnique({
+async function getTestResults(prisma, testId) {
+  const test = await prisma.test.findUnique({
     where: { id: parseInt(testId) },
     include: { endpoint: true },
   });
+
+  if (!test) {
+    throw new NotFoundError("Test");
+  }
+
+  return test;
 }
 
 /**
  * Get all tests
+ * @param {PrismaClient} prisma - Prisma client instance
  * @returns {Promise<Array>} - All tests with their endpoints
  */
-async function getAllTests() {
+async function getAllTests(prisma) {
   return await prisma.test.findMany({
     include: { endpoint: true },
     orderBy: { createdAt: "desc" },
@@ -276,17 +304,20 @@ async function getAllTests() {
 
 /**
  * Cancel running test
+ * @param {PrismaClient} prisma - Prisma client instance
  * @param {number} testId - Test ID
  * @returns {Promise<Object>} - Cancellation result
  */
-async function cancelTest(testId) {
+async function cancelTest(prisma, testId) {
   const testIdInt = parseInt(testId);
 
   // Check if test is running
   const runningTest = runningTests.get(testIdInt);
 
   if (!runningTest) {
-    throw new Error("Test is not currently running or does not exist");
+    throw new ValidationError(
+      "Test is not currently running or does not exist"
+    );
   }
 
   try {
@@ -328,11 +359,12 @@ async function cancelTest(testId) {
 
 /**
  * Update test status
+ * @param {PrismaClient} prisma - Prisma client instance
  * @param {number} testId - Test ID
  * @param {string} status - New status
  * @returns {Promise<Object>} - Updated test
  */
-async function updateTestStatus(testId, status) {
+async function updateTestStatus(prisma, testId, status) {
   return await prisma.test.update({
     where: { id: parseInt(testId) },
     data: { status },

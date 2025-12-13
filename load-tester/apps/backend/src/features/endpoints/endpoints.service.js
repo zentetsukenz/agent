@@ -3,9 +3,8 @@
  * Business logic for endpoint management
  */
 
-const { PrismaClient } = require("@prisma/client");
 const validator = require("validator");
-const prisma = new PrismaClient();
+const { ValidationError, NotFoundError } = require("../../utils/errors");
 
 /**
  * Sanitize text input to prevent XSS
@@ -123,9 +122,10 @@ function validateEndpointData(data) {
 
 /**
  * Get all endpoints
+ * @param {PrismaClient} prisma - Prisma client instance
  * @returns {Promise<Array>} - List of endpoints
  */
-async function getAllEndpoints() {
+async function getAllEndpoints(prisma) {
   return await prisma.endpoint.findMany({
     orderBy: { createdAt: "desc" },
     include: {
@@ -139,11 +139,12 @@ async function getAllEndpoints() {
 
 /**
  * Get endpoint by ID
+ * @param {PrismaClient} prisma - Prisma client instance
  * @param {number} id - Endpoint ID
  * @returns {Promise<Object|null>} - Endpoint or null
  */
-async function getEndpointById(id) {
-  return await prisma.endpoint.findUnique({
+async function getEndpointById(prisma, id) {
+  const endpoint = await prisma.endpoint.findUnique({
     where: { id: parseInt(id) },
     include: {
       tests: {
@@ -151,14 +152,21 @@ async function getEndpointById(id) {
       },
     },
   });
+
+  if (!endpoint) {
+    throw new NotFoundError("Endpoint");
+  }
+
+  return endpoint;
 }
 
 /**
  * Create new endpoint
+ * @param {PrismaClient} prisma - Prisma client instance
  * @param {Object} data - Endpoint data
  * @returns {Promise<Object>} - Created endpoint
  */
-async function createEndpoint(data) {
+async function createEndpoint(prisma, data) {
   // Sanitize inputs
   const sanitizedName = sanitizeInput(data.name);
   const urlValidation = validateAndSanitizeURL(data.url);
@@ -177,11 +185,12 @@ async function createEndpoint(data) {
 
 /**
  * Update endpoint
+ * @param {PrismaClient} prisma - Prisma client instance
  * @param {number} id - Endpoint ID
  * @param {Object} data - Updated endpoint data
  * @returns {Promise<Object>} - Updated endpoint
  */
-async function updateEndpoint(id, data) {
+async function updateEndpoint(prisma, id, data) {
   // Sanitize inputs
   const sanitizedName = sanitizeInput(data.name);
   const urlValidation = validateAndSanitizeURL(data.url);
@@ -201,10 +210,11 @@ async function updateEndpoint(id, data) {
 
 /**
  * Delete endpoint
+ * @param {PrismaClient} prisma - Prisma client instance
  * @param {number} id - Endpoint ID
  * @returns {Promise<Object>} - Deleted endpoint
  */
-async function deleteEndpoint(id) {
+async function deleteEndpoint(prisma, id) {
   return await prisma.endpoint.delete({
     where: { id: parseInt(id) },
   });
