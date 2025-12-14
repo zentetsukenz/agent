@@ -16,10 +16,11 @@ describe("Tests Integration Tests - REST API", () => {
     await prisma.test.deleteMany({});
     await prisma.endpoint.deleteMany({});
 
+    const timestamp = Date.now() + Math.random(); // Ensure uniqueness
     testEndpoint = await prisma.endpoint.create({
       data: {
-        name: "Test API",
-        url: "https://httpbin.org/get",
+        name: `Test API ${timestamp}`,
+        url: `https://httpbin.org/get?t=${timestamp}`,
         method: "GET",
       },
     });
@@ -178,10 +179,11 @@ describe("Tests Integration Tests - REST API", () => {
       });
       expect(response.body.data.results).toBeDefined();
       expect(response.body.data.results.successRate).toBe(100);
-      expect(response.body.data.endpoint).toMatchObject({
-        name: "Test API",
-        url: "https://httpbin.org/get",
-      });
+      expect(response.body.data.endpoint).toBeDefined();
+      expect(response.body.data.endpoint.name).toContain("Test API");
+      expect(response.body.data.endpoint.url).toContain(
+        "https://httpbin.org/get"
+      );
     });
 
     test("should return test with null results for pending test", async () => {
@@ -330,7 +332,7 @@ describe("Tests Integration Tests - REST API", () => {
 
       expect(response.body.data).toHaveLength(2);
       expect(response.body.data[0]).toHaveProperty("endpoint");
-      expect(response.body.data[0].endpoint.name).toBe("Test API");
+      expect(response.body.data[0].endpoint.name).toContain("Test API");
     });
 
     test("should return empty array when no tests exist", async () => {
@@ -355,10 +357,11 @@ describe("Tests Integration Tests - REST API", () => {
 
     test("should execute test with endpoint that has headers", async () => {
       // Create endpoint with headers
+      const timestamp = Date.now();
       const endpointWithHeaders = await prisma.endpoint.create({
         data: {
-          name: "API with Headers",
-          url: "https://httpbin.org/get",
+          name: `API with Headers ${timestamp}`,
+          url: `https://httpbin.org/get?t=${timestamp}`,
           method: "GET",
           headers: JSON.stringify({ "X-Custom-Header": "test-value" }),
         },

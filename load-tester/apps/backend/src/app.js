@@ -8,7 +8,6 @@ const helmet = require("helmet");
 const config = require("./config");
 const { errorHandler, notFoundHandler } = require("./middleware/errorHandler");
 const { apiLimiter, loadTestLimiter } = require("./middleware/rateLimiter");
-const { sanitizeInput } = require("./middleware/sanitization");
 const {
   validateEndpoint,
   validateTestConfig,
@@ -46,7 +45,6 @@ app.use(cors(config.cors));
 
 // Security middleware
 app.use("/api", apiLimiter); // Rate limit all API routes first
-// Note: Sanitization happens after validation to avoid interfering with validation logic
 
 // Routes
 
@@ -58,17 +56,11 @@ app.get("/api/health", (req, res) => {
 // Endpoints API routes
 app.get("/api/endpoints", endpointsController.index);
 app.get("/api/endpoints/:id", validateId, endpointsController.show);
-app.post(
-  "/api/endpoints",
-  validateEndpoint,
-  sanitizeInput,
-  endpointsController.create
-);
+app.post("/api/endpoints", validateEndpoint, endpointsController.create);
 app.put(
   "/api/endpoints/:id",
   validateId,
   validateEndpoint,
-  sanitizeInput,
   endpointsController.update
 );
 app.delete("/api/endpoints/:id", validateId, endpointsController.destroy);

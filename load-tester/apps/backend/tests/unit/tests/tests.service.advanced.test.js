@@ -222,10 +222,11 @@ describe("Tests Service - Advanced Coverage Tests", () => {
 
   describe("createTest", () => {
     test("should create test with all parameters", async () => {
+      const timestamp = Date.now();
       const endpoint = await prisma.endpoint.create({
         data: {
-          name: "Test Endpoint",
-          url: "https://httpbin.org/get",
+          name: `Test Endpoint ${timestamp}`,
+          url: `https://httpbin.org/get?t=${timestamp}`,
           method: "GET",
         },
       });
@@ -237,7 +238,7 @@ describe("Tests Service - Advanced Coverage Tests", () => {
         timeout: 120,
       };
 
-      const test = await testsService.createTest(endpoint.id, config);
+      const test = await testsService.createTest(prisma, endpoint.id, config);
 
       expect(test.endpointId).toBe(endpoint.id);
       expect(test.duration).toBe(30);
@@ -248,10 +249,11 @@ describe("Tests Service - Advanced Coverage Tests", () => {
     });
 
     test("should create test with default timeout when not provided", async () => {
+      const timestamp = Date.now() + Math.random();
       const endpoint = await prisma.endpoint.create({
         data: {
-          name: "Test Endpoint",
-          url: "https://httpbin.org/get",
+          name: `Test Endpoint ${timestamp}`,
+          url: `https://httpbin.org/get?t=${timestamp}`,
           method: "GET",
         },
       });
@@ -261,17 +263,18 @@ describe("Tests Service - Advanced Coverage Tests", () => {
         connections: 10,
       };
 
-      const test = await testsService.createTest(endpoint.id, config);
+      const test = await testsService.createTest(prisma, endpoint.id, config);
 
       expect(test.timeout).toBe(300); // Default timeout
       expect(test.rps).toBeNull();
     });
 
     test("should handle string inputs and convert to integers", async () => {
+      const timestamp = Date.now() + Math.random();
       const endpoint = await prisma.endpoint.create({
         data: {
-          name: "Test Endpoint",
-          url: "https://httpbin.org/get",
+          name: `Test Endpoint ${timestamp}`,
+          url: `https://httpbin.org/get?t=${timestamp}`,
           method: "GET",
         },
       });
@@ -283,7 +286,7 @@ describe("Tests Service - Advanced Coverage Tests", () => {
         timeout: "120",
       };
 
-      const test = await testsService.createTest(endpoint.id, config);
+      const test = await testsService.createTest(prisma, endpoint.id, config);
 
       expect(test.duration).toBe(30);
       expect(test.connections).toBe(10);
@@ -294,10 +297,11 @@ describe("Tests Service - Advanced Coverage Tests", () => {
 
   describe("getTestResults", () => {
     test("should return test with endpoint", async () => {
+      const timestamp = Date.now() + Math.random();
       const endpoint = await prisma.endpoint.create({
         data: {
-          name: "Test Endpoint",
-          url: "https://httpbin.org/get",
+          name: `Test Endpoint ${timestamp}`,
+          url: `https://httpbin.org/get?t=${timestamp}`,
           method: "GET",
         },
       });
@@ -313,26 +317,28 @@ describe("Tests Service - Advanced Coverage Tests", () => {
         },
       });
 
-      const result = await testsService.getTestResults(test.id);
+      const result = await testsService.getTestResults(prisma, test.id);
 
       expect(result.id).toBe(test.id);
       expect(result.endpoint).toBeDefined();
-      expect(result.endpoint.name).toBe("Test Endpoint");
+      expect(result.endpoint.name).toContain("Test Endpoint");
       expect(result.results).toBeDefined();
     });
 
-    test("should return null for non-existent test", async () => {
-      const result = await testsService.getTestResults(99999);
-      expect(result).toBeNull();
+    test("should throw NotFoundError for non-existent test", async () => {
+      await expect(testsService.getTestResults(prisma, 99999)).rejects.toThrow(
+        "Test not found"
+      );
     });
   });
 
   describe("getAllTests", () => {
     test("should return all tests with endpoints", async () => {
+      const timestamp = Date.now() + Math.random();
       const endpoint = await prisma.endpoint.create({
         data: {
-          name: "Test Endpoint",
-          url: "https://httpbin.org/get",
+          name: `Test Endpoint ${timestamp}`,
+          url: `https://httpbin.org/get?t=${timestamp}`,
           method: "GET",
         },
       });
@@ -358,7 +364,7 @@ describe("Tests Service - Advanced Coverage Tests", () => {
         },
       });
 
-      const tests = await testsService.getAllTests();
+      const tests = await testsService.getAllTests(prisma);
 
       expect(tests.length).toBe(2);
       expect(tests[0].endpoint).toBeDefined();
@@ -370,17 +376,18 @@ describe("Tests Service - Advanced Coverage Tests", () => {
     });
 
     test("should return empty array when no tests exist", async () => {
-      const tests = await testsService.getAllTests();
+      const tests = await testsService.getAllTests(prisma);
       expect(tests).toEqual([]);
     });
   });
 
   describe("updateTestStatus", () => {
     test("should update test status", async () => {
+      const timestamp = Date.now() + Math.random();
       const endpoint = await prisma.endpoint.create({
         data: {
-          name: "Test Endpoint",
-          url: "https://httpbin.org/get",
+          name: `Test Endpoint ${timestamp}`,
+          url: `https://httpbin.org/get?t=${timestamp}`,
           method: "GET",
         },
       });
@@ -394,7 +401,11 @@ describe("Tests Service - Advanced Coverage Tests", () => {
         },
       });
 
-      const updated = await testsService.updateTestStatus(test.id, "running");
+      const updated = await testsService.updateTestStatus(
+        prisma,
+        test.id,
+        "running"
+      );
 
       expect(updated.id).toBe(test.id);
       expect(updated.status).toBe("running");

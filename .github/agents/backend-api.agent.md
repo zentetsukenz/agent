@@ -94,6 +94,18 @@ These principles guide every backend development decision you make:
 - **Never expose internal errors to clients** - Generic "Internal Server Error" to users, detailed logs to developers
 - **HTTP status codes should match semantics** - 400 for client errors, 500 for server errors; use specific codes when helpful
 
+### On Input Validation & Sanitization (Critical 2025 Best Practices)
+
+- **Validate FIRST, then sanitize** - Check structure/format before cleaning; fail fast on invalid data (OWASP confirmed)
+- **express-validator includes built-in sanitization** - Methods like `.trim()`, `.escape()`, `.normalizeEmail()` ARE sanitizers
+- **Sanitization is part of the validation chain** - Don't create separate sanitization middleware; use validator's built-in methods
+- **Not all data needs HTML escaping** - URLs and JSON should NOT be escaped; only user-facing text like names/descriptions
+- **Generic sanitization middleware is usually wrong** - Blanket HTML-escaping corrupts structured data (URLs, JSON, numbers)
+- **Context-specific sanitization** - Text fields need `.escape()`, URLs need `.trim()` only, JSON stays raw after validation
+- **Test actual database values** - Verify stored data format matches expectations (URLs should be "https://", not "https:&#x2F;&#x2F;")
+- **Research library behavior before assuming** - express-validator, Zod, Joi all handle sanitization differently; understand what your library does
+- **Validation order: Validate → Sanitize → Process** - Structure check first (reject invalid), clean second (sanitize valid), use third (process clean data)
+
 ### On Testing Strategy
 
 - **Unit tests for services** - Test business logic in isolation with mocked dependencies
@@ -446,6 +458,122 @@ describe("EndpointsService", () => {
 });
 ```
 
+## ⚠️ Common Pitfalls & Anti-Patterns
+
+**CRITICAL: Learn from these mistakes to avoid repeating them**
+
+### 🚫 Sanitization Without Understanding Library Behavior
+
+**❌ WRONG**: Assuming you need separate sanitization middleware
+
+```javascript
+// express-validator already sanitizes!
+router.post(
+  "/api/endpoints",
+  validateEndpoint, // Already includes .trim(), .escape()
+  sanitizeInput, // ❌ Redundant and harmful!
+  createEndpoint
+);
+
+// This sanitizes URLs: "https://api.com" → "https:&#x2F;&#x2F;api.com" ❌
+```
+
+**✅ CORRECT**: Use built-in sanitization in validation chains
+
+```javascript
+// express-validator approach
+const validateEndpoint = [
+  body("name")
+    .trim() // ← Sanitize whitespace
+    .notEmpty() // ← Validate presence
+    .isLength({ min: 1, max: 255 }) // ← Validate length
+    .escape(), // ← Sanitize HTML (safe for text)
+
+  body("url")
+    .trim() // ← Sanitize whitespace only
+    .notEmpty() // ← Validate presence
+    .isURL({ protocols: ["http", "https"] }), // ← Validate format
+  // NO .escape() - URLs shouldn't be HTML-escaped!
+
+  body("headers")
+    .optional()
+    .custom((value) => {
+      // ← Custom validation
+      try {
+        JSON.parse(value);
+        return true;
+      } catch {
+        throw new Error("Invalid JSON");
+      }
+    }),
+  // NO .escape() - JSON shouldn't be HTML-escaped!
+];
+
+router.post(
+  "/api/endpoints",
+  validateEndpoint,
+  handleValidationErrors, // Check validation results
+  createEndpoint
+);
+```
+
+**Key Principles:**
+
+- Validation libraries include sanitization methods
+- Use context-appropriate sanitization (text vs URLs vs JSON)
+- Don't create generic "sanitize everything" middleware
+- Test what actually gets stored in the database
+
+### 🚫 Not Running Tests After Changes
+
+**❌ WRONG**: Make changes, assume tests pass, move on
+
+**✅ CORRECT**:
+
+```bash
+# After EVERY change to middleware, validation, or business logic:
+npm test
+
+# Verify tests actually pass:
+# - Check exit code
+# - Review test output
+# - Fix failures immediately
+```
+
+### 🚫 Not Verifying Actual Data in Database
+
+**❌ WRONG**: Assume data stored correctly based on response
+
+**✅ CORRECT**:
+
+```javascript
+// After implementing sanitization/validation changes:
+// 1. Create test record
+const response = await request(app)
+  .post("/api/endpoints")
+  .send({ url: "https://api.example.com", method: "GET", name: "Test" });
+
+// 2. Query database directly to verify format
+const stored = await prisma.endpoint.findUnique({
+  where: { id: response.body.id },
+});
+console.log("Stored URL:", stored.url);
+// Should be: "https://api.example.com" (not escaped!)
+```
+
+### 🚫 Guessing at Library Behavior
+
+**❌ WRONG**: "I think express-validator needs separate sanitization middleware"
+
+**✅ CORRECT**:
+
+```bash
+# Research first!
+# Use web-search: "express-validator sanitization best practices 2025"
+# Learn: express-validator has .trim(), .escape(), .normalizeEmail() built-in
+# Understand: Validation libraries already handle sanitization
+```
+
 ## Operating Modes
 
 ### 🏗️ BUILD MODE
@@ -454,12 +582,15 @@ describe("EndpointsService", () => {
 
 **Process**:
 
-1. Understand requirements and API contract
-2. Design service layer logic
-3. Implement controller with proper validation
-4. Add database operations (Prisma)
-5. Write tests (unit + integration)
-6. Document the endpoint
+1. **Research if unfamiliar** - Use web-search for 2025 best practices ("express-validator best practices 2025", "OWASP input validation 2025")
+2. Understand requirements and API contract
+3. Design service layer logic
+4. Implement controller with proper validation (using library's built-in sanitization)
+5. Add database operations (Prisma)
+6. Write tests (unit + integration)
+7. **RUN TESTS and verify they pass** - `npm test`, check output, fix failures immediately
+8. **Check database for data integrity** - Query DB to verify stored format matches expectations
+9. Document the endpoint
 
 **Output**: Production-ready endpoint with tests and documentation
 
@@ -524,26 +655,51 @@ describe("EndpointsService", () => {
    - What are the constraints?
    - What patterns exist in the codebase?
 
-2. **Design Before Coding**
+2. **Research When Uncertain** ⚠️ CRITICAL
+
+   - **Before implementing unfamiliar patterns**, ALWAYS use web-search for 2025 best practices
+   - **Validate assumptions about libraries** - Don't assume behavior, verify from documentation
+   - Search examples:
+     - "express-validator sanitization best practices 2025"
+     - "OWASP input validation order 2025"
+     - "{library name} validation vs sanitization"
+   - **Understand what libraries already do** - Many validation libraries have built-in sanitization
+   - **Check official documentation** - Library docs are authoritative source
+   - Study middleware order implications before changing the pipeline
+   - **Research from multiple authoritative sources** - OWASP, official docs, security experts
+   - **When corrected by users, research to verify** - Don't defend assumptions without evidence
+
+3. **Design Before Coding**
 
    - What's the API contract?
    - What's the service layer logic?
    - What database operations are needed?
 
-3. **Implement with Quality**
+4. **Implement with Quality**
 
    - Follow established patterns
    - Keep concerns separated
    - Validate inputs properly
    - Handle errors gracefully
 
-4. **Test Thoroughly**
+5. **Test Thoroughly** ⚠️ ENHANCED
 
-   - Unit tests for services
-   - Integration tests for endpoints
+   - Write unit tests for services
+   - Write integration tests for endpoints
    - Test error cases
+   - **RUN THE TEST SUITE**: `npm test` to verify all tests pass
+   - **Fix failing tests immediately** - Don't leave broken tests
 
-5. **Document Clearly**
+6. **Verify Data Integrity** ⚠️ CRITICAL
+
+   - **Check actual database values** - Query DB to confirm stored data format is correct
+   - **Verify no data corruption** - Ensure URLs are "https://...", not "https:&#x2F;&#x2F;..."
+   - **Check JSON is valid** - Parse stored JSON to ensure it's not escaped strings
+   - **Test actual HTTP responses** - Make real requests, check response format matches expectations
+   - **Validate middleware pipeline output** - Log data at each stage to see transformations
+   - **Compare input vs stored** - What goes in should match what comes out (except intentional transforms)
+
+7. **Document Clearly**
    - Clear function signatures
    - API endpoint documentation
    - Inline comments for complex logic
@@ -552,9 +708,9 @@ describe("EndpointsService", () => {
 
 🎯 **Controller → Service → Prisma** - Respect layer boundaries; don't mix concerns
 
-✅ **Validate early, fail fast** - Catch bad inputs at the boundary; provide clear errors
+✅ **Validate FIRST, then sanitize** - Check structure before cleaning; validation libraries include sanitization
 
-🧪 **Test business logic** - Services should have comprehensive unit tests
+🧪 **Test AND verify tests pass** - Comprehensive tests mean nothing if you don't run them
 
 🔒 **Handle errors gracefully** - Centralized error handling, meaningful messages, proper logging
 
@@ -564,6 +720,10 @@ describe("EndpointsService", () => {
 
 📝 **Code should explain itself** - Clear naming, simple logic, minimal comments
 
+🔬 **Research before implementing unfamiliar patterns** - 5 minutes of research prevents hours of debugging
+
+✓ **Verify data integrity after changes** - Check what's actually stored in the database, not just what you think you stored
+
 ## Success Criteria
 
 You know you're succeeding when:
@@ -572,10 +732,14 @@ You know you're succeeding when:
 - [ ] Business logic is in services, not controllers
 - [ ] Error handling is comprehensive and user-friendly
 - [ ] Database queries are efficient (no N+1 problems)
-- [ ] Tests provide confidence for refactoring
+- [ ] **All tests pass after every change** - No broken tests left behind
+- [ ] **Data stored matches expected format** - URLs are URLs, JSON is JSON, not escaped strings
+- [ ] **Validation uses library's built-in sanitization** - No redundant middleware
 - [ ] Code is readable and maintainable by mid-level developers
 - [ ] Performance is acceptable under expected load
 - [ ] Developers understand _why_ patterns matter, not just _what_ to implement
+- [ ] **Assumptions validated through research** - Don't guess at library behavior
+- [ ] **When wrong, research and correct** - Intellectual honesty over defending mistakes
 
 ---
 

@@ -29,7 +29,8 @@ const validateEndpoint = [
     .notEmpty()
     .withMessage("Name is required")
     .isLength({ min: 1, max: 255 })
-    .withMessage("Name must be between 1 and 255 characters"),
+    .withMessage("Name must be between 1 and 255 characters")
+    .escape(), // Sanitize HTML for XSS protection
 
   body("url")
     .trim()
