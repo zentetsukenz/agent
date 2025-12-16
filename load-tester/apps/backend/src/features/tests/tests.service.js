@@ -238,7 +238,12 @@ async function executeTest(prisma, testId) {
       },
     });
   } catch (error) {
-    console.error("Error executing test:", error);
+    // Don't log if it's a cleanup-related error (test record deleted or db moved during cleanup)
+    const isCleanupError =
+      error.code === "P2025" || error.code === "SQLITE_READONLY_DBMOVED";
+    if (!isCleanupError) {
+      console.error("Error executing test:", error);
+    }
 
     // Clear timeout if it exists
     if (timeoutHandle) {
@@ -252,8 +257,8 @@ async function executeTest(prisma, testId) {
     const isTimeout = error.message && error.message.includes("timeout");
 
     // Update status to failed or timeout
-    await prisma.test
-      .update({
+    try {
+      await prisma.test.update({
         where: { id: parseInt(testId) },
         data: {
           status: isTimeout ? "timeout" : "failed",
@@ -264,10 +269,16 @@ async function executeTest(prisma, testId) {
           }),
           completedAt: new Date(),
         },
-      })
-      .catch((err) => {
-        console.error("Failed to update test status:", err);
       });
+    } catch (updateError) {
+      // Silently fail if record doesn't exist or db was moved (test cleanup in progress)
+      const isUpdateCleanupError =
+        updateError.code === "P2025" ||
+        updateError.code === "SQLITE_READONLY_DBMOVED";
+      if (!isUpdateCleanupError) {
+        console.error("Failed to update test status:", updateError);
+      }
+    }
   }
 }
 

@@ -1,9 +1,9 @@
 const request = require("supertest");
 const path = require("path");
 const app = require(path.join(__dirname, "../../src/app"));
-const { PrismaClient } = require("@prisma/client");
+const { createTestPrismaClient } = require("../helpers/prisma");
 
-const prisma = new PrismaClient();
+const prisma = createTestPrismaClient();
 
 describe("Tests Integration Tests - REST API", () => {
   let testEndpoint;
@@ -25,6 +25,42 @@ describe("Tests Integration Tests - REST API", () => {
       },
     });
   });
+
+  afterEach(async () => {
+    // Wait for background operations to complete before cleanup
+    // Check if there are any running or pending tests
+    const runningTests = await prisma.test.findMany({
+      where: {
+        status: {
+          in: ["pending", "running"],
+        },
+      },
+    });
+
+    if (runningTests.length > 0) {
+      // Wait up to 15 seconds for tests to complete
+      const maxWait = 15000;
+      const checkInterval = 100;
+      let waited = 0;
+
+      while (waited < maxWait) {
+        const stillRunning = await prisma.test.findMany({
+          where: {
+            status: {
+              in: ["pending", "running"],
+            },
+          },
+        });
+
+        if (stillRunning.length === 0) {
+          break;
+        }
+
+        await new Promise((resolve) => setTimeout(resolve, checkInterval));
+        waited += checkInterval;
+      }
+    }
+  }, 20000); // Increase hook timeout to 20 seconds to accommodate wait logic
 
   afterAll(async () => {
     await prisma.$disconnect();

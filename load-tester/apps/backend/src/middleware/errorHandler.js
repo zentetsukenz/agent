@@ -12,7 +12,7 @@ const {
 const {
   PrismaClientKnownRequestError,
   PrismaClientValidationError,
-} = require("@prisma/client/runtime/library");
+} = require("@prisma/client");
 
 /**
  * Map Prisma error codes to our custom error classes

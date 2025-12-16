@@ -12,9 +12,9 @@
 
 const request = require("supertest");
 const app = require("../../src/app");
-const { PrismaClient } = require("@prisma/client");
+const { createTestPrismaClient } = require("../helpers/prisma");
 
-const prisma = new PrismaClient();
+const prisma = createTestPrismaClient();
 
 describe("Sanitization Integration Tests - Data Integrity", () => {
   afterAll(async () => {

@@ -6,9 +6,9 @@
 const request = require("supertest");
 const path = require("path");
 const app = require(path.join(__dirname, "../../src/app"));
-const { PrismaClient } = require("@prisma/client");
+const { createTestPrismaClient } = require("../helpers/prisma");
 
-const prisma = new PrismaClient();
+const prisma = createTestPrismaClient();
 
 describe("Validation Middleware Tests", () => {
   beforeEach(async () => {

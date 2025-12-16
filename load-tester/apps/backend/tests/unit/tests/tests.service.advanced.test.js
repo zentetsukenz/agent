@@ -1,11 +1,11 @@
 const path = require("path");
-const { PrismaClient } = require("@prisma/client");
+const { createTestPrismaClient } = require("../../helpers/prisma");
 const testsService = require(path.join(
   __dirname,
   "../../../src/features/tests/tests.service"
 ));
 
-const prisma = new PrismaClient();
+const prisma = createTestPrismaClient();
 
 describe("Tests Service - Advanced Coverage Tests", () => {
   beforeAll(async () => {
