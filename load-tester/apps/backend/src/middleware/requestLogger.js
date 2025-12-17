@@ -6,6 +6,7 @@
 const morgan = require("morgan");
 const { v4: uuidv4 } = require("uuid");
 const config = require("../config");
+const logger = require("../utils/logger");
 
 /**
  * Add unique request ID to each request
@@ -77,26 +78,59 @@ const productionFormat = JSON.stringify({
 });
 
 /**
+ * Custom stream that uses our logger utility
+ * This allows us to control logging based on environment
+ */
+const loggerStream = {
+  write: (message) => {
+    // Remove trailing newline from morgan
+    const trimmed = message.trim();
+    if (logger.isLevelEnabled("http")) {
+      // In development, morgan already formats nicely, just output
+      // In production, it's JSON which our logger will pass through
+      process.stdout.write(trimmed + "\n");
+    }
+  },
+};
+
+/**
  * Create logger based on environment
  */
 function createLogger() {
   const format = config.isDevelopment ? developmentFormat : productionFormat;
 
   return morgan(format, {
-    // Skip logging for health checks in production
-    skip: (req) => config.isProduction && req.url === "/api/health",
+    stream: loggerStream,
+    // Skip logging in test environment or for health checks in production
+    skip: (req) => {
+      if (config.isTest && !logger.isLevelEnabled("http")) {
+        return true;
+      }
+      if (config.isProduction && req.url === "/api/health") {
+        return true;
+      }
+      return false;
+    },
   });
 }
 
 /**
  * Error logger - logs requests that result in errors
+ * Uses same skip logic for test environment
  */
 const errorLogger = morgan(
   config.isDevelopment
     ? "❌ :id | :method :url | :status-colored | :response-time-colored"
     : productionFormat,
   {
-    skip: (req, res) => res.statusCode < 400,
+    stream: loggerStream,
+    skip: (req, res) => {
+      // Skip in test unless http level is enabled
+      if (config.isTest && !logger.isLevelEnabled("http")) {
+        return true;
+      }
+      return res.statusCode < 400;
+    },
   }
 );
 

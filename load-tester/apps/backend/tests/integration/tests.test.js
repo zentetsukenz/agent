@@ -38,9 +38,9 @@ describe("Tests Integration Tests - REST API", () => {
     });
 
     if (runningTests.length > 0) {
-      // Wait up to 15 seconds for tests to complete
-      const maxWait = 15000;
-      const checkInterval = 100;
+      // Wait up to 25 seconds for tests to complete
+      const maxWait = 25000;
+      const checkInterval = 200;
       let waited = 0;
 
       while (waited < maxWait) {
@@ -60,7 +60,7 @@ describe("Tests Integration Tests - REST API", () => {
         waited += checkInterval;
       }
     }
-  }, 20000); // Increase hook timeout to 20 seconds to accommodate wait logic
+  }, 30000); // Increase hook timeout to 30 seconds to accommodate wait logic
 
   afterAll(async () => {
     await prisma.$disconnect();

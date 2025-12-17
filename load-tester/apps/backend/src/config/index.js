@@ -56,6 +56,9 @@ const config = {
     maxTimeout: 600, // seconds
   },
 
+  // Logging
+  logLevel: process.env.LOG_LEVEL || null, // null = use default for environment
+
   // Computed flags
   isDevelopment: process.env.NODE_ENV === "development",
   isProduction: process.env.NODE_ENV === "production",

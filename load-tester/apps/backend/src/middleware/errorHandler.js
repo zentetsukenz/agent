@@ -13,6 +13,7 @@ const {
   PrismaClientKnownRequestError,
   PrismaClientValidationError,
 } = require("@prisma/client");
+const logger = require("../utils/logger");
 
 /**
  * Map Prisma error codes to our custom error classes
@@ -105,7 +106,7 @@ function logError(error, req) {
   // Determine log level based on error type
   if (error.isOperational === false || error.statusCode >= 500) {
     // Server errors - log with full context
-    console.error("❌ Server Error:", {
+    logger.error("Server Error", {
       message: error.message,
       name: error.name,
       statusCode: error.statusCode,
@@ -114,7 +115,7 @@ function logError(error, req) {
     });
   } else if (error.statusCode >= 400) {
     // Client errors - log as warning
-    console.warn("⚠️  Client Error:", {
+    logger.warn("Client Error", {
       message: error.message,
       name: error.name,
       statusCode: error.statusCode,
