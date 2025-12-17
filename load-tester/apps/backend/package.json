@@ -6,10 +6,10 @@
   "scripts": {
     "start": "node src/server.js",
     "dev": "nodemon src/server.js",
-    "test": "jest --coverage --forceExit",
+    "test": "jest --coverage",
     "test:watch": "jest --watch",
-    "test:unit": "jest tests/unit --coverage --forceExit",
-    "test:integration": "jest tests/integration --coverage --forceExit",
+    "test:unit": "jest tests/unit --coverage",
+    "test:integration": "jest tests/integration --coverage",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "prisma:studio": "prisma studio",
