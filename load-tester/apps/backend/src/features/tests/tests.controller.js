@@ -6,6 +6,7 @@
 
 const testsService = require("./tests.service");
 const asyncHandler = require("../../utils/asyncHandler");
+const logger = require("../../utils/logger");
 const { getPrismaClient } = require("../../config/database");
 
 const prisma = getPrismaClient();
@@ -27,7 +28,7 @@ const execute = asyncHandler(async (req, res) => {
 
   // Execute test asynchronously
   testsService.executeTest(prisma, test.id).catch((err) => {
-    console.error("Test execution error:", err);
+    logger.error("Test execution error", { error: err.message });
   });
 
   res.status(201).json({

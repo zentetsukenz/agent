@@ -1,5 +1,50 @@
 const request = require("supertest");
 const path = require("path");
+
+// Mock autocannon BEFORE requiring the app to make tests fast
+jest.mock("autocannon", () => {
+  const mockInstance = {
+    on: jest.fn(),
+    stop: jest.fn(),
+  };
+
+  return jest.fn((options, callback) => {
+    // Simulate successful test completion with realistic results
+    const mockResult = {
+      requests: {
+        total: 1000,
+        average: 100,
+        sent: 1000,
+      },
+      latency: {
+        min: 10,
+        max: 200,
+        mean: 50,
+        p50: 45,
+        p90: 100,
+        p95: 150,
+        p99: 180,
+      },
+      throughput: {
+        average: 5000,
+        total: 50000,
+      },
+      errors: 5,
+      timeouts: 2,
+      duration: options.duration || 10,
+    };
+
+    // Simulate async completion after a short delay
+    setImmediate(() => {
+      if (callback) {
+        callback(null, mockResult);
+      }
+    });
+
+    return mockInstance;
+  });
+});
+
 const app = require(path.join(__dirname, "../../src/app"));
 const { createTestPrismaClient } = require("../helpers/prisma");
 
@@ -27,40 +72,10 @@ describe("Tests Integration Tests - REST API", () => {
   });
 
   afterEach(async () => {
-    // Wait for background operations to complete before cleanup
-    // Check if there are any running or pending tests
-    const runningTests = await prisma.test.findMany({
-      where: {
-        status: {
-          in: ["pending", "running"],
-        },
-      },
-    });
-
-    if (runningTests.length > 0) {
-      // Wait up to 25 seconds for tests to complete
-      const maxWait = 25000;
-      const checkInterval = 200;
-      let waited = 0;
-
-      while (waited < maxWait) {
-        const stillRunning = await prisma.test.findMany({
-          where: {
-            status: {
-              in: ["pending", "running"],
-            },
-          },
-        });
-
-        if (stillRunning.length === 0) {
-          break;
-        }
-
-        await new Promise((resolve) => setTimeout(resolve, checkInterval));
-        waited += checkInterval;
-      }
-    }
-  }, 30000); // Increase hook timeout to 30 seconds to accommodate wait logic
+    // With mocked autocannon, tests complete immediately
+    // Just a small delay to ensure async operations settle
+    await new Promise((resolve) => setTimeout(resolve, 50));
+  });
 
   afterAll(async () => {
     await prisma.$disconnect();

@@ -5,6 +5,7 @@
 
 const autocannon = require("autocannon");
 const config = require("../../config");
+const logger = require("../../utils/logger");
 const {
   ValidationError,
   NotFoundError,
@@ -169,7 +170,7 @@ async function executeTest(prisma, testId) {
       try {
         options.headers = JSON.parse(test.endpoint.headers);
       } catch (e) {
-        console.error("Error parsing headers:", e);
+        logger.error("Error parsing headers", { error: e.message });
         throw new Error("Invalid headers format: " + e.message);
       }
     }
@@ -179,7 +180,7 @@ async function executeTest(prisma, testId) {
       try {
         options.body = test.endpoint.body;
       } catch (e) {
-        console.error("Error setting body:", e);
+        logger.error("Error setting body", { error: e.message });
         throw new Error("Invalid body format: " + e.message);
       }
     }
@@ -209,7 +210,7 @@ async function executeTest(prisma, testId) {
 
       // Handle autocannon errors
       instance.on("error", (err) => {
-        console.error("Autocannon error:", err);
+        logger.error("Autocannon error", { error: err.message });
         reject(err);
       });
     });
@@ -242,7 +243,10 @@ async function executeTest(prisma, testId) {
     const isCleanupError =
       error.code === "P2025" || error.code === "SQLITE_READONLY_DBMOVED";
     if (!isCleanupError) {
-      console.error("Error executing test:", error);
+      logger.error("Error executing test", {
+        error: error.message,
+        code: error.code,
+      });
     }
 
     // Clear timeout if it exists
@@ -276,7 +280,10 @@ async function executeTest(prisma, testId) {
         updateError.code === "P2025" ||
         updateError.code === "SQLITE_READONLY_DBMOVED";
       if (!isUpdateCleanupError) {
-        console.error("Failed to update test status:", updateError);
+        logger.error("Failed to update test status", {
+          error: updateError.message,
+          code: updateError.code,
+        });
       }
     }
   }
@@ -363,7 +370,7 @@ async function cancelTest(prisma, testId) {
       test: updatedTest,
     };
   } catch (error) {
-    console.error("Error cancelling test:", error);
+    logger.error("Error cancelling test", { error: error.message });
     throw new Error("Failed to cancel test: " + error.message);
   }
 }
