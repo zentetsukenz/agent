@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { TestStatusBadge } from './TestStatusBadge';
-import { Card, CardTitle } from '@/components/ui/card';
+import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { formatDate } from '../../utils/formatters';
 
@@ -109,25 +109,42 @@ export const TestHistory = ({ tests, onSelectForComparison }) => {
   if (!tests || tests.length === 0) {
     return (
       <Card>
-        <CardTitle className="mb-4">Test History</CardTitle>
-        <p className="text-gray-500 text-center py-8">No test history available</p>
+        <CardHeader>
+          <CardTitle>Test History</CardTitle>
+          <CardDescription>View and compare your load test runs</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="text-center py-12">
+            <svg className="w-12 h-12 mx-auto text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+            </svg>
+            <p className="text-gray-500">No test history available</p>
+            <p className="text-sm text-gray-400 mt-1">Run your first test to see results here</p>
+          </div>
+        </CardContent>
       </Card>
     );
   }
 
   return (
     <Card>
-      <div className="flex justify-between items-center mb-4">
-        <CardTitle>Test History ({filteredAndSortedTests.length} tests)</CardTitle>
-        {selectedTests.length >= 2 && (
-          <Button onClick={handleCompare} size="sm">
-            Compare {selectedTests.length} Tests
-          </Button>
-        )}
-      </div>
+      <CardHeader className="pb-4">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+          <div>
+            <CardTitle>Test History</CardTitle>
+            <CardDescription>{filteredAndSortedTests.length} tests found</CardDescription>
+          </div>
+          {selectedTests.length >= 2 && (
+            <Button onClick={handleCompare} size="sm">
+              Compare {selectedTests.length} Tests
+            </Button>
+          )}
+        </div>
+      </CardHeader>
 
-      {/* Filters */}
-      <div className="mb-4 grid grid-cols-1 md:grid-cols-4 gap-4">
+      <CardContent>
+        {/* Filters */}
+        <div className="mb-6 grid grid-cols-1 md:grid-cols-4 gap-4">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
           <select
@@ -279,9 +296,16 @@ export const TestHistory = ({ tests, onSelectForComparison }) => {
         </table>
       </div>
 
-      {filteredAndSortedTests.length === 0 && (
-        <p className="text-gray-500 text-center py-8">No tests match the filters</p>
-      )}
+        {filteredAndSortedTests.length === 0 && (
+          <div className="text-center py-12">
+            <svg className="w-10 h-10 mx-auto text-gray-300 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+            <p className="text-gray-500">No tests match the filters</p>
+            <p className="text-sm text-gray-400 mt-1">Try adjusting your filter criteria</p>
+          </div>
+        )}
+      </CardContent>
     </Card>
   );
 };

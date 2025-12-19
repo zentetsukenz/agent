@@ -1,9 +1,9 @@
-import { Card, CardTitle, CardContent } from '@/components/ui/card';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { formatNumber, formatLatency, formatBytes, formatPercentage } from '../../utils/formatters';
 
 const MetricItem = ({ label, value, valueColor = 'text-gray-900', icon, subtext }) => {
   return (
-    <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl p-4 border border-gray-100">
+    <div className="bg-linear-to-br from-gray-50 to-gray-100 rounded-xl p-4 border border-gray-100">
       <div className="flex items-start justify-between">
         <div>
           <p className="text-sm font-medium text-gray-500 mb-1">{label}</p>
@@ -18,7 +18,12 @@ const MetricItem = ({ label, value, valueColor = 'text-gray-900', icon, subtext 
 
 const SectionCard = ({ title, icon, children }) => (
   <Card>
-    <CardTitle icon={icon} className="mb-4">{title}</CardTitle>
+    <CardHeader className="pb-4">
+      <CardTitle className="flex items-center gap-2">
+        {icon}
+        {title}
+      </CardTitle>
+    </CardHeader>
     <CardContent>{children}</CardContent>
   </Card>
 );
