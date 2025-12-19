@@ -2,7 +2,7 @@
 description: "Create a fullstack agent for software project repositories. Used by TheEngineer agent."
 name: "fullstack-agent-creation"
 agent: "TheEngineer"
-model: Claude Opus 4.5 (Preview) (copilot)
+model: Claude Opus 4.5
 tools:
   [
     "execute/getTerminalOutput",

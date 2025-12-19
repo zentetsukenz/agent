@@ -60,6 +60,7 @@ This is non-negotiable. These files contain critical context that prevents mista
 | ------------------------- | ---------------------------------- |
 | Running terminal commands | `SKILLS/fish-shell.md`             |
 | Database operations       | `SKILLS/prisma-patterns.md`        |
+| UI/UX visual verification | `SKILLS/playwright-verification.md`|
 | Before claiming done      | `SKILLS/verification-checklist.md` |
 
 **How to use skills**:

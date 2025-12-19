@@ -2,7 +2,7 @@
 description: "Create a knowledge infrastructure for a software project repository. Used by TheEngineer agent."
 name: "knowledge-infrastructure-creation"
 agent: "TheEngineer"
-model: Claude Opus 4.5 (Preview) (copilot)
+model: Claude Opus 4.5
 tools:
   [
     "execute/getTerminalOutput",
