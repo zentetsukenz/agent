@@ -13,8 +13,16 @@ export const api = axios.create({
 api.interceptors.response.use(
   (response) => response.data,
   (error) => {
+    const responseData = error.response?.data;
+
+    // Handle validation errors with details
+    if (responseData?.details && Array.isArray(responseData.details)) {
+      const detailsMessage = responseData.details.join(', ');
+      return Promise.reject(new Error(detailsMessage));
+    }
+
     const message =
-      error.response?.data?.message || error.message || "An error occurred";
+      responseData?.message || error.message || "An error occurred";
     return Promise.reject(new Error(message));
   }
 );

@@ -1,13 +1,24 @@
 import { useState, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, Link } from 'react-router-dom';
 import { endpointsAPI } from '../services/endpoints';
 import { testsAPI } from '../services/tests';
 import { TestConfigForm } from '../components/tests/TestConfigForm';
 import RequestTemplates from '../components/RequestTemplates';
-import { Card, CardTitle } from '../components/ui/Card';
-import { Loading } from '../components/ui/Loading';
-import { ErrorMessage } from '../components/ui/ErrorMessage';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Badge } from '@/components/ui/badge';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { ChevronRight, Server, Settings } from 'lucide-react';
+import { cn } from '@/lib/utils';
 import toast from 'react-hot-toast';
+
+const methodStyles = {
+  GET: 'bg-blue-100 text-blue-700 border-blue-200 hover:bg-blue-100',
+  POST: 'bg-emerald-100 text-emerald-700 border-emerald-200 hover:bg-emerald-100',
+  PUT: 'bg-amber-100 text-amber-700 border-amber-200 hover:bg-amber-100',
+  DELETE: 'bg-red-100 text-red-700 border-red-200 hover:bg-red-100',
+  PATCH: 'bg-purple-100 text-purple-700 border-purple-200 hover:bg-purple-100',
+};
 
 export const ConfigureTest = () => {
   const { id } = useParams();
@@ -47,7 +58,7 @@ export const ConfigureTest = () => {
       
       const result = await testsAPI.execute(id, config);
       toast.success('Load test started successfully!');
-      navigate(`/tests/${result.id}/results`);
+      navigate(`/tests/${result.data.id}/results`);
     } catch (err) {
       setError(err.message);
       toast.error(err.message || 'Failed to start test');
@@ -66,47 +77,84 @@ export const ConfigureTest = () => {
   };
 
   if (loading) {
-    return <Loading text="Loading endpoint..." />;
+    return (
+      <div className="max-w-2xl mx-auto">
+        <div className="mb-8">
+          <Skeleton className="h-4 w-48 mb-8" />
+          <Skeleton className="h-8 w-64 mb-3" />
+          <Skeleton className="h-4 w-96" />
+        </div>
+        <Card className="mb-6">
+          <CardContent className="pt-6">
+            <Skeleton className="h-20 w-full" />
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="pt-6 space-y-4">
+            <Skeleton className="h-10 w-full" />
+            <Skeleton className="h-10 w-full" />
+            <Skeleton className="h-10 w-full" />
+          </CardContent>
+        </Card>
+      </div>
+    );
   }
 
   if (error && !endpoint) {
     return (
       <div className="max-w-2xl mx-auto">
-        <ErrorMessage error={error} onRetry={() => navigate('/')} />
+        <Alert variant="destructive">
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
       </div>
     );
   }
 
   return (
     <div className="max-w-2xl mx-auto">
-      <h2 className="text-3xl font-bold text-gray-900 mb-6">Configure Load Test</h2>
+      {/* Breadcrumb */}
+      <nav className="flex items-center gap-2 text-sm text-muted-foreground mb-8">
+        <Link to="/" className="hover:text-foreground transition-colors">Dashboard</Link>
+        <ChevronRight className="w-4 h-4" />
+        <span className="text-foreground font-medium">Configure Test</span>
+      </nav>
+
+      {/* Header */}
+      <div className="mb-8">
+        <h1 className="text-2xl sm:text-3xl font-bold text-foreground">Configure Load Test</h1>
+        <p className="text-muted-foreground mt-2 text-sm sm:text-base">Set up test parameters for performance testing. Use templates for common scenarios.</p>
+      </div>
       
       {endpoint && (
         <Card className="mb-6">
-          <CardTitle className="mb-4">Endpoint Details</CardTitle>
-          <div className="space-y-2">
-            <div>
-              <span className="font-medium text-gray-700">Name:</span>{' '}
-              <span className="text-gray-900">{endpoint.name}</span>
+          <CardContent className="pt-6">
+            <div className="flex items-start gap-4">
+              <div className="shrink-0 w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center">
+                <Server className="w-6 h-6 text-primary" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-3 mb-2">
+                  <h2 className="text-lg font-semibold text-foreground">{endpoint.name}</h2>
+                  <Badge 
+                    variant="outline" 
+                    className={cn('font-bold text-xs', methodStyles[endpoint.method] || methodStyles.GET)}
+                  >
+                    {endpoint.method}
+                  </Badge>
+                </div>
+                <p className="text-sm text-muted-foreground font-mono bg-muted px-3 py-1.5 rounded-lg break-all">
+                  {endpoint.url}
+                </p>
+              </div>
             </div>
-            <div>
-              <span className="font-medium text-gray-700">URL:</span>{' '}
-              <span className="text-gray-900 break-all">{endpoint.url}</span>
-            </div>
-            <div>
-              <span className="font-medium text-gray-700">Method:</span>{' '}
-              <span className="inline-flex items-center px-2 py-1 rounded text-sm font-medium bg-blue-100 text-blue-800">
-                {endpoint.method}
-              </span>
-            </div>
-          </div>
+          </CardContent>
         </Card>
       )}
 
       {error && (
-        <div className="mb-6">
-          <ErrorMessage error={error} />
-        </div>
+        <Alert variant="destructive" className="mb-6">
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
       )}
 
       <div className="mb-6">
@@ -114,13 +162,20 @@ export const ConfigureTest = () => {
       </div>
 
       <Card>
-        <CardTitle className="mb-4">Test Configuration</CardTitle>
-        <TestConfigForm
-          onSubmit={handleSubmit}
-          onCancel={handleCancel}
-          isSubmitting={isSubmitting}
-          templateConfig={templateConfig}
-        />
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Settings className="w-5 h-5" />
+            Test Configuration
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <TestConfigForm
+            onSubmit={handleSubmit}
+            onCancel={handleCancel}
+            isSubmitting={isSubmitting}
+            templateConfig={templateConfig}
+          />
+        </CardContent>
       </Card>
     </div>
   );

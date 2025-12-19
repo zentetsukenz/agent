@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
+import { ChevronRight } from 'lucide-react';
 import { endpointsAPI } from '../services/endpoints';
 import { EndpointForm } from '../components/endpoints/EndpointForm';
-import { Card } from '../components/ui/Card';
-import { Loading } from '../components/ui/Loading';
-import { ErrorMessage } from '../components/ui/ErrorMessage';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 
 export const EditEndpoint = () => {
   const { id } = useParams();
@@ -51,34 +52,65 @@ export const EditEndpoint = () => {
   };
 
   if (loading) {
-    return <Loading text="Loading endpoint..." />;
+    return (
+      <div className="max-w-2xl mx-auto">
+        <div className="mb-8">
+          <Skeleton className="h-4 w-48 mb-8" />
+          <Skeleton className="h-8 w-48 mb-3" />
+          <Skeleton className="h-4 w-80" />
+        </div>
+        <Card>
+          <CardContent className="pt-6 space-y-6">
+            <Skeleton className="h-10 w-full" />
+            <Skeleton className="h-10 w-full" />
+            <Skeleton className="h-10 w-full" />
+            <Skeleton className="h-24 w-full" />
+          </CardContent>
+        </Card>
+      </div>
+    );
   }
 
   if (error && !endpoint) {
     return (
       <div className="max-w-2xl mx-auto">
-        <ErrorMessage error={error} onRetry={() => navigate('/')} />
+        <Alert variant="destructive">
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
       </div>
     );
   }
 
   return (
     <div className="max-w-2xl mx-auto">
-      <h2 className="text-3xl font-bold text-gray-900 mb-6">Edit Endpoint</h2>
-      
+      {/* Breadcrumb */}
+      <nav className="flex items-center gap-2 text-sm text-muted-foreground mb-8">
+        <Link to="/" className="hover:text-foreground transition-colors">Dashboard</Link>
+        <ChevronRight className="w-4 h-4" />
+        <span className="text-foreground font-medium">Edit Endpoint</span>
+      </nav>
+
       {error && (
-        <div className="mb-6">
-          <ErrorMessage error={error} />
-        </div>
+        <Alert variant="destructive" className="mb-6">
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
       )}
 
       <Card>
-        <EndpointForm
-          initialData={endpoint}
-          onSubmit={handleSubmit}
-          onCancel={handleCancel}
-          isSubmitting={isSubmitting}
-        />
+        <CardHeader>
+          <CardTitle className="text-2xl">Edit Endpoint</CardTitle>
+          <CardDescription>
+            Update the endpoint configuration. Changes will be saved immediately.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <EndpointForm
+            initialData={endpoint}
+            onSubmit={handleSubmit}
+            onCancel={handleCancel}
+            isSubmitting={isSubmitting}
+          />
+        </CardContent>
       </Card>
     </div>
   );

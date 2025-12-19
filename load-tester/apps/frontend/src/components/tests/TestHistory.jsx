@@ -1,9 +1,29 @@
 import { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { TestStatusBadge } from './TestStatusBadge';
-import { Card, CardTitle } from '../ui/Card';
-import { Button } from '../ui/Button';
+import { Card, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import { formatDate } from '../../utils/formatters';
+
+// Moved outside component to avoid recreation on render
+const SortIcon = ({ field, sortBy, sortOrder }) => {
+  if (sortBy !== field) {
+    return (
+      <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
+      </svg>
+    );
+  }
+  return sortOrder === 'asc' ? (
+    <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
+    </svg>
+  ) : (
+    <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+    </svg>
+  );
+};
 
 export const TestHistory = ({ tests, onSelectForComparison }) => {
   const [sortBy, setSortBy] = useState('createdAt');
@@ -84,25 +104,6 @@ export const TestHistory = ({ tests, onSelectForComparison }) => {
     if (selectedTests.length >= 2 && onSelectForComparison) {
       onSelectForComparison(selectedTests);
     }
-  };
-
-  const SortIcon = ({ field }) => {
-    if (sortBy !== field) {
-      return (
-        <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
-        </svg>
-      );
-    }
-    return sortOrder === 'asc' ? (
-      <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
-      </svg>
-    ) : (
-      <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-      </svg>
-    );
   };
 
   if (!tests || tests.length === 0) {
@@ -202,7 +203,7 @@ export const TestHistory = ({ tests, onSelectForComparison }) => {
               >
                 <div className="flex items-center gap-1">
                   Date
-                  <SortIcon field="createdAt" />
+                  <SortIcon field="createdAt" sortBy={sortBy} sortOrder={sortOrder} />
                 </div>
               </th>
               <th
@@ -211,7 +212,7 @@ export const TestHistory = ({ tests, onSelectForComparison }) => {
               >
                 <div className="flex items-center gap-1">
                   Duration
-                  <SortIcon field="duration" />
+                  <SortIcon field="duration" sortBy={sortBy} sortOrder={sortOrder} />
                 </div>
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -223,7 +224,7 @@ export const TestHistory = ({ tests, onSelectForComparison }) => {
               >
                 <div className="flex items-center gap-1">
                   Status
-                  <SortIcon field="status" />
+                  <SortIcon field="status" sortBy={sortBy} sortOrder={sortOrder} />
                 </div>
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">

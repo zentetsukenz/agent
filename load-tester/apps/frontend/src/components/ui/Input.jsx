@@ -1,88 +1,19 @@
-export const Input = ({ 
-  label, 
-  error, 
-  type = 'text',
-  className = '',
-  ...props 
-}) => {
-  return (
-    <div className="mb-4">
-      {label && (
-        <label className="block text-sm font-medium text-gray-700 mb-1">
-          {label}
-        </label>
-      )}
-      <input
-        type={type}
-        className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 ${
-          error ? 'border-red-500' : 'border-gray-300'
-        } ${className}`}
-        {...props}
-      />
-      {error && (
-        <p className="mt-1 text-sm text-red-600">{error}</p>
-      )}
-    </div>
-  );
-};
+import * as React from "react"
 
-export const TextArea = ({ 
-  label, 
-  error, 
-  rows = 4,
-  className = '',
-  ...props 
-}) => {
-  return (
-    <div className="mb-4">
-      {label && (
-        <label className="block text-sm font-medium text-gray-700 mb-1">
-          {label}
-        </label>
-      )}
-      <textarea
-        rows={rows}
-        className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 ${
-          error ? 'border-red-500' : 'border-gray-300'
-        } ${className}`}
-        {...props}
-      />
-      {error && (
-        <p className="mt-1 text-sm text-red-600">{error}</p>
-      )}
-    </div>
-  );
-};
+import { cn } from "@/lib/utils"
 
-export const Select = ({ 
-  label, 
-  error, 
-  options = [],
-  className = '',
-  ...props 
-}) => {
+const Input = React.forwardRef(({ className, type, ...props }, ref) => {
   return (
-    <div className="mb-4">
-      {label && (
-        <label className="block text-sm font-medium text-gray-700 mb-1">
-          {label}
-        </label>
+    <input
+      type={type}
+      className={cn(
+        "flex h-9 w-full rounded-md border border-gray-300 bg-white px-3 py-1 text-base shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-gray-900 placeholder:text-gray-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:border-blue-500 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
+        className
       )}
-      <select
-        className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 ${
-          error ? 'border-red-500' : 'border-gray-300'
-        } ${className}`}
-        {...props}
-      >
-        {options.map((option) => (
-          <option key={option} value={option}>
-            {option}
-          </option>
-        ))}
-      </select>
-      {error && (
-        <p className="mt-1 text-sm text-red-600">{error}</p>
-      )}
-    </div>
+      ref={ref}
+      {...props} />
   );
-};
+})
+Input.displayName = "Input"
+
+export { Input }

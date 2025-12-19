@@ -1,10 +1,11 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
+import { ChevronRight } from 'lucide-react';
 import { endpointsAPI } from '../services/endpoints';
 import { EndpointForm } from '../components/endpoints/EndpointForm';
-import { Card, CardTitle } from '../components/ui/Card';
-import { ErrorMessage } from '../components/ui/ErrorMessage';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 
 export const CreateEndpoint = () => {
   const navigate = useNavigate();
@@ -33,20 +34,33 @@ export const CreateEndpoint = () => {
 
   return (
     <div className="max-w-2xl mx-auto">
-      <h2 className="text-3xl font-bold text-gray-900 mb-6">Create New Endpoint</h2>
-      
+      {/* Breadcrumb */}
+      <nav className="flex items-center gap-2 text-sm text-muted-foreground mb-8">
+        <Link to="/" className="hover:text-foreground transition-colors">Dashboard</Link>
+        <ChevronRight className="w-4 h-4" />
+        <span className="text-foreground font-medium">Create Endpoint</span>
+      </nav>
+
       {error && (
-        <div className="mb-6">
-          <ErrorMessage error={error} />
-        </div>
+        <Alert variant="destructive" className="mb-6">
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
       )}
 
       <Card>
-        <EndpointForm
-          onSubmit={handleSubmit}
-          onCancel={handleCancel}
-          isSubmitting={isSubmitting}
-        />
+        <CardHeader>
+          <CardTitle className="text-2xl">Create New Endpoint</CardTitle>
+          <CardDescription>
+            Configure the API endpoint you want to load test. Add headers and body if needed.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <EndpointForm
+            onSubmit={handleSubmit}
+            onCancel={handleCancel}
+            isSubmitting={isSubmitting}
+          />
+        </CardContent>
       </Card>
     </div>
   );

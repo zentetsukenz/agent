@@ -1,7 +1,11 @@
 export const validateUrl = (url) => {
   if (!url) return "URL is required";
   try {
-    new URL(url);
+    const parsed = new URL(url);
+    // Only allow http and https protocols (same as backend)
+    if (!['http:', 'https:'].includes(parsed.protocol)) {
+      return "URL must use http:// or https:// protocol";
+    }
     return true;
   } catch {
     return "Please enter a valid URL";

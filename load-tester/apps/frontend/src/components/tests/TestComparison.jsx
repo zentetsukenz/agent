@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { TestStatusBadge } from './TestStatusBadge';
-import { Card, CardTitle } from '../ui/Card';
-import { Button } from '../ui/Button';
+import { Card, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import { formatDate } from '../../utils/formatters';
 
 export const TestComparison = ({ tests, onClose }) => {

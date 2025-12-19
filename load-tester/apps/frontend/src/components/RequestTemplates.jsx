@@ -63,6 +63,7 @@ export default function RequestTemplates({ onApplyTemplate }) {
     setShowTemplates(false);
   };
 
+  // eslint-disable-next-line no-unused-vars
   const saveCustomTemplate = (name, config) => {
     const newTemplate = {
       id: `custom-${Date.now()}`,

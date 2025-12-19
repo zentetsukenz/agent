@@ -1,18 +1,20 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
+import { Plus, Search, Zap } from 'lucide-react';
 import { useEndpoints } from '../hooks/useEndpoints';
 import { endpointsAPI } from '../services/endpoints';
 import { testsAPI } from '../services/tests';
 import { EndpointList } from '../components/endpoints/EndpointList';
-import { DeleteConfirm, useDeleteConfirm } from '../components/endpoints/DeleteConfirm';
+import { DeleteConfirm } from '../components/endpoints/DeleteConfirm';
+import { useDeleteConfirm } from '../hooks/useDeleteConfirm';
 import { TestHistory } from '../components/tests/TestHistory';
 import { TestComparison } from '../components/tests/TestComparison';
 import { DashboardStats } from '../components/DashboardStats';
-import { Loading } from '../components/ui/Loading';
+import { DashboardSkeleton } from '../components/ui/Loading';
 import { ErrorMessage } from '../components/ui/ErrorMessage';
 import { EmptyState } from '../components/ui/EmptyState';
-import { Button } from '../components/ui/Button';
+import { Button } from '@/components/ui/button';
 
 export const Dashboard = () => {
   const { endpoints, loading: endpointsLoading, error: endpointsError, refetch } = useEndpoints();
@@ -112,7 +114,17 @@ export const Dashboard = () => {
   const error = endpointsError || testsError;
 
   if (loading) {
-    return <Loading text="Loading dashboard..." />;
+    return (
+      <div>
+        <div className="flex justify-between items-center mb-6">
+          <div>
+            <h2 className="text-2xl font-bold text-gray-900">Dashboard</h2>
+            <p className="text-gray-500 mt-1">Loading your endpoints and tests...</p>
+          </div>
+        </div>
+        <DashboardSkeleton />
+      </div>
+    );
   }
 
   if (error && endpoints.length === 0) {
@@ -124,30 +136,41 @@ export const Dashboard = () => {
 
   if (endpoints.length === 0) {
     return (
-      <EmptyState
-        icon={
-          <svg className="w-full h-full" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-          </svg>
-        }
-        title="No endpoints yet"
-        description="Get started by creating your first API endpoint to test."
-        action={
-          <Link to="/endpoints/new">
-            <Button>+ Add Endpoint</Button>
-          </Link>
-        }
-      />
+      <div className="max-w-lg mx-auto mt-16">
+        <EmptyState
+          icon={<Zap className="w-full h-full" />}
+          title="No endpoints configured"
+          description="Start load testing your APIs by adding your first endpoint. You can test REST APIs with various HTTP methods."
+          action={
+            <Button size="lg" asChild>
+              <Link to="/endpoints/new">
+                <Plus className="w-5 h-5" />
+                Create Your First Endpoint
+              </Link>
+            </Button>
+          }
+          size="lg"
+        />
+      </div>
     );
   }
 
   return (
-    <div>
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-3xl font-bold text-gray-900">Dashboard</h2>
-        <Link to="/endpoints/new">
-          <Button>+ Add Endpoint</Button>
-        </Link>
+    <div className="space-y-8 sm:space-y-10">
+      {/* Page Header */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div>
+          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">Dashboard</h2>
+          <p className="text-gray-500 mt-1.5 text-sm sm:text-base">
+            {endpoints.length} endpoint{endpoints.length !== 1 ? 's' : ''} • {tests.length} test{tests.length !== 1 ? 's' : ''} run
+          </p>
+        </div>
+        <Button asChild>
+          <Link to="/endpoints/new">
+            <Plus className="w-4 h-4" />
+            Add Endpoint
+          </Link>
+        </Button>
       </div>
 
       {/* Dashboard Stats */}
@@ -161,28 +184,35 @@ export const Dashboard = () => {
       />
 
       {/* Endpoints Section */}
-      <div className="mb-8">
-        <h3 className="text-xl font-semibold text-gray-900 mb-4">
-          API Endpoints 
-          {searchQuery && ` (${filteredAndSortedEndpoints.length} result${filteredAndSortedEndpoints.length !== 1 ? 's' : ''})`}
-        </h3>
+      <section>
+        <div className="flex items-center justify-between mb-5">
+          <h3 className="text-lg sm:text-xl font-semibold text-gray-900">
+            API Endpoints 
+            {searchQuery && (
+              <span className="text-gray-400 font-normal ml-2">
+                ({filteredAndSortedEndpoints.length} result{filteredAndSortedEndpoints.length !== 1 ? 's' : ''})
+              </span>
+            )}
+          </h3>
+        </div>
         {filteredAndSortedEndpoints.length > 0 ? (
           <EndpointList endpoints={filteredAndSortedEndpoints} onDelete={handleDelete} />
         ) : (
-          <div className="text-center py-8 text-gray-500">
-            No endpoints match your search.
+          <div className="text-center py-12 bg-muted/30 rounded-xl border">
+            <Search className="w-12 h-12 mx-auto text-muted-foreground/50 mb-3" />
+            <p className="text-muted-foreground">No endpoints match your search.</p>
           </div>
         )}
-      </div>
+      </section>
 
       {/* Test History Section */}
       {tests.length > 0 && (
-        <div className="mb-8">
+        <section>
           <TestHistory 
             tests={tests} 
             onSelectForComparison={handleSelectForComparison}
           />
-        </div>
+        </section>
       )}
 
       {/* Test Comparison Modal */}

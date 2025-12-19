@@ -11,7 +11,9 @@ export const useTestStatus = (testId) => {
     if (!testId) return;
 
     try {
-      const data = await testsAPI.getStatus(testId);
+      // Use getResults for full test data (including results, endpoint, etc.)
+      const response = await testsAPI.getResults(testId);
+      const data = response.data;
       setTest(data);
       setError(null);
       return data;

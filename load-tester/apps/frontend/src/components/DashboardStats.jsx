@@ -1,6 +1,51 @@
 import { useMemo } from 'react';
 import { format } from 'date-fns';
-import { Card } from './ui/Card';
+import { Card, CardContent } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { Server, CheckCircle2, Zap, Clock, Search, X } from 'lucide-react';
+import { cn } from '@/lib/utils';
+
+const StatCard = ({ label, value, icon, color, trend }) => {
+  const colorClasses = {
+    blue: 'bg-blue-500/10 text-blue-600',
+    green: 'bg-emerald-500/10 text-emerald-600',
+    amber: 'bg-amber-500/10 text-amber-600',
+    purple: 'bg-purple-500/10 text-purple-600',
+  };
+
+  const Icon = icon;
+
+  return (
+    <Card className="relative overflow-hidden">
+      <CardContent className="p-5 sm:p-6">
+        <div className="flex items-start justify-between">
+          <div className="relative z-10">
+            <p className="text-sm font-medium text-muted-foreground">{label}</p>
+            <p className="text-3xl font-bold text-foreground mt-1">{value}</p>
+            {trend && (
+              <p className={cn('text-xs mt-2 font-medium', trend.positive ? 'text-emerald-600' : 'text-muted-foreground')}>
+                {trend.text}
+              </p>
+            )}
+          </div>
+          <div className={cn('w-12 h-12 rounded-xl flex items-center justify-center', colorClasses[color])}>
+            <Icon className="w-6 h-6" />
+          </div>
+        </div>
+        {/* Decorative element */}
+        <div className={cn('absolute -right-4 -bottom-4 w-24 h-24 rounded-full opacity-20', colorClasses[color])} />
+      </CardContent>
+    </Card>
+  );
+};
 
 export const DashboardStats = ({ 
   endpoints, 
@@ -52,113 +97,88 @@ export const DashboardStats = ({
   }, [endpoints, tests]);
 
   return (
-    <div className="mb-8">
+    <div className="space-y-6">
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-        <Card className="p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600">Total Endpoints</p>
-              <p className="text-3xl font-bold text-gray-900 mt-2">{stats.totalEndpoints}</p>
-            </div>
-            <div className="text-4xl text-blue-500">📊</div>
-          </div>
-        </Card>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
+        <StatCard
+          label="Total Endpoints"
+          value={stats.totalEndpoints}
+          color="blue"
+          icon={Server}
+        />
 
-        <Card className="p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600">Total Tests Run</p>
-              <p className="text-3xl font-bold text-gray-900 mt-2">{stats.totalTests}</p>
-            </div>
-            <div className="text-4xl text-green-500">✓</div>
-          </div>
-        </Card>
+        <StatCard
+          label="Tests Run"
+          value={stats.totalTests}
+          color="green"
+          icon={CheckCircle2}
+        />
 
-        <Card className="p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600">Avg Success Rate</p>
-              <p className="text-3xl font-bold text-gray-900 mt-2">
-                {stats.avgSuccessRate > 0 ? `${stats.avgSuccessRate}%` : 'N/A'}
-              </p>
-            </div>
-            <div className="text-4xl text-yellow-500">⚡</div>
-          </div>
-        </Card>
+        <StatCard
+          label="Avg Success Rate"
+          value={stats.avgSuccessRate > 0 ? `${stats.avgSuccessRate}%` : 'N/A'}
+          color="amber"
+          icon={Zap}
+        />
 
-        <Card className="p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600">Last Test</p>
-              <p className="text-lg font-bold text-gray-900 mt-2">
-                {stats.lastTestDate 
-                  ? format(stats.lastTestDate, 'MMM d, yyyy') 
-                  : 'N/A'
-                }
-              </p>
-            </div>
-            <div className="text-4xl text-purple-500">📅</div>
-          </div>
-        </Card>
+        <StatCard
+          label="Last Test"
+          value={stats.lastTestDate ? format(stats.lastTestDate, 'MMM d') : 'N/A'}
+          color="purple"
+          trend={stats.lastTestDate ? { 
+            text: format(stats.lastTestDate, 'h:mm a'),
+            positive: false 
+          } : null}
+          icon={Clock}
+        />
       </div>
 
       {/* Search and Sort Controls */}
-      <Card className="p-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {/* Search */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Search Endpoints
-            </label>
-            <div className="relative">
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => onSearchChange(e.target.value)}
-                placeholder="Search by name or URL..."
-                className="w-full px-4 py-2 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              />
-              {searchQuery && (
-                <button
-                  onClick={() => onSearchChange('')}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                  title="Clear search"
-                >
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
-              )}
-              {!searchQuery && (
-                <div className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400">
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                  </svg>
-                </div>
-              )}
+      <Card>
+        <CardContent className="p-4 sm:p-5">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Search */}
+            <div className="space-y-2">
+              <Label htmlFor="search">Search Endpoints</Label>
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                <Input
+                  id="search"
+                  value={searchQuery}
+                  onChange={(e) => onSearchChange(e.target.value)}
+                  placeholder="Search by name or URL..."
+                  className="pl-10 pr-10"
+                />
+                {searchQuery && (
+                  <button
+                    onClick={() => onSearchChange('')}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                )}
+              </div>
+            </div>
+
+            {/* Sort */}
+            <div className="space-y-2">
+              <Label>Sort By</Label>
+              <Select value={sortOption} onValueChange={onSortChange}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="name-asc">Name (A → Z)</SelectItem>
+                  <SelectItem value="name-desc">Name (Z → A)</SelectItem>
+                  <SelectItem value="url-asc">URL (A → Z)</SelectItem>
+                  <SelectItem value="url-desc">URL (Z → A)</SelectItem>
+                  <SelectItem value="created-desc">Newest First</SelectItem>
+                  <SelectItem value="created-asc">Oldest First</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
           </div>
-
-          {/* Sort */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Sort By
-            </label>
-            <select
-              value={sortOption}
-              onChange={(e) => onSortChange(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            >
-              <option value="name-asc">Name (A → Z)</option>
-              <option value="name-desc">Name (Z → A)</option>
-              <option value="url-asc">URL (A → Z)</option>
-              <option value="url-desc">URL (Z → A)</option>
-              <option value="created-desc">Newest First</option>
-              <option value="created-asc">Oldest First</option>
-            </select>
-          </div>
-        </div>
+        </CardContent>
       </Card>
     </div>
   );
