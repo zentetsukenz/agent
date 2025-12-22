@@ -700,6 +700,7 @@ Examples help agents understand desired style and level of detail better than de
 .github/
 ├── agents/          # All agent definitions
 │   ├── Sophisticated.agent.md
+│   ├── Synthesis.agent.md
 │   ├── TheEngineer.agent.md
 │   ├── nodejs.agent.md
 │   ├── react.agent.md
@@ -756,7 +757,7 @@ Examples help agents understand desired style and level of detail better than de
 **Naming Convention**:
 
 - `[AgentName].agent.md` (e.g., `nodejs.agent.md`, `react.agent.md`)
-- Use PascalCase for meta-agents (e.g., `Sophisticated.agent.md`, `TheEngineer.agent.md`)
+- Use PascalCase for meta-agents (e.g., `Sophisticated.agent.md`, `Synthesis.agent.md`, `TheEngineer.agent.md`)
 - Use lowercase for domain-specific agents (e.g., `nodejs.agent.md`, `payment.agent.md`)
 
 **File Structure**:
