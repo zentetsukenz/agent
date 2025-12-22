@@ -86,7 +86,7 @@ export const EndpointCard = ({ endpoint, onDelete }) => {
           size="icon"
           onClick={() => onDelete(endpoint.id)}
           aria-label="Delete endpoint"
-          className="text-destructive hover:text-destructive hover:bg-destructive/10"
+          className="text-red-600 hover:text-red-700 hover:bg-red-50"
         >
           <Trash2 className="w-4 h-4" />
         </Button>

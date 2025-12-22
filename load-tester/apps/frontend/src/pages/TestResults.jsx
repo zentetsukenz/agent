@@ -109,7 +109,7 @@ export const TestResults = () => {
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle className="flex items-center gap-2">
-              <AlertTriangle className="w-5 h-5 text-destructive" />
+              <AlertTriangle className="w-5 h-5 text-red-600" />
               Cancel Test?
             </AlertDialogTitle>
             <AlertDialogDescription>
@@ -121,7 +121,7 @@ export const TestResults = () => {
             <AlertDialogAction
               onClick={handleCancelTest}
               disabled={isCancelling}
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              className="bg-red-600 text-white hover:bg-red-700 disabled:opacity-50"
             >
               {isCancelling ? 'Cancelling...' : 'Yes, Cancel Test'}
             </AlertDialogAction>

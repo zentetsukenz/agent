@@ -56,12 +56,12 @@ This is non-negotiable. These files contain critical context that prevents mista
 
 **During work, reference SKILLS/ directory when performing relevant tasks:**
 
-| Task                      | Skill File                         |
-| ------------------------- | ---------------------------------- |
-| Running terminal commands | `SKILLS/fish-shell.md`             |
-| Database operations       | `SKILLS/prisma-patterns.md`        |
-| UI/UX visual verification | `SKILLS/playwright-verification.md`|
-| Before claiming done      | `SKILLS/verification-checklist.md` |
+| Task                      | Skill File                          |
+| ------------------------- | ----------------------------------- |
+| Running terminal commands | `SKILLS/fish-shell.md`              |
+| Database operations       | `SKILLS/prisma-patterns.md`         |
+| UI/UX visual verification | `SKILLS/playwright-verification.md` |
+| Before claiming done      | `SKILLS/verification-checklist.md`  |
 
 **How to use skills**:
 
@@ -72,6 +72,16 @@ cat load-tester/SKILLS/fish-shell.md
 # Review Prisma patterns before database work
 cat load-tester/SKILLS/prisma-patterns.md
 ```
+
+### ⚠️ Visual Verification Constraint (MANDATORY)
+
+**Before ANY visual/UI verification, you MUST:**
+
+1. Read `SKILLS/playwright-verification.md` first
+2. Follow the delegation pattern described in the skill
+3. **NEVER take screenshots directly**—delegate to subagent
+
+This constraint exists because screenshots consume ~100KB each and will overflow your context. The skill describes how to get visual verification without filling your context.
 
 ### 3. Before Claiming Done
 

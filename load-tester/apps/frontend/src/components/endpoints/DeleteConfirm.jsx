@@ -23,7 +23,7 @@ export const DeleteConfirm = ({ isOpen, onConfirm, onCancel, itemName }) => {
           <AlertDialogCancel onClick={onCancel}>Cancel</AlertDialogCancel>
           <AlertDialogAction
             onClick={onConfirm}
-            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            className="bg-red-600 text-white hover:bg-red-700"
           >
             Delete
           </AlertDialogAction>

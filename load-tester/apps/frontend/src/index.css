@@ -4,6 +4,10 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme {
+  /* Base colors for overlays */
+  --color-black: #000000;
+  --color-white: #ffffff;
+
   /* shadcn colors using HSL values from CSS variables */
   --color-background: hsl(0 0% 100%);
   --color-foreground: hsl(222.2 84% 4.9%);
