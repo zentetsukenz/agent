@@ -8,6 +8,8 @@ import { ConfigureTest } from './pages/ConfigureTest';
 import { TestResults } from './pages/TestResults';
 import { ScenarioList } from './pages/ScenarioList';
 import { ScenarioDetail } from './pages/ScenarioDetail';
+import { ScenarioBuilder } from './pages/ScenarioBuilder';
+import { ScenarioEditor } from './pages/ScenarioEditor';
 
 function App() {
   return (
@@ -44,7 +46,9 @@ function App() {
           <Route path="/endpoints/:id/test" element={<ConfigureTest />} />
           <Route path="/tests/:id/results" element={<TestResults />} />
           <Route path="/scenarios" element={<ScenarioList />} />
+          <Route path="/scenarios/new" element={<ScenarioBuilder />} />
           <Route path="/scenarios/:id" element={<ScenarioDetail />} />
+          <Route path="/scenarios/:id/edit" element={<ScenarioEditor />} />
         </Routes>
       </Layout>
     </BrowserRouter>
