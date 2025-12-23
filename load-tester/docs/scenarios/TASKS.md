@@ -10,7 +10,7 @@
 
 | Phase | Status | Progress |
 |-------|--------|----------|
-| Phase 1: Frontend - List & Templates | 🔴 Not Started | 0% |
+| Phase 1: Frontend - List & Templates | � Complete | 100% |
 | Phase 2: Frontend - Phase Builder | 🔴 Not Started | 0% |
 | Phase 3: Frontend - Workflow Builder | 🔴 Not Started | 0% |
 | Phase 4: Frontend - Test Integration | 🔴 Not Started | 0% |
@@ -26,30 +26,43 @@
 
 ## Phase 1: Frontend - List & Templates
 
-**Status**: 🔴 Not Started  
-**Started**: -  
-**Completed**: -
+**Status**: � Complete  
+**Started**: December 22, 2025  
+**Completed**: December 23, 2025
 
 ### Tasks
 
-- [ ] Create `services/scenarios.js` with mock data
-- [ ] Create mock data for 5 built-in templates
-- [ ] Create `ScenarioCard.jsx` component
-- [ ] Create `ScenarioList.jsx` page
-- [ ] Create `ScenarioDetail.jsx` page (view only)
-- [ ] Add `/scenarios` route to App.jsx
-- [ ] Add `/scenarios/:id` route to App.jsx
-- [ ] Add "Scenarios" link to navigation
-- [ ] Implement loading states
-- [ ] Implement error states
-- [ ] Implement empty state
-- [ ] Write component tests for ScenarioCard
-- [ ] Write component tests for ScenarioList
-- [ ] Manual testing in browser
+- [x] Create `services/scenarios.js` with mock data
+- [x] Create mock data for 5 built-in templates
+- [x] Create `ScenarioCard.jsx` component
+- [x] Create `ScenarioList.jsx` page
+- [x] Create `ScenarioDetail.jsx` page (view only)
+- [x] Add `/scenarios` route to App.jsx
+- [x] Add `/scenarios/:id` route to App.jsx
+- [x] Add "Scenarios" link to navigation
+- [x] Implement loading states
+- [x] Implement error states
+- [x] Implement empty state
+- [x] Write component tests for ScenarioCard
+- [x] Write component tests for ScenarioList
+- [x] Manual testing in browser
 
 ### Notes
 
-_Add notes during implementation_
+**Session 1 (Dec 22, 2025)**:
+- Created `scenarios.js` service with mock data for 5 templates (Smoke, Average, Stress, Spike, Soak)
+- Created `ScenarioCard.jsx` with mini load profile SVG visualization
+- Created `ScenarioList.jsx` with search, filter tabs (All/Templates/Custom), and sections
+- Created `ScenarioDetail.jsx` with full load profile chart, phase cards, stats, and actions
+- Added routes to App.jsx and navigation link to Header.jsx (desktop + mobile)
+- All pages have loading skeletons, error states, and empty states
+- Visual verification passed for both list and detail pages
+- ScenarioCard tests: 18 tests passing
+
+**Session 2 (Dec 23, 2025)**:
+- Created `ScenarioList.test.jsx` with comprehensive tests (23 tests)
+- Fixed ErrorMessage prop mismatch (`message` → `error` + `title`)
+- All 41 scenario tests passing (ScenarioCard: 18 + ScenarioList: 23)
 
 ---
 
@@ -289,7 +302,25 @@ _Add notes during implementation_
 
 ### Session Log
 
-_No sessions yet._
+### 2025-12-22 - Session 1
+
+**Started**: Phase 1 - Frontend List & Templates
+**Completed**: 
+- services/scenarios.js with mock data
+- ScenarioCard.jsx component with tests (18 passing)
+- ScenarioList.jsx page
+- ScenarioDetail.jsx page
+- Routes in App.jsx
+- Navigation link in Header.jsx
+- Loading/error/empty states
+
+**In Progress**: Write component tests for ScenarioList
+**Blockers**: None
+**Notes**: 
+- Using existing Card, Badge, Button components from shadcn/ui
+- Mock data service uses USE_MOCK flag for easy switch to real API
+- Visual verification passed via subagent screenshots
+**Next**: Complete ScenarioList tests, then start Phase 2 (Phase Builder)
 
 <!-- 
 Example entry:
@@ -323,4 +354,4 @@ Example:
 ---
 
 **Last Updated**: December 22, 2025  
-**Updated By**: Initial creation
+**Updated By**: Session 1 completion

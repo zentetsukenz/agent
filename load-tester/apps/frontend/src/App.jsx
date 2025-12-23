@@ -6,6 +6,8 @@ import { CreateEndpoint } from './pages/CreateEndpoint';
 import { EditEndpoint } from './pages/EditEndpoint';
 import { ConfigureTest } from './pages/ConfigureTest';
 import { TestResults } from './pages/TestResults';
+import { ScenarioList } from './pages/ScenarioList';
+import { ScenarioDetail } from './pages/ScenarioDetail';
 
 function App() {
   return (
@@ -41,6 +43,8 @@ function App() {
           <Route path="/endpoints/:id/edit" element={<EditEndpoint />} />
           <Route path="/endpoints/:id/test" element={<ConfigureTest />} />
           <Route path="/tests/:id/results" element={<TestResults />} />
+          <Route path="/scenarios" element={<ScenarioList />} />
+          <Route path="/scenarios/:id" element={<ScenarioDetail />} />
         </Routes>
       </Layout>
     </BrowserRouter>
