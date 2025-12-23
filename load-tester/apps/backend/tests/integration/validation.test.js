@@ -80,6 +80,21 @@ describe("Validation Middleware Tests", () => {
       );
     });
 
+    test("should reject headers that are JSON arrays", async () => {
+      const response = await request(app)
+        .post("/api/endpoints")
+        .send({
+          name: "Test API",
+          url: "https://api.example.com",
+          method: "GET",
+          headers: '["array", "not", "object"]',
+        })
+        .expect(400);
+
+      expect(response.body.error).toBe(true);
+      expect(response.body.details.some(d => d.includes("Headers must be a valid JSON object"))).toBe(true);
+    });
+
     test("should accept valid endpoint data", async () => {
       const response = await request(app)
         .post("/api/endpoints")

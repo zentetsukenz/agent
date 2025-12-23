@@ -138,6 +138,18 @@ describe("Endpoints Service - Unit Tests", () => {
       expect(result.errors).toContain("Name is required");
     });
 
+    test("should handle name that is not a string", () => {
+      const invalidData = {
+        name: 12345,
+        url: "https://api.example.com",
+        method: "GET",
+      };
+
+      // Non-string name should pass through without string-specific validation
+      const result = validateEndpointData(invalidData);
+      expect(result.valid).toBe(true);
+    });
+
     test("should require name to be 1-255 characters", () => {
       const invalidData = {
         name: "",

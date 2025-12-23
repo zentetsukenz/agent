@@ -4,6 +4,11 @@
  *
  * Approach: Sequential phase execution using multiple autocannon instances
  * (autocannon doesn't support dynamic connection adjustment during a test)
+ *
+ * For workflow scenarios:
+ * 1. Run setup steps (once globally)
+ * 2. Run load test phases with workflow steps
+ * 3. Run teardown steps (once globally)
  */
 
 const autocannon = require("autocannon");
@@ -14,6 +19,8 @@ const {
   NotFoundError,
   TimeoutError,
 } = require("../../utils/errors");
+const workflowExecutor = require("./workflowExecutor");
+const { interpolate, interpolateObject } = require("../../utils/interpolate");
 
 // In-memory store for running scenario tests
 // Map: testId -> { phases: [], currentPhase: number, cancelled: boolean }
@@ -354,6 +361,216 @@ function aggregateAllPhaseResults(phaseResults) {
 }
 
 /**
+ * Execute a workflow scenario (mode === "workflow")
+ * Handles setup, load test with workflow steps, and teardown
+ *
+ * @param {PrismaClient} prisma - Prisma client instance
+ * @param {number} testId - Test ID
+ * @param {Object} scenario - Scenario object with setup, workflow, teardown, phases
+ * @param {Object} endpoint - Endpoint to test (used as base URL for relative paths)
+ * @returns {Promise<Object>} - Execution results
+ */
+async function executeWorkflowScenario(prisma, testId, scenario, endpoint) {
+  const phaseResults = [];
+  let workflowResult = null;
+
+  try {
+    logger.info("Starting workflow scenario execution", {
+      testId,
+      scenarioId: scenario.id,
+      scenarioName: scenario.name,
+      mode: scenario.mode,
+    });
+
+    // 1. Execute setup phase and get shared context
+    workflowResult = await workflowExecutor.executeWorkflow(scenario, {});
+
+    if (workflowResult.status === "setup_failed") {
+      return {
+        status: "failed",
+        results: {
+          error: workflowResult.setupError || "Setup phase failed",
+          type: "setup_error",
+          timestamp: new Date().toISOString(),
+          setupResults: workflowResult.setupResults,
+        },
+        phaseResults: [],
+      };
+    }
+
+    logger.info("Setup phase completed", {
+      testId,
+      extractedVars: Object.keys(workflowResult.sharedContext),
+    });
+
+    // 2. Execute load test phases with workflow steps
+    // Parse phases and workflow
+    const phases = typeof scenario.phases === "string"
+      ? JSON.parse(scenario.phases)
+      : scenario.phases;
+    const workflowSteps = typeof scenario.workflow === "string"
+      ? JSON.parse(scenario.workflow || "[]")
+      : (scenario.workflow || []);
+
+    // Expand phases into execution steps
+    const steps = expandPhasesToSteps(phases);
+
+    // Build base autocannon options with interpolated workflow
+    const baseOptions = workflowExecutor.buildAutocannonOptions(
+      endpoint,
+      workflowResult.sharedContext,
+      workflowSteps
+    );
+
+    // Execute each step sequentially
+    const stepResults = [];
+
+    for (let i = 0; i < steps.length; i++) {
+      const step = steps[i];
+
+      // Check for cancellation
+      const runningTest = runningScenarioTests.get(testId);
+      if (runningTest?.cancelled) {
+        logger.info("Workflow scenario cancelled", { testId, currentStep: i });
+        break;
+      }
+
+      // Update tracking
+      if (runningTest) {
+        runningTest.currentPhase = step.phaseIndex;
+      }
+
+      logger.info("Executing workflow step", {
+        testId,
+        step: i + 1,
+        totalSteps: steps.length,
+        name: step.name,
+        connections: step.connections,
+        duration: step.duration,
+      });
+
+      // Build step-specific options
+      const stepOptions = {
+        ...baseOptions,
+        connections: step.connections,
+        duration: step.duration,
+      };
+
+      if (step.rps) {
+        stepOptions.overallRate = step.rps;
+      }
+
+      try {
+        const rawResult = await runAutocannonStep(stepOptions, testId);
+        const formattedResult = formatPhaseResult(rawResult, step.name, step.duration);
+        stepResults.push({
+          ...formattedResult,
+          isPartOfRamp: step.isPartOfRamp,
+          parentPhaseName: step.parentPhaseName,
+          phaseIndex: step.phaseIndex,
+        });
+      } catch (stepError) {
+        logger.error("Workflow step execution failed", {
+          testId,
+          step: step.name,
+          error: stepError.message,
+        });
+
+        stepResults.push({
+          phaseName: step.name,
+          duration: 0,
+          requests: { total: 0, average: 0, sent: 0 },
+          latency: { min: 0, max: 0, mean: 0, p50: 0, p90: 0, p95: 0, p99: 0 },
+          throughput: { average: 0, total: 0 },
+          errors: 1,
+          timeouts: 0,
+          error: stepError.message,
+          isPartOfRamp: step.isPartOfRamp,
+          parentPhaseName: step.parentPhaseName,
+          phaseIndex: step.phaseIndex,
+        });
+      }
+    }
+
+    // Aggregate step results by original phase
+    const originalPhases = typeof scenario.phases === "string"
+      ? JSON.parse(scenario.phases)
+      : scenario.phases;
+
+    for (let i = 0; i < originalPhases.length; i++) {
+      const phase = originalPhases[i];
+      const phaseStepResults = stepResults.filter((r) => r.phaseIndex === i);
+
+      if (phaseStepResults.length > 0) {
+        const aggregatedPhase = aggregateStepResults(phaseStepResults, phase.name);
+        phaseResults.push(aggregatedPhase);
+      }
+    }
+
+    // 3. Execute teardown phase
+    let teardownResult = null;
+    if (workflowResult.runTeardown) {
+      logger.info("Starting teardown phase", { testId });
+      teardownResult = await workflowResult.runTeardown();
+      logger.info("Teardown phase completed", {
+        testId,
+        hasErrors: !!teardownResult.error,
+      });
+    }
+
+    // Aggregate all phases
+    const aggregatedResults = aggregateAllPhaseResults(phaseResults);
+
+    // Check if cancelled
+    const finalState = runningScenarioTests.get(testId);
+    const wasCancelled = finalState?.cancelled || false;
+
+    // Clean up tracking
+    runningScenarioTests.delete(testId);
+
+    return {
+      status: wasCancelled ? "cancelled" : "completed",
+      results: {
+        ...aggregatedResults,
+        setupResults: workflowResult.setupResults,
+        teardownResults: teardownResult?.results || [],
+      },
+      phaseResults,
+    };
+  } catch (error) {
+    logger.error("Workflow scenario execution failed", {
+      testId,
+      scenarioId: scenario.id,
+      error: error.message,
+    });
+
+    // Attempt teardown even on error
+    if (workflowResult?.runTeardown) {
+      try {
+        await workflowResult.runTeardown();
+      } catch (teardownError) {
+        logger.error("Teardown after error also failed", {
+          error: teardownError.message,
+        });
+      }
+    }
+
+    // Clean up tracking
+    runningScenarioTests.delete(testId);
+
+    return {
+      status: "failed",
+      results: {
+        error: error.message,
+        type: "error",
+        timestamp: new Date().toISOString(),
+      },
+      phaseResults,
+    };
+  }
+}
+
+/**
  * Execute a scenario against an endpoint
  *
  * @param {PrismaClient} prisma - Prisma client instance
@@ -363,6 +580,12 @@ function aggregateAllPhaseResults(phaseResults) {
  * @returns {Promise<void>}
  */
 async function executeScenario(prisma, testId, scenario, endpoint) {
+  // Check if this is a workflow scenario
+  if (scenario.mode === "workflow") {
+    return executeWorkflowScenario(prisma, testId, scenario, endpoint);
+  }
+
+  // Simple mode execution (existing logic)
   // Initialize tracking
   runningScenarioTests.set(testId, {
     phases: scenario.phases,
@@ -608,6 +831,7 @@ function getScenarioTestStatus(testId) {
 module.exports = {
   // Main execution
   executeScenario,
+  executeWorkflowScenario,
   cancelScenarioTest,
   isScenarioTestRunning,
   getScenarioTestStatus,

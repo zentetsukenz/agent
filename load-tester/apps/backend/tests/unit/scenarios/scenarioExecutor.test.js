@@ -9,6 +9,9 @@ const {
   formatPhaseResult,
   aggregateStepResults,
   aggregateAllPhaseResults,
+  cancelScenarioTest,
+  isScenarioTestRunning,
+  getScenarioTestStatus,
   RAMP_INTERVAL,
 } = require("../../../src/features/scenarios/scenarioExecutor");
 
@@ -440,6 +443,27 @@ describe("scenarioExecutor", () => {
   describe("RAMP_INTERVAL constant", () => {
     it("should be 5 seconds", () => {
       expect(RAMP_INTERVAL).toBe(5);
+    });
+  });
+
+  describe("cancelScenarioTest", () => {
+    it("should return false if test is not running", () => {
+      const result = cancelScenarioTest(99999);
+      expect(result).toBe(false);
+    });
+  });
+
+  describe("isScenarioTestRunning", () => {
+    it("should return false if test is not running", () => {
+      const result = isScenarioTestRunning(99999);
+      expect(result).toBe(false);
+    });
+  });
+
+  describe("getScenarioTestStatus", () => {
+    it("should return null if test is not running", () => {
+      const result = getScenarioTestStatus(99999);
+      expect(result).toBeNull();
     });
   });
 });
