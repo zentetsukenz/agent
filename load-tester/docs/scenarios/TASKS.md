@@ -12,9 +12,9 @@
 |-------|--------|----------|
 | Phase 1: Frontend - List & Templates | 🟢 Complete | 100% |
 | Phase 2: Frontend - Phase Builder | 🟢 Complete | 100% |
-| Phase 3: Frontend - Workflow Builder | � Complete | 100% |
-| Phase 4: Frontend - Test Integration | � Complete | 100% |
-| Phase 5: Backend - Database & API | 🔴 Not Started | 0% |
+| Phase 3: Frontend - Workflow Builder | 🟢 Complete | 100% |
+| Phase 4: Frontend - Test Integration | 🟢 Complete | 100% |
+| Phase 5: Backend - Database & API | 🟢 Complete | 100% |
 | Phase 6: Backend - Execution (Phases) | 🔴 Not Started | 0% |
 | Phase 7: Backend - Execution (Workflow) | 🔴 Not Started | 0% |
 | Phase 8: Frontend - Results Display | 🔴 Not Started | 0% |
@@ -198,33 +198,68 @@
 
 ## Phase 5: Backend - Database & API
 
-**Status**: 🔴 Not Started  
-**Started**: -  
-**Completed**: -
+**Status**: � Complete  
+**Started**: December 23, 2025  
+**Completed**: December 23, 2025
 
 ### Tasks
 
-- [ ] Create Prisma migration for Scenario model
-- [ ] Add scenarioId field to Test model
-- [ ] Add phaseResults field to Test model
-- [ ] Run migration
-- [ ] Create `features/scenarios/` folder
-- [ ] Create `scenarios.service.js` (CRUD operations)
-- [ ] Create `scenarios.controller.js` (HTTP handlers)
-- [ ] Create `scenarios.validation.js` (express-validator rules)
-- [ ] Register routes in app.js
-- [ ] Create `prisma/seed.js` for templates
-- [ ] Add seed script to package.json
-- [ ] Run seed to create templates
-- [ ] Write unit tests for scenarios.service
-- [ ] Write integration tests for scenarios API
-- [ ] Switch frontend from mock to real API
-- [ ] Test frontend with real backend
-- [ ] Update KNOWLEDGE.md with new endpoints
+- [x] Create Prisma migration for Scenario model
+- [x] Add scenarioId field to Test model
+- [x] Add phaseResults field to Test model
+- [x] Run migration
+- [x] Create `features/scenarios/` folder
+- [x] Create `scenarios.service.js` (CRUD operations)
+- [x] Create `scenarios.controller.js` (HTTP handlers)
+- [x] Create `scenarios.validation.js` (express-validator rules in validation.js)
+- [x] Register routes in app.js
+- [x] Create `prisma/seed.js` for templates
+- [x] Add seed script to package.json
+- [x] Run seed to create templates
+- [x] Write unit tests for scenarios.service
+- [x] Write integration tests for scenarios API
+- [x] Switch frontend from mock to real API
+- [x] Test frontend with real backend
+- [ ] Update KNOWLEDGE.md with new endpoints (deferred to Phase 9)
 
 ### Notes
 
-_Add notes during implementation_
+**Session 1 (Dec 23, 2025)**:
+- Created Prisma migration `20251223063942_add_scenario_model` with:
+  - Scenario model: id, name, description, mode, endpointId, setup, workflow, teardown (JSON), phases (JSON), setupErrorHandling, setupRetryCount, teardownErrorHandling, teardownRetryCount, isTemplate, timestamps
+  - Updated Test model with scenarioId (optional FK) and phaseResults (JSON)
+  - Indexes on Scenario (name, isTemplate, mode, createdAt)
+- Created `scenarios.service.js` with:
+  - Constants: VALID_MODES, VALID_PHASE_TYPES, VALID_ERROR_HANDLING, VALID_HTTP_METHODS, VALID_EXTRACTOR_SOURCES
+  - Validation: validatePhase, validateStep, validateScenarioData, sanitizeInput
+  - CRUD: getAllScenarios, getScenarioById, createScenario, updateScenario, deleteScenario
+  - Extra: duplicateScenario, parseScenarioJson
+  - Template protection: Cannot edit/delete built-in templates
+- Created `scenarios.controller.js` with HTTP handlers:
+  - GET /api/scenarios - list all (templates first)
+  - GET /api/scenarios/:id - get single with endpoint and tests
+  - POST /api/scenarios - create new
+  - PUT /api/scenarios/:id - update (not templates)
+  - DELETE /api/scenarios/:id - delete (not templates)
+  - POST /api/scenarios/:id/duplicate - duplicate any scenario
+- Added validation rules to `middleware/validation.js`:
+  - validateScenario: Full validation for create
+  - validateScenarioUpdate: Partial validation for updates
+- Registered 6 routes in `app.js`
+- Created `prisma/seed.js` with 5 built-in templates:
+  - Smoke Test (ID: 1) - 1m, 2 connections
+  - Average Load Test (ID: 2) - 3m, 50 connections
+  - Stress Test (ID: 3) - 5m, 300 connections
+  - Spike Test (ID: 4) - 1m50s, 200 connections
+  - Soak Test (ID: 5) - 32m, 30 connections
+- Added npm scripts: `prisma:seed`, `db:reset`
+- Created unit tests: `scenarios.service.test.js` (constants, validation, parsing)
+- Created integration tests: `scenarios.test.js` (25 tests covering all endpoints)
+- Updated frontend `services/scenarios.js` to use real API instead of mock
+- Fixed CORS config to accept localhost:5173 and 5174
+- **Backend Tests**: 336 passed, 88.85% coverage
+- **Frontend Tests**: 188 passed
+- Visual verification: All 5 templates display correctly in frontend
 
 ---
 
@@ -421,6 +456,46 @@ _Add notes during implementation_
 - Visual verification confirmed all workflow mode features working
 **Next**: Phase 4 - Test Integration
 
+### 2025-12-23 - Session 3
+
+**Started**: Phase 5 - Backend Database & API
+**Completed**: 
+- Prisma migration `20251223063942_add_scenario_model`
+- Scenario model with phases, setup, workflow, teardown (JSON fields)
+- Updated Test model with scenarioId and phaseResults
+- scenarios.service.js with full CRUD + validation
+- scenarios.controller.js with 6 HTTP handlers
+- Validation rules in middleware/validation.js
+- 6 routes registered in app.js
+- prisma/seed.js with 5 built-in templates
+- npm scripts: prisma:seed, db:reset
+- Unit tests: scenarios.service.test.js
+- Integration tests: scenarios.test.js (25 tests)
+- Frontend scenarios.js switched to real API
+- CORS fix for multi-port development
+
+**Test Results**:
+- Backend: 336 tests passing, 88.85% coverage
+- Frontend: 188 tests passing
+- Integration: 25 scenario tests all passing
+
+**API Endpoints Created**:
+- GET /api/scenarios - list all (templates first)
+- GET /api/scenarios/:id - get single with relations
+- POST /api/scenarios - create new
+- PUT /api/scenarios/:id - update (not templates)
+- DELETE /api/scenarios/:id - delete (not templates)
+- POST /api/scenarios/:id/duplicate - duplicate any scenario
+
+**In Progress**: None
+**Blockers**: None
+**Notes**: 
+- Templates are protected from edit/delete (must duplicate first)
+- Frontend now uses real API data from database
+- Visual verification passed - all 5 templates display correctly
+- CORS updated to accept both :5173 and :5174 for Vite fallback port
+**Next**: Phase 6 - Backend Execution (Phases)
+
 ---
 
 ## Blockers & Issues
@@ -440,4 +515,4 @@ Example:
 ---
 
 **Last Updated**: December 23, 2025  
-**Updated By**: Phase 3 completion
+**Updated By**: Phase 5 completion

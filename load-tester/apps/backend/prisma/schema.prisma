@@ -10,15 +10,16 @@ datasource db {
 }
 
 model Endpoint {
-  id        Int      @id @default(autoincrement())
+  id        Int        @id @default(autoincrement())
   name      String
   url       String
-  method    String   @default("GET")
+  method    String     @default("GET")
   headers   String?
   body      String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
   tests     Test[]
+  scenarios Scenario[]
 
   // Unique constraint to prevent duplicate endpoints
   @@unique([url, method], name: "endpoint_url_method_unique")
@@ -27,21 +28,67 @@ model Endpoint {
   @@index([method])
 }
 
+model Scenario {
+  id          Int     @id @default(autoincrement())
+  name        String  @unique
+  description String?
+
+  // Execution mode: "simple" (single endpoint) or "workflow" (multi-step)
+  mode String @default("simple")
+
+  // Simple mode: reference existing endpoint
+  endpointId Int?
+  endpoint   Endpoint? @relation(fields: [endpointId], references: [id], onDelete: SetNull)
+
+  // Workflow mode: setup, workflow, teardown steps (JSON arrays)
+  setup    String?
+  workflow String?
+  teardown String?
+
+  // Load pattern (required for all modes) - JSON array of Phase
+  phases String
+
+  // Error handling configuration
+  setupErrorHandling    String @default("abort")
+  setupRetryCount       Int    @default(3)
+  teardownErrorHandling String @default("ignore")
+  teardownRetryCount    Int    @default(3)
+
+  // Template flag - templates are read-only, can be duplicated
+  isTemplate Boolean @default(false)
+
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  tests Test[]
+
+  @@index([name])
+  @@index([isTemplate])
+  @@index([mode])
+  @@index([createdAt(sort: Desc)])
+}
+
 model Test {
-  id          Int       @id @default(autoincrement())
-  endpointId  Int
-  endpoint    Endpoint  @relation(fields: [endpointId], references: [id], onDelete: Cascade)
-  duration    Int
-  connections Int
-  rps         Int?
-  timeout     Int       @default(300)
-  status      String    @default("pending")
-  results     String?
-  createdAt   DateTime  @default(now())
-  completedAt DateTime?
+  id           Int       @id @default(autoincrement())
+  endpointId   Int
+  endpoint     Endpoint  @relation(fields: [endpointId], references: [id], onDelete: Cascade)
+  scenarioId   Int?
+  scenario     Scenario? @relation(fields: [scenarioId], references: [id], onDelete: SetNull)
+  duration     Int
+  connections  Int
+  rps          Int?
+  timeout      Int       @default(300)
+  status       String    @default("pending")
+  results      String?
+  phaseResults String?
+  createdAt    DateTime  @default(now())
+  completedAt  DateTime?
 
   // Indexes for performance
   @@index([endpointId, createdAt(sort: Desc)])
+  @@index([scenarioId, createdAt(sort: Desc)])
   @@index([status])
   @@index([createdAt(sort: Desc)])
 }

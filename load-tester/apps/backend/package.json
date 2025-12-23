@@ -13,7 +13,9 @@
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "prisma:studio": "prisma studio",
-    "db:setup": "prisma migrate dev && prisma generate"
+    "prisma:seed": "node prisma/seed.js",
+    "db:setup": "prisma migrate dev && prisma generate",
+    "db:reset": "prisma migrate reset --force && npm run prisma:seed"
   },
   "keywords": [
     "load-testing",

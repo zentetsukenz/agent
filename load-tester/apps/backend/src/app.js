@@ -12,6 +12,8 @@ const {
   validateEndpoint,
   validateTestConfig,
   validateId,
+  validateScenario,
+  validateScenarioUpdate,
 } = require("./middleware/validation");
 const {
   requestId,
@@ -21,6 +23,7 @@ const {
 
 const endpointsController = require("./features/endpoints/endpoints.controller");
 const testsController = require("./features/tests/tests.controller");
+const scenariosController = require("./features/scenarios/scenarios.controller");
 
 const app = express();
 
@@ -77,6 +80,19 @@ app.post(
 app.get("/api/tests/:id", validateId, testsController.show);
 app.get("/api/tests/:id/status", validateId, testsController.status);
 app.delete("/api/tests/:id/cancel", validateId, testsController.cancel);
+
+// Scenarios API routes
+app.get("/api/scenarios", scenariosController.index);
+app.get("/api/scenarios/:id", validateId, scenariosController.show);
+app.post("/api/scenarios", validateScenario, scenariosController.create);
+app.put(
+  "/api/scenarios/:id",
+  validateId,
+  validateScenarioUpdate,
+  scenariosController.update
+);
+app.delete("/api/scenarios/:id", validateId, scenariosController.destroy);
+app.post("/api/scenarios/:id/duplicate", validateId, scenariosController.duplicate);
 
 // 404 handler for undefined routes
 app.use(notFoundHandler);

@@ -126,9 +126,194 @@ const validateId = [
   handleValidationErrors,
 ];
 
+/**
+ * Validation rules for scenario creation/update
+ */
+const validateScenario = [
+  body("name")
+    .trim()
+    .notEmpty()
+    .withMessage("Name is required")
+    .isLength({ min: 1, max: 255 })
+    .withMessage("Name must be between 1 and 255 characters")
+    .escape(),
+
+  body("description")
+    .optional({ nullable: true })
+    .isLength({ max: 1000 })
+    .withMessage("Description must be at most 1000 characters"),
+
+  body("mode")
+    .optional()
+    .isIn(["simple", "workflow"])
+    .withMessage("Mode must be 'simple' or 'workflow'"),
+
+  body("endpointId")
+    .optional({ nullable: true })
+    .isInt({ min: 1 })
+    .withMessage("Endpoint ID must be a positive integer"),
+
+  body("phases")
+    .isArray({ min: 1 })
+    .withMessage("At least one phase is required"),
+
+  body("phases.*.name")
+    .trim()
+    .notEmpty()
+    .withMessage("Phase name is required"),
+
+  body("phases.*.duration")
+    .isInt({ min: 1 })
+    .withMessage("Phase duration must be a positive integer"),
+
+  body("phases.*.connections")
+    .isInt({ min: 0 })
+    .withMessage("Phase connections must be a non-negative integer"),
+
+  body("phases.*.type")
+    .isIn(["ramp", "constant", "spike"])
+    .withMessage("Phase type must be 'ramp', 'constant', or 'spike'"),
+
+  body("phases.*.rps")
+    .optional({ nullable: true })
+    .isInt({ min: 0 })
+    .withMessage("Phase RPS must be a non-negative integer"),
+
+  body("setup")
+    .optional({ nullable: true })
+    .isArray()
+    .withMessage("Setup must be an array"),
+
+  body("workflow")
+    .optional({ nullable: true })
+    .isArray()
+    .withMessage("Workflow must be an array"),
+
+  body("teardown")
+    .optional({ nullable: true })
+    .isArray()
+    .withMessage("Teardown must be an array"),
+
+  body("setupErrorHandling")
+    .optional()
+    .isIn(["abort", "retry", "ignore"])
+    .withMessage("setupErrorHandling must be 'abort', 'retry', or 'ignore'"),
+
+  body("setupRetryCount")
+    .optional()
+    .isInt({ min: 0 })
+    .withMessage("setupRetryCount must be a non-negative integer"),
+
+  body("teardownErrorHandling")
+    .optional()
+    .isIn(["abort", "retry", "ignore"])
+    .withMessage("teardownErrorHandling must be 'abort', 'retry', or 'ignore'"),
+
+  body("teardownRetryCount")
+    .optional()
+    .isInt({ min: 0 })
+    .withMessage("teardownRetryCount must be a non-negative integer"),
+
+  handleValidationErrors,
+];
+
+/**
+ * Validation rules for scenario update (all fields optional)
+ */
+const validateScenarioUpdate = [
+  body("name")
+    .optional()
+    .trim()
+    .notEmpty()
+    .withMessage("Name cannot be empty")
+    .isLength({ min: 1, max: 255 })
+    .withMessage("Name must be between 1 and 255 characters")
+    .escape(),
+
+  body("description")
+    .optional({ nullable: true })
+    .isLength({ max: 1000 })
+    .withMessage("Description must be at most 1000 characters"),
+
+  body("mode")
+    .optional()
+    .isIn(["simple", "workflow"])
+    .withMessage("Mode must be 'simple' or 'workflow'"),
+
+  body("endpointId")
+    .optional({ nullable: true })
+    .isInt({ min: 1 })
+    .withMessage("Endpoint ID must be a positive integer"),
+
+  body("phases")
+    .optional()
+    .isArray({ min: 1 })
+    .withMessage("Phases must be an array with at least one phase"),
+
+  body("phases.*.name")
+    .optional()
+    .trim()
+    .notEmpty()
+    .withMessage("Phase name is required"),
+
+  body("phases.*.duration")
+    .optional()
+    .isInt({ min: 1 })
+    .withMessage("Phase duration must be a positive integer"),
+
+  body("phases.*.connections")
+    .optional()
+    .isInt({ min: 0 })
+    .withMessage("Phase connections must be a non-negative integer"),
+
+  body("phases.*.type")
+    .optional()
+    .isIn(["ramp", "constant", "spike"])
+    .withMessage("Phase type must be 'ramp', 'constant', or 'spike'"),
+
+  body("setup")
+    .optional({ nullable: true })
+    .isArray()
+    .withMessage("Setup must be an array"),
+
+  body("workflow")
+    .optional({ nullable: true })
+    .isArray()
+    .withMessage("Workflow must be an array"),
+
+  body("teardown")
+    .optional({ nullable: true })
+    .isArray()
+    .withMessage("Teardown must be an array"),
+
+  body("setupErrorHandling")
+    .optional()
+    .isIn(["abort", "retry", "ignore"])
+    .withMessage("setupErrorHandling must be 'abort', 'retry', or 'ignore'"),
+
+  body("setupRetryCount")
+    .optional()
+    .isInt({ min: 0 })
+    .withMessage("setupRetryCount must be a non-negative integer"),
+
+  body("teardownErrorHandling")
+    .optional()
+    .isIn(["abort", "retry", "ignore"])
+    .withMessage("teardownErrorHandling must be 'abort', 'retry', or 'ignore'"),
+
+  body("teardownRetryCount")
+    .optional()
+    .isInt({ min: 0 })
+    .withMessage("teardownRetryCount must be a non-negative integer"),
+
+  handleValidationErrors,
+];
+
 module.exports = {
   validateEndpoint,
   validateTestConfig,
   validateId,
+  validateScenario,
+  validateScenarioUpdate,
   handleValidationErrors,
 };
