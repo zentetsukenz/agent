@@ -12,7 +12,7 @@
 |-------|--------|----------|
 | Phase 1: Frontend - List & Templates | 🟢 Complete | 100% |
 | Phase 2: Frontend - Phase Builder | 🟢 Complete | 100% |
-| Phase 3: Frontend - Workflow Builder | 🔴 Not Started | 0% |
+| Phase 3: Frontend - Workflow Builder | � Complete | 100% |
 | Phase 4: Frontend - Test Integration | 🔴 Not Started | 0% |
 | Phase 5: Backend - Database & API | 🔴 Not Started | 0% |
 | Phase 6: Backend - Execution (Phases) | 🔴 Not Started | 0% |
@@ -110,32 +110,45 @@
 
 ## Phase 3: Frontend - Workflow Builder
 
-**Status**: 🔴 Not Started  
-**Started**: -  
-**Completed**: -
+**Status**: � Complete  
+**Started**: December 23, 2025  
+**Completed**: December 23, 2025
 
 ### Tasks
 
-- [ ] Add mode toggle to ScenarioForm (simple/workflow)
-- [ ] Create `SetupStepEditor.jsx` component
-- [ ] Create `WorkflowStepEditor.jsx` component
-- [ ] Create `TeardownStepEditor.jsx` component (or reuse SetupStepEditor)
-- [ ] Create `VariableExtractor.jsx` component
-- [ ] Create `VariableAutocomplete.jsx` component
-- [ ] Implement step add/edit/remove for setup
-- [ ] Implement step add/edit/remove for workflow
-- [ ] Implement step add/edit/remove for teardown
-- [ ] Implement step reordering (drag and drop or buttons)
-- [ ] Implement variable scope tracking
-- [ ] Implement autocomplete trigger on `{{`
-- [ ] Implement error handling config UI
-- [ ] Update mock service for workflow data
-- [ ] Write component tests
-- [ ] Manual testing in browser
+- [x] Add mode toggle to ScenarioForm (simple/workflow)
+- [x] Create `SetupStepEditor.jsx` component
+- [x] Create `WorkflowStepEditor.jsx` component
+- [x] Create `TeardownStepEditor.jsx` component (reuses SetupStepEditor with stepType prop)
+- [x] Create `VariableExtractor.jsx` component
+- [x] Create `VariableAutocomplete.jsx` component
+- [x] Implement step add/edit/remove for setup
+- [x] Implement step add/edit/remove for workflow
+- [x] Implement step add/edit/remove for teardown
+- [x] Implement step reordering (move up/down buttons)
+- [x] Implement variable scope tracking
+- [x] Implement autocomplete trigger on `{{`
+- [x] Implement error handling config UI
+- [x] Update scenario constants for workflow data
+- [x] Write component tests
+- [x] Manual testing in browser
 
 ### Notes
 
-_Add notes during implementation_
+**Session 1 (Dec 23, 2025)**:
+- Added mode toggle with Simple/Workflow visual buttons
+- Created `SetupStepEditor.jsx` for setup/teardown steps (shared with stepType prop)
+- Created `WorkflowStepEditor.jsx` with Loop/Once toggle for runOnce behavior
+- Created `VariableExtractor.jsx` for extracting variables from responses
+- Created `VariableAutocomplete.jsx` with dropdown on `{{` trigger
+- Added collapsible and switch UI components from shadcn
+- Updated `scenarioConstants.js` with HTTP_METHODS, ERROR_HANDLING_OPTIONS, etc.
+- Workflow mode shows Setup Steps, Workflow Steps, Teardown Steps sections
+- Variable scope tracking: setup vars available everywhere, workflow vars in subsequent steps
+- Error handling config: abort/retry/ignore options with retry count
+- Tests: SetupStepEditor (28), WorkflowStepEditor (24), VariableExtractor (17)
+- Total: 163 frontend tests passing
+- Visual verification passed via browser testing
 
 ---
 
@@ -356,6 +369,36 @@ _Add notes during implementation_
 - Visual verification passed for create and edit flows
 **Next**: Phase 3 - Workflow Builder
 
+### 2025-12-23 - Session 2
+
+**Started**: Phase 3 - Frontend Workflow Builder
+**Completed**: 
+- Mode toggle (Simple/Workflow) with visual selection buttons
+- SetupStepEditor.jsx for setup and teardown steps
+- WorkflowStepEditor.jsx with Loop/Once toggle
+- VariableExtractor.jsx for response variable extraction
+- VariableAutocomplete.jsx with `{{` trigger dropdown
+- Setup/Workflow/Teardown sections in ScenarioForm
+- Step add/edit/remove/reorder for all step types
+- Variable scope tracking (setup vars global, workflow vars scoped)
+- Error handling configuration UI (abort/retry/ignore)
+- Added shadcn collapsible and switch components
+- Updated scenarioConstants.js with workflow-related constants
+- SetupStepEditor tests (28 passing)
+- WorkflowStepEditor tests (24 passing)
+- VariableExtractor tests (17 passing)
+- Total: 163 frontend tests passing
+
+**In Progress**: None
+**Blockers**: None
+**Notes**: 
+- Reused SetupStepEditor for teardown with stepType prop
+- WorkflowStepEditor has unique Loop/Once toggle for runOnce behavior
+- Variable autocomplete shows scope badges (setup=purple, workflow=blue)
+- Error handling appears when steps are added to setup/teardown
+- Visual verification confirmed all workflow mode features working
+**Next**: Phase 4 - Test Integration
+
 ---
 
 ## Blockers & Issues
@@ -375,4 +418,4 @@ Example:
 ---
 
 **Last Updated**: December 23, 2025  
-**Updated By**: Phase 2 completion
+**Updated By**: Phase 3 completion
