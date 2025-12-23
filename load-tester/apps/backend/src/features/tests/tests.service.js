@@ -11,6 +11,7 @@ const {
   NotFoundError,
   TimeoutError,
 } = require("../../utils/errors");
+const scenarioExecutor = require("../scenarios/scenarioExecutor");
 
 // In-memory store for running test processes
 // Map: testId -> { instance: autocannonInstance, startTime: Date }
@@ -127,6 +128,137 @@ async function createTest(prisma, endpointId, config) {
       status: "pending",
     },
   });
+}
+
+/**
+ * Create test record with scenario
+ * @param {PrismaClient} prisma - Prisma client instance
+ * @param {number} endpointId - Endpoint ID
+ * @param {number} scenarioId - Scenario ID
+ * @param {Object} scenario - Scenario object with phases
+ * @returns {Promise<Object>} - Created test
+ */
+async function createTestWithScenario(prisma, endpointId, scenarioId, scenario) {
+  // Parse phases to calculate total duration and max connections
+  const phases = typeof scenario.phases === "string"
+    ? JSON.parse(scenario.phases)
+    : scenario.phases;
+
+  const totalDuration = phases.reduce((sum, phase) => sum + phase.duration, 0);
+  const maxConnections = Math.max(...phases.map(p => p.connections));
+
+  return await prisma.test.create({
+    data: {
+      endpointId: parseInt(endpointId),
+      scenarioId: parseInt(scenarioId),
+      duration: totalDuration,
+      connections: maxConnections,
+      status: "pending",
+    },
+  });
+}
+
+/**
+ * Execute load test with scenario (multi-phase)
+ * @param {PrismaClient} prisma - Prisma client instance
+ * @param {number} testId - Test ID
+ * @returns {Promise<void>}
+ */
+async function executeTestWithScenario(prisma, testId) {
+  try {
+    // Update status to running
+    await updateTestStatus(prisma, testId, "running");
+
+    // Get test with scenario and endpoint details
+    const test = await prisma.test.findUnique({
+      where: { id: parseInt(testId) },
+      include: {
+        endpoint: true,
+        scenario: true,
+      },
+    });
+
+    if (!test) {
+      throw new NotFoundError("Test");
+    }
+
+    if (!test.scenario) {
+      throw new ValidationError("Test does not have an associated scenario");
+    }
+
+    if (!test.endpoint) {
+      throw new ValidationError("Test does not have an associated endpoint");
+    }
+
+    logger.info("Starting scenario test execution", {
+      testId,
+      scenarioId: test.scenarioId,
+      scenarioName: test.scenario.name,
+      endpointUrl: test.endpoint.url,
+    });
+
+    // Execute the scenario
+    const executionResult = await scenarioExecutor.executeScenario(
+      prisma,
+      testId,
+      test.scenario,
+      test.endpoint
+    );
+
+    // Update test with results
+    await prisma.test.update({
+      where: { id: parseInt(testId) },
+      data: {
+        status: executionResult.status,
+        results: JSON.stringify(executionResult.results),
+        phaseResults: JSON.stringify(executionResult.phaseResults),
+        completedAt: new Date(),
+      },
+    });
+
+    logger.info("Scenario test completed", {
+      testId,
+      status: executionResult.status,
+      phaseCount: executionResult.phaseResults.length,
+    });
+
+  } catch (error) {
+    // Don't log if it's a cleanup-related error
+    const isCleanupError =
+      error.code === "P2025" || error.code === "SQLITE_READONLY_DBMOVED";
+    if (!isCleanupError) {
+      logger.error("Error executing scenario test", {
+        error: error.message,
+        code: error.code,
+      });
+    }
+
+    // Update status to failed
+    try {
+      await prisma.test.update({
+        where: { id: parseInt(testId) },
+        data: {
+          status: "failed",
+          results: JSON.stringify({
+            error: error.message,
+            type: "error",
+            timestamp: new Date().toISOString(),
+          }),
+          completedAt: new Date(),
+        },
+      });
+    } catch (updateError) {
+      const isUpdateCleanupError =
+        updateError.code === "P2025" ||
+        updateError.code === "SQLITE_READONLY_DBMOVED";
+      if (!isUpdateCleanupError) {
+        logger.error("Failed to update test status", {
+          error: updateError.message,
+          code: updateError.code,
+        });
+      }
+    }
+  }
 }
 
 /**
@@ -298,7 +430,10 @@ async function executeTest(prisma, testId) {
 async function getTestResults(prisma, testId) {
   const test = await prisma.test.findUnique({
     where: { id: parseInt(testId) },
-    include: { endpoint: true },
+    include: {
+      endpoint: true,
+      scenario: true,
+    },
   });
 
   if (!test) {
@@ -311,11 +446,14 @@ async function getTestResults(prisma, testId) {
 /**
  * Get all tests
  * @param {PrismaClient} prisma - Prisma client instance
- * @returns {Promise<Array>} - All tests with their endpoints
+ * @returns {Promise<Array>} - All tests with their endpoints and scenarios
  */
 async function getAllTests(prisma) {
   return await prisma.test.findMany({
-    include: { endpoint: true },
+    include: {
+      endpoint: true,
+      scenario: true,
+    },
     orderBy: { createdAt: "desc" },
   });
 }
@@ -329,7 +467,37 @@ async function getAllTests(prisma) {
 async function cancelTest(prisma, testId) {
   const testIdInt = parseInt(testId);
 
-  // Check if test is running
+  // Check if it's a scenario test first
+  if (scenarioExecutor.isScenarioTestRunning(testIdInt)) {
+    try {
+      // Cancel the scenario test
+      scenarioExecutor.cancelScenarioTest(testIdInt);
+
+      // Update test status to cancelled
+      const updatedTest = await prisma.test.update({
+        where: { id: testIdInt },
+        data: {
+          status: "cancelled",
+          results: JSON.stringify({
+            message: "Scenario test was cancelled by user",
+            cancelledAt: new Date().toISOString(),
+          }),
+          completedAt: new Date(),
+        },
+      });
+
+      return {
+        success: true,
+        message: "Scenario test cancelled successfully",
+        test: updatedTest,
+      };
+    } catch (error) {
+      logger.error("Error cancelling scenario test", { error: error.message });
+      throw new Error("Failed to cancel scenario test: " + error.message);
+    }
+  }
+
+  // Check if test is running (regular test)
   const runningTest = runningTests.get(testIdInt);
 
   if (!runningTest) {
@@ -432,7 +600,9 @@ function formatResults(rawResults) {
 module.exports = {
   validateTestConfig,
   createTest,
+  createTestWithScenario,
   executeTest,
+  executeTestWithScenario,
   getTestResults,
   getAllTests,
   cancelTest,

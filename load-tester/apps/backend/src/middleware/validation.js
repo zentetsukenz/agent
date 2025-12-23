@@ -77,9 +77,20 @@ const validateEndpoint = [
 
 /**
  * Validation rules for test execution configuration
+ * When scenarioId is provided, duration and connections are optional (derived from scenario)
+ * When no scenarioId, duration and connections are required
  */
 const validateTestConfig = [
+  // scenarioId is optional - if provided, we use scenario settings
+  body("scenarioId")
+    .optional()
+    .isInt({ min: 1 })
+    .withMessage("Scenario ID must be a positive integer")
+    .toInt(),
+
+  // Duration is required only if scenarioId is not provided
   body("duration")
+    .if((value, { req }) => !req.body.scenarioId)
     .notEmpty()
     .withMessage("Duration is required")
     .isInt({ min: 1, max: config.loadTest.maxDuration })
@@ -88,7 +99,9 @@ const validateTestConfig = [
     )
     .toInt(),
 
+  // Connections is required only if scenarioId is not provided
   body("connections")
+    .if((value, { req }) => !req.body.scenarioId)
     .notEmpty()
     .withMessage("Connections is required")
     .isInt({ min: 1, max: config.loadTest.maxConnections })
