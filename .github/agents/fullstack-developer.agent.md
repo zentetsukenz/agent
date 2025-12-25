@@ -56,12 +56,14 @@ This is non-negotiable. These files contain critical context that prevents mista
 
 **During work, reference SKILLS/ directory when performing relevant tasks:**
 
-| Task                      | Skill File                          |
-| ------------------------- | ----------------------------------- |
-| Running terminal commands | `SKILLS/fish-shell.md`              |
-| Database operations       | `SKILLS/prisma-patterns.md`         |
-| UI/UX visual verification | `SKILLS/playwright-verification.md` |
-| Before claiming done      | `SKILLS/verification-checklist.md`  |
+| Task                      | Skill File                            |
+| ------------------------- | ------------------------------------- |
+| Running terminal commands | `SKILLS/fish-shell.md`                |
+| Database operations       | `SKILLS/prisma-patterns.md`           |
+| UI/UX visual verification | `SKILLS/playwright-verification.md`   |
+| Starting/stopping servers | `SKILLS/server-operations.md`         |
+| Frontend runtime errors   | `SKILLS/browser-console-debugging.md` |
+| Before claiming done      | `SKILLS/verification-checklist.md`    |
 
 **How to use skills**:
 
@@ -71,6 +73,9 @@ cat load-tester/SKILLS/fish-shell.md
 
 # Review Prisma patterns before database work
 cat load-tester/SKILLS/prisma-patterns.md
+
+# Before starting servers
+cat load-tester/SKILLS/server-operations.md
 ```
 
 ### ⚠️ Visual Verification Constraint (MANDATORY)
@@ -82,6 +87,28 @@ cat load-tester/SKILLS/prisma-patterns.md
 3. **NEVER take screenshots directly**—delegate to subagent
 
 This constraint exists because screenshots consume ~100KB each and will overflow your context. The skill describes how to get visual verification without filling your context.
+
+### ⚠️ Server Operations Constraint (MANDATORY)
+
+**Before starting, stopping, or resetting dev servers, you MUST:**
+
+1. Read `SKILLS/server-operations.md` first
+2. Use canonical ports only: **Backend 3001, Frontend 5173**
+3. **NEVER accept fallback ports** (5174, 5175, etc.)—clear and restart instead
+4. **ALWAYS verify accessibility** with curl after starting
+
+This constraint exists because port confusion wastes debugging time. If Vite says "Port 5173 is in use, trying 5174"—STOP and fix, don't proceed.
+
+### ⚠️ Browser Console Debugging Constraint (MANDATORY)
+
+**When debugging frontend runtime errors, you MUST:**
+
+1. Read `SKILLS/browser-console-debugging.md` first
+2. Gather clear reproduction steps before debugging
+3. **ALWAYS delegate to `browser-console-debugger` subagent**—never debug directly
+4. Verify server is running before delegating
+
+This constraint exists because debugging sessions fill context with logs and stack traces. The subagent isolates this data and returns only structured analysis.
 
 ### 3. Before Claiming Done
 

@@ -6,6 +6,8 @@ import { useTestStatus } from '../hooks/useTestStatus';
 import { testsAPI } from '../services/tests';
 import { TestStatusBadge } from '../components/tests/TestStatusBadge';
 import { TestMetrics } from '../components/tests/TestMetrics';
+import { PhaseResultsCard } from '../components/tests/PhaseResultsCard';
+import { ScenarioInfoCard } from '../components/tests/ScenarioInfoCard';
 import ResultsChart from '../components/ResultsChart';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -60,6 +62,8 @@ export const TestResults = () => {
 
   const isRunning = test?.status === TEST_STATUS.PENDING || test?.status === TEST_STATUS.RUNNING;
   const results = test?.results || null;
+  const phaseResults = test?.phaseResults || null;
+  const scenario = test?.scenario || null;
 
   return (
     <div className="max-w-6xl mx-auto">
@@ -190,6 +194,13 @@ export const TestResults = () => {
         </CardContent>
       </Card>
 
+      {/* Scenario Info (if test used a scenario) */}
+      {scenario && (
+        <div className="mb-6">
+          <ScenarioInfoCard scenario={scenario} />
+        </div>
+      )}
+
       {/* Loading or Results */}
       {isRunning ? (
         <Card>
@@ -203,6 +214,13 @@ export const TestResults = () => {
           <div className="mb-6">
             <ResultsChart results={results} />
           </div>
+
+          {/* Phase Results (if scenario test) */}
+          {phaseResults && phaseResults.length > 0 && (
+            <div className="mb-6">
+              <PhaseResultsCard phaseResults={phaseResults} />
+            </div>
+          )}
 
           {/* Detailed Metrics */}
           <TestMetrics results={results} />

@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
 import { endpointsAPI } from '../services/endpoints';
 import { testsAPI } from '../services/tests';
-import { scenariosAPI } from '../services/scenarios';
 import { TestConfigForm } from '../components/tests/TestConfigForm';
 import RequestTemplates from '../components/RequestTemplates';
 import { ScenarioSelector } from '../components/scenarios/ScenarioSelector';

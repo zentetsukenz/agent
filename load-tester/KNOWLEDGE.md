@@ -178,7 +178,13 @@ model Test {
 - See `SKILLS/prisma-patterns.md` for current patterns
 
 ### Running the App
+
+**⚠️ CRITICAL: Always run from the project root directory**
+
 ```fish
+# CORRECT - always use this pattern
+cd ~/workspace/agent/load-tester && npm run dev
+
 # Start both apps (recommended)
 npm run dev
 
@@ -186,6 +192,15 @@ npm run dev
 npm run backend    # Express on :3001
 npm run frontend   # Vite on :5173
 ```
+
+**Canonical Ports (non-negotiable):**
+
+| Service | Port | URL |
+|---------|------|-----|
+| Backend | 3001 | http://localhost:3001 |
+| Frontend | 5173 | http://localhost:5173 |
+
+**⚠️ Never accept fallback ports.** If Vite says "Port 5173 is in use, trying 5174"—STOP, clear the port, and restart. See `SKILLS/server-operations.md` for the full procedure.
 
 ### Running Tests
 ```fish
@@ -218,8 +233,33 @@ npm run prisma:studio    # Visual browser
 
 1. **"DATABASE_URL not set"** - Create `.env` file in `apps/backend/`
 2. **Prisma client out of sync** - Run `npm run prisma:generate` in `apps/backend/`
-3. **Port already in use** - Kill existing process or change PORT in `.env`
+3. **Port already in use** - See detailed fix below
 4. **Test database issues** - Test setup auto-creates/destroys `prisma/test.db`
+5. **"ENOENT: package.json"** - Wrong directory; use `cd ~/workspace/agent/load-tester &&` prefix
+6. **Network Error in frontend** - Check backend is running on :3001, not frontend on wrong port
+
+### Port Conflict Resolution
+
+When you see "Port X is in use" or "Address already in use":
+
+```fish
+# Check what's using the ports
+lsof -i :3001 | grep LISTEN
+lsof -i :5173 | grep LISTEN
+
+# Kill processes on canonical ports
+lsof -i :3001 -t | xargs kill -9
+lsof -i :5173 -t | xargs kill -9
+
+# Verify ports are free
+lsof -i :3001 | grep LISTEN  # Should return nothing
+lsof -i :5173 | grep LISTEN  # Should return nothing
+
+# Now start servers
+cd ~/workspace/agent/load-tester && npm run dev
+```
+
+**Full procedure:** See `SKILLS/server-operations.md`
 
 ---
 
@@ -244,6 +284,12 @@ npm run prisma:studio    # Visual browser
 ## Recent Learnings
 
 > **Add new learnings here as the project evolves**
+
+### December 2025
+- Created `SKILLS/server-operations.md` for port management and server lifecycle
+- Created `SKILLS/browser-console-debugging.md` for frontend runtime debugging
+- Lesson learned: Never accept fallback ports (5174, 5175) - always clear canonical ports
+- Lesson learned: Always delegate browser debugging to subagent for clean context
 
 ### December 2024
 - Upgraded Prisma 5 → 7 with adapter pattern
