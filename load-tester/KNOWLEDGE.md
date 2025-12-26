@@ -115,6 +115,7 @@ load-tester/
    - `components/ui/` - Reusable primitives (Button, Loading, ErrorMessage)
    - `components/endpoints/` - Endpoint-specific components
    - `components/tests/` - Test-related components
+   - `components/scenarios/` - Scenario builder and display components
    - `components/layout/` - App shell
 
 ---
@@ -148,6 +149,8 @@ model Test {
   id          Int       @id @default(autoincrement())
   endpointId  Int
   endpoint    Endpoint  @relation(onDelete: Cascade)
+  scenarioId  Int?      // Optional link to scenario
+  scenario    Scenario? @relation(onDelete: SetNull)
   duration    Int       // seconds
   connections Int       // concurrent connections
   rps         Int?      // requests per second (optional)
@@ -160,6 +163,52 @@ model Test {
   @@index([endpointId, createdAt(sort: Desc)])
   @@index([status])
   @@index([createdAt(sort: Desc)])
+}
+```
+
+**Scenario** - Load test scenarios with phases
+```prisma
+model Scenario {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique
+  description String?
+  
+  // Modes: "simple" (single endpoint) or "workflow" (multi-step)
+  mode        String   @default("simple")
+  
+  // Simple mode: reference existing endpoint
+  endpointId  Int?
+  endpoint    Endpoint? @relation(onDelete: SetNull)
+  
+  // Workflow mode: setup, workflow, teardown steps (JSON arrays)
+  setup       String?   // JSON array of setup steps
+  workflow    String?   // JSON array of workflow steps
+  teardown    String?   // JSON array of teardown steps
+  
+  // Load pattern - JSON array of Phase objects
+  phases      String    // [{type, duration, connections, rps?}]
+  
+  // Error handling
+  setupErrorHandling    String @default("abort")
+  teardownErrorHandling String @default("ignore")
+  
+  // Template flag - templates are read-only
+  isTemplate  Boolean  @default(false)
+  
+  @@index([name])
+  @@index([isTemplate])
+  @@index([mode])
+}
+```
+
+### Phase Object Format
+```json
+{
+  "type": "rampUp|sustained|rampDown|spike",
+  "duration": 30,           // seconds
+  "connections": 100,       // target concurrent connections
+  "startConnections": 10,   // for rampUp/rampDown
+  "rps": 1000              // optional requests per second
 }
 ```
 

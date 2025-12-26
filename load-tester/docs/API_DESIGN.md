@@ -1,29 +1,50 @@
 # Load Tester API Design
 
-## Phase 1: API Design
+## Overview
 
-### Overview
-A simple load testing application with server-side rendering using Express.js and EJS templates.
+A load testing application with React SPA frontend and Express.js REST API backend. Supports endpoint management, load test execution, and advanced scenario-based testing.
 
-### Routes Design
+## API Routes
 
-#### Web UI Routes (Server-Side Rendered)
+### Health Check
+```
+GET /api/health
+```
 
-| Method | Path | Description | View Template | Controller |
-|--------|------|-------------|---------------|------------|
-| GET | `/` | Home page - list all endpoints | `index.ejs` | `endpoints.controller.js` |
-| GET | `/endpoints/new` | Form to add new endpoint | `endpoints/new.ejs` | `endpoints.controller.js` |
-| POST | `/endpoints` | Create new endpoint | Redirect to `/` | `endpoints.controller.js` |
-| GET | `/endpoints/:id/edit` | Edit form for endpoint | `endpoints/edit.ejs` | `endpoints.controller.js` |
-| PUT | `/endpoints/:id` | Update endpoint | Redirect to `/` | `endpoints.controller.js` |
-| DELETE | `/endpoints/:id` | Delete endpoint | Redirect to `/` | `endpoints.controller.js` |
-| GET | `/endpoints/:id/test` | Load test configuration page | `test/configure.ejs` | `tests.controller.js` |
-| POST | `/endpoints/:id/test` | Execute load test | Redirect to results | `tests.controller.js` |
-| GET | `/tests/:id/results` | View test results | `test/results.ejs` | `tests.controller.js` |
+### Endpoints API
 
-### Data Models
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/api/endpoints` | List all endpoints |
+| GET | `/api/endpoints/:id` | Get single endpoint |
+| POST | `/api/endpoints` | Create endpoint |
+| PUT | `/api/endpoints/:id` | Update endpoint |
+| DELETE | `/api/endpoints/:id` | Delete endpoint |
 
-#### Endpoint Model
+### Tests API
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/api/tests` | List all tests |
+| POST | `/api/endpoints/:id/test` | Execute load test |
+| GET | `/api/tests/:id` | Get test results |
+| GET | `/api/tests/:id/status` | Get test status (polling) |
+| DELETE | `/api/tests/:id/cancel` | Cancel running test |
+
+### Scenarios API
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/api/scenarios` | List all scenarios |
+| GET | `/api/scenarios/:id` | Get single scenario |
+| POST | `/api/scenarios` | Create scenario |
+| PUT | `/api/scenarios/:id` | Update scenario |
+| DELETE | `/api/scenarios/:id` | Delete scenario |
+| POST | `/api/scenarios/:id/duplicate` | Duplicate scenario |
+
+## Data Models
+
+### Endpoint Model
 ```typescript
 {
   id: number (auto-increment)
@@ -33,38 +54,73 @@ A simple load testing application with server-side rendering using Express.js an
   headers: string (JSON string, optional)
   body: string (JSON string, optional)
   createdAt: DateTime (auto)
+  updatedAt: DateTime (auto)
 }
 ```
 
-**Validation Rules:**
-- `name`: Required, 1-255 characters
-- `url`: Required, valid URL format
-- `method`: Must be one of: GET, POST, PUT, DELETE, PATCH
-- `headers`: Must be valid JSON if provided
-- `body`: Must be valid JSON if provided
-
-#### Test Model
+### Test Model
 ```typescript
 {
   id: number (auto-increment)
   endpointId: number (foreign key)
+  scenarioId: number (optional foreign key)
   duration: number (required, 1-300 seconds)
   connections: number (required, 1-1000)
   rps: number (optional, 1-100000)
-  status: string (default: "pending", enum: pending|running|completed|failed)
-  results: string (JSON string with test results)
+  timeout: number (default: 300)
+  status: string (pending|running|completed|failed|cancelled)
+  results: string (JSON with test results)
   createdAt: DateTime (auto)
   completedAt: DateTime (optional)
 }
 ```
 
-**Validation Rules:**
-- `duration`: Required, integer, 1-300 seconds
-- `connections`: Required, integer, 1-1000
-- `rps`: Optional, integer, 1-100000
-- `status`: Managed by system
+### Scenario Model
+```typescript
+{
+  id: number (auto-increment)
+  name: string (required, unique)
+  description: string (optional)
+  mode: string ("simple"|"workflow")
+  
+  // Simple mode
+  endpointId: number (optional, reference to endpoint)
+  
+  // Workflow mode
+  setup: string (JSON array of setup steps)
+  workflow: string (JSON array of workflow steps)  
+  teardown: string (JSON array of teardown steps)
+  
+  // Load pattern (all modes)
+  phases: string (JSON array of Phase objects)
+  
+  // Error handling
+  setupErrorHandling: string ("abort"|"continue"|"retry")
+  setupRetryCount: number (default: 3)
+  teardownErrorHandling: string ("abort"|"continue"|"ignore")
+  teardownRetryCount: number (default: 3)
+  
+  // Template flag
+  isTemplate: boolean (default: false)
+  
+  createdAt: DateTime (auto)
+  updatedAt: DateTime (auto)
+}
+```
 
-#### Test Results Format (JSON)
+### Phase Object
+```typescript
+{
+  type: string ("rampUp"|"sustained"|"rampDown"|"spike")
+  duration: number (seconds)
+  connections: number (target concurrent connections)
+  startConnections: number (for ramp phases)
+  rps: number (optional, requests per second)
+  name: string (optional, phase display name)
+}
+```
+
+### Test Results Format
 ```typescript
 {
   requests: {
@@ -92,24 +148,22 @@ A simple load testing application with server-side rendering using Express.js an
 }
 ```
 
-### Request/Response Formats
+## Request/Response Examples
 
-#### POST /endpoints
-**Request Body:**
+### Create Endpoint
+**POST /api/endpoints**
 ```json
 {
   "name": "Example API",
   "url": "https://api.example.com/users",
   "method": "GET",
   "headers": "{\"Authorization\": \"Bearer token\"}",
-  "body": "{\"key\": \"value\"}"
+  "body": null
 }
 ```
 
-**Response:** Redirect to `/` with flash message
-
-#### POST /endpoints/:id/test
-**Request Body:**
+### Execute Load Test
+**POST /api/endpoints/:id/test**
 ```json
 {
   "duration": 30,
@@ -118,137 +172,84 @@ A simple load testing application with server-side rendering using Express.js an
 }
 ```
 
-**Response:** Redirect to `/tests/:id/results`
-
-### Error Handling
-
-#### HTTP Status Codes
-- `200 OK`: Successful GET request
-- `201 Created`: Successful POST (redirect with 303 See Other)
-- `400 Bad Request`: Validation error
-- `404 Not Found`: Resource not found
-- `500 Internal Server Error`: Server error
-
-#### Error Response Format (for AJAX/API endpoints if needed)
+### Create Scenario
+**POST /api/scenarios**
 ```json
 {
-  "error": true,
-  "message": "Error description",
-  "details": ["Validation error 1", "Validation error 2"]
+  "name": "API Stress Test",
+  "description": "Gradual ramp up to peak load",
+  "mode": "simple",
+  "endpointId": 1,
+  "phases": [
+    {"type": "rampUp", "duration": 30, "startConnections": 1, "connections": 50},
+    {"type": "sustained", "duration": 60, "connections": 50},
+    {"type": "rampDown", "duration": 30, "startConnections": 50, "connections": 1}
+  ]
 }
 ```
 
-### Database Schema (Prisma)
+## Error Handling
 
-```prisma
-datasource db {
-  provider = "sqlite"
-  url      = env("DATABASE_URL")
-}
+### HTTP Status Codes
+- `200 OK`: Successful GET/PUT request
+- `201 Created`: Successful POST request
+- `204 No Content`: Successful DELETE request
+- `400 Bad Request`: Validation error
+- `404 Not Found`: Resource not found
+- `409 Conflict`: Duplicate resource
+- `429 Too Many Requests`: Rate limit exceeded
+- `500 Internal Server Error`: Server error
 
-generator client {
-  provider = "prisma-client-js"
-}
-
-model Endpoint {
-  id        Int      @id @default(autoincrement())
-  name      String
-  url       String
-  method    String   @default("GET")
-  headers   String?
-  body      String?
-  createdAt DateTime @default(now())
-  tests     Test[]
-}
-
-model Test {
-  id          Int       @id @default(autoincrement())
-  endpointId  Int
-  endpoint    Endpoint  @relation(fields: [endpointId], references: [id], onDelete: Cascade)
-  duration    Int
-  connections Int
-  rps         Int?
-  status      String    @default("pending")
-  results     String?
-  createdAt   DateTime  @default(now())
-  completedAt DateTime?
+### Error Response Format
+```json
+{
+  "error": "NotFoundError",
+  "message": "Endpoint not found",
+  "statusCode": 404
 }
 ```
 
-### Middleware Stack
+### Validation Error Format
+```json
+{
+  "error": "ValidationError",
+  "message": "Validation failed",
+  "statusCode": 400,
+  "details": [
+    {"field": "url", "message": "URL is required"},
+    {"field": "name", "message": "Name must be at least 1 character"}
+  ]
+}
+```
 
-1. **express.json()** - Parse JSON bodies
-2. **express.urlencoded()** - Parse form data
-3. **express.static()** - Serve static files
-4. **method-override** - Support PUT/DELETE from forms
-5. **express-session** - Session management for flash messages
-6. **connect-flash** - Flash messages for user feedback
+## Architecture
 
-### Service Layer Architecture
+### Backend Stack
+- **Framework**: Express.js 4.x
+- **Database**: SQLite with Prisma ORM 7.x
+- **Load Testing**: Autocannon
+- **Security**: Helmet, CORS, Rate Limiting
+- **Validation**: express-validator
 
+### Frontend Stack
+- **Framework**: React 19
+- **Build Tool**: Vite 7
+- **Routing**: React Router v7
+- **Styling**: Tailwind CSS 4
+- **HTTP Client**: Axios
+- **Forms**: React Hook Form
+- **Charts**: Recharts
+
+### Service Layer Pattern
 ```
 Controllers (HTTP handling)
     ↓
 Services (Business logic)
     ↓
-Repositories (Data access)
-    ↓
 Prisma Client (Database)
 ```
 
-#### Endpoints Service
-- `getAllEndpoints()`: Get all endpoints
-- `getEndpointById(id)`: Get single endpoint
-- `createEndpoint(data)`: Create new endpoint
-- `updateEndpoint(id, data)`: Update endpoint
-- `deleteEndpoint(id)`: Delete endpoint
-- `validateEndpointData(data)`: Validate endpoint data
-
-#### Tests Service
-- `createTest(endpointId, config)`: Create test record
-- `executeTest(testId)`: Run load test using autocannon
-- `getTestResults(testId)`: Get test results
-- `updateTestStatus(testId, status)`: Update test status
-- `formatResults(rawResults)`: Format autocannon results
-
-### Dependencies
-
-#### Production
-- `express`: ^4.18.0
-- `ejs`: ^3.1.9
-- `prisma`: ^5.0.0
-- `@prisma/client`: ^5.0.0
-- `autocannon`: ^7.12.0
-- `express-session`: ^1.17.3
-- `connect-flash`: ^0.1.1
-- `method-override`: ^3.0.0
-- `dotenv`: ^16.0.3
-
-#### Development
-- `jest`: ^29.0.0
-- `supertest`: ^6.3.0
-- `nodemon`: ^3.0.0
-- `@types/jest`: ^29.0.0
-- `@types/node`: ^20.0.0
-
-### Security Considerations
-
-1. **Input Validation**: Validate all user inputs
-2. **URL Validation**: Ensure URLs are valid and safe
-3. **Rate Limiting**: Consider adding rate limiting for test execution
-4. **JSON Parsing**: Safely parse JSON strings with try-catch
-5. **SQL Injection**: Prisma provides protection
-6. **XSS Protection**: EJS auto-escapes by default
-
-### Performance Considerations
-
-1. **Async Operations**: All I/O operations are async
-2. **Connection Pooling**: Prisma handles database connections
-3. **Test Execution**: Run tests asynchronously, update status
-4. **Resource Limits**: Enforce limits on duration, connections, RPS
-
 ---
 
-## Phase 1 Complete ✓
-
-Next Phase: Phase 2 - TDD (Test-Driven Development)
+**Version**: 2.0.0  
+**Last Updated**: December 2025

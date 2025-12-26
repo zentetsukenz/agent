@@ -12,6 +12,11 @@ A powerful load testing application with separated frontend and backend architec
 - ✅ **REST API Backend**: Clean API-first architecture
 - ✅ **SQLite Database**: Simple, zero-configuration data persistence
 - ✅ **TDD Approach**: Comprehensive test coverage
+- ✅ **Scenario Builder**: Create complex load test scenarios with multiple phases
+- ✅ **Workflow Mode**: Multi-step testing with setup, workflow, and teardown stages
+- ✅ **Phase-Based Load Patterns**: Ramp up/down, sustained load, spike testing
+- ✅ **Visual Load Preview**: Real-time chart showing load pattern over time
+- ✅ **Mobile Responsive**: Full mobile support for all features
 
 ## 📦 Monorepo Structure
 
@@ -154,6 +159,62 @@ Test results show:
 - Throughput (bytes/sec)
 - Error count and success rate
 
+### Creating Load Test Scenarios
+
+Scenarios allow you to define complex, multi-phase load tests:
+
+1. Go to **Scenarios** page
+2. Click **"Create Scenario"**
+3. Choose mode:
+   - **Simple Mode**: Test a single endpoint with customizable load phases
+   - **Workflow Mode**: Multi-step testing with setup, main workflow, and teardown stages
+4. Configure load phases:
+   - **Ramp Up**: Gradually increase connections
+   - **Sustained**: Maintain constant load
+   - **Ramp Down**: Gradually decrease connections
+   - **Spike**: Sudden load increase for burst testing
+5. Preview load pattern in the visual chart
+6. Click **"Create Scenario"**
+
+### Running Scenario Tests
+
+1. Go to **Scenarios** list
+2. Click **"Run"** on your scenario
+3. Monitor real-time progress by phase
+4. View detailed results including:
+   - Phase-by-phase metrics
+   - Overall performance summary
+   - Error breakdown
+
+### 🎬 Quick Demo: Testing a Public API
+
+Try this demo to see load testing in action:
+
+1. **Create an endpoint** for a public test API:
+   - Name: `JSONPlaceholder Users`
+   - URL: `https://jsonplaceholder.typicode.com/users`
+   - Method: `GET`
+
+2. **Use a built-in template** (go to Scenarios → select "Smoke Test"):
+   - This template runs a quick test with 5 connections for 30 seconds
+   - Click "Duplicate" to create your own copy
+   - Click "Run Test"
+
+3. **Create a custom stress test scenario**:
+   - Go to Scenarios → Create Scenario
+   - Name: `API Stress Test`
+   - Add phases:
+     - Phase 1: Ramp Up (30s, 1→50 connections)
+     - Phase 2: Sustained (60s, 50 connections)
+     - Phase 3: Ramp Down (30s, 50→1 connections)
+   - Watch the load preview chart update
+   - Click "Create Scenario" then "Run Test"
+
+4. **Analyze results**:
+   - View latency percentiles (p50, p90, p99)
+   - Check throughput and success rate
+   - Compare phase-by-phase performance
+
 ## 🧪 Testing
 
 ### Run all tests
@@ -207,6 +268,17 @@ DELETE /api/endpoints/:id       # Delete endpoint
 POST   /api/endpoints/:id/test  # Execute load test
 GET    /api/tests/:id           # Get test results
 GET    /api/tests/:id/status    # Get test status (for polling)
+DELETE /api/tests/:id/cancel    # Cancel running test
+```
+
+#### Scenarios
+```
+GET    /api/scenarios           # List all scenarios
+GET    /api/scenarios/:id       # Get single scenario
+POST   /api/scenarios           # Create scenario
+PUT    /api/scenarios/:id       # Update scenario
+DELETE /api/scenarios/:id       # Delete scenario
+POST   /api/scenarios/:id/duplicate  # Duplicate scenario
 ```
 
 For detailed API documentation, see [apps/backend/README.md](apps/backend/README.md).

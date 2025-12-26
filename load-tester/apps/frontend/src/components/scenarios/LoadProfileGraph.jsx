@@ -168,8 +168,8 @@ export const LoadProfileGraph = ({
   };
 
   return (
-    <div className="w-full" style={{ height }}>
-      <ResponsiveContainer width="100%" height="100%">
+    <div className="w-full" style={{ height, minHeight: height }}>
+      <ResponsiveContainer width="100%" height={height}>
         <AreaChart
           data={chartData}
           margin={{ top: 10, right: 10, left: 0, bottom: 0 }}
