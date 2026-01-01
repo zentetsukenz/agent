@@ -54,37 +54,37 @@ This is non-negotiable. These files contain critical context that prevents mista
 
 ### 2. Skills Reference Protocol
 
-**During work, reference SKILLS/ directory when performing relevant tasks:**
+**During work, reference SKILLS/ directory (in workspace root) when performing relevant tasks:**
 
 | Task                      | Skill File                            |
 | ------------------------- | ------------------------------------- |
 | Running terminal commands | `SKILLS/fish-shell.md`                |
 | Database operations       | `SKILLS/prisma-patterns.md`           |
-| UI/UX visual verification | `SKILLS/playwright-verification.md`   |
+| UI/UX visual verification | `SKILLS/visual-verification.md`       |
 | Starting/stopping servers | `SKILLS/server-operations.md`         |
 | Frontend runtime errors   | `SKILLS/browser-console-debugging.md` |
-| Before claiming done      | `SKILLS/verification-checklist.md`    |
+| Before claiming done      | `SKILLS/verification.md`              |
 
 **How to use skills**:
 
 ```fish
 # Check syntax before running commands
-cat load-tester/SKILLS/fish-shell.md
+cat SKILLS/fish-shell.md
 
 # Review Prisma patterns before database work
-cat load-tester/SKILLS/prisma-patterns.md
+cat SKILLS/prisma-patterns.md
 
 # Before starting servers
-cat load-tester/SKILLS/server-operations.md
+cat SKILLS/server-operations.md
 ```
 
 ### ⚠️ Visual Verification Constraint (MANDATORY)
 
 **Before ANY visual/UI verification, you MUST:**
 
-1. Read `SKILLS/playwright-verification.md` first
+1. Read `SKILLS/visual-verification.md` first
 2. Follow the delegation pattern described in the skill
-3. **NEVER take screenshots directly**—delegate to subagent
+3. **NEVER take screenshots directly**—delegate to `visual-qa` subagent
 
 This constraint exists because screenshots consume ~100KB each and will overflow your context. The skill describes how to get visual verification without filling your context.
 

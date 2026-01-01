@@ -227,7 +227,7 @@ Build structured knowledge bases.
 **Types:**
 
 - **Documents** — Knowledge (what): architecture.md, tech-stack.md, gotchas.md
-- **Skills** — Procedures (how): SKILLS/verification.md, SKILLS/dispatch-context.md
+- **Skills** — Procedures (how): SKILLS/\*.md (verification, checkpoint, dispatch-context, task-sizing, session-bootstrap)
 - **Notes** — Session learnings: NOTES.md
 
 **File organization:**

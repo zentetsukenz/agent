@@ -13,6 +13,7 @@
 - Need to inspect browser console state
 
 **NOT for** (use other skills):
+
 - Server not running → `SKILLS/server-operations.md`
 - API returning wrong data → investigate backend
 - Performance issues → future lighthouse skill
@@ -24,6 +25,7 @@
 **Never debug browser console directly.** Always delegate to the `browser-console-debugger` subagent.
 
 Why:
+
 - **Clean context** - Subagent has no bias from your previous work
 - **Focused session** - Only debugging, no distractions
 - **Context protection** - Console logs, stack traces stay in subagent
@@ -51,6 +53,7 @@ Before delegating, you MUST have clear reproduction steps:
 ```
 
 **Quality check:**
+
 - [ ] URL is specific (e.g., `http://localhost:5173/tests/123`, not "the tests page")
 - [ ] Actions are concrete (e.g., "Click the 'Run Test' button", not "run a test")
 - [ ] Expected vs actual behavior is clear
@@ -69,7 +72,7 @@ curl -s http://localhost:3001/api/health
 curl -s http://localhost:5173 | head -5
 ```
 
-If either fails, use `SKILLS/server-operations.md` first.
+If either fails, use [server-operations.md](server-operations.md) first.
 
 ### Step 3: Delegate to Subagent
 
@@ -98,6 +101,7 @@ Execute these steps, capture all browser console output, and return a structured
 ### Step 4: Receive and Act on Report
 
 The subagent returns a structured report with:
+
 - Reproduction results (did the issue reproduce?)
 - Console findings (errors, warnings, counts)
 - Error details (messages, sources, stack traces)
@@ -202,3 +206,12 @@ After receiving report:
 ❌ **Don't** skip server verification - debugging a dead server wastes time  
 ❌ **Don't** ignore the subagent's report - it captured actual console state  
 ❌ **Don't** retry same repro if it didn't reproduce - refine the steps first
+
+---
+
+## Related Skills
+
+- [verification.md](verification.md) — Full verification checklist
+- [visual-verification.md](visual-verification.md) — Visual UI verification
+- [server-operations.md](server-operations.md) — Start/stop servers
+- [dispatch-context.md](dispatch-context.md) — General subagent delegation
