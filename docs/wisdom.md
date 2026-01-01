@@ -39,6 +39,20 @@
 
 **Single responsibility** — One concept per document. A 500-line "everything about the project" doc is less useful than five 100-line focused docs.
 
+**Knowledge vs Skills distinction** — Knowledge is reference material (patterns, examples, schemas); Skills are procedures (workflows, when/why, decision points). If it's declarative and serves as lookup documentation, it belongs in docs/. If it has procedural flow and teaches judgment, it belongs in SKILLS/.
+
+---
+
+## On Tools
+
+**Understand capabilities before adding layers** — Before creating workarounds, research what your tools already do. Validation libraries often include sanitization; frameworks often handle concerns you're about to implement manually.
+
+**Research from authoritative sources** — Official documentation, maintainers' guidance, and established security standards (OWASP) beat assumptions. Five minutes of research prevents hours of debugging.
+
+**Tools compose; redundancy corrupts** — Layering identical functionality creates bugs. If your validation library sanitizes, additional sanitization middleware likely corrupts data rather than protecting it.
+
+**Context determines correctness** — The right approach for text differs from URLs, JSON, or structured data. Generic solutions often break edge cases. Understand your data's context.
+
 ---
 
 ## On Work
@@ -50,6 +64,34 @@
 **Progress over perfection** — Good enough now > perfect never. Ship, learn, iterate. Perfection is procrastination in disguise.
 
 **Verify before claiming done** — "I added the code" is not done. "I ran it and saw expected output" is done.
+
+**Separation of concerns prevents chaos** — Each layer serves one purpose: controllers route, services contain logic, models define data. Mixing concerns creates maintenance nightmares.
+
+**Explicit beats implicit** — Clear error messages, typed contracts, and obvious behavior outperform clever abstractions. Code that requires explanation is code that needs refactoring.
+
+---
+
+## On Testing
+
+**Tests enable confidence, not just coverage** — High coverage means nothing if tests don't run. Run tests after every change. Fix failures immediately.
+
+**Verify data, not assumptions** — Test what's stored in the database, not what you think you stored. Responses lie; data tells truth.
+
+**Test isolation prevents contamination** — Each test should run independently. Shared state between tests creates flaky, unreliable suites.
+
+**Test error paths, not just happy paths** — Validation failures, not found errors, unauthorized access—these matter more than the success case.
+
+---
+
+## On Data Integrity
+
+**Validate at boundaries, trust nowhere else** — Check inputs when they enter your system. Every downstream component should assume data is already validated.
+
+**Fail fast with clear messages** — Catch errors early in the pipeline. Specific error messages ("Invalid email format") help more than generic ones ("Bad request").
+
+**Transactions maintain integrity** — Operations that must succeed or fail together belong in transactions. Partial success is often worse than total failure.
+
+**Types and constraints encode business rules** — Use database constraints, schema validation, and type systems to make invalid states unrepresentable.
 
 ---
 
@@ -82,6 +124,28 @@
 **Transparency builds trust** — Share context abundantly. Those who receive insufficient context cannot make wise decisions.
 
 **Celebrate others' victories** — When those you guide succeed, you have succeeded. When they surpass you, you have transcended.
+
+---
+
+## On API Design
+
+**APIs are products, not plumbing** — The interface is the product. Intuitive, consistent APIs multiply developer productivity; confusing ones destroy it.
+
+**Consistency reduces cognitive load** — Predictable patterns (plural resource names, standard HTTP methods, uniform response shapes) let developers work on autopilot. Surprises slow them down.
+
+**Design for clarity over cleverness** — Boring, obvious code beats clever, complex code. Future maintainers (including yourself) thank you for straightforward solutions.
+
+**Error handling is user experience** — Meaningful error messages and appropriate status codes are features, not afterthoughts. Help users debug their mistakes.
+
+---
+
+## On Learning
+
+**Intellectual honesty over defending positions** — When corrected, research and verify rather than defending assumptions. Being wrong and learning is growth; being wrong and defensive is stagnation.
+
+**Evidence trumps intuition** — "I think this is how it works" yields to "the documentation says this." Run the experiment; read the source; verify the claim.
+
+**Patterns emerge from practice** — Best practices aren't invented, they're discovered through pain. Respect patterns that survived real-world use.
 
 ---
 

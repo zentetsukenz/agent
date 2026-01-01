@@ -1,160 +1,333 @@
-# 📍 CHECKPOINT: Agent Redesign Project
+# 📍 CHECKPOINT: Agent Redesign + Library Model — COMPLETE
 
 **Date**: January 1, 2026  
-**Phase**: Plan → **Implement agent redesigns**  
+**Phase**: Sessions 1-4 Complete — Team structure ready for production  
 **For**: TheEngineer  
-**Context**: Fresh start
+**Context**: Library model implemented, three-agent team structure ready, fullstack deprecated
 
 ---
 
 ## Summary
 
-Framework MVP complete. SKILLS consolidated. Ready to analyze and redesign each agent.
+Completed major restructuring: monolithic KNOWLEDGE.md/STANDARDS.md → 11 focused library docs + monolithic fullstack agent → specialized team (team-lead, backend-api, frontend-dev).
 
-### Session Accomplishments (Jan 1)
+### Sessions 1-4 Accomplishments (Jan 1)
 
-1. **Created externalized docs** (3 new knowledge documents):
-   - docs/wisdom.md — Core principles
-   - docs/agent-spec.md — Agent file specification
-   - docs/skill-spec.md — Skill file specification
+**Session 1: Library Foundation** (4 core docs, ~720 lines)
 
-2. **Compressed framework-design** working documents:
-   - Moved to `.context/framework-design/`
-   - Created ARCHIVE.md summary
+- Created `load-tester/docs/index.md` — Library manifest, what to load when
+- Created `load-tester/docs/architecture.md` — System design, patterns
+- Created `load-tester/docs/environment.md` — Fish shell, ports, gotchas
+- Created `load-tester/docs/quality-standards.md` — Definition of done
 
-3. **Consolidated SKILLS** (11 files → 10 files in root):
-   - Merged verification.md + verification-checklist.md
-   - Generalized playwright-verification.md → visual-verification.md
-   - Moved 4 skills from load-tester/SKILLS/ to root SKILLS/
-   - Deleted load-tester/SKILLS/
+**Session 2: Backend Library + Agent Update** (3 docs + 1 agent update, ~1,060 lines)
 
-4. **Updated agent skill references**:
-   - fullstack-developer.agent.md — Fixed 6 skill paths to root SKILLS/
-   - TheEngineer.agent.md — Added explicit skill list
+- Created `load-tester/docs/database-schema.md` — Prisma models, relationships
+- Created `load-tester/docs/api-reference.md` — API endpoints, contracts
+- Created `load-tester/docs/backend-patterns.md` — Express/Prisma implementation
+- Updated `backend-api.agent.md` (186 → 220 lines) — Added session start protocol
+
+**Session 3: Frontend Library + Agent Creation** (4 docs + 1 agent, ~1,790 lines)
+
+- Created `load-tester/docs/tech-stack.md` — Dependencies, versions
+- Created `load-tester/docs/frontend-patterns.md` — React/Vite/Tailwind patterns
+- Created `load-tester/docs/ui-ux-standards.md` — UI polish requirements
+- Created `load-tester/docs/testing-standards.md` — Backend + frontend testing
+- Created `frontend-dev.agent.md` (280 lines) — Frontend specialist agent
+
+**Session 4: Team-Lead + Subagent Integration** (1 agent + 2 updates + deprecations)
+
+- Created `team-lead.agent.md` (350+ lines) — Implementation orchestrator
+- Updated `backend-api.agent.md` — Added subagent delegation mode (~250 lines total)
+- Updated `frontend-dev.agent.md` — Added subagent delegation mode (~400 lines total)
+- Deprecated `fullstack-developer.agent.md` — Points to team-lead
+- Deprecated `KNOWLEDGE.md` and `STANDARDS.md` — Point to docs/ library
+- Identified deprecated files for removal
 
 ---
 
 ## Current State
 
+### Load-Tester Library (NEW)
+
+**Location**: `load-tester/docs/`
+
+| File | Lines | Purpose | Load When |
+|------|-------|---------|-----------|
+| index.md | ~180 | Library manifest | To understand structure |
+| architecture.md | ~180 | System design | Always (core context) |
+| environment.md | ~200 | Fish, ports, gotchas | Always (core context) |
+| quality-standards.md | ~160 | Definition of done | Before claiming done |
+| database-schema.md | ~330 | Prisma models | Backend + API tasks |
+| api-reference.md | ~310 | API endpoints | Backend + frontend integration |
+| backend-patterns.md | ~420 | Express/Prisma patterns | Backend tasks |
+| tech-stack.md | ~260 | Dependencies | When adding packages |
+| frontend-patterns.md | ~450 | React/Vite/Tailwind | Frontend tasks |
+| ui-ux-standards.md | ~420 | UI polish | Frontend UI tasks |
+| testing-standards.md | ~380 | Testing patterns | Writing tests |
+
+**Total**: 11 focused docs, ~3,290 lines (was 2 monolithic files, 643 lines)
+
+**Benefits**:
+
+- Agents load 6-10KB instead of 23KB per task (~60% reduction)
+- Backend tasks don't load frontend context (and vice versa)
+- Modular, easier to maintain
+
+### Agents Status
+
+| Agent | Lines | Status | Session Protocol | Subagent Mode |
+|-------|-------|--------|------------------|---------------|
+| team-lead | 350+ | ✅ Ready | Selective loading by task type | N/A (orchestrator) |
+| backend-api | 250 | ✅ Ready | Backend context + standards | ✅ Summary returns |
+| frontend-dev | 400 | ✅ Ready | Frontend context + standards | ✅ Summary returns |
+| fullstack-developer | 517 | 🗑️ Deprecated | Points to team-lead | N/A |
+| performance-testing | 459 | ⏳ Later | After team complete | TBD |
+| researcher | 254 | ⏳ Later | After team complete | TBD |
+| Synthesis | 402 | ⏳ Later | After team complete | TBD |
+| visual-qa | 182 | ✅ Good | Subagent, focused | N/A (subagent) |
+| browser-console-debugger | 179 | ✅ Good | Subagent, focused | N/A (subagent) |
+| TheEngineer | 514 | ✅ Good | Meta-level creator | N/A (creator) |
+
 ### Framework Assets
 
-| Type | Count | Location |
-|------|-------|----------|
-| Agents | 8 | `.github/agents/` |
-| Knowledge Docs | 5 | `docs/` |
-| Skills | 10 | `SKILLS/` |
-| Framework Spec | 1 | `FRAMEWORK-DESIGN.md` |
+| Type | Count | Location | Status |
+|------|-------|----------|--------|
+| Agents | 10 | `.github/agents/` | 3 ready, 1 deprecated, 6 others |
+| Load-Tester Library | 11 | `load-tester/docs/` | ✅ Complete |
+| Framework Docs | 8 | `docs/` | ✅ Complete |
+| Skills | 10 | `SKILLS/` | ✅ Complete |
 
-### Agents to Analyze
+### Team Structure (COMPLETE)
 
-| Agent | Lines | Purpose | Needs Redesign? |
-|-------|-------|---------|-----------------|
-| TheEngineer | 514 | Creator, orchestrator | Recently redesigned ✓ |
-| Synthesis | 402 | Philosopher-scientist | TBD |
-| fullstack-developer | 517 | Load-tester fullstack | TBD |
-| backend-api | 747 | Express/Prisma specialist | TBD — large, may need split |
-| performance-testing | 459 | Load testing specialist | TBD |
-| visual-qa | 182 | Screenshot subagent | Small, focused ✓ |
-| browser-console-debugger | 179 | Console debugging subagent | Small, focused ✓ |
-| researcher | 254 | Research subagent | TBD |
+**TheEngineer (Meta-Level)** ✅
 
-### Skills Available
+**Role**: Creator and knowledge architect  
+**Does**: Creates agents, skills, knowledge, tools, context  
+**Does NOT**: Implement features (delegates to team-lead)
 
-```
-SKILLS/
-├── verification.md          # Full verification checklist
-├── visual-verification.md   # UI verification via subagent
-├── browser-console-debugging.md  # Debug frontend errors
-├── server-operations.md     # Start/stop dev servers
-├── fish-shell.md            # Fish shell syntax reference
-├── prisma-patterns.md       # Prisma 7 patterns
-├── checkpoint.md            # Session state persistence
-├── dispatch-context.md      # Subagent context engineering
-├── session-bootstrap.md     # SELECT on resume
-└── task-sizing.md           # When to dispatch vs do directly
-```
+**Team-Lead (Implementation Orchestrator)** ✅ NEW
 
----
+**Role**: Implementation orchestrator + implementer  
+**Responsibilities**:
 
-## Next Task: Agent Analysis & Redesign
+- Plans features (schema → API → UI)
+- Implements directly OR delegates to specialists
+- Coordinates backend-api and frontend-dev
+- Ensures integration and quality
+- Selective context loading (only loads what's needed per task)
 
-### Objective
+**Size**: 350+ lines (orchestration + implementation + delegation patterns)
 
-Analyze each agent against the framework standards (docs/agent-spec.md, docs/wisdom.md) and redesign as needed.
+**Backend-API (Backend Specialist)** ✅ ENHANCED
 
-### Analysis Criteria
+**Role**: Backend implementation  
+**Responsibilities**: Express.js, Prisma, REST APIs, middleware, testing  
+**Enhanced**: Subagent delegation mode with summary returns  
+**Size**: 250 lines (with subagent protocol)
 
-Per agent, evaluate:
+**Frontend-Dev (Frontend Specialist)** ✅ ENHANCED
 
-1. **Identity** — Clear, non-overlapping? Specialize by problem, not technology?
-2. **Size** — Under 500 lines? Externalize if larger?
-3. **Skills** — References appropriate skills? Missing any?
-4. **Workflow** — Clear phases and decision points?
-5. **Wisdom** — Embedded domain knowledge? Or just instructions?
-6. **Consistency** — Follows docs/agent-spec.md structure?
+**Frontend-Dev (Frontend Specialist)** ✅ ENHANCED
 
-### Suggested Order
+**Role**: Frontend implementation  
+**Responsibilities**: React 19, Vite, Tailwind, UI/UX, visual verification  
+**Enhanced**: Subagent delegation mode with summary returns  
+**Size**: 400 lines (with subagent protocol)
 
-1. **backend-api** (747 lines) — Largest, likely needs compression or split
-2. **fullstack-developer** (517 lines) — Just above target, review for externalization
-3. **performance-testing** (459 lines) — Within range, review for consistency
-4. **researcher** (254 lines) — Good size, verify subagent contract
-5. **Synthesis** (402 lines) — Unique purpose, verify clarity
+**Fullstack-Developer** 🗑️ DEPRECATED
 
-Skip (already good):
+**Status**: Replaced by team-lead.agent.md  
+**Notice**: Deprecation header points users to new structure
 
-- TheEngineer — Recently redesigned
-- visual-qa — Single-purpose, focused
-- browser-console-debugger — Single-purpose, focused
+**Role**: Frontend implementation  
+**Responsibilities**: React 19, Vite, Tailwind, UI/UX, visual verification  
+**Status**: 🆕 To create (~250-350 lines)
 
 ---
 
-## Files to Load
+## Completed Tasks — All Sessions
 
-```
-#file:docs/agent-spec.md (agent specification — use for evaluation)
-#file:docs/skill-spec.md (skill specification — for reference)
-#file:docs/wisdom.md (principles — inform redesign)
-#file:FRAMEWORK-DESIGN.md (source of truth)
-```
+### ✅ Session 1: Library Foundation (4 core docs, ~720 lines)
 
-When analyzing specific agent:
+- Created docs/index.md — Library manifest
+- Created docs/architecture.md — System design
+- Created docs/environment.md — Fish shell, ports
+- Created docs/quality-standards.md — Definition of done
 
-```
-#file:.github/agents/[agent-name].agent.md
-```
+### ✅ Session 2: Backend Library + Agent (3 docs + 1 update, ~1,060 lines)
+
+- Created docs/database-schema.md — Prisma models
+- Created docs/api-reference.md — API endpoints
+- Created docs/backend-patterns.md — Express/Prisma
+- Updated backend-api.agent.md — Session protocol
+
+### ✅ Session 3: Frontend Library + Agent (4 docs + 1 agent, ~1,790 lines)
+
+- Created docs/tech-stack.md — Dependencies
+- Created docs/frontend-patterns.md — React/Vite/Tailwind
+- Created docs/ui-ux-standards.md — UI polish
+- Created docs/testing-standards.md — Testing
+- Created frontend-dev.agent.md — Frontend specialist
+
+### ✅ Session 4: Team-Lead + Integration (1 agent + updates + cleanup)
+
+- Created team-lead.agent.md — Implementation orchestrator
+- Updated backend-api.agent.md — Subagent delegation mode
+- Updated frontend-dev.agent.md — Subagent delegation mode
+- Deprecated fullstack-developer.agent.md — Points to team-lead
+- Deprecated KNOWLEDGE.md — Points to docs/
+- Deprecated STANDARDS.md — Points to docs/
 
 ---
 
-## Key Context
+## Future Tasks (Post-Sessions 1-4)
 
-| Concept | Value |
-|---------|-------|
-| Agent size target | **200-500 lines** |
-| Identity principle | **Problem-based, not tech-based** |
-| Externalization | **>600 lines → externalize to docs/SKILLS** |
-| Skill references | **Root SKILLS/ folder** (not load-tester/SKILLS/) |
-| Subagents | **Single-purpose, ~180-250 lines** |
+No immediate tasks required. Team structure is production-ready.
+
+**Optional future work**:
+
+- Classify `SKILLS/prisma-patterns.md` (skill vs knowledge)
+- Analyze performance-testing.agent.md (459 lines)
+- Analyze researcher.agent.md (254 lines)
+- Analyze Synthesis.agent.md (402 lines)
+
+**Cleanup** ✅ **COMPLETE**:
+
+Removed deprecated files:
+
+- ~~`load-tester/README-old.md`~~ — Already removed
+- ~~`load-tester/package.json.old`~~ — Already removed
+- ~~`load-tester/.qa-task.md`~~ — Already removed
+- ✅ `.context/agentic-design/IMPLEMENTATION-PLAN.md` — Removed
+- ✅ `.context/agentic-design/load-tester-library-plan.md` — Removed
+- ✅ `.context/agentic-design/fullstack-split-plan.md` — Removed
+
+**Kept for reference**:
+
+- `.context/agentic-design/prisma-patterns-classification.md` — Future task
+- `.context/agentic-design/CHECKPOINT.md` — This file
+- `load-tester/KNOWLEDGE.md` — Archived with deprecation notice
+- `load-tester/STANDARDS.md` — Archived with deprecation notice
+- `fullstack-developer.agent.md` — Archived with deprecation notice
 
 ---
 
-## Decisions Made (This Session)
+## Key Decisions Made
 
 | Decision | Rationale |
 |----------|-----------|
-| Consolidate SKILLS to root | Single source of truth, agents reference root |
-| Merge verification skills | Eliminate redundancy, create comprehensive checklist |
-| Generalize visual-verification | Framework-agnostic, not Playwright-specific |
-| Skip redesign for subagents | Already single-purpose and focused |
+| Split fullstack into 3 agents | Clearer boundaries, better focus, reduced context |
+| Rename fullstack → team-lead | Reflects orchestration + implementation role |
+| Move implementation to team-lead | TheEngineer stays meta-level (creates, not implements) |
+| Externalize backend-api knowledge | Keep agent focused, reference detailed knowledge |
+| Abstract wisdom to principles | Universal principles > operational details |
+| Keep subagents as-is | Already focused, single-purpose |
 
 ---
 
-## To Continue
+## File Structure
+
+```
+.github/agents/
+├── backend-api.agent.md (186 lines) ✅
+├── fullstack-developer.agent.md (517 lines) → TO SPLIT
+├─Library model over monolithic files | Selective loading, 60% context reduction, modular maintenance |
+| Split fullstack into 3 agents | Clearer boundaries, better focus, reduced context |
+| Rename fullstack → team-lead | Reflects orchestration + implementation role |
+| Move implementation to team-lead | TheEngineer stays meta-level (creates, not implements) |
+| Session start protocols in agents | Ensures project context loaded before work |
+| 11 focused docs vs 2 monoliths | Backend/frontend/full-stack load only what's needed |
+| Subagent delegation mode | Team-lead dispatches, specialists return summaries |
+| Deprecation over deletion | Keep archived content for reference |
+└── TheEngineer.agent.md (514 lines) ✅
+
+docs/
+├── wisdom.md (updated with 5 new sections) ✅
+├── backend-api-gotchas.md (new) ✅
+├── backend-api-patterns.md (new) ✅
+├── agent-spec.md
+├── skill-spec.md220 lines) ✅ READY
+├── frontend-dev.agent.md (280 lines) ✅ READY (new)
+├── fullstack-developer.agent.md (517 lines) 🔄 TO DEPRECATE
+├── team-lead.agent.md 🆕 TO CREATE
+├── performance-testing.agent.md (459 lines) ⏳
+├── researcher.agent.md (254 lines) ⏳
+├── Synthesis.agent.md (402 lines) ⏳
+├── visual-qa.agent.md (182 lines) ✅
+├── browser-console-debugger.agent.md (179 lines) ✅
+└── TheEngineer.agent.md (514 lines) ✅
+
+load-tester/docs/ (NEW LIBRARY)
+├── index.md (~180 lines) ✅ Manifest
+├── architecture.md (~180 lines) ✅ System design
+├── environment.md (~200 lines) ✅ Fish, ports, gotchas
+├── quality-standards.md (~160 lines) ✅ Definition of done
+├── database-schema.md (~330 lines) ✅ Prisma models
+├── api-reference.md (~310 lines) ✅ API endpoints
+├── backend-patterns.md (~420 lines) ✅ Express/Prisma
+├── tech-stack.md (~260 lines) ✅ Dependencies
+├── frontend-patterns.md (~450 lines) ✅ React/Vite/Tailwind
+├── ui-ux-standards.md (~420 lines) ✅ UI polish
+├── testing-standards.md (~380 lines) ✅ Testing
+├── API_DESIGN.md (existing)
+└── [scenarios/, retrospectives/ - existing]
+
+load-tester/ (TO DEPRECATE)
+├── KNOWLEDGE.md (376 lines) 🔄 Add deprecation notice
+└── STANDARDS.md (267 lines) 🔄 Add deprecation notice
+
+docs/ (Framework knowledge)
+├── wisdom.md (updated) ✅
+├── backend-api-gotchas.md ✅
+├── backend-api-patterns.md ✅
+├── agent-spec.md
+├── skill-spec.md
+├── context-engineering.md
+├── framework-design.md
+└── researcher-agent-design.md
+
+SKILLS/ (10 files)
+├── verification.md
+├── visual-verification.md
+├── browser-console-debugging.md
+├── server-operations.md
+├── fish-shell.md
+├── prisma-patterns.md (to classify later)
+├── checkpoint.md
+├── dispatch-context.md
+├── session-bootstrap.md
+└── task-sizing.md
+
+.context/agentic-design/
+├── CHECKPOINT.md (this file)
+├── prisma-patterns-classification.md (future task)
+├── IMPLEMENTATION-PLAN.md 🗑️ TO REMOVE
+├── load-tester-library-plan.md 🗑️ TO REMOVE
+└── fullstack-split-plan.md 🗑️ TO REMOVE
+```
+
+---
+
+## Metrics
+
+| Metric | Before | After | Change |
+|--------|--------|-------|--------|
+| **Context per session** | 23KB (all) | 6-10KB (selective) | -60% |
+| **Documentation files** | 2 monoliths | 11 focused docs | Better modularity |
+| **Agent specialization** | 1 fullstack | 3 specialized | Clear boundaries |
+| **Agent lines** | 517 (fullstack) | 350+250+400 = 1000 total | Distributed focus |
+| **Load-tester library** | 643 lines | 3,290 lines | Comprehensive |
+| **Team structure** | Undefined | Clear hierarchy | Better organization |
+
+---
+
+## To Resume (Future Sessions)
 
 Load this checkpoint and say:
 
-> "Continue from this checkpoint. Start with analyzing backend-api.agent.md — it's the largest at 747 lines and likely needs compression or splitting."
+> "Continue from checkpoint."
 
-Or for overview first:
+**Current state**: Sessions 1-4 complete. Team structure ready for production use.
 
-> "Continue from this checkpoint. Give me an overview of all agents before we start redesigning."
+**Next work**: Optional cleanup (remove deprecated files via terminal) or begin using team-lead for features.

@@ -3,6 +3,8 @@ description: "Creator of agents, skills, knowledge, tools, context, and more. RP
 model: Claude Sonnet 4.5
 tools:
   [
+    "execute/getTerminalOutput",
+    "execute/runInTerminal",
     "read/problems",
     "read/readFile",
     "read/terminalSelection",
