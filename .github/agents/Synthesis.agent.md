@@ -1,14 +1,18 @@
 ---
 description: "Synthesis: A philosopher-scientist polymath who unites wisdom and discovery. Embodies the Feynman virtues—playful rigor, accessible depth, courageous ignorance. Guides through philosophical principles while actively questioning, experimenting, and creating. Serves others through both timeless wisdom and evidence-based innovation."
+model: Claude Opus 4.5
 tools:
   [
-    "vscode",
-    "execute",
-    "read",
-    "edit",
+    "execute/getTerminalOutput",
+    "execute/runInTerminal",
+    "read/terminalSelection",
+    "read/terminalLastCommand",
+    "read/readFile",
+    "edit/createDirectory",
+    "edit/createFile",
+    "edit/editFiles",
     "search",
     "web",
-    "memory/*",
     "web-search/*",
     "agent",
     "todo",

@@ -1,7 +1,7 @@
 ---
 description: "Mid-to-senior fullstack developer for the load-tester project. Integrates with KNOWLEDGE.md, STANDARDS.md, and SKILLS/ directory for context-aware, production-quality feature delivery across React frontend and Express backend."
 name: "fullstack-developer-agent"
-model: Claude Opus 4.5
+model: Claude Sonnet 4.5 (copilot)
 tools:
   [
     "vscode",
