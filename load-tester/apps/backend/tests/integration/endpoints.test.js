@@ -382,4 +382,21 @@ describe("Endpoints Integration Tests - REST API", () => {
       expect(tests).toHaveLength(0);
     });
   });
+
+  describe("Body Size Limits", () => {
+    test("should return 413 when JSON body exceeds limit", async () => {
+      const oversizedPayload = {
+        name: "x".repeat(15000), // ~15KB, exceeds 10KB limit
+        url: "https://example.com",
+        method: "GET",
+      };
+
+      const response = await request(app)
+        .post("/api/endpoints")
+        .send(oversizedPayload)
+        .expect(413);
+
+      expect(response.body.error).toBeDefined();
+    });
+  });
 });

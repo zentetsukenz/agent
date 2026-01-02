@@ -39,9 +39,9 @@ app.use(
 app.use(requestId); // Add unique ID to each request
 app.use(requestLogger); // Log all requests
 
-// Middleware
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+// Middleware - Body parsers with size limits for DoS protection
+app.use(express.json({ limit: '10kb' }));
+app.use(express.urlencoded({ extended: true, limit: '10kb' }));
 
 // CORS configuration
 app.use(cors(config.cors));

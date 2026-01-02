@@ -1,6 +1,6 @@
 ---
 description: "Implementation orchestrator for the load-tester project. Plans features (schema → API → UI), implements directly OR delegates to backend-api and frontend-dev specialists, and ensures end-to-end integration and quality standards."
-model: Claude Opus 4.5 (copilot)
+model: Claude Sonnet 4.5 (copilot)
 tools:
   [
     "execute/testFailure",

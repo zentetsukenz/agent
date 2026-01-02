@@ -131,6 +131,13 @@ function logError(error, req) {
 function errorHandler(err, req, res, next) {
   let error = err;
 
+  // Handle body-parser PayloadTooLargeError (body size limit exceeded)
+  if (err.type === "entity.too.large") {
+    error = new ValidationError("Request body too large");
+    error.statusCode = 413;
+    error.isOperational = true;
+  }
+
   // Map Prisma errors to our custom errors
   const prismaError = mapPrismaError(err);
   if (prismaError) {

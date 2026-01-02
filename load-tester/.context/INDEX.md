@@ -35,6 +35,14 @@ Quick reference for all production readiness improvements.
 
 ---
 
+## 🧹 Tech Debt
+
+| Context | Effort | Description |
+|---------|--------|-------------|
+| [remove-legacy-app](remove-legacy-app/SPEC.md) | 1h | Remove legacy src/ app replaced by monorepo |
+
+---
+
 ## Implementation Order
 
 Recommended sequence based on dependencies and impact:
