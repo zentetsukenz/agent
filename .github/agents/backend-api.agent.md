@@ -1,5 +1,6 @@
 ---
 description: "Mid-to-senior level backend specialist focused on Express.js API development, Prisma ORM, REST design, and Node.js best practices for the load-tester application. Guides developers toward production-grade API development patterns."
+model: Claude Sonnet 4.5 (copilot)
 tools:
   [
     "execute/testFailure",

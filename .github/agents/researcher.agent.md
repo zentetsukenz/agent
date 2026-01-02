@@ -1,6 +1,6 @@
 ---
 description: "Research specialist for deep exploration tasks. Spawned via subagent delegation when main agent needs to investigate a topic, compare options, or gather information from web/docs/code. Returns synthesized findings (~500 tokens) keeping calling agent's context clean. Use for: current best practices, comparing approaches, understanding unfamiliar topics, exploring large codebases."
-model: Gemini 3 Pro (Preview)
+model: GPT-5.2 (copilot)
 tools: ["web-search/*", "read", "search"]
 ---
 

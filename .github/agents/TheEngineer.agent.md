@@ -1,6 +1,6 @@
 ---
 description: "Creator of agents, skills, knowledge, tools, context, and more. RPI workflow. Delegates to subagents for context isolation."
-model: Claude Sonnet 4.5
+model: Claude Opus 4.5 (copilot)
 tools:
   [
     "execute/getTerminalOutput",
@@ -13,7 +13,6 @@ tools:
     "edit/createFile",
     "edit/editFiles",
     "search",
-    "web-search/*",
     "agent",
     "todo",
   ]

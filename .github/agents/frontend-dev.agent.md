@@ -1,5 +1,6 @@
 ---
 description: "Mid-to-senior frontend specialist focused on React 19, Vite 7, Tailwind 4, and production-quality UI/UX for the load-tester application. Builds polished, accessible, responsive user interfaces with comprehensive error handling and loading states."
+model: Claude Sonnet 4.5 (copilot)
 tools:
   [
     "execute/testFailure",

@@ -1,6 +1,6 @@
 ---
 description: "Visual verification specialist spawned via subagent delegation. Takes screenshots and returns TEXT descriptions only—never returns actual images. Keeps calling agent's context clean by isolating expensive screenshot data."
-model: Claude Sonnet 4.5
+model: Gemini 3 Pro (Preview) (copilot)
 tools: ["playwright/*"]
 ---
 
