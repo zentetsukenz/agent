@@ -5,6 +5,7 @@
 const express = require("express");
 const cors = require("cors");
 const helmet = require("helmet");
+const compression = require("compression");
 const config = require("./config");
 const { errorHandler, notFoundHandler } = require("./middleware/errorHandler");
 const { apiLimiter, loadTestLimiter } = require("./middleware/rateLimiter");
@@ -35,13 +36,16 @@ app.use(
   })
 );
 
+// Response compression
+app.use(compression({ threshold: 1024 }));
+
 // Request ID and logging
 app.use(requestId); // Add unique ID to each request
 app.use(requestLogger); // Log all requests
 
 // Middleware - Body parsers with size limits for DoS protection
-app.use(express.json({ limit: '10kb' }));
-app.use(express.urlencoded({ extended: true, limit: '10kb' }));
+app.use(express.json({ limit: "10kb" }));
+app.use(express.urlencoded({ extended: true, limit: "10kb" }));
 
 // CORS configuration
 app.use(cors(config.cors));
@@ -92,7 +96,11 @@ app.put(
   scenariosController.update
 );
 app.delete("/api/scenarios/:id", validateId, scenariosController.destroy);
-app.post("/api/scenarios/:id/duplicate", validateId, scenariosController.duplicate);
+app.post(
+  "/api/scenarios/:id/duplicate",
+  validateId,
+  scenariosController.duplicate
+);
 
 // 404 handler for undefined routes
 app.use(notFoundHandler);
