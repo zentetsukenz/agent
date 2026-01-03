@@ -24,7 +24,7 @@ export const Header = () => {
             </div>
             <div className="flex flex-col">
               <span className="text-xl font-bold text-white tracking-tight">Load Tester</span>
-              <span className="text-xs text-primary-200 font-medium hidden sm:block">API Performance Testing</span>
+              <span className="text-xs text-white/90 font-medium hidden sm:block">API Performance Testing</span>
             </div>
           </Link>
           
@@ -32,7 +32,7 @@ export const Header = () => {
           <nav aria-label="Main navigation" className="hidden md:flex items-center gap-2">
             <Link 
               to="/" 
-              className={`px-4 py-2 rounded-lg font-medium transition-all ${
+              className={`px-4 py-2 rounded-lg font-medium transition-all focus:outline-none focus:ring-2 focus:ring-white/50 ${
                 isActive('/') 
                   ? 'bg-white/20 text-white' 
                   : 'text-primary-100 hover:bg-white/10 hover:text-white'
@@ -47,7 +47,7 @@ export const Header = () => {
             </Link>
             <Link 
               to="/scenarios" 
-              className={`px-4 py-2 rounded-lg font-medium transition-all ${
+              className={`px-4 py-2 rounded-lg font-medium transition-all focus:outline-none focus:ring-2 focus:ring-white/50 ${
                 location.pathname.startsWith('/scenarios')
                   ? 'bg-white/20 text-white' 
                   : 'text-primary-100 hover:bg-white/10 hover:text-white'
@@ -62,7 +62,7 @@ export const Header = () => {
             </Link>
             <Link 
               to="/endpoints/new" 
-              className="bg-white text-primary-700 px-4 py-2 rounded-lg font-semibold hover:bg-primary-50 hover:shadow-md transition-all flex items-center gap-2"
+              className="bg-white text-primary-700 px-4 py-2 rounded-lg font-semibold hover:bg-primary-50 hover:shadow-md transition-all flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-white/80"
             >
               <svg aria-hidden="true" className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -94,7 +94,7 @@ export const Header = () => {
           <nav aria-label="Main navigation" className="md:hidden mt-4 pt-4 border-t border-white/20 space-y-2">
             <Link 
               to="/" 
-              className={`block px-4 py-2 rounded-lg font-medium transition-all ${
+              className={`block px-4 py-2 rounded-lg font-medium transition-all focus:outline-none focus:ring-2 focus:ring-white/50 ${
                 isActive('/') 
                   ? 'bg-white/20 text-white' 
                   : 'text-primary-100 hover:bg-white/10'
@@ -105,7 +105,7 @@ export const Header = () => {
             </Link>
             <Link 
               to="/scenarios" 
-              className={`block px-4 py-2 rounded-lg font-medium transition-all ${
+              className={`block px-4 py-2 rounded-lg font-medium transition-all focus:outline-none focus:ring-2 focus:ring-white/50 ${
                 location.pathname.startsWith('/scenarios')
                   ? 'bg-white/20 text-white' 
                   : 'text-primary-100 hover:bg-white/10'
@@ -116,7 +116,7 @@ export const Header = () => {
             </Link>
             <Link 
               to="/endpoints/new" 
-              className="block bg-white text-primary-700 px-4 py-2 rounded-lg font-semibold text-center"
+              className="block bg-white text-primary-700 px-4 py-2 rounded-lg font-semibold text-center focus:outline-none focus:ring-2 focus:ring-white/80"
               onClick={() => setMobileMenuOpen(false)}
             >
               + Add Endpoint

@@ -164,7 +164,7 @@ export const DashboardStats = ({
             <div className="space-y-2">
               <Label>Sort By</Label>
               <Select value={sortOption} onValueChange={onSortChange}>
-                <SelectTrigger>
+                <SelectTrigger aria-label="Sort by">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>

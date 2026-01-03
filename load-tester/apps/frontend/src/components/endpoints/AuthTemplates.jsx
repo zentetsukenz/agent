@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 
 const AUTH_TEMPLATES = [
   {
@@ -65,15 +65,33 @@ const AUTH_TEMPLATES = [
 
 export const AuthTemplates = ({ onApplyTemplate }) => {
   const [showTemplates, setShowTemplates] = useState(false);
+  const triggerRef = useRef(null);
+
+  // Handle Escape key to close panel
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape' && showTemplates) {
+        setShowTemplates(false);
+        // Restore focus to trigger button
+        triggerRef.current?.focus();
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [showTemplates]);
 
   const handleApplyTemplate = (template) => {
     onApplyTemplate(template.headers, template.note);
     setShowTemplates(false);
+    // Restore focus to trigger button
+    triggerRef.current?.focus();
   };
 
   return (
     <div className="relative">
       <button
+        ref={triggerRef}
         type="button"
         onClick={() => setShowTemplates(!showTemplates)}
         className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
