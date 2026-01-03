@@ -19,7 +19,59 @@ function sanitizeInput(input) {
 }
 
 /**
- * Validate and sanitize URL
+ * Check if hostname is a private IP address
+ * @param {string} hostname - Hostname or IP to check
+ * @returns {boolean} - True if private IP
+ */
+function isPrivateIP(hostname) {
+  // IPv4 private ranges
+  const privateIPv4Patterns = [
+    /^10\./, // 10.0.0.0/8
+    /^172\.(1[6-9]|2[0-9]|3[0-1])\./, // 172.16.0.0/12
+    /^192\.168\./, // 192.168.0.0/16
+    /^127\./, // Loopback 127.0.0.0/8
+    /^169\.254\./, // Link-local 169.254.0.0/16
+    /^0\.0\.0\.0$/, // Special 0.0.0.0
+  ];
+
+  // Check IPv4 patterns
+  if (privateIPv4Patterns.some((pattern) => pattern.test(hostname))) {
+    return true;
+  }
+
+  // IPv6 private/local ranges (simplified check)
+  const ipv6Patterns = [
+    /^::1$/, // Loopback
+    /^::/, // Unspecified
+    /^fc00:/, // Unique local
+    /^fd00:/, // Unique local
+    /^fe80:/, // Link-local
+  ];
+
+  if (ipv6Patterns.some((pattern) => pattern.test(hostname.toLowerCase()))) {
+    return true;
+  }
+
+  return false;
+}
+
+/**
+ * Check if hostname is a cloud metadata endpoint
+ * @param {string} hostname - Hostname to check
+ * @returns {boolean} - True if cloud metadata endpoint
+ */
+function isCloudMetadataEndpoint(hostname) {
+  const metadataEndpoints = [
+    "169.254.169.254", // AWS/Azure/GCP
+    "metadata.google.internal", // GCP
+    "metadata.internal", // GCP alternative
+  ];
+
+  return metadataEndpoints.includes(hostname.toLowerCase());
+}
+
+/**
+ * Validate and sanitize URL with SSRF protection
  * @param {string} url - URL to validate
  * @returns {Object} - { valid: boolean, error: string|null, sanitized: string|null }
  */
@@ -38,14 +90,48 @@ function validateAndSanitizeURL(url) {
     if (urlObj.protocol !== "http:" && urlObj.protocol !== "https:") {
       return {
         valid: false,
-        error: "URL must be valid (http:// or https://)",
+        error: "URL must use http:// or https://",
         sanitized: null,
       };
     }
 
-    // For load testing tools, we allow localhost and private IPs
-    // This is intentional since users need to test local services
     const hostname = urlObj.hostname.toLowerCase();
+
+    // Load config for SSRF checks
+    const config = require("../../config");
+
+    // 1. Check blocklist first (always blocked, highest priority)
+    if (config.ssrf.blockedHosts.includes(hostname)) {
+      return {
+        valid: false,
+        error: `Access to ${hostname} is blocked for security reasons`,
+        sanitized: null,
+      };
+    }
+
+    // 2. Check cloud metadata endpoints
+    if (isCloudMetadataEndpoint(hostname)) {
+      return {
+        valid: false,
+        error: "Access to cloud metadata endpoints is blocked for security",
+        sanitized: null,
+      };
+    }
+
+    // 3. Check allowlist (bypass private IP check)
+    if (config.ssrf.allowlist.includes(hostname)) {
+      return { valid: true, error: null, sanitized: trimmedUrl };
+    }
+
+    // 4. Check private IPs if blocking enabled
+    if (config.ssrf.blockPrivateIPs && isPrivateIP(hostname)) {
+      return {
+        valid: false,
+        error:
+          "Access to private IP addresses is blocked in production. Contact admin to allowlist.",
+        sanitized: null,
+      };
+    }
 
     // Valid URL - return sanitized version
     return { valid: true, error: null, sanitized: trimmedUrl };
@@ -170,7 +256,13 @@ async function createEndpoint(prisma, data) {
   // Sanitize inputs
   const sanitizedName = sanitizeInput(data.name);
   const urlValidation = validateAndSanitizeURL(data.url);
-  const sanitizedUrl = urlValidation.sanitized || data.url;
+
+  // Check if URL validation failed
+  if (!urlValidation.valid) {
+    throw new ValidationError(urlValidation.error);
+  }
+
+  const sanitizedUrl = urlValidation.sanitized;
 
   return await prisma.endpoint.create({
     data: {
@@ -194,7 +286,13 @@ async function updateEndpoint(prisma, id, data) {
   // Sanitize inputs
   const sanitizedName = sanitizeInput(data.name);
   const urlValidation = validateAndSanitizeURL(data.url);
-  const sanitizedUrl = urlValidation.sanitized || data.url;
+
+  // Check if URL validation failed
+  if (!urlValidation.valid) {
+    throw new ValidationError(urlValidation.error);
+  }
+
+  const sanitizedUrl = urlValidation.sanitized;
 
   return await prisma.endpoint.update({
     where: { id: parseInt(id) },
@@ -222,6 +320,8 @@ async function deleteEndpoint(prisma, id) {
 
 module.exports = {
   sanitizeInput,
+  isPrivateIP,
+  isCloudMetadataEndpoint,
   validateAndSanitizeURL,
   validateEndpointData,
   getAllEndpoints,

@@ -44,6 +44,43 @@ DATABASE_URL="file:./prisma/dev.db"
 
 # CORS Configuration
 CORS_ORIGIN=http://localhost:5173
+
+# SSRF Protection
+BLOCK_PRIVATE_IPS=true
+SSRF_ALLOWLIST=internal-api.example.com,staging.example.com
+```
+
+### Security Configuration
+
+#### SSRF Protection
+
+The application includes Server-Side Request Forgery (SSRF) protection to prevent attackers from using the load tester to scan internal networks or access cloud metadata endpoints.
+
+**Environment Variables**:
+
+- `BLOCK_PRIVATE_IPS`: Set to `true` (default in production) to block private IP addresses. Set to `false` in development to allow testing localhost endpoints.
+
+- `SSRF_ALLOWLIST`: Comma-separated list of hostnames to allow even if they resolve to private IPs. Useful for legitimate internal APIs.
+
+**What's blocked**:
+
+- Cloud metadata endpoints (169.254.169.254, metadata.google.internal)
+- Localhost variants (localhost, 127.0.0.1, ::1)
+- Private IP ranges (when `BLOCK_PRIVATE_IPS=true`):
+  - 10.0.0.0/8
+  - 172.16.0.0/12
+  - 192.168.0.0/16
+  - Link-local addresses
+
+**Example**:
+
+```bash
+# Production - secure by default
+BLOCK_PRIVATE_IPS=true
+SSRF_ALLOWLIST=internal-api.company.com
+
+# Development - allow local testing
+BLOCK_PRIVATE_IPS=false
 ```
 
 ## Running the Application
@@ -67,6 +104,7 @@ The API server will start on `http://localhost:3000`
 Check if the API is running.
 
 **Response:**
+
 ```json
 {
   "status": "ok",
@@ -81,6 +119,7 @@ Check if the API is running.
 **GET** `/api/endpoints`
 
 **Response:**
+
 ```json
 {
   "data": [
@@ -103,6 +142,7 @@ Check if the API is running.
 **GET** `/api/endpoints/:id`
 
 **Response:**
+
 ```json
 {
   "data": {
@@ -123,6 +163,7 @@ Check if the API is running.
 **POST** `/api/endpoints`
 
 **Request Body:**
+
 ```json
 {
   "name": "Example API",
@@ -134,6 +175,7 @@ Check if the API is running.
 ```
 
 **Response:**
+
 ```json
 {
   "data": {
@@ -155,6 +197,7 @@ Check if the API is running.
 **PUT** `/api/endpoints/:id`
 
 **Request Body:**
+
 ```json
 {
   "name": "Updated API",
@@ -166,6 +209,7 @@ Check if the API is running.
 ```
 
 **Response:**
+
 ```json
 {
   "data": {
@@ -187,6 +231,7 @@ Check if the API is running.
 **DELETE** `/api/endpoints/:id`
 
 **Response:**
+
 ```json
 {
   "message": "Endpoint deleted successfully"
@@ -200,6 +245,7 @@ Check if the API is running.
 **POST** `/api/endpoints/:id/test`
 
 **Request Body:**
+
 ```json
 {
   "duration": 10,
@@ -209,6 +255,7 @@ Check if the API is running.
 ```
 
 **Response:**
+
 ```json
 {
   "data": {
@@ -233,6 +280,7 @@ Check if the API is running.
 **GET** `/api/tests/:id`
 
 **Response:**
+
 ```json
 {
   "data": {
@@ -283,6 +331,7 @@ Check if the API is running.
 **GET** `/api/tests/:id/status`
 
 **Response:**
+
 ```json
 {
   "data": {
@@ -306,6 +355,7 @@ All error responses follow this format:
 ```
 
 Common HTTP status codes:
+
 - `200` - Success
 - `201` - Created
 - `400` - Bad Request (validation errors)

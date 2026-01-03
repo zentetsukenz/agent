@@ -115,6 +115,59 @@ npm run prisma:studio    # Visual database browser
 
 ---
 
+## SSRF Protection Configuration
+
+⚠️ **Production Security**: SSRF protection is enabled by default in production
+
+The load tester includes protection against Server-Side Request Forgery attacks to prevent malicious users from:
+
+- Scanning internal networks
+- Accessing cloud metadata endpoints
+- Hitting localhost/internal services
+
+### Environment Variables
+
+```bash
+# Block private IPs (true in production, false in dev/test)
+BLOCK_PRIVATE_IPS=true
+
+# Allow specific internal hosts
+SSRF_ALLOWLIST=internal-api.example.com,staging.example.com
+```
+
+### Default Behavior
+
+**Production (`NODE_ENV=production`)**:
+
+- Private IPs blocked by default
+- Metadata endpoints always blocked
+- Localhost always blocked
+
+**Development/Test**:
+
+- Private IPs allowed (for local testing)
+- Metadata endpoints still blocked
+- Localhost still blocked (use explicit IPs if needed)
+
+### Testing Local Endpoints
+
+If you need to test localhost endpoints in production mode:
+
+1. Add them to the allowlist: `SSRF_ALLOWLIST=my-local-service.local`
+2. Or set `BLOCK_PRIVATE_IPS=false` (not recommended in production)
+
+### Always Blocked
+
+These are blocked regardless of configuration:
+
+- 169.254.169.254 (AWS/Azure/GCP metadata)
+- metadata.google.internal
+- localhost, 127.0.0.1, ::1
+
+**Reference**: [OWASP SSRF Prevention](https://cheatsheetseries.owasp.org/cheatsheets/Server_Side_Request_Forgery_Prevention_Cheat_Sheet.html)
+
+---
+
 ## Common Issues & Fixes
 
 ### 1. "DATABASE_URL not set"

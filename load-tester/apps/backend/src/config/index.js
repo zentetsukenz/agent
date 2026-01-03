@@ -40,7 +40,7 @@ const config = {
   // CORS
   cors: {
     origin: process.env.CORS_ORIGIN
-      ? process.env.CORS_ORIGIN.split(',')
+      ? process.env.CORS_ORIGIN.split(",")
       : ["http://localhost:5173", "http://localhost:5174"],
     credentials: true,
   },
@@ -56,6 +56,36 @@ const config = {
     maxConnections: 1000,
     maxRPS: 100000,
     maxTimeout: 600, // seconds
+  },
+
+  // SSRF Protection
+  ssrf: {
+    // Block private IPs in production, allow in dev/test for local testing
+    blockPrivateIPs:
+      process.env.BLOCK_PRIVATE_IPS === "false"
+        ? false
+        : process.env.NODE_ENV === "production",
+
+    // Always block these hosts (cloud metadata endpoints, localhost variants)
+    blockedHosts: [
+      // AWS/Azure metadata service
+      "169.254.169.254",
+      // GCP metadata service
+      "metadata.google.internal",
+      "metadata.internal",
+      // Localhost variants
+      "localhost",
+      "127.0.0.1",
+      "::1",
+      "0.0.0.0",
+      "::",
+    ],
+
+    // Allow specific hosts even if they're private IPs
+    // Format: Comma-separated in env: "internal-api.example.com,staging.example.com"
+    allowlist: process.env.SSRF_ALLOWLIST
+      ? process.env.SSRF_ALLOWLIST.split(",").map((h) => h.trim())
+      : [],
   },
 
   // Logging

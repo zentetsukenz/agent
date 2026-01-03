@@ -2,7 +2,7 @@
 
 Quick reference for all production readiness improvements.
 
-**Progress**: 6/10 complete ✅  
+**Progress**: 7/10 complete ✅  
 **Last Updated**: January 3, 2026
 
 ---
@@ -17,6 +17,7 @@ Quick reference for all production readiness improvements.
 | [frontend-meta](frontend-meta/DONE.md) | 2026-01-02 | Title, description, Open Graph tags |
 | [graceful-shutdown](graceful-shutdown/COMPLETE.md) | 2026-01-03 | SIGTERM/SIGINT handlers for clean process exit |
 | [production-polish](production-polish/CHECKPOINT.md) | 2026-01-02 | Assessment against 7 industry standards (baseline evaluation) |
+| [ssrf-protection](ssrf-protection/PHASE6-VERIFICATION.md) | 2026-01-03 | URL validation for load test targets (blocks cloud metadata, localhost, private IPs) |
 
 ---
 
@@ -26,7 +27,6 @@ Quick reference for all production readiness improvements.
 |---------|--------|-------------|
 | [ci-security](ci-security/SPEC.md) | 1h | npm audit in CI pipeline |
 | [dockerfile](dockerfile/SPEC.md) | 2h | Production container with non-root user |
-| [ssrf-protection](ssrf-protection/SPEC.md) | 2h | URL validation for load test targets |
 
 ---
 
@@ -56,9 +56,9 @@ Recommended sequence based on dependencies and impact:
 3. ~~**frontend-meta** — Quick branding fix~~ ✅
 4. ~~**compression** — Easy performance gain~~ ✅
 5. ~~**accessibility** — WCAG compliance~~ ✅
-6. **ci-security** — Ongoing protection (CRITICAL)
-7. **dockerfile** — Enables containerized deployment (CRITICAL)
-8. **ssrf-protection** — Security hardening (CRITICAL)
+6. ~~**ssrf-protection** — Security hardening~~ ✅
+7. **ci-security** — Ongoing protection (CRITICAL)
+8. **dockerfile** — Enables containerized deployment (CRITICAL)
 9. **api-versioning** — Before going public
 10. **openapi-docs** — Developer experience
 11. **remove-legacy-app** — Tech debt cleanup
@@ -73,9 +73,9 @@ Recommended sequence based on dependencies and impact:
 - [x] frontend-meta ✅
 - [x] accessibility ✅
 - [x] production-polish (assessment) ✅
+- [x] ssrf-protection ✅
 - [ ] ci-security 🔴
 - [ ] dockerfile 🔴
-- [ ] ssrf-protection 🔴
 - [ ] api-versioning 🟡
 - [ ] openapi-docs 🟡
 - [ ] remove-legacy-app 🧹
@@ -86,10 +86,10 @@ Recommended sequence based on dependencies and impact:
 
 | Status | Count | Total Effort |
 |--------|-------|--------------|
-| ✅ Complete | 6 | ~6.5 hours |
-| 🔴 Critical | 3 | ~5 hours |
+| ✅ Complete | 7 | ~8.5 hours |
+| 🔴 Critical | 2 | ~3 hours |
 | 🟡 Important | 2 | ~6 hours |
 | 🧹 Tech Debt | 1 | ~1 hour |
 | **Total** | **12** | **~18.5 hours** |
 
-**Estimated Production Readiness**: ~70% → ~90% after critical tasks
+**Estimated Production Readiness**: ~70% → ~95% after critical tasks
