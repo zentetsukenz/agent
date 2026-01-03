@@ -70,7 +70,7 @@ export const TestResults = () => {
       {/* Breadcrumb */}
       <nav className="flex items-center gap-2 text-sm text-muted-foreground mb-8">
         <Link to="/" className="hover:text-foreground transition-colors">Dashboard</Link>
-        <ChevronRight className="w-4 h-4" />
+        <ChevronRight aria-hidden="true" className="w-4 h-4" />
         <span className="text-foreground font-medium">Test Results</span>
       </nav>
 
@@ -88,13 +88,13 @@ export const TestResults = () => {
               variant="destructive"
               onClick={() => setShowCancelConfirm(true)}
             >
-              <X className="w-4 h-4" />
+              <X aria-hidden="true" className="w-4 h-4" />
               Cancel Test
             </Button>
           )}
           <Button variant="outline" asChild>
             <Link to="/">
-              <ArrowLeft className="w-4 h-4" />
+              <ArrowLeft aria-hidden="true" className="w-4 h-4" />
               Back to Dashboard
             </Link>
           </Button>
@@ -228,7 +228,7 @@ export const TestResults = () => {
           <div className="mt-6 flex gap-4">
             <Button asChild>
               <Link to={`/endpoints/${test.endpointId}/test`}>
-                <Play className="w-4 h-4" />
+                <Play aria-hidden="true" className="w-4 h-4" />
                 Run Another Test
               </Link>
             </Button>

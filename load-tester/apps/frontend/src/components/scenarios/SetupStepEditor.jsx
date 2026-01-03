@@ -140,7 +140,7 @@ export const SetupStepEditor = ({
             className="h-8 w-8 p-0"
             title="Move up"
           >
-            <ArrowUp className="w-4 h-4" />
+            <ArrowUp aria-hidden="true" className="w-4 h-4" />
           </Button>
           <Button
             type="button"
@@ -151,7 +151,7 @@ export const SetupStepEditor = ({
             className="h-8 w-8 p-0"
             title="Move down"
           >
-            <ArrowDown className="w-4 h-4" />
+            <ArrowDown aria-hidden="true" className="w-4 h-4" />
           </Button>
           <Button
             type="button"
@@ -162,7 +162,7 @@ export const SetupStepEditor = ({
             className="h-8 w-8 p-0 text-gray-400 hover:text-destructive"
             title="Delete step"
           >
-            <Trash2 className="w-4 h-4" />
+            <Trash2 aria-hidden="true" className="w-4 h-4" />
           </Button>
         </div>
       </div>

@@ -33,7 +33,7 @@ const PhaseRow = ({ phase, index }) => {
           <h4 className="font-medium text-foreground">{phase.phaseName}</h4>
         </div>
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
-          <Clock className="w-4 h-4" />
+          <Clock aria-hidden="true" className="w-4 h-4" />
           <span>{formatNumber(phase.duration)}s</span>
         </div>
       </div>
@@ -102,7 +102,7 @@ export const PhaseResultsCard = ({ phaseResults }) => {
     <Card data-testid="phase-results-card">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <Activity className="w-5 h-5" />
+          <Activity aria-hidden="true" className="w-5 h-5" />
           Phase Results
           <Badge variant="secondary" className="ml-2">
             {phaseResults.length} {phaseResults.length === 1 ? 'phase' : 'phases'}

@@ -140,7 +140,7 @@ export const TestConfigForm = ({ onSubmit, onCancel, isSubmitting, templateConfi
             <>Loading...</>
           ) : (
             <>
-              <Zap className="w-4 h-4" />
+              <Zap aria-hidden="true" className="w-4 h-4" />
               Start Load Test
             </>
           )}

@@ -37,7 +37,7 @@ const StatCard = ({ label, value, icon, color, trend }) => {
             )}
           </div>
           <div className={cn('w-12 h-12 rounded-xl flex items-center justify-center', colorClasses[color])}>
-            <Icon className="w-6 h-6" />
+            <Icon aria-hidden="true" className="w-6 h-6" />
           </div>
         </div>
         {/* Decorative element */}
@@ -154,7 +154,7 @@ export const DashboardStats = ({
                     onClick={() => onSearchChange('')}
                     className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
                   >
-                    <X className="w-4 h-4" />
+                    <X aria-hidden="true" className="w-4 h-4" />
                   </button>
                 )}
               </div>

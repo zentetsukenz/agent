@@ -399,7 +399,7 @@ export const ScenarioDetail = () => {
             <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">{scenario.name}</h1>
             {scenario.isTemplate && (
               <Badge variant="secondary" className="flex items-center gap-1">
-                <BookTemplate className="w-3 h-3" />
+                <BookTemplate aria-hidden="true" className="w-3 h-3" />
                 Template
               </Badge>
             )}
@@ -413,19 +413,19 @@ export const ScenarioDetail = () => {
         <div className="flex items-center gap-2 shrink-0">
           {scenario.isTemplate ? (
             <Button onClick={handleDuplicate}>
-              <Copy className="w-4 h-4 mr-2" />
+              <Copy aria-hidden="true" className="w-4 h-4 mr-2" />
               Use Template
             </Button>
           ) : (
             <>
               <Button variant="outline" asChild>
                 <Link to={`/scenarios/${id}/edit`}>
-                  <Edit2 className="w-4 h-4 mr-2" />
+                  <Edit2 aria-hidden="true" className="w-4 h-4 mr-2" />
                   Edit
                 </Link>
               </Button>
               <Button onClick={handleDuplicate} variant="outline">
-                <Copy className="w-4 h-4 mr-2" />
+                <Copy aria-hidden="true" className="w-4 h-4 mr-2" />
                 Duplicate
               </Button>
               <Button
@@ -433,7 +433,7 @@ export const ScenarioDetail = () => {
                 className="text-red-600 hover:text-red-700 hover:bg-red-50"
                 onClick={() => setDeleteDialogOpen(true)}
               >
-                <Trash2 className="w-4 h-4" />
+                <Trash2 aria-hidden="true" className="w-4 h-4" />
               </Button>
             </>
           )}
@@ -492,7 +492,7 @@ export const ScenarioDetail = () => {
       <Card className="mb-6">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Layers className="w-5 h-5" />
+            <Layers aria-hidden="true" className="w-5 h-5" />
             Load Phases
           </CardTitle>
           <CardDescription>
@@ -513,7 +513,7 @@ export const ScenarioDetail = () => {
         <Card className="mb-6">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Workflow className="w-5 h-5" />
+              <Workflow aria-hidden="true" className="w-5 h-5" />
               Workflow
             </CardTitle>
             <CardDescription>
@@ -573,7 +573,7 @@ export const ScenarioDetail = () => {
       <Card className="mb-6">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Settings2 className="w-5 h-5" />
+            <Settings2 aria-hidden="true" className="w-5 h-5" />
             Configuration
           </CardTitle>
         </CardHeader>
@@ -619,14 +619,14 @@ export const ScenarioDetail = () => {
             >
               {scenario.isTemplate ? (
                 <span className="flex items-center gap-2">
-                  <Play className="w-5 h-5" />
+                  <Play aria-hidden="true" className="w-5 h-5" />
                   Duplicate to Run
                 </span>
               ) : (
                 <Link to={`/scenarios/${id}/run`} className="flex items-center gap-2">
-                  <Play className="w-5 h-5" />
+                  <Play aria-hidden="true" className="w-5 h-5" />
                   Run Test
-                  <ChevronRight className="w-4 h-4" />
+                  <ChevronRight aria-hidden="true" className="w-4 h-4" />
                 </Link>
               )}
             </Button>

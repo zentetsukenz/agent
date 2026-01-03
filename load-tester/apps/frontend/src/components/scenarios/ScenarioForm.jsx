@@ -359,7 +359,7 @@ export const ScenarioForm = ({
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Layers className="w-5 h-5" />
+            <Layers aria-hidden="true" className="w-5 h-5" />
             Basic Information
           </CardTitle>
           <CardDescription>
@@ -457,7 +457,7 @@ export const ScenarioForm = ({
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <BarChart3 className="w-5 h-5" />
+            <BarChart3 aria-hidden="true" className="w-5 h-5" />
             Load Profile
           </CardTitle>
           <CardDescription>

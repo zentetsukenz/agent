@@ -18,6 +18,10 @@ function App() {
         position="top-right"
         toastOptions={{
           duration: 4000,
+          ariaProps: {
+            role: 'status',
+            'aria-live': 'polite',
+          },
           style: {
             background: '#363636',
             color: '#fff',

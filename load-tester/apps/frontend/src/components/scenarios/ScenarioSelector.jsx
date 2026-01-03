@@ -158,11 +158,11 @@ export const ScenarioSelector = ({
                 {/* Phase summary */}
                 <div className="flex flex-wrap gap-4 text-sm">
                   <div className="flex items-center gap-1.5 text-muted-foreground">
-                    <Clock className="w-4 h-4" />
+                    <Clock aria-hidden="true" className="w-4 h-4" />
                     <span>{formatDuration(getTotalDuration(selectedScenario.phases))}</span>
                   </div>
                   <div className="flex items-center gap-1.5 text-muted-foreground">
-                    <Users className="w-4 h-4" />
+                    <Users aria-hidden="true" className="w-4 h-4" />
                     <span>Max {getMaxConnections(selectedScenario.phases)} connections</span>
                   </div>
                   <div className="text-muted-foreground">

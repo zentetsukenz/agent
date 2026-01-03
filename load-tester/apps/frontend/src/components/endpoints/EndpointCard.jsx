@@ -72,13 +72,13 @@ export const EndpointCard = ({ endpoint, onDelete }) => {
       <CardFooter className="pt-3 border-t gap-2">
         <Button asChild className="flex-1">
           <Link to={`/endpoints/${endpoint.id}/test`}>
-            <Zap className="w-4 h-4" />
+            <Zap aria-hidden="true" className="w-4 h-4" />
             Run Test
           </Link>
         </Button>
         <Button variant="outline" size="icon" asChild>
           <Link to={`/endpoints/${endpoint.id}/edit`} aria-label="Edit endpoint">
-            <Pencil className="w-4 h-4" />
+            <Pencil aria-hidden="true" className="w-4 h-4" />
           </Link>
         </Button>
         <Button 
@@ -88,7 +88,7 @@ export const EndpointCard = ({ endpoint, onDelete }) => {
           aria-label="Delete endpoint"
           className="text-red-600 hover:text-red-700 hover:bg-red-50"
         >
-          <Trash2 className="w-4 h-4" />
+          <Trash2 aria-hidden="true" className="w-4 h-4" />
         </Button>
       </CardFooter>
     </Card>

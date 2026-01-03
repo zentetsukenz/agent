@@ -47,7 +47,7 @@ export const ScenarioInfoCard = ({ scenario }) => {
               className="text-sm font-semibold text-foreground hover:text-primary flex items-center gap-1"
             >
               {scenario.name}
-              <ExternalLink className="w-3 h-3" />
+              <ExternalLink aria-hidden="true" className="w-3 h-3" />
             </Link>
           </div>
 

@@ -99,14 +99,14 @@ export const ScenarioEditor = () => {
         <BreadcrumbList>
           <BreadcrumbItem>
             <BreadcrumbLink href="/" className="flex items-center gap-1">
-              <Home className="w-4 h-4" />
+              <Home aria-hidden="true" className="w-4 h-4" />
               Dashboard
             </BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
             <BreadcrumbLink href="/scenarios" className="flex items-center gap-1">
-              <Layers className="w-4 h-4" />
+              <Layers aria-hidden="true" className="w-4 h-4" />
               Scenarios
             </BreadcrumbLink>
           </BreadcrumbItem>

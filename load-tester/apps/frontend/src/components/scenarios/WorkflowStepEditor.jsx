@@ -126,12 +126,12 @@ export const WorkflowStepEditor = ({
         )}>
           {step.runOnce ? (
             <>
-              <Play className="w-3 h-3" />
+              <Play aria-hidden="true" className="w-3 h-3" />
               Once
             </>
           ) : (
             <>
-              <Repeat className="w-3 h-3" />
+              <Repeat aria-hidden="true" className="w-3 h-3" />
               Loop
             </>
           )}
@@ -159,7 +159,7 @@ export const WorkflowStepEditor = ({
             className="h-8 w-8 p-0"
             title="Move up"
           >
-            <ArrowUp className="w-4 h-4" />
+            <ArrowUp aria-hidden="true" className="w-4 h-4" />
           </Button>
           <Button
             type="button"
@@ -170,7 +170,7 @@ export const WorkflowStepEditor = ({
             className="h-8 w-8 p-0"
             title="Move down"
           >
-            <ArrowDown className="w-4 h-4" />
+            <ArrowDown aria-hidden="true" className="w-4 h-4" />
           </Button>
           <Button
             type="button"
@@ -181,7 +181,7 @@ export const WorkflowStepEditor = ({
             className="h-8 w-8 p-0 text-gray-400 hover:text-destructive"
             title="Delete step"
           >
-            <Trash2 className="w-4 h-4" />
+            <Trash2 aria-hidden="true" className="w-4 h-4" />
           </Button>
         </div>
       </div>

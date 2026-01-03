@@ -83,10 +83,11 @@ export const EditEndpoint = () => {
 
   return (
     <div className="max-w-2xl mx-auto">
+      <h1 className="sr-only">Edit Endpoint</h1>
       {/* Breadcrumb */}
       <nav className="flex items-center gap-2 text-sm text-muted-foreground mb-8">
         <Link to="/" className="hover:text-foreground transition-colors">Dashboard</Link>
-        <ChevronRight className="w-4 h-4" />
+        <ChevronRight aria-hidden="true" className="w-4 h-4" />
         <span className="text-foreground font-medium">Edit Endpoint</span>
       </nav>
 

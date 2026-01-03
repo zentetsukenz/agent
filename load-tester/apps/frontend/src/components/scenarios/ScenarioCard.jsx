@@ -188,7 +188,7 @@ export const ScenarioCard = ({
                   className="text-gray-600 hover:text-gray-900"
                 >
                   <Link to={`/scenarios/${id}/edit`}>
-                    <Pencil className="w-4 h-4 mr-1" />
+                    <Pencil aria-hidden="true" className="w-4 h-4 mr-1" />
                     Edit
                   </Link>
                 </Button>
@@ -202,7 +202,7 @@ export const ScenarioCard = ({
                 onClick={() => onDuplicate?.(id)}
                 className="text-gray-600 hover:text-gray-900"
               >
-                <Copy className="w-4 h-4 mr-1" />
+                <Copy aria-hidden="true" className="w-4 h-4 mr-1" />
                 Duplicate
               </Button>
               
@@ -213,7 +213,7 @@ export const ScenarioCard = ({
                   onClick={() => onDelete?.(id, name)}
                   className="text-red-600 hover:text-red-700 hover:bg-red-50"
                 >
-                  <Trash2 className="w-4 h-4" />
+                  <Trash2 aria-hidden="true" className="w-4 h-4" />
                 </Button>
               )}
             </div>

@@ -12,6 +12,20 @@ Improve accessibility to WCAG 2.2 AA compliance, ensuring the app is usable by p
 
 ---
 
+## Implementation Phases
+
+| Phase | Context | Effort | Status |
+|-------|---------|--------|--------|
+| 1 | [Landmarks & Navigation](phase1-landmarks.md) | 30 min | Not started |
+| 2 | [Toast Accessibility](phase2-toast.md) | 15 min | ✅ Complete |
+| 3 | [Heading Hierarchy](phase3-headings.md) | 45 min | Not started |
+| 4 | [Decorative Icons](phase4-icons.md) | 20 min | Not started |
+| 5 | [Verification](phase5-verification.md) | 60 min | Not started |
+
+**Full Analysis**: [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md)
+
+---
+
 ## Current State
 
 **Score**: 4/10
@@ -23,15 +37,16 @@ Improve accessibility to WCAG 2.2 AA compliance, ensuring the app is usable by p
 - Focus rings via Tailwind
 - Some ARIA labels on buttons
 - `sr-only` class for screen readers
+- Form labels with Radix UI Label component
 
 ### ❌ Gaps
 
 - No skip navigation link
 - Missing `<nav>` landmark
-- Form labels inconsistent
 - Toast notifications not announced
+- Heading hierarchy issues (h2 as page title)
+- Decorative icons not hidden
 - Color contrast unaudited
-- Heading hierarchy not verified
 
 ---
 

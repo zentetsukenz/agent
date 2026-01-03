@@ -118,7 +118,7 @@ export const Dashboard = () => {
       <div>
         <div className="flex justify-between items-center mb-6">
           <div>
-            <h2 className="text-2xl font-bold text-gray-900">Dashboard</h2>
+            <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
             <p className="text-gray-500 mt-1">Loading your endpoints and tests...</p>
           </div>
         </div>
@@ -137,14 +137,15 @@ export const Dashboard = () => {
   if (endpoints.length === 0) {
     return (
       <div className="max-w-lg mx-auto mt-16">
+        <h1 className="sr-only">Dashboard</h1>
         <EmptyState
-          icon={<Zap className="w-full h-full" />}
+          icon={<Zap aria-hidden="true" className="w-full h-full" />}
           title="No endpoints configured"
           description="Start load testing your APIs by adding your first endpoint. You can test REST APIs with various HTTP methods."
           action={
             <Button size="lg" asChild>
               <Link to="/endpoints/new">
-                <Plus className="w-5 h-5" />
+                <Plus aria-hidden="true" className="w-5 h-5" />
                 Create Your First Endpoint
               </Link>
             </Button>
@@ -160,14 +161,14 @@ export const Dashboard = () => {
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">Dashboard</h2>
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Dashboard</h1>
           <p className="text-gray-500 mt-1.5 text-sm sm:text-base">
             {endpoints.length} endpoint{endpoints.length !== 1 ? 's' : ''} • {tests.length} test{tests.length !== 1 ? 's' : ''} run
           </p>
         </div>
         <Button asChild>
           <Link to="/endpoints/new">
-            <Plus className="w-4 h-4" />
+            <Plus aria-hidden="true" className="w-4 h-4" />
             Add Endpoint
           </Link>
         </Button>
@@ -186,14 +187,14 @@ export const Dashboard = () => {
       {/* Endpoints Section */}
       <section>
         <div className="flex items-center justify-between mb-5">
-          <h3 className="text-lg sm:text-xl font-semibold text-gray-900">
+          <h2 className="text-lg sm:text-xl font-semibold text-gray-900">
             API Endpoints 
             {searchQuery && (
               <span className="text-gray-400 font-normal ml-2">
                 ({filteredAndSortedEndpoints.length} result{filteredAndSortedEndpoints.length !== 1 ? 's' : ''})
               </span>
             )}
-          </h3>
+          </h2>
         </div>
         {filteredAndSortedEndpoints.length > 0 ? (
           <EndpointList endpoints={filteredAndSortedEndpoints} onDelete={handleDelete} />

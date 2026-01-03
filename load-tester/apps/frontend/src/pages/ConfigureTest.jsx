@@ -142,7 +142,7 @@ export const ConfigureTest = () => {
       {/* Breadcrumb */}
       <nav className="flex items-center gap-2 text-sm text-muted-foreground mb-8">
         <Link to="/" className="hover:text-foreground transition-colors">Dashboard</Link>
-        <ChevronRight className="w-4 h-4" />
+        <ChevronRight aria-hidden="true" className="w-4 h-4" />
         <span className="text-foreground font-medium">Configure Test</span>
       </nav>
 
@@ -157,7 +157,7 @@ export const ConfigureTest = () => {
           <CardContent className="pt-6">
             <div className="flex items-start gap-4">
               <div className="shrink-0 w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center">
-                <Server className="w-6 h-6 text-primary" />
+                <Server aria-hidden="true" className="w-6 h-6 text-primary" />
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-3 mb-2">
@@ -197,7 +197,7 @@ export const ConfigureTest = () => {
                 : 'text-muted-foreground hover:text-foreground'
             )}
           >
-            <Zap className="w-4 h-4" />
+            <Zap aria-hidden="true" className="w-4 h-4" />
             Quick Config
           </button>
           <button
@@ -210,7 +210,7 @@ export const ConfigureTest = () => {
                 : 'text-muted-foreground hover:text-foreground'
             )}
           >
-            <FileText className="w-4 h-4" />
+            <FileText aria-hidden="true" className="w-4 h-4" />
             Use Scenario
           </button>
         </div>
@@ -232,7 +232,7 @@ export const ConfigureTest = () => {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Settings className="w-5 h-5" />
+                <Settings aria-hidden="true" className="w-5 h-5" />
                 Test Configuration
               </CardTitle>
             </CardHeader>
@@ -253,7 +253,7 @@ export const ConfigureTest = () => {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <FileText className="w-5 h-5" />
+              <FileText aria-hidden="true" className="w-5 h-5" />
               Select Scenario
             </CardTitle>
           </CardHeader>

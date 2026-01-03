@@ -12,6 +12,7 @@ export default defineConfig({
   },
   server: {
     port: 5173,
+    host: "127.0.0.1", // Bind to IPv4 for curl compatibility
   },
   test: {
     globals: true,
