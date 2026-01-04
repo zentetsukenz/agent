@@ -26,8 +26,15 @@ Quick reference for all production readiness improvements.
 
 | Context | Effort | Description |
 |---------|--------|-------------|
-| [ci-security](ci-security/SPEC.md) | 1h | npm audit in CI pipeline |
 | [dockerfile](dockerfile/SPEC.md) | 2h | Production container with non-root user |
+
+---
+
+## 📋 Deferred (Until Project Separation)
+
+| Context | Effort | Description |
+|---------|--------|-------------|
+| [ci-security](ci-security/SPEC.md) | 1h | npm audit in CI pipeline (TODO: implement when load-tester is separated) |
 
 ---
 
@@ -68,10 +75,10 @@ Recommended sequence based on dependencies and impact:
 - [x] production-polish (assessment) ✅
 - [x] ssrf-protection ✅
 - [x] remove-legacy-app ✅
-- [ ] ci-security 🔴
 - [ ] dockerfile 🔴
 - [ ] api-versioning 🟡
 - [ ] openapi-docs 🟡
+- [ ] ci-security 📋 (deferred)
 
 ---
 
@@ -80,8 +87,10 @@ Recommended sequence based on dependencies and impact:
 | Status | Count | Total Effort |
 |--------|-------|--------------|
 | ✅ Complete | 8 | ~9.5 hours |
-| 🔴 Critical | 2 | ~3 hours |
+| 🔴 Critical | 1 | ~2 hours |
 | 🟡 Important | 2 | ~6 hours |
+| 📋 Deferred | 1 | ~1 hour |
 | **Total** | **12** | **~18.5 hours** |
 
-**Estimated Production Readiness**: ~70% → ~95% after critical tasks
+**Estimated Production Readiness**: ~70% → ~95% after critical tasks  
+**Note**: ci-security deferred until load-tester project separation
