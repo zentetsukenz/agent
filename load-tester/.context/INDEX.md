@@ -2,8 +2,8 @@
 
 Quick reference for all production readiness improvements.
 
-**Progress**: 7/10 complete ✅  
-**Last Updated**: January 3, 2026
+**Progress**: 8/10 complete ✅  
+**Last Updated**: January 4, 2026
 
 ---
 
@@ -17,6 +17,7 @@ Quick reference for all production readiness improvements.
 | [frontend-meta](frontend-meta/DONE.md) | 2026-01-02 | Title, description, Open Graph tags |
 | [graceful-shutdown](graceful-shutdown/COMPLETE.md) | 2026-01-03 | SIGTERM/SIGINT handlers for clean process exit |
 | [production-polish](production-polish/CHECKPOINT.md) | 2026-01-02 | Assessment against 7 industry standards (baseline evaluation) |
+| [remove-legacy-app](remove-legacy-app/COMPLETE.md) | 2026-01-04 | Removed legacy src/, tests/, prisma/ directories (tech debt cleanup) |
 | [ssrf-protection](ssrf-protection/PHASE6-VERIFICATION.md) | 2026-01-03 | URL validation for load test targets (blocks cloud metadata, localhost, private IPs) |
 
 ---
@@ -39,14 +40,6 @@ Quick reference for all production readiness improvements.
 
 ---
 
-## 🧹 Tech Debt
-
-| Context | Effort | Description |
-|---------|--------|-------------|
-| [remove-legacy-app](remove-legacy-app/SPEC.md) | 1h | Remove legacy src/ app replaced by monorepo |
-
----
-
 ## Implementation Order
 
 Recommended sequence based on dependencies and impact:
@@ -57,11 +50,11 @@ Recommended sequence based on dependencies and impact:
 4. ~~**compression** — Easy performance gain~~ ✅
 5. ~~**accessibility** — WCAG compliance~~ ✅
 6. ~~**ssrf-protection** — Security hardening~~ ✅
-7. **ci-security** — Ongoing protection (CRITICAL)
-8. **dockerfile** — Enables containerized deployment (CRITICAL)
-9. **api-versioning** — Before going public
-10. **openapi-docs** — Developer experience
-11. **remove-legacy-app** — Tech debt cleanup
+7. ~~**remove-legacy-app** — Tech debt cleanup~~ ✅
+8. **ci-security** — Ongoing protection (CRITICAL)
+9. **dockerfile** — Enables containerized deployment (CRITICAL)
+10. **api-versioning** — Before going public
+11. **openapi-docs** — Developer experience
 
 ---
 
@@ -74,11 +67,11 @@ Recommended sequence based on dependencies and impact:
 - [x] accessibility ✅
 - [x] production-polish (assessment) ✅
 - [x] ssrf-protection ✅
+- [x] remove-legacy-app ✅
 - [ ] ci-security 🔴
 - [ ] dockerfile 🔴
 - [ ] api-versioning 🟡
 - [ ] openapi-docs 🟡
-- [ ] remove-legacy-app 🧹
 
 ---
 
@@ -86,10 +79,9 @@ Recommended sequence based on dependencies and impact:
 
 | Status | Count | Total Effort |
 |--------|-------|--------------|
-| ✅ Complete | 7 | ~8.5 hours |
+| ✅ Complete | 8 | ~9.5 hours |
 | 🔴 Critical | 2 | ~3 hours |
 | 🟡 Important | 2 | ~6 hours |
-| 🧹 Tech Debt | 1 | ~1 hour |
 | **Total** | **12** | **~18.5 hours** |
 
 **Estimated Production Readiness**: ~70% → ~95% after critical tasks
