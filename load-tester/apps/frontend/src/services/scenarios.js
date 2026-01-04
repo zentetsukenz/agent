@@ -3,32 +3,32 @@
  * API client for scenario operations
  */
 
-import { api } from './api';
+import { api } from "./api";
 
 // Real API implementation
 const realAPI = {
   getAll: async () => {
-    const response = await api.get('/api/scenarios');
+    const response = await api.get("/scenarios");
     return response.data;
   },
 
   getById: async (id) => {
-    const response = await api.get(`/api/scenarios/${id}`);
+    const response = await api.get(`/scenarios/${id}`);
     return response.data;
   },
 
   create: async (data) => {
-    const response = await api.post('/api/scenarios', data);
+    const response = await api.post("/scenarios", data);
     return response.data;
   },
 
   update: async (id, data) => {
-    const response = await api.put(`/api/scenarios/${id}`, data);
+    const response = await api.put(`/scenarios/${id}`, data);
     return response.data;
   },
 
   delete: async (id) => {
-    await api.delete(`/api/scenarios/${id}`);
+    await api.delete(`/scenarios/${id}`);
     return { success: true };
   },
 
@@ -36,10 +36,12 @@ const realAPI = {
     // If no name provided, we need to fetch the original and generate one
     let duplicateName = name;
     if (!duplicateName) {
-      const original = await api.get(`/api/scenarios/${id}`);
+      const original = await api.get(`/scenarios/${id}`);
       duplicateName = `${original.data.name} (Copy)`;
     }
-    const response = await api.post(`/api/scenarios/${id}/duplicate`, { name: duplicateName });
+    const response = await api.post(`/scenarios/${id}/duplicate`, {
+      name: duplicateName,
+    });
     return response.data;
   },
 };
@@ -49,9 +51,9 @@ export const scenariosAPI = realAPI;
 // Helper functions for UI
 export const getPhaseTypeLabel = (type) => {
   const labels = {
-    ramp: 'Ramp',
-    constant: 'Constant',
-    spike: 'Spike',
+    ramp: "Ramp",
+    constant: "Constant",
+    spike: "Spike",
   };
   return labels[type] || type;
 };
@@ -63,7 +65,7 @@ export const getTotalDuration = (phases) => {
 
 export const getMaxConnections = (phases) => {
   if (!phases || phases.length === 0) return 0;
-  return Math.max(...phases.map(p => p.connections));
+  return Math.max(...phases.map((p) => p.connections));
 };
 
 export const formatDuration = (seconds) => {

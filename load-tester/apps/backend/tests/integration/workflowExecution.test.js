@@ -139,7 +139,7 @@ describe("Workflow Execution API", () => {
         .reply(204);
 
       const response = await request(app)
-        .post(`/api/endpoints/${testEndpoint.id}/test`)
+        .post(`/api/v1/endpoints/${testEndpoint.id}/test`)
         .send({ scenarioId: workflowScenario.id })
         .expect(201);
 
@@ -160,7 +160,7 @@ describe("Workflow Execution API", () => {
         .reply(204);
 
       const response = await request(app)
-        .post(`/api/endpoints/${testEndpoint.id}/test`)
+        .post(`/api/v1/endpoints/${testEndpoint.id}/test`)
         .send({ scenarioId: workflowScenario.id })
         .expect(201);
 
@@ -213,7 +213,7 @@ describe("Workflow Execution API", () => {
       });
 
       const response = await request(app)
-        .get(`/api/tests/${test.id}`)
+        .get(`/api/v1/tests/${test.id}`)
         .expect(200);
 
       expect(response.body.data.results).toBeDefined();
@@ -244,7 +244,7 @@ describe("Workflow Execution API", () => {
       });
 
       const response = await request(app)
-        .post(`/api/endpoints/${testEndpoint.id}/test`)
+        .post(`/api/v1/endpoints/${testEndpoint.id}/test`)
         .send({ scenarioId: simpleScenario.id })
         .expect(201);
 
@@ -271,7 +271,7 @@ describe("Workflow Execution API", () => {
       });
 
       const response = await request(app)
-        .post(`/api/endpoints/${testEndpoint.id}/test`)
+        .post(`/api/v1/endpoints/${testEndpoint.id}/test`)
         .send({ scenarioId: simpleScenario.id })
         .expect(201);
 

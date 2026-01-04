@@ -84,7 +84,7 @@ describe("Tests Integration Tests - REST API", () => {
   describe("POST /api/endpoints/:id/test", () => {
     test("should create test and start execution", async () => {
       const response = await request(app)
-        .post(`/api/endpoints/${testEndpoint.id}/test`)
+        .post(`/api/v1/endpoints/${testEndpoint.id}/test`)
         .send({
           duration: 10,
           connections: 5,
@@ -113,7 +113,7 @@ describe("Tests Integration Tests - REST API", () => {
 
     test("should create test without optional rps", async () => {
       const response = await request(app)
-        .post(`/api/endpoints/${testEndpoint.id}/test`)
+        .post(`/api/v1/endpoints/${testEndpoint.id}/test`)
         .send({
           duration: 10,
           connections: 5,
@@ -131,7 +131,7 @@ describe("Tests Integration Tests - REST API", () => {
 
     test("should create test with custom timeout", async () => {
       const response = await request(app)
-        .post(`/api/endpoints/${testEndpoint.id}/test`)
+        .post(`/api/v1/endpoints/${testEndpoint.id}/test`)
         .send({
           duration: 10,
           connections: 5,
@@ -151,7 +151,7 @@ describe("Tests Integration Tests - REST API", () => {
 
     test("should use default timeout when not provided", async () => {
       const response = await request(app)
-        .post(`/api/endpoints/${testEndpoint.id}/test`)
+        .post(`/api/v1/endpoints/${testEndpoint.id}/test`)
         .send({
           duration: 10,
           connections: 5,
@@ -164,7 +164,7 @@ describe("Tests Integration Tests - REST API", () => {
 
     test("should reject invalid test configuration", async () => {
       const response = await request(app)
-        .post(`/api/endpoints/${testEndpoint.id}/test`)
+        .post(`/api/v1/endpoints/${testEndpoint.id}/test`)
         .send({
           duration: 0,
           connections: 1001,
@@ -182,7 +182,7 @@ describe("Tests Integration Tests - REST API", () => {
 
     test("should handle missing required fields", async () => {
       const response = await request(app)
-        .post(`/api/endpoints/${testEndpoint.id}/test`)
+        .post(`/api/v1/endpoints/${testEndpoint.id}/test`)
         .send({})
         .expect(400);
 
@@ -220,7 +220,7 @@ describe("Tests Integration Tests - REST API", () => {
       });
 
       const response = await request(app)
-        .get(`/api/tests/${test.id}`)
+        .get(`/api/v1/tests/${test.id}`)
         .expect(200);
 
       expect(response.body.data).toMatchObject({
@@ -248,7 +248,7 @@ describe("Tests Integration Tests - REST API", () => {
       });
 
       const response = await request(app)
-        .get(`/api/tests/${test.id}`)
+        .get(`/api/v1/tests/${test.id}`)
         .expect(200);
 
       expect(response.body.data).toMatchObject({
@@ -258,7 +258,7 @@ describe("Tests Integration Tests - REST API", () => {
     });
 
     test("should return 404 for non-existent test", async () => {
-      const response = await request(app).get("/api/tests/999").expect(404);
+      const response = await request(app).get("/api/v1/tests/999").expect(404);
 
       expect(response.body).toHaveProperty("error", true);
       expect(response.body).toHaveProperty("message", "Test not found");
@@ -277,7 +277,7 @@ describe("Tests Integration Tests - REST API", () => {
       });
 
       const response = await request(app)
-        .get(`/api/tests/${test.id}/status`)
+        .get(`/api/v1/tests/${test.id}/status`)
         .expect(200);
 
       expect(response.body.data).toMatchObject({
@@ -300,7 +300,7 @@ describe("Tests Integration Tests - REST API", () => {
       });
 
       const response = await request(app)
-        .get(`/api/tests/${test.id}/status`)
+        .get(`/api/v1/tests/${test.id}/status`)
         .expect(200);
 
       expect(response.body.data).toMatchObject({
@@ -312,7 +312,7 @@ describe("Tests Integration Tests - REST API", () => {
 
     test("should return 404 for non-existent test", async () => {
       const response = await request(app)
-        .get("/api/tests/999/status")
+        .get("/api/v1/tests/999/status")
         .expect(404);
 
       expect(response.body).toHaveProperty("error", true);
@@ -332,7 +332,7 @@ describe("Tests Integration Tests - REST API", () => {
       });
 
       const response = await request(app)
-        .delete(`/api/tests/${test.id}/cancel`)
+        .delete(`/api/v1/tests/${test.id}/cancel`)
         .expect(400);
 
       expect(response.body).toHaveProperty("error", true);
@@ -351,7 +351,7 @@ describe("Tests Integration Tests - REST API", () => {
       });
 
       const response = await request(app)
-        .delete(`/api/tests/${test.id}/cancel`)
+        .delete(`/api/v1/tests/${test.id}/cancel`)
         .expect(400);
 
       expect(response.body).toHaveProperty("error", true);
@@ -379,7 +379,7 @@ describe("Tests Integration Tests - REST API", () => {
         },
       });
 
-      const response = await request(app).get("/api/tests").expect(200);
+      const response = await request(app).get("/api/v1/tests").expect(200);
 
       expect(response.body.data).toHaveLength(2);
       expect(response.body.data[0]).toHaveProperty("endpoint");
@@ -387,7 +387,7 @@ describe("Tests Integration Tests - REST API", () => {
     });
 
     test("should return empty array when no tests exist", async () => {
-      const response = await request(app).get("/api/tests").expect(200);
+      const response = await request(app).get("/api/v1/tests").expect(200);
 
       expect(response.body.data).toEqual([]);
     });
@@ -396,7 +396,7 @@ describe("Tests Integration Tests - REST API", () => {
   describe("Edge cases", () => {
     test("should handle validation errors with empty body", async () => {
       const response = await request(app)
-        .post(`/api/endpoints/${testEndpoint.id}/test`)
+        .post(`/api/v1/endpoints/${testEndpoint.id}/test`)
         .send({})
         .expect(400);
 
@@ -419,7 +419,7 @@ describe("Tests Integration Tests - REST API", () => {
       });
 
       const response = await request(app)
-        .post(`/api/endpoints/${endpointWithHeaders.id}/test`)
+        .post(`/api/v1/endpoints/${endpointWithHeaders.id}/test`)
         .send({
           duration: 5,
           connections: 2,
@@ -442,7 +442,7 @@ describe("Tests Integration Tests - REST API", () => {
       });
 
       const response = await request(app)
-        .post(`/api/endpoints/${endpointWithBody.id}/test`)
+        .post(`/api/v1/endpoints/${endpointWithBody.id}/test`)
         .send({
           duration: 5,
           connections: 2,
@@ -454,7 +454,7 @@ describe("Tests Integration Tests - REST API", () => {
 
     test("should handle test with RPS parameter", async () => {
       const response = await request(app)
-        .post(`/api/endpoints/${testEndpoint.id}/test`)
+        .post(`/api/v1/endpoints/${testEndpoint.id}/test`)
         .send({
           duration: 5,
           connections: 2,

@@ -2,7 +2,7 @@
 
 Quick reference for all production readiness improvements.
 
-**Progress**: 8/10 complete ✅  
+**Progress**: 9/10 complete ✅  
 **Last Updated**: January 4, 2026
 
 ---
@@ -12,6 +12,7 @@ Quick reference for all production readiness improvements.
 | Context | Completed | Description |
 |---------|-----------|-------------|
 | [accessibility](accessibility/CHECKPOINT.md) | 2026-01-03 | WCAG 2.2 Level AA compliance (0 violations, landmarks, skip nav, heading hierarchy) |
+| [api-versioning](api-versioning/COMPLETE.md) | 2026-01-04 | URL-based versioning (/api/v1/) with backwards-compatible redirects |
 | [body-size-limits](body-size-limits/COMPLETE.md) | 2026-01-02 | Request body size limits (10KB) to prevent DoS |
 | [compression](compression/IMPLEMENTATION_COMPLETE.md) | 2026-01-02 | gzip/brotli response compression (60-80% reduction) |
 | [frontend-meta](frontend-meta/DONE.md) | 2026-01-02 | Title, description, Open Graph tags |
@@ -41,8 +42,7 @@ Quick reference for all production readiness improvements.
 ## 🟡 Important (Soon After Launch)
 
 | Context | Effort | Description |
-|---------|--------|-------------|
-| [api-versioning](api-versioning/SPEC.md) | 2h | /api/v1/ URL prefix for future compatibility |
+|--api-versioning](api-versioning/SPEC.md) | 2h | /api/v1/ URL prefix for future compatibility |
 | [openapi-docs](openapi-docs/SPEC.md) | 4h | Swagger UI and OpenAPI spec |
 
 ---
@@ -59,9 +59,9 @@ Recommended sequence based on dependencies and impact:
 6. ~~**ssrf-protection** — Security hardening~~ ✅
 7. ~~**remove-legacy-app** — Tech debt cleanup~~ ✅
 8. **ci-security** — Ongoing protection (CRITICAL)
-9. **dockerfile** — Enables containerized deployment (CRITICAL)
-10. **api-versioning** — Before going public
-11. **openapi-docs** — Developer experience
+9. ~~**api-versioning** — Before going public~~ ✅
+10. **ci-security** — Ongoing protection (CRITICAL)
+11. **dockerfile** — Enables containerized deployment (CRITICAL)
 
 ---
 
@@ -75,8 +75,8 @@ Recommended sequence based on dependencies and impact:
 - [x] production-polish (assessment) ✅
 - [x] ssrf-protection ✅
 - [x] remove-legacy-app ✅
+- [x] api-versioning ✅
 - [ ] dockerfile 🔴
-- [ ] api-versioning 🟡
 - [ ] openapi-docs 🟡
 - [ ] ci-security 📋 (deferred)
 
@@ -86,11 +86,11 @@ Recommended sequence based on dependencies and impact:
 
 | Status | Count | Total Effort |
 |--------|-------|--------------|
-| ✅ Complete | 8 | ~9.5 hours |
+| ✅ Complete | 9 | ~11.5 hours |
 | 🔴 Critical | 1 | ~2 hours |
-| 🟡 Important | 2 | ~6 hours |
+| 🟡 Important | 1 | ~4 hours |
 | 📋 Deferred | 1 | ~1 hour |
 | **Total** | **12** | **~18.5 hours** |
 
-**Estimated Production Readiness**: ~70% → ~95% after critical tasks  
+**Estimated Production Readiness**: ~75% → ~95% after critical tasks  
 **Note**: ci-security deferred until load-tester project separation

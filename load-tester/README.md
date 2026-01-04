@@ -43,6 +43,7 @@ load-tester/
 ## 🛠️ Tech Stack
 
 ### Backend
+
 - **Framework**: Express.js 4.x
 - **Database**: SQLite with Prisma ORM
 - **Load Testing**: Autocannon
@@ -50,6 +51,7 @@ load-tester/
 - **API**: RESTful JSON API with CORS
 
 ### Frontend
+
 - **Framework**: React 18
 - **Build Tool**: Vite
 - **Routing**: React Router v6
@@ -68,26 +70,31 @@ load-tester/
 ### Installation
 
 1. **Clone or navigate to the project directory**:
+
    ```bash
    cd load-tester
    ```
 
 2. **Install all dependencies** (workspace + apps):
+
    ```bash
    npm run install:all
    ```
 
 3. **Set up backend environment**:
+
    ```bash
    cp apps/backend/.env.example apps/backend/.env
    ```
 
 4. **Set up frontend environment**:
+
    ```bash
    cp apps/frontend/.env.example apps/frontend/.env
    ```
 
 5. **Initialize database**:
+
    ```bash
    cd apps/backend
    npm run db:setup
@@ -102,11 +109,12 @@ load-tester/
 npm run dev
 ```
 
-This starts both backend (http://localhost:3001) and frontend (http://localhost:5173) concurrently.
+This starts both backend (<http://localhost:3001>) and frontend (<http://localhost:5173>) concurrently.
 
 #### Option 2: Run applications separately
 
 **Backend only:**
+
 ```bash
 npm run backend
 # or
@@ -115,6 +123,7 @@ npm run dev
 ```
 
 **Frontend only:**
+
 ```bash
 npm run frontend
 # or
@@ -124,9 +133,9 @@ npm run dev
 
 ### Access the Application
 
-- **Frontend UI**: http://localhost:5173
-- **Backend API**: http://localhost:3001
-- **API Health Check**: http://localhost:3001/api/health
+- **Frontend UI**: <http://localhost:5173>
+- **Backend API**: <http://localhost:3001>
+- **API Health Check**: <http://localhost:3001/api/health>
 
 ## 📖 Usage
 
@@ -135,7 +144,7 @@ npm run dev
 1. Click **"+ Add Endpoint"** on the dashboard
 2. Fill in the endpoint details:
    - Name (e.g., "My API")
-   - URL (e.g., "https://api.example.com/users")
+   - URL (e.g., "<https://api.example.com/users>")
    - Method (GET, POST, PUT, DELETE, PATCH)
    - Headers (optional, JSON format)
    - Body (optional, JSON format)
@@ -154,6 +163,7 @@ npm run dev
 ### Viewing Results
 
 Test results show:
+
 - Total requests and average RPS
 - Latency metrics (min, max, mean, p50, p90, p95, p99)
 - Throughput (bytes/sec)
@@ -250,11 +260,13 @@ http://localhost:3001/api
 ### Endpoints
 
 #### Health Check
+
 ```
 GET /api/health
 ```
 
 #### Endpoint Management
+
 ```
 GET    /api/endpoints           # List all endpoints
 GET    /api/endpoints/:id       # Get single endpoint
@@ -264,6 +276,7 @@ DELETE /api/endpoints/:id       # Delete endpoint
 ```
 
 #### Load Testing
+
 ```
 POST   /api/endpoints/:id/test  # Execute load test
 GET    /api/tests/:id           # Get test results
@@ -272,6 +285,7 @@ DELETE /api/tests/:id/cancel    # Cancel running test
 ```
 
 #### Scenarios
+
 ```
 GET    /api/scenarios           # List all scenarios
 GET    /api/scenarios/:id       # Get single scenario
@@ -323,7 +337,7 @@ CORS_ORIGIN="http://localhost:5173"
 ### Frontend (`apps/frontend/.env`)
 
 ```env
-VITE_API_URL=http://localhost:3001
+VITE_API_URL=http://localhost:3001/api/v1
 ```
 
 ## 📁 Database Management
@@ -389,6 +403,7 @@ This project was migrated from a server-side rendered Express application to a s
 - **After**: React SPA + REST API
 
 **Migration Benefits**:
+
 - ✅ Better separation of concerns
 - ✅ Independent deployment of frontend/backend
 - ✅ Modern React development experience
@@ -406,10 +421,12 @@ This project was migrated from a server-side rendered Express application to a s
 ### Frontend Deployment
 
 1. Build:
+
    ```bash
    cd apps/frontend
    npm run build
    ```
+
 2. Deploy: `dist/` folder to any static hosting (Vercel, Netlify, Cloudflare Pages)
 3. Environment: Set `VITE_API_URL` to production backend URL
 
@@ -427,6 +444,7 @@ MIT
 ## 🙋 Support
 
 For issues or questions:
+
 1. Check the [Backend README](apps/backend/README.md)
 2. Check the [Frontend README](apps/frontend/README.md)
 3. Review [API Design Documentation](docs/API_DESIGN.md)

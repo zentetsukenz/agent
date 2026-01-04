@@ -27,7 +27,7 @@ describe("Endpoints Integration Tests - REST API", () => {
 
   describe("GET /api/endpoints", () => {
     test("should return empty endpoints list", async () => {
-      const response = await request(app).get("/api/endpoints").expect(200);
+      const response = await request(app).get("/api/v1/endpoints").expect(200);
 
       expect(response.body).toHaveProperty("data");
       expect(response.body.data).toHaveLength(0);
@@ -43,7 +43,7 @@ describe("Endpoints Integration Tests - REST API", () => {
         },
       });
 
-      const response = await request(app).get("/api/endpoints").expect(200);
+      const response = await request(app).get("/api/v1/endpoints").expect(200);
 
       expect(response.body.data).toHaveLength(1);
       expect(response.body.data[0]).toMatchObject({
@@ -65,7 +65,7 @@ describe("Endpoints Integration Tests - REST API", () => {
       });
 
       const response = await request(app)
-        .get(`/api/endpoints/${endpoint.id}`)
+        .get(`/api/v1/endpoints/${endpoint.id}`)
         .expect(200);
 
       expect(response.body.data).toMatchObject({
@@ -76,7 +76,9 @@ describe("Endpoints Integration Tests - REST API", () => {
     });
 
     test("should return 404 for non-existent endpoint", async () => {
-      const response = await request(app).get("/api/endpoints/999").expect(404);
+      const response = await request(app)
+        .get("/api/v1/endpoints/999")
+        .expect(404);
 
       expect(response.body).toHaveProperty("error", true);
       expect(response.body).toHaveProperty("message", "Endpoint not found");
@@ -86,7 +88,7 @@ describe("Endpoints Integration Tests - REST API", () => {
   describe("POST /api/endpoints", () => {
     test("should create new endpoint", async () => {
       const response = await request(app)
-        .post("/api/endpoints")
+        .post("/api/v1/endpoints")
         .send({
           name: "New API",
           url: "https://api.example.com",
@@ -112,7 +114,7 @@ describe("Endpoints Integration Tests - REST API", () => {
 
     test("should create endpoint with optional headers and body", async () => {
       const response = await request(app)
-        .post("/api/endpoints")
+        .post("/api/v1/endpoints")
         .send({
           name: "API with Headers",
           url: "https://api.example.com",
@@ -129,7 +131,7 @@ describe("Endpoints Integration Tests - REST API", () => {
 
     test("should reject invalid endpoint data", async () => {
       const response = await request(app)
-        .post("/api/endpoints")
+        .post("/api/v1/endpoints")
         .send({
           name: "",
           url: "not-a-url",
@@ -155,7 +157,7 @@ describe("Endpoints Integration Tests - REST API", () => {
 
       for (const url of invalidUrls) {
         const response = await request(app)
-          .post("/api/endpoints")
+          .post("/api/v1/endpoints")
           .send({
             name: "Test",
             url,
@@ -173,7 +175,7 @@ describe("Endpoints Integration Tests - REST API", () => {
 
     test("should reject invalid JSON in headers", async () => {
       const response = await request(app)
-        .post("/api/endpoints")
+        .post("/api/v1/endpoints")
         .send({
           name: "Test API",
           url: "https://api.example.com",
@@ -192,7 +194,7 @@ describe("Endpoints Integration Tests - REST API", () => {
 
     test("should reject invalid JSON in body", async () => {
       const response = await request(app)
-        .post("/api/endpoints")
+        .post("/api/v1/endpoints")
         .send({
           name: "Test API",
           url: "https://api.example.com",
@@ -215,7 +217,7 @@ describe("Endpoints Integration Tests - REST API", () => {
     test("should sanitize HTML in endpoint name", async () => {
       const timestamp = Date.now();
       const response = await request(app)
-        .post("/api/endpoints")
+        .post("/api/v1/endpoints")
         .send({
           name: "<script>alert('xss')</script>Test",
           url: `https://api.example.com/xss/${timestamp}`,
@@ -235,7 +237,7 @@ describe("Endpoints Integration Tests - REST API", () => {
 
     test("should handle missing required fields", async () => {
       const response = await request(app)
-        .post("/api/endpoints")
+        .post("/api/v1/endpoints")
         .send({})
         .expect(400);
 
@@ -256,7 +258,7 @@ describe("Endpoints Integration Tests - REST API", () => {
       });
 
       const response = await request(app)
-        .put(`/api/endpoints/${endpoint.id}`)
+        .put(`/api/v1/endpoints/${endpoint.id}`)
         .send({
           name: "New Name",
           url: "https://api.updated.com",
@@ -292,7 +294,7 @@ describe("Endpoints Integration Tests - REST API", () => {
       });
 
       const response = await request(app)
-        .put(`/api/endpoints/${endpoint.id}`)
+        .put(`/api/v1/endpoints/${endpoint.id}`)
         .send({
           name: "",
           url: "not-a-url",
@@ -311,7 +313,7 @@ describe("Endpoints Integration Tests - REST API", () => {
 
     test("should return 404 for non-existent endpoint", async () => {
       const response = await request(app)
-        .put("/api/endpoints/9999999")
+        .put("/api/v1/endpoints/9999999")
         .send({
           name: "Test",
           url: "https://api.example.com/nonexistent",
@@ -335,7 +337,7 @@ describe("Endpoints Integration Tests - REST API", () => {
       });
 
       const response = await request(app)
-        .delete(`/api/endpoints/${endpoint.id}`)
+        .delete(`/api/v1/endpoints/${endpoint.id}`)
         .expect(200);
 
       expect(response.body).toHaveProperty(
@@ -351,7 +353,7 @@ describe("Endpoints Integration Tests - REST API", () => {
 
     test("should return 404 for non-existent endpoint", async () => {
       const response = await request(app)
-        .delete("/api/endpoints/9999999")
+        .delete("/api/v1/endpoints/9999999")
         .expect(404);
 
       expect(response.body).toHaveProperty("error", true);
@@ -374,7 +376,7 @@ describe("Endpoints Integration Tests - REST API", () => {
         },
       });
 
-      await request(app).delete(`/api/endpoints/${endpoint.id}`).expect(200);
+      await request(app).delete(`/api/v1/endpoints/${endpoint.id}`).expect(200);
 
       const tests = await prisma.test.findMany({
         where: { endpointId: endpoint.id },
@@ -392,7 +394,7 @@ describe("Endpoints Integration Tests - REST API", () => {
       };
 
       const response = await request(app)
-        .post("/api/endpoints")
+        .post("/api/v1/endpoints")
         .send(oversizedPayload)
         .expect(413);
 
@@ -403,7 +405,7 @@ describe("Endpoints Integration Tests - REST API", () => {
   describe("POST /api/endpoints - SSRF Protection", () => {
     test("should block AWS metadata endpoint", async () => {
       const response = await request(app)
-        .post("/api/endpoints")
+        .post("/api/v1/endpoints")
         .send({
           name: "AWS Metadata",
           url: "http://169.254.169.254/latest/meta-data",
@@ -417,7 +419,7 @@ describe("Endpoints Integration Tests - REST API", () => {
 
     test("should block GCP metadata endpoint (IP)", async () => {
       const response = await request(app)
-        .post("/api/endpoints")
+        .post("/api/v1/endpoints")
         .send({
           name: "GCP Metadata IP",
           url: "http://169.254.169.254/computeMetadata/v1/",
@@ -430,7 +432,7 @@ describe("Endpoints Integration Tests - REST API", () => {
 
     test("should block GCP metadata endpoint (hostname)", async () => {
       const response = await request(app)
-        .post("/api/endpoints")
+        .post("/api/v1/endpoints")
         .send({
           name: "GCP Metadata",
           url: "http://metadata.google.internal/computeMetadata/v1/",
@@ -444,7 +446,7 @@ describe("Endpoints Integration Tests - REST API", () => {
 
     test("should block localhost (127.0.0.1)", async () => {
       const response = await request(app)
-        .post("/api/endpoints")
+        .post("/api/v1/endpoints")
         .send({
           name: "Localhost IP",
           url: "http://127.0.0.1:8080/admin",
@@ -458,7 +460,7 @@ describe("Endpoints Integration Tests - REST API", () => {
 
     test("should block localhost (hostname)", async () => {
       const response = await request(app)
-        .post("/api/endpoints")
+        .post("/api/v1/endpoints")
         .send({
           name: "Localhost",
           url: "http://localhost:8080/admin",
@@ -473,7 +475,7 @@ describe("Endpoints Integration Tests - REST API", () => {
       // In test mode, blockPrivateIPs should be false by default
       // So we need to mock or set env var for this test
       // For now, this tests the function works - behavior depends on config
-      const response = await request(app).post("/api/endpoints").send({
+      const response = await request(app).post("/api/v1/endpoints").send({
         name: "Private IP",
         url: "http://10.0.0.5:8080/api",
         method: "GET",
@@ -485,7 +487,7 @@ describe("Endpoints Integration Tests - REST API", () => {
     });
 
     test("should block private IP 192.168.x.x", async () => {
-      const response = await request(app).post("/api/endpoints").send({
+      const response = await request(app).post("/api/v1/endpoints").send({
         name: "Private IP",
         url: "http://192.168.1.100/api",
         method: "GET",
@@ -496,7 +498,7 @@ describe("Endpoints Integration Tests - REST API", () => {
     });
 
     test("should block private IP 172.16-31.x.x", async () => {
-      const response = await request(app).post("/api/endpoints").send({
+      const response = await request(app).post("/api/v1/endpoints").send({
         name: "Private IP",
         url: "http://172.16.0.1/api",
         method: "GET",
@@ -508,7 +510,7 @@ describe("Endpoints Integration Tests - REST API", () => {
 
     test("should allow public IP", async () => {
       const response = await request(app)
-        .post("/api/endpoints")
+        .post("/api/v1/endpoints")
         .send({
           name: "Google DNS",
           url: "http://8.8.8.8:80",
@@ -525,7 +527,7 @@ describe("Endpoints Integration Tests - REST API", () => {
 
     test("should allow normal public domain", async () => {
       const response = await request(app)
-        .post("/api/endpoints")
+        .post("/api/v1/endpoints")
         .send({
           name: "Example API",
           url: "https://api.example.com/v1/users",
@@ -541,7 +543,7 @@ describe("Endpoints Integration Tests - REST API", () => {
 
     test("should return clear error message for blocked hosts", async () => {
       const response = await request(app)
-        .post("/api/endpoints")
+        .post("/api/v1/endpoints")
         .send({
           name: "Test",
           url: "http://169.254.169.254/",
@@ -557,6 +559,30 @@ describe("Endpoints Integration Tests - REST API", () => {
           response.body.message.toLowerCase().includes("security") ||
           response.body.message.toLowerCase().includes("metadata")
       ).toBe(true);
+    });
+  });
+
+  describe("API Versioning", () => {
+    test("should work with /api/v1 prefix", async () => {
+      const response = await request(app).get("/api/v1/endpoints").expect(200);
+      expect(response.body).toHaveProperty("data");
+    });
+
+    test("should redirect /api/* to /api/v1/*", async () => {
+      const response = await request(app).get("/api/endpoints").expect(301);
+      expect(response.headers.location).toBe("/api/v1/endpoints");
+    });
+
+    test("should preserve query strings in redirect", async () => {
+      const response = await request(app)
+        .get("/api/endpoints?page=1")
+        .expect(301);
+      expect(response.headers.location).toBe("/api/v1/endpoints?page=1");
+    });
+
+    test("should not redirect /api/health", async () => {
+      const response = await request(app).get("/api/health").expect(200);
+      expect(response.body).toHaveProperty("status", "ok");
     });
   });
 });

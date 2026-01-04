@@ -29,7 +29,7 @@ describe("Scenarios Integration Tests - REST API", () => {
 
   describe("GET /api/scenarios", () => {
     test("should return empty scenarios list", async () => {
-      const response = await request(app).get("/api/scenarios").expect(200);
+      const response = await request(app).get("/api/v1/scenarios").expect(200);
 
       expect(response.body).toHaveProperty("data");
       expect(response.body.data).toHaveLength(0);
@@ -54,7 +54,7 @@ describe("Scenarios Integration Tests - REST API", () => {
         },
       });
 
-      const response = await request(app).get("/api/scenarios").expect(200);
+      const response = await request(app).get("/api/v1/scenarios").expect(200);
 
       expect(response.body.data).toHaveLength(2);
       // Templates should be first
@@ -72,7 +72,7 @@ describe("Scenarios Integration Tests - REST API", () => {
         },
       });
 
-      const response = await request(app).get("/api/scenarios").expect(200);
+      const response = await request(app).get("/api/v1/scenarios").expect(200);
 
       expect(response.body.data[0].phases).toEqual([
         { name: "Phase 1", duration: 60, connections: 10, type: "constant" },
@@ -91,7 +91,7 @@ describe("Scenarios Integration Tests - REST API", () => {
       });
 
       const response = await request(app)
-        .get(`/api/scenarios/${scenario.id}`)
+        .get(`/api/v1/scenarios/${scenario.id}`)
         .expect(200);
 
       expect(response.body.data).toMatchObject({
@@ -105,7 +105,7 @@ describe("Scenarios Integration Tests - REST API", () => {
 
     test("should return 404 for non-existent scenario", async () => {
       const response = await request(app)
-        .get("/api/scenarios/999")
+        .get("/api/v1/scenarios/999")
         .expect(404);
 
       expect(response.body).toHaveProperty("error");
@@ -113,7 +113,7 @@ describe("Scenarios Integration Tests - REST API", () => {
 
     test("should return 400 for invalid ID", async () => {
       const response = await request(app)
-        .get("/api/scenarios/invalid")
+        .get("/api/v1/scenarios/invalid")
         .expect(400);
 
       expect(response.body).toHaveProperty("error");
@@ -123,7 +123,7 @@ describe("Scenarios Integration Tests - REST API", () => {
   describe("POST /api/scenarios", () => {
     test("should create new scenario", async () => {
       const response = await request(app)
-        .post("/api/scenarios")
+        .post("/api/v1/scenarios")
         .send(validScenario)
         .expect(201);
 
@@ -153,7 +153,7 @@ describe("Scenarios Integration Tests - REST API", () => {
       };
 
       const response = await request(app)
-        .post("/api/scenarios")
+        .post("/api/v1/scenarios")
         .send(workflowScenario)
         .expect(201);
 
@@ -164,7 +164,7 @@ describe("Scenarios Integration Tests - REST API", () => {
 
     test("should reject scenario without name", async () => {
       const response = await request(app)
-        .post("/api/scenarios")
+        .post("/api/v1/scenarios")
         .send({ ...validScenario, name: undefined })
         .expect(400);
 
@@ -173,7 +173,7 @@ describe("Scenarios Integration Tests - REST API", () => {
 
     test("should reject scenario without phases", async () => {
       const response = await request(app)
-        .post("/api/scenarios")
+        .post("/api/v1/scenarios")
         .send({ ...validScenario, phases: undefined })
         .expect(400);
 
@@ -182,7 +182,7 @@ describe("Scenarios Integration Tests - REST API", () => {
 
     test("should reject scenario with invalid phase type", async () => {
       const response = await request(app)
-        .post("/api/scenarios")
+        .post("/api/v1/scenarios")
         .send({
           ...validScenario,
           phases: [{ name: "Test", duration: 60, connections: 10, type: "invalid" }],
@@ -194,11 +194,11 @@ describe("Scenarios Integration Tests - REST API", () => {
 
     test("should reject duplicate scenario name", async () => {
       // Create first scenario
-      await request(app).post("/api/scenarios").send(validScenario).expect(201);
+      await request(app).post("/api/v1/scenarios").send(validScenario).expect(201);
 
       // Try to create with same name - Prisma unique constraint returns 400
       const response = await request(app)
-        .post("/api/scenarios")
+        .post("/api/v1/scenarios")
         .send(validScenario)
         .expect(400);
 
@@ -208,7 +208,7 @@ describe("Scenarios Integration Tests - REST API", () => {
 
     test("should sanitize input to prevent XSS", async () => {
       const response = await request(app)
-        .post("/api/scenarios")
+        .post("/api/v1/scenarios")
         .send({
           ...validScenario,
           name: '<script>alert("xss")</script>',
@@ -229,7 +229,7 @@ describe("Scenarios Integration Tests - REST API", () => {
       });
 
       const response = await request(app)
-        .put(`/api/scenarios/${scenario.id}`)
+        .put(`/api/v1/scenarios/${scenario.id}`)
         .send({
           name: "Updated Name",
           description: "Updated description",
@@ -255,7 +255,7 @@ describe("Scenarios Integration Tests - REST API", () => {
       ];
 
       const response = await request(app)
-        .put(`/api/scenarios/${scenario.id}`)
+        .put(`/api/v1/scenarios/${scenario.id}`)
         .send({ phases: newPhases })
         .expect(200);
 
@@ -272,7 +272,7 @@ describe("Scenarios Integration Tests - REST API", () => {
       });
 
       const response = await request(app)
-        .put(`/api/scenarios/${template.id}`)
+        .put(`/api/v1/scenarios/${template.id}`)
         .send({ name: "New Name" })
         .expect(400);
 
@@ -282,7 +282,7 @@ describe("Scenarios Integration Tests - REST API", () => {
 
     test("should return 404 for non-existent scenario", async () => {
       const response = await request(app)
-        .put("/api/scenarios/999")
+        .put("/api/v1/scenarios/999")
         .send({ name: "New Name" })
         .expect(404);
 
@@ -300,7 +300,7 @@ describe("Scenarios Integration Tests - REST API", () => {
       });
 
       const response = await request(app)
-        .delete(`/api/scenarios/${scenario.id}`)
+        .delete(`/api/v1/scenarios/${scenario.id}`)
         .expect(200);
 
       expect(response.body.message).toBe("Scenario deleted successfully");
@@ -322,7 +322,7 @@ describe("Scenarios Integration Tests - REST API", () => {
       });
 
       const response = await request(app)
-        .delete(`/api/scenarios/${template.id}`)
+        .delete(`/api/v1/scenarios/${template.id}`)
         .expect(400);
 
       expect(response.body.error).toBe(true);
@@ -331,7 +331,7 @@ describe("Scenarios Integration Tests - REST API", () => {
 
     test("should return 404 for non-existent scenario", async () => {
       const response = await request(app)
-        .delete("/api/scenarios/999")
+        .delete("/api/v1/scenarios/999")
         .expect(404);
 
       expect(response.body).toHaveProperty("error");
@@ -353,7 +353,7 @@ describe("Scenarios Integration Tests - REST API", () => {
       });
 
       const response = await request(app)
-        .post(`/api/scenarios/${original.id}/duplicate`)
+        .post(`/api/v1/scenarios/${original.id}/duplicate`)
         .send({ name: "Copy of Original" })
         .expect(201);
 
@@ -377,7 +377,7 @@ describe("Scenarios Integration Tests - REST API", () => {
       });
 
       const response = await request(app)
-        .post(`/api/scenarios/${template.id}/duplicate`)
+        .post(`/api/v1/scenarios/${template.id}/duplicate`)
         .send({ name: "My Smoke Test" })
         .expect(201);
 
@@ -394,7 +394,7 @@ describe("Scenarios Integration Tests - REST API", () => {
       });
 
       const response = await request(app)
-        .post(`/api/scenarios/${original.id}/duplicate`)
+        .post(`/api/v1/scenarios/${original.id}/duplicate`)
         .send({})
         .expect(400);
 
@@ -404,7 +404,7 @@ describe("Scenarios Integration Tests - REST API", () => {
 
     test("should return 404 for non-existent scenario", async () => {
       const response = await request(app)
-        .post("/api/scenarios/999/duplicate")
+        .post("/api/v1/scenarios/999/duplicate")
         .send({ name: "Copy" })
         .expect(404);
 
@@ -416,7 +416,7 @@ describe("Scenarios Integration Tests - REST API", () => {
     test("should allow requests within rate limit", async () => {
       // Make multiple requests
       for (let i = 0; i < 5; i++) {
-        await request(app).get("/api/scenarios").expect(200);
+        await request(app).get("/api/v1/scenarios").expect(200);
       }
     });
   });

@@ -39,7 +39,7 @@ describe("Sanitization Integration Tests - Data Integrity", () => {
       const testUrl = `https://api.example.com/v1/users/${timestamp}`;
 
       const response = await request(app)
-        .post("/api/endpoints")
+        .post("/api/v1/endpoints")
         .send({
           name: `URL Integrity Test ${timestamp}`,
           url: testUrl,
@@ -69,7 +69,7 @@ describe("Sanitization Integration Tests - Data Integrity", () => {
       };
 
       const response = await request(app)
-        .post("/api/endpoints")
+        .post("/api/v1/endpoints")
         .send({
           name: `Headers JSON Test ${timestamp}`,
           url: `https://api.test.com/endpoint/${timestamp}`,
@@ -107,7 +107,7 @@ describe("Sanitization Integration Tests - Data Integrity", () => {
       };
 
       const response = await request(app)
-        .post("/api/endpoints")
+        .post("/api/v1/endpoints")
         .send({
           name: `Body JSON Test ${timestamp}`,
           url: `https://api.test.com/create/${timestamp}`,
@@ -138,7 +138,7 @@ describe("Sanitization Integration Tests - Data Integrity", () => {
       const xssAttempt = '<script>alert("xss")</script>Endpoint Name';
 
       const response = await request(app)
-        .post("/api/endpoints")
+        .post("/api/v1/endpoints")
         .send({
           name: xssAttempt,
           url: `https://api.test.com/safe/${timestamp}`,
@@ -167,7 +167,7 @@ describe("Sanitization Integration Tests - Data Integrity", () => {
       const complexUrl = `https://api.example.com/v2/search?q=test&limit=10&offset=0&t=${timestamp}#results`;
 
       const response = await request(app)
-        .post("/api/endpoints")
+        .post("/api/v1/endpoints")
         .send({
           name: `Complex URL Test ${timestamp}`,
           url: complexUrl,
@@ -193,7 +193,7 @@ describe("Sanitization Integration Tests - Data Integrity", () => {
       const authUrl = `https://user:password@api.secure.com/endpoint/${timestamp}`;
 
       const response = await request(app)
-        .post("/api/endpoints")
+        .post("/api/v1/endpoints")
         .send({
           name: `Auth URL Test ${timestamp}`,
           url: authUrl,
@@ -243,7 +243,7 @@ describe("Sanitization Integration Tests - Data Integrity", () => {
       const newUrl = "https://updated.com/v2/endpoint?param=value";
 
       await request(app)
-        .put(`/api/endpoints/${testEndpoint.id}`)
+        .put(`/api/v1/endpoints/${testEndpoint.id}`)
         .send({
           name: testEndpoint.name,
           url: newUrl,
@@ -267,7 +267,7 @@ describe("Sanitization Integration Tests - Data Integrity", () => {
       };
 
       await request(app)
-        .put(`/api/endpoints/${testEndpoint.id}`)
+        .put(`/api/v1/endpoints/${testEndpoint.id}`)
         .send({
           name: testEndpoint.name,
           url: testEndpoint.url,

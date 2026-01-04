@@ -121,7 +121,7 @@ describe("Scenario Execution Integration Tests", () => {
   describe("POST /api/endpoints/:id/test with scenarioId", () => {
     test("should create test with scenario reference", async () => {
       const response = await request(app)
-        .post(`/api/endpoints/${testEndpoint.id}/test`)
+        .post(`/api/v1/endpoints/${testEndpoint.id}/test`)
         .send({
           scenarioId: smokeScenario.id,
         })
@@ -144,7 +144,7 @@ describe("Scenario Execution Integration Tests", () => {
 
     test("should calculate correct duration and connections from multi-phase scenario", async () => {
       const response = await request(app)
-        .post(`/api/endpoints/${testEndpoint.id}/test`)
+        .post(`/api/v1/endpoints/${testEndpoint.id}/test`)
         .send({
           scenarioId: rampScenario.id,
         })
@@ -158,7 +158,7 @@ describe("Scenario Execution Integration Tests", () => {
 
     test("should return error for non-existent scenario", async () => {
       const response = await request(app)
-        .post(`/api/endpoints/${testEndpoint.id}/test`)
+        .post(`/api/v1/endpoints/${testEndpoint.id}/test`)
         .send({
           scenarioId: 99999,
         })
@@ -171,7 +171,7 @@ describe("Scenario Execution Integration Tests", () => {
       // When endpoint doesn't exist, we get an error (either 400 or 404)
       // The behavior depends on the validation middleware
       const response = await request(app)
-        .post("/api/endpoints/99999/test")
+        .post("/api/v1/endpoints/99999/test")
         .send({
           scenarioId: smokeScenario.id,
         });
@@ -183,7 +183,7 @@ describe("Scenario Execution Integration Tests", () => {
 
     test("should fall back to regular test when no scenarioId provided", async () => {
       const response = await request(app)
-        .post(`/api/endpoints/${testEndpoint.id}/test`)
+        .post(`/api/v1/endpoints/${testEndpoint.id}/test`)
         .send({
           duration: 15,
           connections: 5,
@@ -204,7 +204,7 @@ describe("Scenario Execution Integration Tests", () => {
     test("should complete scenario test and store results", async () => {
       // Start the test
       const startResponse = await request(app)
-        .post(`/api/endpoints/${testEndpoint.id}/test`)
+        .post(`/api/v1/endpoints/${testEndpoint.id}/test`)
         .send({
           scenarioId: smokeScenario.id,
         })
@@ -217,7 +217,7 @@ describe("Scenario Execution Integration Tests", () => {
 
       // Get the test results
       const resultResponse = await request(app)
-        .get(`/api/tests/${testId}`)
+        .get(`/api/v1/tests/${testId}`)
         .expect(200);
 
       expect(resultResponse.body.data.status).toBe("completed");
@@ -232,7 +232,7 @@ describe("Scenario Execution Integration Tests", () => {
     test("should store phase results for each phase", async () => {
       // Start the test with multi-phase scenario
       const startResponse = await request(app)
-        .post(`/api/endpoints/${testEndpoint.id}/test`)
+        .post(`/api/v1/endpoints/${testEndpoint.id}/test`)
         .send({
           scenarioId: rampScenario.id,
         })
@@ -245,7 +245,7 @@ describe("Scenario Execution Integration Tests", () => {
 
       // Get the test results
       const resultResponse = await request(app)
-        .get(`/api/tests/${testId}`)
+        .get(`/api/v1/tests/${testId}`)
         .expect(200);
 
       expect(resultResponse.body.data.status).toBe("completed");
@@ -264,7 +264,7 @@ describe("Scenario Execution Integration Tests", () => {
     test("should aggregate results correctly", async () => {
       // Start the test
       const startResponse = await request(app)
-        .post(`/api/endpoints/${testEndpoint.id}/test`)
+        .post(`/api/v1/endpoints/${testEndpoint.id}/test`)
         .send({
           scenarioId: smokeScenario.id,
         })
@@ -277,7 +277,7 @@ describe("Scenario Execution Integration Tests", () => {
 
       // Get the test results
       const resultResponse = await request(app)
-        .get(`/api/tests/${testId}`)
+        .get(`/api/v1/tests/${testId}`)
         .expect(200);
 
       const results = resultResponse.body.data.results;
@@ -327,7 +327,7 @@ describe("Scenario Execution Integration Tests", () => {
       });
 
       const response = await request(app)
-        .get(`/api/tests/${test.id}`)
+        .get(`/api/v1/tests/${test.id}`)
         .expect(200);
 
       expect(response.body.data.results).toBeInstanceOf(Object);
@@ -357,7 +357,7 @@ describe("Scenario Execution Integration Tests", () => {
       });
 
       const response = await request(app)
-        .get(`/api/tests/${test.id}`)
+        .get(`/api/v1/tests/${test.id}`)
         .expect(200);
 
       expect(response.body.data.results).toBeInstanceOf(Object);
@@ -394,7 +394,7 @@ describe("Scenario Execution Integration Tests", () => {
       });
 
       const response = await request(app)
-        .get("/api/tests")
+        .get("/api/v1/tests")
         .expect(200);
 
       expect(response.body.data).toHaveLength(2);
@@ -431,7 +431,7 @@ describe("Scenario Execution Integration Tests", () => {
 
       // Since there's no actual running test, we expect an error
       const response = await request(app)
-        .delete(`/api/tests/${test.id}/cancel`)
+        .delete(`/api/v1/tests/${test.id}/cancel`)
         .expect(400);
 
       expect(response.body).toHaveProperty("error");

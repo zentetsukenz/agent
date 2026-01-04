@@ -55,52 +55,67 @@ app.use("/api", apiLimiter); // Rate limit all API routes first
 
 // Routes
 
-// Health check
-app.get("/api/health", (req, res) => {
-  res.json({ status: "ok", timestamp: new Date().toISOString() });
-});
+// Create v1 router
+const v1Router = express.Router();
 
 // Endpoints API routes
-app.get("/api/endpoints", endpointsController.index);
-app.get("/api/endpoints/:id", validateId, endpointsController.show);
-app.post("/api/endpoints", validateEndpoint, endpointsController.create);
-app.put(
-  "/api/endpoints/:id",
+v1Router.get("/endpoints", endpointsController.index);
+v1Router.get("/endpoints/:id", validateId, endpointsController.show);
+v1Router.post("/endpoints", validateEndpoint, endpointsController.create);
+v1Router.put(
+  "/endpoints/:id",
   validateId,
   validateEndpoint,
   endpointsController.update
 );
-app.delete("/api/endpoints/:id", validateId, endpointsController.destroy);
+v1Router.delete("/endpoints/:id", validateId, endpointsController.destroy);
 
 // Tests API routes
-app.get("/api/tests", testsController.index);
-app.post(
-  "/api/endpoints/:id/test",
+v1Router.get("/tests", testsController.index);
+v1Router.post(
+  "/endpoints/:id/test",
   validateId,
   validateTestConfig,
   loadTestLimiter,
   testsController.execute
 );
-app.get("/api/tests/:id", validateId, testsController.show);
-app.get("/api/tests/:id/status", validateId, testsController.status);
-app.delete("/api/tests/:id/cancel", validateId, testsController.cancel);
+v1Router.get("/tests/:id", validateId, testsController.show);
+v1Router.get("/tests/:id/status", validateId, testsController.status);
+v1Router.delete("/tests/:id/cancel", validateId, testsController.cancel);
 
 // Scenarios API routes
-app.get("/api/scenarios", scenariosController.index);
-app.get("/api/scenarios/:id", validateId, scenariosController.show);
-app.post("/api/scenarios", validateScenario, scenariosController.create);
-app.put(
-  "/api/scenarios/:id",
+v1Router.get("/scenarios", scenariosController.index);
+v1Router.get("/scenarios/:id", validateId, scenariosController.show);
+v1Router.post("/scenarios", validateScenario, scenariosController.create);
+v1Router.put(
+  "/scenarios/:id",
   validateId,
   validateScenarioUpdate,
   scenariosController.update
 );
-app.delete("/api/scenarios/:id", validateId, scenariosController.destroy);
-app.post(
-  "/api/scenarios/:id/duplicate",
+v1Router.delete("/scenarios/:id", validateId, scenariosController.destroy);
+v1Router.post(
+  "/scenarios/:id/duplicate",
   validateId,
   scenariosController.duplicate
 );
+
+// Mount v1 router
+app.use("/api/v1", v1Router);
+
+// Redirect /api/* to /api/v1/* (except health)
+app.use("/api", (req, res, next) => {
+  if (req.path === "/health") return next();
+  const queryString = req.url.includes("?")
+    ? req.url.substring(req.url.indexOf("?"))
+    : "";
+  res.redirect(301, `/api/v1${req.path}${queryString}`);
+});
+
+// Health check (unversioned)
+app.get("/api/health", (req, res) => {
+  res.json({ status: "ok", timestamp: new Date().toISOString() });
+});
 
 // 404 handler for undefined routes
 app.use(notFoundHandler);

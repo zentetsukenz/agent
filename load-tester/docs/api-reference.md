@@ -7,7 +7,37 @@
 ## Base URL
 
 - **Development**: `http://localhost:3001`
-- **API Prefix**: `/api`
+- **API Prefix**: `/api/v1`
+
+**Versioning**: API uses URL prefix versioning (`/api/v1`, `/api/v2`, etc.) to enable future breaking changes without disrupting existing clients.
+
+**Backwards Compatibility**: Unversioned `/api/*` routes redirect to `/api/v1/*` with HTTP 301 status.
+
+**Health Check Exception**: `/api/health` remains unversioned for monitoring tools that expect stable endpoints.
+
+---
+
+## Versioning Strategy
+
+### Current Version: v1
+
+All API routes are prefixed with `/api/v1/` to enable future evolution.
+
+### Version Support Policy
+
+- **Latest stable**: v1 (current)
+- **Backwards compatibility**: Unversioned `/api/*` routes redirect (301) to `/api/v1/*`
+- **Deprecation**: When v2 is released, v1 will remain available with deprecation headers
+- **Sunset**: Deprecated versions supported for minimum 6 months after replacement
+
+### Future Breaking Changes
+
+When introducing breaking changes (schema modifications, behavior changes, etc.):
+
+1. Create new version (e.g., `/api/v2`)
+2. Add deprecation headers to previous version
+3. Maintain both versions during transition
+4. Sunset older version after deprecation period
 
 ---
 
@@ -32,7 +62,7 @@
 
 ## Endpoints
 
-### GET /api/endpoints
+### GET /api/v1/endpoints
 
 **Purpose**: List all endpoints
 
@@ -57,7 +87,7 @@
 
 ---
 
-### GET /api/endpoints/:id
+### GET /api/v1/endpoints/:id
 
 **Purpose**: Get single endpoint by ID
 
@@ -84,7 +114,7 @@
 
 ---
 
-### POST /api/endpoints
+### POST /api/v1/endpoints
 
 **Purpose**: Create new endpoint
 
@@ -130,7 +160,7 @@
 
 ---
 
-### PUT /api/endpoints/:id
+### PUT /api/v1/endpoints/:id
 
 **Purpose**: Update existing endpoint
 
@@ -171,7 +201,7 @@
 
 ---
 
-### DELETE /api/endpoints/:id
+### DELETE /api/v1/endpoints/:id
 
 **Purpose**: Delete endpoint (cascades to all tests)
 
@@ -189,7 +219,7 @@
 
 ## Tests
 
-### GET /api/tests
+### GET /api/v1/tests
 
 **Purpose**: List all tests
 
@@ -217,7 +247,7 @@
 
 ---
 
-### GET /api/tests/:id
+### GET /api/v1/tests/:id
 
 **Purpose**: Get single test by ID
 
@@ -253,7 +283,7 @@
 
 ---
 
-### POST /api/endpoints/:id/test
+### POST /api/v1/endpoints/:id/test
 
 **Purpose**: Execute load test on endpoint
 
@@ -299,7 +329,7 @@
 
 ---
 
-### GET /api/tests/:id/status
+### GET /api/v1/tests/:id/status
 
 **Purpose**: Poll test status (for real-time updates)
 
@@ -325,7 +355,7 @@
 
 ---
 
-### DELETE /api/tests/:id/cancel
+### DELETE /api/v1/tests/:id/cancel
 
 **Purpose**: Cancel running test
 

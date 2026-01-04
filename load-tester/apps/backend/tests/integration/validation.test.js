@@ -23,7 +23,7 @@ describe("Validation Middleware Tests", () => {
   describe("Endpoint Validation", () => {
     test("should reject endpoint without name", async () => {
       const response = await request(app)
-        .post("/api/endpoints")
+        .post("/api/v1/endpoints")
         .send({
           url: "https://api.example.com",
           method: "GET",
@@ -37,7 +37,7 @@ describe("Validation Middleware Tests", () => {
 
     test("should reject endpoint without URL", async () => {
       const response = await request(app)
-        .post("/api/endpoints")
+        .post("/api/v1/endpoints")
         .send({
           name: "Test API",
           method: "GET",
@@ -50,7 +50,7 @@ describe("Validation Middleware Tests", () => {
 
     test("should reject invalid URL", async () => {
       const response = await request(app)
-        .post("/api/endpoints")
+        .post("/api/v1/endpoints")
         .send({
           name: "Test API",
           url: "not-a-url",
@@ -66,7 +66,7 @@ describe("Validation Middleware Tests", () => {
 
     test("should reject invalid HTTP method", async () => {
       const response = await request(app)
-        .post("/api/endpoints")
+        .post("/api/v1/endpoints")
         .send({
           name: "Test API",
           url: "https://api.example.com",
@@ -82,7 +82,7 @@ describe("Validation Middleware Tests", () => {
 
     test("should reject headers that are JSON arrays", async () => {
       const response = await request(app)
-        .post("/api/endpoints")
+        .post("/api/v1/endpoints")
         .send({
           name: "Test API",
           url: "https://api.example.com",
@@ -97,7 +97,7 @@ describe("Validation Middleware Tests", () => {
 
     test("should accept valid endpoint data", async () => {
       const response = await request(app)
-        .post("/api/endpoints")
+        .post("/api/v1/endpoints")
         .send({
           name: "Test API",
           url: "https://api.example.com",
@@ -125,7 +125,7 @@ describe("Validation Middleware Tests", () => {
 
     test("should reject test without duration", async () => {
       const response = await request(app)
-        .post(`/api/endpoints/${endpoint.id}/test`)
+        .post(`/api/v1/endpoints/${endpoint.id}/test`)
         .send({
           connections: 5,
         })
@@ -137,7 +137,7 @@ describe("Validation Middleware Tests", () => {
 
     test("should reject test without connections", async () => {
       const response = await request(app)
-        .post(`/api/endpoints/${endpoint.id}/test`)
+        .post(`/api/v1/endpoints/${endpoint.id}/test`)
         .send({
           duration: 10,
         })
@@ -149,7 +149,7 @@ describe("Validation Middleware Tests", () => {
 
     test("should reject duration exceeding limit", async () => {
       const response = await request(app)
-        .post(`/api/endpoints/${endpoint.id}/test`)
+        .post(`/api/v1/endpoints/${endpoint.id}/test`)
         .send({
           duration: 999,
           connections: 5,
@@ -166,7 +166,7 @@ describe("Validation Middleware Tests", () => {
 
     test("should reject connections exceeding limit", async () => {
       const response = await request(app)
-        .post(`/api/endpoints/${endpoint.id}/test`)
+        .post(`/api/v1/endpoints/${endpoint.id}/test`)
         .send({
           duration: 10,
           connections: 9999,
@@ -183,7 +183,7 @@ describe("Validation Middleware Tests", () => {
 
     test("should accept valid test configuration", async () => {
       const response = await request(app)
-        .post(`/api/endpoints/${endpoint.id}/test`)
+        .post(`/api/v1/endpoints/${endpoint.id}/test`)
         .send({
           duration: 10,
           connections: 5,
@@ -198,7 +198,7 @@ describe("Validation Middleware Tests", () => {
   describe("ID Parameter Validation", () => {
     test("should reject invalid ID parameter", async () => {
       const response = await request(app)
-        .get("/api/endpoints/invalid-id")
+        .get("/api/v1/endpoints/invalid-id")
         .expect(400);
 
       expect(response.body.error).toBe(true);
@@ -206,7 +206,7 @@ describe("Validation Middleware Tests", () => {
     });
 
     test("should reject negative ID", async () => {
-      const response = await request(app).get("/api/endpoints/-1").expect(400);
+      const response = await request(app).get("/api/v1/endpoints/-1").expect(400);
 
       expect(response.body.error).toBe(true);
       expect(response.body.details).toContain("ID must be a positive integer");
@@ -222,7 +222,7 @@ describe("Validation Middleware Tests", () => {
       });
 
       const response = await request(app)
-        .get(`/api/endpoints/${endpoint.id}`)
+        .get(`/api/v1/endpoints/${endpoint.id}`)
         .expect(200);
 
       expect(response.body.data).toHaveProperty("id", endpoint.id);
@@ -233,7 +233,7 @@ describe("Validation Middleware Tests", () => {
     test("should sanitize XSS attempt in name", async () => {
       const timestamp = Date.now();
       const response = await request(app)
-        .post("/api/endpoints")
+        .post("/api/v1/endpoints")
         .send({
           name: "<script>alert('xss')</script>Test",
           url: `https://api.example.com/xss-test/${timestamp}`,
