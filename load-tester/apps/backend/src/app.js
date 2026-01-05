@@ -103,6 +103,27 @@ v1Router.post(
 // Mount v1 router
 app.use("/api/v1", v1Router);
 
+// Swagger documentation (development only or with ENABLE_SWAGGER env var)
+if (config.isDevelopment || process.env.ENABLE_SWAGGER === "true") {
+  const swaggerUi = require("swagger-ui-express");
+  const swaggerSpec = require("./config/swagger");
+
+  app.use(
+    "/api/docs",
+    swaggerUi.serve,
+    swaggerUi.setup(swaggerSpec, {
+      customCss: ".swagger-ui .topbar { display: none }",
+      customSiteTitle: "Load Tester API Documentation",
+    })
+  );
+
+  // Raw OpenAPI spec in JSON format
+  app.get("/api/docs.json", (req, res) => {
+    res.setHeader("Content-Type", "application/json");
+    res.json(swaggerSpec);
+  });
+}
+
 // Redirect /api/* to /api/v1/* (except health)
 app.use("/api", (req, res, next) => {
   if (req.path === "/health") return next();

@@ -2,7 +2,7 @@
 
 Quick reference for all production readiness improvements.
 
-**Progress**: 10/10 complete ✅  
+**Progress**: 11/11 complete ✅  
 **Last Updated**: January 5, 2026
 
 ---
@@ -18,6 +18,7 @@ Quick reference for all production readiness improvements.
 | [dockerfile](dockerfile/COMPLETE.md) | 2026-01-05 | Production container with non-root user, multi-stage build, security hardening |
 | [frontend-meta](frontend-meta/DONE.md) | 2026-01-02 | Title, description, Open Graph tags |
 | [graceful-shutdown](graceful-shutdown/COMPLETE.md) | 2026-01-03 | SIGTERM/SIGINT handlers for clean process exit |
+| [openapi-docs](openapi-docs/COMPLETE.md) | 2026-01-05 | OpenAPI 3.0 specification with Swagger UI (16 endpoints, 8 schemas, verified) |
 | [production-polish](production-polish/CHECKPOINT.md) | 2026-01-02 | Assessment against 7 industry standards (baseline evaluation) |
 | [remove-legacy-app](remove-legacy-app/COMPLETE.md) | 2026-01-04 | Removed legacy src/, tests/, prisma/ directories (tech debt cleanup) |
 | [ssrf-protection](ssrf-protection/PHASE6-VERIFICATION.md) | 2026-01-03 | URL validation for load test targets (blocks cloud metadata, localhost, private IPs) |
@@ -28,7 +29,7 @@ Quick reference for all production readiness improvements.
 
 | Context | Effort | Description |
 |---------|--------|-------------|
-| [openapi-docs](openapi-docs/SPEC.md) | 4h | Swagger UI and OpenAPI spec |
+| None remaining | - | All important items complete |
 
 ---
 
@@ -53,7 +54,7 @@ Recommended sequence based on dependencies and impact:
 7. ~~**remove-legacy-app** — Tech debt cleanup~~ ✅
 8. ~~**api-versioning** — Before going public~~ ✅
 9. ~~**dockerfile** — Enables containerized deployment~~ ✅
-10. **openapi-docs** — API documentation (soon after launch) 🟡
+10. ~~**openapi-docs** — API documentation~~ ✅
 11. **ci-security** — Ongoing protection (deferred) 📋
 
 ---
@@ -70,7 +71,7 @@ Recommended sequence based on dependencies and impact:
 - [x] remove-legacy-app ✅
 - [x] api-versioning ✅
 - [x] dockerfile ✅
-- [ ] openapi-docs 🟡
+- [x] openapi-docs ✅
 - [ ] ci-security 📋 (deferred)
 
 ---
@@ -79,10 +80,10 @@ Recommended sequence based on dependencies and impact:
 
 | Status | Count | Total Effort |
 |--------|-------|--------------|
-| ✅ Complete | 10 | ~13.5 hours |
-| 🟡 Important | 1 | ~4 hours |
+| ✅ Complete | 11 | ~17.5 hours |
+| 🟡 Important | 0 | 0 hours |
 | 📋 Deferred | 1 | ~1 hour |
 | **Total** | **12** | **~18.5 hours** |
 
-**Estimated Production Readiness**: 100% (all critical tasks complete) ✅  
+**Estimated Production Readiness**: 100% (all critical + important tasks complete) ✅  
 **Note**: ci-security deferred until load-tester project separation

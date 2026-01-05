@@ -14,7 +14,25 @@ const { ValidationError } = require("../../utils/errors");
 const prisma = getPrismaClient();
 
 /**
- * GET /api/tests - Get all tests
+ * @openapi
+ * /tests:
+ *   get:
+ *     summary: List all tests
+ *     description: Retrieve a list of all load test executions
+ *     tags:
+ *       - Tests
+ *     responses:
+ *       200:
+ *         description: List of tests retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Test'
  */
 const index = asyncHandler(async (req, res) => {
   const tests = await testsService.getAllTests(prisma);
@@ -22,9 +40,51 @@ const index = asyncHandler(async (req, res) => {
 });
 
 /**
- * POST /api/endpoints/:id/test - Execute load test
- * Supports both regular tests and scenario-based tests
- * Validation and rate limiting handled by middleware
+ * @openapi
+ * /endpoints/{id}/test:
+ *   post:
+ *     summary: Execute load test
+ *     description: Start a load test on a specific endpoint, optionally using a scenario configuration
+ *     tags:
+ *       - Tests
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: Endpoint ID to test
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/TestInput'
+ *     responses:
+ *       201:
+ *         description: Test started successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   $ref: '#/components/schemas/Test'
+ *                 message:
+ *                   type: string
+ *                   example: Test started successfully
+ *       400:
+ *         description: Validation error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       404:
+ *         description: Endpoint or scenario not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  */
 const execute = asyncHandler(async (req, res) => {
   const endpointId = req.params.id;
@@ -74,7 +134,47 @@ const execute = asyncHandler(async (req, res) => {
 });
 
 /**
- * GET /api/tests/:id - Get test results
+ * @openapi
+ * /tests/{id}:
+ *   get:
+ *     summary: Get test results
+ *     description: Retrieve complete test results including autocannon output and phase results
+ *     tags:
+ *       - Tests
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: Test ID
+ *     responses:
+ *       200:
+ *         description: Test results retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   allOf:
+ *                     - $ref: '#/components/schemas/Test'
+ *                     - type: object
+ *                       properties:
+ *                         results:
+ *                           type: object
+ *                           nullable: true
+ *                           description: Parsed autocannon results
+ *                         phaseResults:
+ *                           type: array
+ *                           nullable: true
+ *                           description: Parsed per-phase results for scenario tests
+ *       404:
+ *         description: Test not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  */
 const show = asyncHandler(async (req, res) => {
   const test = await testsService.getTestResults(prisma, req.params.id);
@@ -90,7 +190,46 @@ const show = asyncHandler(async (req, res) => {
 });
 
 /**
- * GET /api/tests/:id/status - Get test status (for polling)
+ * @openapi
+ * /tests/{id}/status:
+ *   get:
+ *     summary: Get test status
+ *     description: Poll test execution status for real-time updates (lightweight response for polling)
+ *     tags:
+ *       - Tests
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: Test ID
+ *     responses:
+ *       200:
+ *         description: Test status retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: integer
+ *                     status:
+ *                       type: string
+ *                       enum: [pending, running, completed, failed, cancelled]
+ *                     completedAt:
+ *                       type: string
+ *                       format: date-time
+ *                       nullable: true
+ *       404:
+ *         description: Test not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  */
 const status = asyncHandler(async (req, res) => {
   const test = await testsService.getTestResults(prisma, req.params.id);
@@ -105,7 +244,45 @@ const status = asyncHandler(async (req, res) => {
 });
 
 /**
- * DELETE /api/tests/:id/cancel - Cancel running test
+ * @openapi
+ * /tests/{id}/cancel:
+ *   delete:
+ *     summary: Cancel running test
+ *     description: Cancel a test that is currently running or pending
+ *     tags:
+ *       - Tests
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: Test ID
+ *     responses:
+ *       200:
+ *         description: Test cancelled successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   $ref: '#/components/schemas/Test'
+ *                 message:
+ *                   type: string
+ *                   example: Test cancelled successfully
+ *       400:
+ *         description: Test cannot be cancelled (already completed/failed/cancelled)
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       404:
+ *         description: Test not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  */
 const cancel = asyncHandler(async (req, res) => {
   const result = await testsService.cancelTest(prisma, req.params.id);
