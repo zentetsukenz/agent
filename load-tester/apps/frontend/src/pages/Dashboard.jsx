@@ -11,9 +11,9 @@ import { useDeleteConfirm } from '../hooks/useDeleteConfirm';
 import { TestHistory } from '../components/tests/TestHistory';
 import { TestComparison } from '../components/tests/TestComparison';
 import { DashboardStats } from '../components/DashboardStats';
-import { DashboardSkeleton } from '../components/ui/Loading';
-import { ErrorMessage } from '../components/ui/ErrorMessage';
-import { EmptyState } from '../components/ui/EmptyState';
+import { DashboardSkeleton } from '../components/ui/loading';
+import { ErrorMessage } from '../components/ui/error-message';
+import { EmptyState } from '../components/ui/empty-state';
 import { Button } from '@/components/ui/button';
 
 export const Dashboard = () => {

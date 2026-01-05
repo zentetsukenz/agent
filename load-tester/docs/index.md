@@ -102,6 +102,20 @@ cat load-tester/docs/environment.md        # Running tests
 
 ---
 
+### For Docker/Deployment Tasks
+
+Load these files in order:
+
+```fish
+cat load-tester/docs/architecture.md  # System structure
+cat load-tester/docs/docker.md        # Docker setup, deployment
+cat load-tester/docs/environment.md   # Environment variables
+```
+
+**Use when**: Building Docker images, deploying to production, containerization
+
+---
+
 ### For Debugging / Troubleshooting
 
 Load these files in order:
@@ -136,6 +150,7 @@ cat load-tester/docs/frontend-patterns.md  # If frontend issue
 | `ui-ux-standards.md` | UI polish requirements | ~80 lines | Frontend UI tasks |
 | `testing-standards.md` | Testing patterns, coverage | ~70 lines | Writing tests |
 | `environment.md` | Fish shell, ports, gotchas | ~100 lines | Always (critical setup) |
+| `docker.md` | Docker setup, deployment, security | ~400 lines | Containerization, deployment |
 | `API_DESIGN.md` | API design principles | Existing | API design tasks |
 
 ---
@@ -175,7 +190,7 @@ Always load before reporting completion:
 
 **New approach** (current):
 
-- 11 focused documents in `load-tester/docs/`
+- 12 focused documents in `load-tester/docs/`
 - Load 6-10KB per task (~60% reduction)
 - Selective context based on task type
 
@@ -195,4 +210,4 @@ When adding new docs to this library:
 
 ---
 
-**Last Updated**: January 1, 2026
+**Last Updated**: January 5, 2026

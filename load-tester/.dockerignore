@@ -1,0 +1,17 @@
+node_modules
+.git
+.env
+.env.*
+*.log
+coverage
+.context
+docs
+tests
+*.md
+.vscode
+.idea
+dist
+build
+*.test.js
+*.spec.js
+.DS_Store

@@ -11,7 +11,7 @@ import { ScenarioInfoCard } from '../components/tests/ScenarioInfoCard';
 import ResultsChart from '../components/ResultsChart';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ErrorMessage } from '@/components/ui/ErrorMessage';
+import { ErrorMessage } from '@/components/ui/error-message';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -24,7 +24,7 @@ import {
 } from '@/components/ui/alert-dialog';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Skeleton } from '@/components/ui/skeleton';
-import { PageLoading, IndeterminateProgress, Loading } from '../components/ui/Loading';
+import { PageLoading, IndeterminateProgress, Loading } from '../components/ui/loading';
 import { TEST_STATUS } from '../utils/constants';
 import { formatDate } from '../utils/formatters';
 

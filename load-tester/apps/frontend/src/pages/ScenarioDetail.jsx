@@ -21,7 +21,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
-import { ErrorMessage } from '@/components/ui/ErrorMessage';
+import { ErrorMessage } from '@/components/ui/error-message';
 import {
   AlertDialog,
   AlertDialogAction,

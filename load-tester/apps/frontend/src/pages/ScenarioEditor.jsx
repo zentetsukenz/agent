@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import { ScenarioForm } from '@/components/scenarios/ScenarioForm';
 import { scenariosAPI } from '@/services/scenarios';
-import { ErrorMessage } from '@/components/ui/ErrorMessage';
+import { ErrorMessage } from '@/components/ui/error-message';
 import { Skeleton } from '@/components/ui/skeleton';
 import {
   Breadcrumb,

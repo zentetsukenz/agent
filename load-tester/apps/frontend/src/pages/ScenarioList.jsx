@@ -6,8 +6,8 @@ import { scenariosAPI } from '@/services/scenarios';
 import { ScenarioCard } from '@/components/scenarios/ScenarioCard';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
-import { ErrorMessage } from '@/components/ui/ErrorMessage';
-import { EmptyState } from '@/components/ui/EmptyState';
+import { ErrorMessage } from '@/components/ui/error-message';
+import { EmptyState } from '@/components/ui/empty-state';
 import {
   AlertDialog,
   AlertDialogAction,
