@@ -107,12 +107,27 @@ cat load-tester/docs/environment.md        # Running tests
 Load these files in order:
 
 ```fish
-cat load-tester/docs/architecture.md  # System structure
-cat load-tester/docs/docker.md        # Docker setup, deployment
-cat load-tester/docs/environment.md   # Environment variables
+cat load-tester/docs/architecture.md          # System structure
+cat load-tester/docs/docker.md                # Docker setup, deployment
+cat load-tester/docs/production-readiness.md  # Production checklist
+cat load-tester/docs/environment.md           # Environment variables
 ```
 
 **Use when**: Building Docker images, deploying to production, containerization
+
+---
+
+### For Security Reviews
+
+Load these files in order:
+
+```fish
+cat load-tester/docs/security-hardening.md    # Security patterns reference
+cat load-tester/docs/production-readiness.md  # Compliance status
+cat load-tester/docs/backend-patterns.md      # Implementation context
+```
+
+**Use when**: Security audits, adding new security controls, reviewing PRs for security
 
 ---
 
@@ -152,6 +167,8 @@ cat load-tester/docs/frontend-patterns.md  # If frontend issue
 | `environment.md` | Fish shell, ports, gotchas | ~100 lines | Always (critical setup) |
 | `docker.md` | Docker setup, deployment, security | ~400 lines | Containerization, deployment |
 | `API_DESIGN.md` | API design principles | Existing | API design tasks |
+| `production-readiness.md` | Production improvements, compliance checklist | ~250 lines | Deployment, audits |
+| `security-hardening.md` | Security patterns (SSRF, rate limiting, headers) | ~300 lines | Security reviews, new projects |
 
 ---
 
@@ -190,7 +207,7 @@ Always load before reporting completion:
 
 **New approach** (current):
 
-- 12 focused documents in `load-tester/docs/`
+- 14 focused documents in `load-tester/docs/`
 - Load 6-10KB per task (~60% reduction)
 - Selective context based on task type
 
