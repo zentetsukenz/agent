@@ -36,6 +36,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.CheckpointTool = void 0;
 const vscode = __importStar(require("vscode"));
 class CheckpointTool {
+    contextManager;
+    constructor(contextManager) {
+        this.contextManager = contextManager;
+    }
     async invoke(options, token) {
         const { summary, progress, completedWork, remainingWork, keyDecisions } = options.input;
         try {

@@ -35,7 +35,7 @@ var __importStar = (this && this.__importStar) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.handleCheckpoint = handleCheckpoint;
 const vscode = __importStar(require("vscode"));
-async function handleCheckpoint(request, context, stream, token) {
+async function handleCheckpoint(request, context, stream, token, contextManager) {
     const note = request.prompt || "Manual checkpoint";
     stream.markdown("## 📍 Checkpoint\n\n");
     // Estimate progress from history

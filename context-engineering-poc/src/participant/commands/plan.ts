@@ -28,6 +28,10 @@ export async function handlePlan(
       command: "plan",
       phase: "research",
       goal,
+      followUps: [
+        { prompt: "/implement", label: "Start implementing" },
+        { prompt: "/checkpoint", label: "Save progress" },
+      ],
     },
   };
 }

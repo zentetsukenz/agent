@@ -1,4 +1,5 @@
 import * as vscode from "vscode";
+import { SessionContextManager } from "../context";
 
 interface CheckpointInput {
   summary: string;
@@ -11,6 +12,7 @@ interface CheckpointInput {
 export class CheckpointTool
   implements vscode.LanguageModelTool<CheckpointInput>
 {
+  constructor(private contextManager: SessionContextManager) {}
   async invoke(
     options: vscode.LanguageModelToolInvocationOptions<CheckpointInput>,
     token: vscode.CancellationToken

@@ -19,6 +19,10 @@ async function handlePlan(request, context, stream, token) {
             command: "plan",
             phase: "research",
             goal,
+            followUps: [
+                { prompt: "/implement", label: "Start implementing" },
+                { prompt: "/checkpoint", label: "Save progress" },
+            ],
         },
     };
 }

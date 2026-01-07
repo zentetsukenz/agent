@@ -1,10 +1,12 @@
 import * as vscode from "vscode";
+import { SessionContextManager } from "../../context";
 
 export async function handleCheckpoint(
   request: vscode.ChatRequest,
   context: vscode.ChatContext,
   stream: vscode.ChatResponseStream,
-  token: vscode.CancellationToken
+  token: vscode.CancellationToken,
+  contextManager: SessionContextManager
 ): Promise<vscode.ChatResult> {
   const note = request.prompt || "Manual checkpoint";
 

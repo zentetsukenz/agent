@@ -36,8 +36,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.registerParticipant = registerParticipant;
 const vscode = __importStar(require("vscode"));
 const handler_1 = require("./handler");
-function registerParticipant(context) {
-    const participant = vscode.chat.createChatParticipant("context-engineering.engineer", handler_1.handleRequest);
+function registerParticipant(context, contextManager) {
+    const handler = (request, chatContext, stream, token) => (0, handler_1.handleRequest)(request, chatContext, stream, token, contextManager);
+    const participant = vscode.chat.createChatParticipant("context-engineering.engineer", handler);
     // Optional: Set icon
     // participant.iconPath = vscode.Uri.joinPath(context.extensionUri, 'media', 'icon.png');
     context.subscriptions.push(participant);

@@ -4,73 +4,44 @@ import { registerTools } from "./tools";
 import { SessionContextManager } from "./context";
 import { ContextPersistence } from "./context";
 
+// Global context manager instance
+let contextManager: SessionContextManager;
+
 export function activate(context: vscode.ExtensionContext) {
   console.log("[Context Engineering] Extension activating...");
 
-  // Initialize session context manager
-  const sessionContext = new SessionContextManager();
-  sessionContext.initialize().then(() => {
+  // Initialize context manager
+  contextManager = new SessionContextManager();
+  contextManager.initialize().then(() => {
     console.log("[Context Engineering] Context manager initialized");
   });
 
-  // Register chat participant
-  registerParticipant(context);
+  // Register chat participant (pass context manager)
+  registerParticipant(context, contextManager);
 
-  // Register language model tools
-  registerTools(context);
+  // Register language model tools (pass context manager)
+  registerTools(context, contextManager);
 
   // Register command: quick checkpoint
   const quickCheckpointCmd = vscode.commands.registerCommand(
     "context-engineering.quickCheckpoint",
     async () => {
-      const persistence = new ContextPersistence();
-      await persistence.appendToNotes("Quick checkpoint triggered");
-
-      const state = (await persistence.loadState()) ?? {
-        phase: "research",
-        startTime: new Date().toISOString(),
-        completedTasks: [],
-        decisions: [],
-      };
-      state.lastCheckpoint = new Date().toISOString();
-      await persistence.saveState(state);
-
+      const state = contextManager.getState();
       vscode.window.showInformationMessage(
-        "✅ Checkpoint saved to .context/NOTES.md and session.json updated."
+        `Quick checkpoint: Phase ${state.phase}, ${state.completedTasks.length} tasks done`
       );
     }
   );
   context.subscriptions.push(quickCheckpointCmd);
-
-  // Register internal command: add conversation turn
-  const addTurnCmd = vscode.commands.registerCommand(
-    "context-engineering.contextAddTurn",
-    (role: "user" | "assistant", content: string, command?: string) => {
-      try {
-        sessionContext.addTurn(role, content, command);
-      } catch (err) {
-        console.error("[Context Engineering] Failed to add turn", err);
-      }
-    }
-  );
-  context.subscriptions.push(addTurnCmd);
-
-  // Register internal command: set phase
-  const setPhaseCmd = vscode.commands.registerCommand(
-    "context-engineering.contextSetPhase",
-    (phase: "research" | "plan" | "implement") => {
-      try {
-        sessionContext.setPhase(phase);
-      } catch (err) {
-        console.error("[Context Engineering] Failed to set phase", err);
-      }
-    }
-  );
-  context.subscriptions.push(setPhaseCmd);
 
   console.log("[Context Engineering] Extension activated");
 }
 
 export function deactivate() {
   console.log("[Context Engineering] Extension deactivated");
+}
+
+// Export for other modules
+export function getContextManager(): SessionContextManager {
+  return contextManager;
 }

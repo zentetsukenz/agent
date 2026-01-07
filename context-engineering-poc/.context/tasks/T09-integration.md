@@ -244,13 +244,13 @@ export function registerTools(
 
 ## Success Criteria
 
-- [ ] Extension compiles without errors
-- [ ] Context manager initializes on activation
-- [ ] /plan sets phase to 'research' and saves goal
-- [ ] /implement sets phase to 'implement'
-- [ ] Context usage logged in Extension Host output
-- [ ] Quick checkpoint command works
-- [ ] State persists across commands
+- [x] Extension compiles without errors
+- [x] Context manager initializes on activation
+- [x] /plan sets phase to 'research' and saves goal
+- [x] /implement sets phase to 'implement'
+- [x] Context usage logged in Extension Host output
+- [x] Quick checkpoint command works
+- [x] State persists across commands
 
 ---
 

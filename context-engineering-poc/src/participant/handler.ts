@@ -2,69 +2,86 @@ import * as vscode from "vscode";
 import { handlePlan } from "./commands/plan";
 import { handleImplement } from "./commands/implement";
 import { handleCheckpoint } from "./commands/checkpoint";
+import { SessionContextManager } from "../context";
 
 export async function handleRequest(
   request: vscode.ChatRequest,
   context: vscode.ChatContext,
   stream: vscode.ChatResponseStream,
-  token: vscode.CancellationToken
+  token: vscode.CancellationToken,
+  contextManager: SessionContextManager
 ): Promise<vscode.ChatResult> {
   console.log("[Engineer] Request:", request.prompt);
   console.log("[Engineer] Command:", request.command);
 
-  // Track user turn in session context
-  try {
-    vscode.commands.executeCommand(
-      "context-engineering.contextAddTurn",
-      "user",
-      request.prompt ?? "",
-      request.command ?? undefined
-    );
-  } catch (err) {
-    console.error("[Engineer] Failed to track user turn", err);
-  }
+  // Track user turn
+  contextManager.addTurn("user", request.prompt, request.command);
+
+  // Show context usage in debug
+  const usage = contextManager.getUsageRatio();
+  const tokens = contextManager.estimateTokenUsage();
+  console.log(
+    `[Engineer] Context usage: ${tokens} tokens (${(usage * 100).toFixed(2)}%)`
+  );
+
+  let result: vscode.ChatResult;
 
   // Route to command handlers
   switch (request.command) {
     case "plan":
-      // Set phase for session state
-      try {
-        vscode.commands.executeCommand(
-          "context-engineering.contextSetPhase",
-          "plan"
-        );
-      } catch {}
-      return handlePlan(request, context, stream, token);
+      contextManager.setPhase("research");
+      if (request.prompt) {
+        contextManager.setGoal(request.prompt);
+      }
+      result = await handlePlan(request, context, stream, token);
+      break;
 
     case "implement":
-      // Set phase for session state
-      try {
-        vscode.commands.executeCommand(
-          "context-engineering.contextSetPhase",
-          "implement"
-        );
-      } catch {}
-      return handleImplement(request, context, stream, token);
+      contextManager.setPhase("implement");
+      result = await handleImplement(request, context, stream, token);
+      break;
 
     case "checkpoint":
-      return handleCheckpoint(request, context, stream, token);
+      result = await handleCheckpoint(
+        request,
+        context,
+        stream,
+        token,
+        contextManager
+      );
+      break;
+
+    default:
+      result = await handleDefault(request, context, stream, contextManager);
   }
 
-  // Default: conversational mode
-  stream.markdown(`**@engineer**: ${request.prompt}\n\n`);
+  // Track assistant response
+  contextManager.addTurn("assistant", "Response sent", request.command);
+
+  return result;
+}
+
+async function handleDefault(
+  request: vscode.ChatRequest,
+  context: vscode.ChatContext,
+  stream: vscode.ChatResponseStream,
+  contextManager: SessionContextManager
+): Promise<vscode.ChatResult> {
+  const state = contextManager.getState();
+
+  stream.markdown(`**@engineer** (${state.phase} phase)\n\n`);
+  stream.markdown(`${request.prompt}\n\n`);
+
+  // Show current state
+  stream.markdown("---\n");
   stream.markdown(
-    "*Available commands: `/plan`, `/implement`, `/checkpoint`*\n"
+    `*Phase: ${state.phase} | Goal: ${state.goal || "Not set"}*\n`
   );
 
-  // Track assistant turn (basic)
-  try {
-    vscode.commands.executeCommand(
-      "context-engineering.contextAddTurn",
-      "assistant",
-      `Responded to: ${request.prompt ?? ""}`,
-      request.command ?? undefined
-    );
-  } catch {}
-
-  return { metadata: { command: null } };
+  return {
+    metadata: {
+      command: null,
+      phase: state.phase,
+    },
+  };
 }

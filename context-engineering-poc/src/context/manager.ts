@@ -40,7 +40,7 @@ export class SessionContextManager {
   addTurn(role: "user" | "assistant", content: string, command?: string): void {
     this.history.push({
       role,
-      content,
+      content: content || "",
       timestamp: new Date(),
       command,
     });
@@ -49,6 +49,9 @@ export class SessionContextManager {
   }
 
   estimateTokenUsage(): number {
+    if (this.history.length === 0) {
+      return 0;
+    }
     const charCount = this.history
       .map((t) => t.content.length)
       .reduce((a, b) => a + b, 0);
