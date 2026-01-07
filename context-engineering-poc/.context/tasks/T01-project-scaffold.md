@@ -102,10 +102,10 @@ context-engineering-poc/
 
 ## Success Criteria
 
-- [ ] `npm run compile` succeeds without errors
-- [ ] Press F5 launches Extension Development Host
-- [ ] Extension activates (check "Output > Extension Host" for errors)
-- [ ] "Hello World" command works (default from generator)
+- [x] `npm run compile` succeeds without errors
+- [x] Press F5 launches Extension Development Host
+- [x] Extension activates (check "Output > Extension Host" for errors)
+- [x] "Hello World" command works (default from generator)
 
 ---
 
