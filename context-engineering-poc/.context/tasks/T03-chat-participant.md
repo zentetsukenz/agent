@@ -1,9 +1,10 @@
-# T03: Chat Participant Registration
+# T03: Chat Participant Registration ✅
 
 > **Phase**: 1 - Foundation
 > **Agent**: backend-api
 > **Depends on**: T02
 > **Duration**: ~30 min
+> **Status**: COMPLETED (2026-01-07)
 
 ---
 
@@ -149,12 +150,12 @@ mkdir -p src/participant
 
 ## Success Criteria
 
-- [ ] Extension compiles without errors
-- [ ] @engineer appears in chat participant list
-- [ ] @engineer hello → receives "Received: hello" response
-- [ ] @engineer /plan test → shows "Research Phase" header
-- [ ] @engineer /implement → shows "Implementation Phase"
-- [ ] @engineer /checkpoint → shows "Checkpoint"
+- [x] Extension compiles without errors
+- [x] @engineer appears in chat participant list
+- [x] @engineer hello → receives "Received: hello" response
+- [x] @engineer /plan test → shows "Research Phase" header
+- [x] @engineer /implement → shows "Implementation Phase"
+- [x] @engineer /checkpoint → shows "Checkpoint"
 
 ---
 
