@@ -183,11 +183,11 @@ export function registerTools(context: vscode.ExtensionContext): void {
 
 ## Success Criteria
 
-- [ ] Extension compiles without errors
-- [ ] #dispatch appears in tools list
-- [ ] Invoking #dispatch returns 7-section formatted prompt
-- [ ] All agents in enum work (backend-api, frontend-dev, researcher, visual-qa)
-- [ ] Default values populate empty arrays
+- [x] Extension compiles without errors
+- [x] #dispatch appears in tools list
+- [x] Invoking #dispatch returns 7-section formatted prompt
+- [x] All agents in enum work (backend-api, frontend-dev, researcher, visual-qa)
+- [x] Default values populate empty arrays
 
 ---
 

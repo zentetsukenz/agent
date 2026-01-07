@@ -36,10 +36,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.registerTools = registerTools;
 const vscode = __importStar(require("vscode"));
 const checkpoint_1 = require("./checkpoint");
+const dispatch_1 = require("./dispatch");
 function registerTools(context) {
     // Register checkpoint tool
     const checkpointTool = vscode.lm.registerTool("context-engineering_checkpoint", new checkpoint_1.CheckpointTool());
     context.subscriptions.push(checkpointTool);
+    // Register dispatch tool
+    const dispatchTool = vscode.lm.registerTool("context-engineering_dispatch", new dispatch_1.DispatchTool());
+    context.subscriptions.push(dispatchTool);
     console.log("[Context Engineering] Tools registered");
 }
 //# sourceMappingURL=index.js.map
