@@ -1,36 +1,24 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.handleRequest = handleRequest;
+const plan_1 = require("./commands/plan");
+const implement_1 = require("./commands/implement");
+const checkpoint_1 = require("./commands/checkpoint");
 async function handleRequest(request, context, stream, token) {
-    // Log for debugging
     console.log("[Engineer] Request:", request.prompt);
     console.log("[Engineer] Command:", request.command);
-    // Handle slash commands
-    if (request.command) {
-        switch (request.command) {
-            case "plan":
-                stream.markdown("## Research Phase\n\n");
-                stream.markdown(`**Goal**: ${request.prompt || "No goal specified"}\n\n`);
-                stream.markdown("*Planning mode active. I will research before implementing.*\n");
-                return { metadata: { command: "plan" } };
-            case "implement":
-                stream.markdown("## Implementation Phase\n\n");
-                stream.markdown("*Implementation mode active. I will make changes with checkpoints.*\n");
-                return { metadata: { command: "implement" } };
-            case "checkpoint":
-                stream.markdown("## Checkpoint\n\n");
-                stream.markdown(`*Saving checkpoint: ${request.prompt || "Manual checkpoint"}*\n`);
-                return { metadata: { command: "checkpoint" } };
-            default:
-                stream.markdown(`Unknown command: /${request.command}\n`);
-        }
+    // Route to command handlers
+    switch (request.command) {
+        case "plan":
+            return (0, plan_1.handlePlan)(request, context, stream, token);
+        case "implement":
+            return (0, implement_1.handleImplement)(request, context, stream, token);
+        case "checkpoint":
+            return (0, checkpoint_1.handleCheckpoint)(request, context, stream, token);
     }
-    // Default: echo mode for validation
-    stream.markdown(`**Received**: ${request.prompt}\n\n`);
-    stream.markdown("*Use `/plan`, `/implement`, or `/checkpoint` for workflow commands.*\n");
-    // Add follow-up suggestions
-    return {
-        metadata: { command: null },
-    };
+    // Default: conversational mode
+    stream.markdown(`**@engineer**: ${request.prompt}\n\n`);
+    stream.markdown("*Available commands: `/plan`, `/implement`, `/checkpoint`*\n");
+    return { metadata: { command: null } };
 }
 //# sourceMappingURL=handler.js.map

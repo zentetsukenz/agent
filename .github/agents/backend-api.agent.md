@@ -1,6 +1,6 @@
 ---
 description: "Mid-to-senior level backend specialist focused on API development, database design, REST patterns, and Node.js/TypeScript best practices. Guides developers toward production-grade backend development patterns."
-model: Claude Sonnet 4.5 (copilot)
+model: Auto (copilot)
 tools:
   [
     "execute/testFailure",

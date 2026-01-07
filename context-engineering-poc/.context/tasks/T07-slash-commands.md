@@ -1,9 +1,10 @@
-# T07: Slash Commands
+# T07: Slash Commands ✅
 
 > **Phase**: 3 - Integration
 > **Agent**: backend-api
 > **Depends on**: T06
 > **Duration**: ~45 min
+> **Status**: Complete
 
 ---
 
@@ -243,12 +244,12 @@ mkdir -p src/participant/commands
 
 ## Success Criteria
 
-- [ ] Extension compiles without errors
-- [ ] /plan shows research phase UI
-- [ ] /implement shows implementation phase UI
-- [ ] /implement detects prior /plan in history
-- [ ] /checkpoint shows session summary
-- [ ] /checkpoint extracts topics from history
+- [X] Extension compiles without errors
+- [X] /plan shows research phase UI
+- [X] /implement shows implementation phase UI
+- [X] /implement detects prior /plan in history
+- [X] /checkpoint shows session summary
+- [X] /checkpoint extracts topics from history
 
 ---
 

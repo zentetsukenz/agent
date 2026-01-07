@@ -16,7 +16,7 @@
 | [T04](T04-checkpoint-tool.md) | 2 | backend-api | Implement #checkpoint tool |
 | [T05](T05-dispatch-tool.md) | 2 | backend-api | Implement #dispatch tool |
 | [T06](T06-compress-tool.md) | 2 | backend-api | Implement #compress tool |
-| [T07](T07-slash-commands.md) | 3 | backend-api | Implement /plan, /implement, /checkpoint |
+| [T07](T07-slash-commands.md) ✅ | 3 | backend-api | Implement /plan, /implement, /checkpoint |
 | [T08](T08-context-manager.md) | 3 | backend-api | Session state management |
 | [T09](T09-integration.md) | 3 | team-lead | Wire tools + commands + manager |
 | [T10](T10-validation.md) | 4 | team-lead | Test and validate hypotheses |
