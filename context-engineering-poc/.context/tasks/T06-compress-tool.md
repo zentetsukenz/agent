@@ -4,6 +4,7 @@
 > **Agent**: backend-api
 > **Depends on**: T05
 > **Duration**: ~30 min
+> **Status**: ✅ COMPLETE
 
 ---
 
@@ -176,12 +177,12 @@ This is a limitation of the VS Code Language Model Tools API — tools receive o
 
 ## Success Criteria
 
-- [ ] Extension compiles without errors
-- [ ] #compress appears in tools list
-- [ ] Invoking #compress returns compression instructions
-- [ ] Instructions include summary format template
-- [ ] preserveDecisions parameter works
-- [ ] turnsToKeep parameter appears in output
+- [x] Extension compiles without errors
+- [x] #compress appears in tools list
+- [x] Invoking #compress returns compression instructions
+- [x] Instructions include summary format template
+- [x] preserveDecisions parameter works
+- [x] turnsToKeep parameter appears in output
 
 ---
 

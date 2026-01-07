@@ -37,6 +37,7 @@ exports.registerTools = registerTools;
 const vscode = __importStar(require("vscode"));
 const checkpoint_1 = require("./checkpoint");
 const dispatch_1 = require("./dispatch");
+const compress_1 = require("./compress");
 function registerTools(context) {
     // Register checkpoint tool
     const checkpointTool = vscode.lm.registerTool("context-engineering_checkpoint", new checkpoint_1.CheckpointTool());
@@ -44,6 +45,9 @@ function registerTools(context) {
     // Register dispatch tool
     const dispatchTool = vscode.lm.registerTool("context-engineering_dispatch", new dispatch_1.DispatchTool());
     context.subscriptions.push(dispatchTool);
+    // Register compress tool
+    const compressTool = vscode.lm.registerTool("context-engineering_compress", new compress_1.CompressTool());
+    context.subscriptions.push(compressTool);
     console.log("[Context Engineering] Tools registered");
 }
 //# sourceMappingURL=index.js.map
