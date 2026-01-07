@@ -19,6 +19,10 @@
       {
         "command": "context-engineering.helloWorld",
         "title": "Hello World"
+      },
+      {
+        "command": "context-engineering.quickCheckpoint",
+        "title": "Context Engineering: Quick Checkpoint"
       }
     ],
     "chatParticipants": [

@@ -291,11 +291,11 @@ mkdir -p src/context
 
 ## Success Criteria
 
-- [ ] Extension compiles without errors
-- [ ] Session state persists to .context/session.json
-- [ ] Token usage estimation works
-- [ ] 40% threshold triggers info message
-- [ ] State survives extension reload
+- [x] Extension compiles without errors
+- [x] Session state persists to .context/session.json
+- [x] Token usage estimation works
+- [x] 40% threshold triggers info message
+- [x] State survives extension reload
 
 ---
 

@@ -12,12 +12,38 @@ export async function handleRequest(
   console.log("[Engineer] Request:", request.prompt);
   console.log("[Engineer] Command:", request.command);
 
+  // Track user turn in session context
+  try {
+    vscode.commands.executeCommand(
+      "context-engineering.contextAddTurn",
+      "user",
+      request.prompt ?? "",
+      request.command ?? undefined
+    );
+  } catch (err) {
+    console.error("[Engineer] Failed to track user turn", err);
+  }
+
   // Route to command handlers
   switch (request.command) {
     case "plan":
+      // Set phase for session state
+      try {
+        vscode.commands.executeCommand(
+          "context-engineering.contextSetPhase",
+          "plan"
+        );
+      } catch {}
       return handlePlan(request, context, stream, token);
 
     case "implement":
+      // Set phase for session state
+      try {
+        vscode.commands.executeCommand(
+          "context-engineering.contextSetPhase",
+          "implement"
+        );
+      } catch {}
       return handleImplement(request, context, stream, token);
 
     case "checkpoint":
@@ -29,6 +55,16 @@ export async function handleRequest(
   stream.markdown(
     "*Available commands: `/plan`, `/implement`, `/checkpoint`*\n"
   );
+
+  // Track assistant turn (basic)
+  try {
+    vscode.commands.executeCommand(
+      "context-engineering.contextAddTurn",
+      "assistant",
+      `Responded to: ${request.prompt ?? ""}`,
+      request.command ?? undefined
+    );
+  } catch {}
 
   return { metadata: { command: null } };
 }
