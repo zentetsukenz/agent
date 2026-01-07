@@ -3,6 +3,7 @@
   "displayName": "Context Engineering",
   "description": "Context engineering patterns for GitHub Copilot",
   "version": "0.0.1",
+  "publisher": "context-engineering",
   "engines": {
     "vscode": "^1.95.0"
   },
