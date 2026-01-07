@@ -214,11 +214,11 @@ mkdir -p src/tools
 
 ## Success Criteria
 
-- [ ] Extension compiles without errors
-- [ ] #checkpoint appears in tools list (Agent Mode)
-- [ ] Invoking #checkpoint creates .context/CHECKPOINT.md
-- [ ] Checkpoint file has correct format (date, summary, lists)
-- [ ] Error handling works (no workspace = clear error)
+- [x] Extension compiles without errors
+- [x] #checkpoint appears in tools list (Agent Mode)
+- [x] Invoking #checkpoint creates .context/CHECKPOINT.md
+- [x] Checkpoint file has correct format (date, summary, lists)
+- [x] Error handling works (no workspace = clear error)
 
 ---
 
