@@ -64,7 +64,8 @@ class CheckpointTool implements vscode.LanguageModelTool<CheckpointInput> {
     "languageModelTools": [{
       "name": "context-engineering_checkpoint",
       "displayName": "Checkpoint",
-      "description": "Save current session state for later recovery",
+      "toolReferenceName": "checkpoint",
+      "modelDescription": "Save current session state for later recovery",
       "canBeReferencedInPrompt": true,
       "inputSchema": {
         "type": "object",
@@ -85,10 +86,30 @@ class CheckpointTool implements vscode.LanguageModelTool<CheckpointInput> {
 }
 ```
 
-**Key fields**:
-- `name` — Tool identifier (use underscores, not dots)
-- `canBeReferencedInPrompt` — Allow `#tool-name` syntax
-- `inputSchema` — JSON Schema for tool input
+### Required Fields
+
+| Field | Description |
+|-------|-------------|
+| `name` | Unique tool ID. Pattern: `^(?!copilot_\|vscode_)[\w-]+$` |
+| `displayName` | Human-readable name shown in UI |
+| `modelDescription` | Description for the LLM (NOT `description`!) |
+
+### Conditional Requirements
+
+| Field | Required When |
+|-------|---------------|
+| `toolReferenceName` | **REQUIRED** if `canBeReferencedInPrompt: true`. Pattern: `^[\w-]+$`. This is what users type after `#` |
+
+### Optional Fields
+
+| Field | Description |
+|-------|-------------|
+| `userDescription` | Description shown to users |
+| `canBeReferencedInPrompt` | Allow `#tool-name` syntax |
+| `inputSchema` | JSON Schema for tool input |
+| `icon` | Theme icon like `$(zap)` or file path |
+| `when` | Condition expression |
+| `tags` | Array of tag strings |
 
 ---
 

@@ -4,10 +4,13 @@
   "description": "Context engineering patterns for GitHub Copilot",
   "version": "0.0.1",
   "engines": {
-    "vscode": "^1.107.0"
+    "vscode": "^1.95.0"
   },
   "categories": [
     "Other"
+  ],
+  "extensionKind": [
+    "ui"
   ],
   "activationEvents": [],
   "main": "./out/extension.js",
@@ -16,6 +19,140 @@
       {
         "command": "context-engineering.helloWorld",
         "title": "Hello World"
+      }
+    ],
+    "chatParticipants": [
+      {
+        "id": "context-engineering.engineer",
+        "name": "engineer",
+        "fullName": "The Engineer",
+        "description": "Context engineering assistant with RPI workflow",
+        "isSticky": true,
+        "commands": [
+          {
+            "name": "plan",
+            "description": "Research and plan implementation"
+          },
+          {
+            "name": "implement",
+            "description": "Execute planned implementation"
+          },
+          {
+            "name": "checkpoint",
+            "description": "Save current session state"
+          }
+        ]
+      }
+    ],
+    "languageModelTools": [
+      {
+        "name": "context-engineering_checkpoint",
+        "displayName": "Checkpoint",
+        "toolReferenceName": "checkpoint",
+        "canBeReferencedInPrompt": true,
+        "modelDescription": "Save current session state for later recovery",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "summary": {
+              "type": "string",
+              "description": "Brief summary of session progress"
+            },
+            "progress": {
+              "type": "number",
+              "description": "Completion percentage (0-100)"
+            },
+            "completedWork": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "List of completed items"
+            },
+            "remainingWork": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "List of remaining items"
+            }
+          },
+          "required": [
+            "summary"
+          ]
+        }
+      },
+      {
+        "name": "context-engineering_dispatch",
+        "displayName": "Dispatch to Agent",
+        "toolReferenceName": "dispatch",
+        "canBeReferencedInPrompt": true,
+        "modelDescription": "Delegate task to specialized agent with 7-section format",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "agent": {
+              "type": "string",
+              "enum": [
+                "backend-api",
+                "frontend-dev",
+                "researcher",
+                "visual-qa"
+              ],
+              "description": "Target agent for delegation"
+            },
+            "task": {
+              "type": "string",
+              "description": "Atomic task description (one action)"
+            },
+            "expectedOutcome": {
+              "type": "string",
+              "description": "Concrete deliverable with success criteria"
+            },
+            "mustDo": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Exhaustive requirements"
+            },
+            "mustNotDo": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Forbidden actions"
+            },
+            "context": {
+              "type": "string",
+              "description": "File paths, patterns, constraints"
+            }
+          },
+          "required": [
+            "agent",
+            "task"
+          ]
+        }
+      },
+      {
+        "name": "context-engineering_compress",
+        "displayName": "Compress Context",
+        "toolReferenceName": "compress",
+        "canBeReferencedInPrompt": true,
+        "modelDescription": "Summarize conversation to reduce context usage",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "preserveDecisions": {
+              "type": "boolean",
+              "description": "Keep key decisions in summary"
+            },
+            "turnsToKeep": {
+              "type": "number",
+              "description": "Number of recent turns to keep uncompressed"
+            }
+          }
+        }
       }
     ]
   },

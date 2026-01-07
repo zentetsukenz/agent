@@ -1,9 +1,10 @@
-# T02: Package Manifest Configuration
+# T02: Package Manifest Configuration ✅
 
 > **Phase**: 1 - Foundation
 > **Agent**: backend-api
 > **Depends on**: T01
 > **Duration**: ~20 min
+> **Status**: COMPLETED (Jan 7, 2026)
 
 ---
 
@@ -65,8 +66,9 @@ Add these sections to the `contributes` block:
       {
         "name": "context-engineering_checkpoint",
         "displayName": "Checkpoint",
+        "toolReferenceName": "checkpoint",
+        "modelDescription": "Save current session state for later recovery",
         "canBeReferencedInPrompt": true,
-        "description": "Save current session state for later recovery",
         "inputSchema": {
           "type": "object",
           "properties": {
@@ -95,8 +97,9 @@ Add these sections to the `contributes` block:
       {
         "name": "context-engineering_dispatch",
         "displayName": "Dispatch to Agent",
+        "toolReferenceName": "dispatch",
+        "modelDescription": "Delegate task to specialized agent with 7-section format",
         "canBeReferencedInPrompt": true,
-        "description": "Delegate task to specialized agent with 7-section format",
         "inputSchema": {
           "type": "object",
           "properties": {
@@ -134,8 +137,9 @@ Add these sections to the `contributes` block:
       {
         "name": "context-engineering_compress",
         "displayName": "Compress Context",
+        "toolReferenceName": "compress",
+        "modelDescription": "Summarize conversation to reduce context usage",
         "canBeReferencedInPrompt": true,
-        "description": "Summarize conversation to reduce context usage",
         "inputSchema": {
           "type": "object",
           "properties": {
@@ -154,6 +158,15 @@ Add these sections to the `contributes` block:
   }
 }
 ```
+
+**Key schema requirements (VS Code 1.107+):**
+
+| Field | Required | Notes |
+|-------|----------|-------|
+| `name` | ✅ | Pattern: `^(?!copilot_\|vscode_)[\w-]+$` |
+| `displayName` | ✅ | Human-readable name |
+| `modelDescription` | ✅ | Description for LLM (NOT `description`!) |
+| `toolReferenceName` | ✅ if `canBeReferencedInPrompt: true` | What users type after `#` |
 
 ### 2. Update Engine Version
 
@@ -181,21 +194,44 @@ For chat participants:
 
 ## Success Criteria
 
-- [ ] `npm run compile` still succeeds
-- [ ] package.json has valid JSON (no syntax errors)
-- [ ] Chat participant contribution defined
-- [ ] All 3 tool schemas defined
-- [ ] VS Code version ^1.95.0
+- [x] `npm run compile` still succeeds
+- [x] package.json has valid JSON (no syntax errors)
+- [x] Chat participant contribution defined
+- [x] All 3 tool schemas defined
+- [x] VS Code version ^1.95.0
+- [x] `extensionKind: ["ui"]` set
+- [x] All tools have `modelDescription` field
+- [x] All tools have `toolReferenceName` field
 
 ---
 
 ## Verification Steps
 
-1. Run `npm run compile`
-2. Press F5 to launch Extension Development Host
-3. In new window, open chat (Cmd+Shift+I or click Copilot icon)
-4. Type `@` — should see `@engineer` in autocomplete (won't work yet, but should appear)
-5. Check "Output > Extension Host" for any contribution errors
+1. ✅ Run `npm run compile` — PASSED
+2. ✅ Validate JSON syntax — PASSED
+3. ⏭️ Press F5 to launch Extension Development Host (deferred to T03)
+4. ⏭️ Type `@` and verify `@engineer` appears (deferred to T03)
+5. ⏭️ Check "Output > Extension Host" for errors (deferred to T03)
+
+---
+
+## Completion Summary
+
+**Completed**: Jan 7, 2026
+
+**Changes made**:
+- Updated `engines.vscode` to `^1.95.0`
+- Added `extensionKind: ["ui"]`
+- Registered `@engineer` chat participant with 3 commands
+- Defined 3 language model tools with proper VS Code 1.107+ schema:
+  - `context-engineering_checkpoint` (#checkpoint)
+  - `context-engineering_dispatch` (#dispatch)
+  - `context-engineering_compress` (#compress)
+
+**Verification**:
+- ✅ TypeScript compilation succeeds
+- ✅ JSON syntax valid
+- ✅ All required fields present
 
 ---
 
