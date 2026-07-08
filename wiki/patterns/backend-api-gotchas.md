@@ -1,3 +1,8 @@
+---
+type: Pattern
+title: Backend API Common Pitfalls & Anti-Patterns
+---
+
 # Backend API Common Pitfalls & Anti-Patterns
 
 > **Type**: Knowledge (gotchas and anti-patterns)  

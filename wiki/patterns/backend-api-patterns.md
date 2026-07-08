@@ -1,3 +1,8 @@
+---
+type: Pattern
+title: Backend API Implementation Patterns
+---
+
 # Backend API Implementation Patterns
 
 > **Type**: Knowledge (implementation patterns)  

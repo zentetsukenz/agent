@@ -1,3 +1,8 @@
+---
+type: Pattern
+title: Prisma 7 Patterns
+---
+
 # Prisma 7 Patterns
 
 > **Critical**: This project uses Prisma 7 with the adapter pattern. Prisma 5 patterns will NOT work.
