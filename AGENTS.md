@@ -8,6 +8,7 @@ loom is a **content-only** agent framework. No runtime, no build step—just Mar
 
 ```
 skills/       — Reusable agent skills, bucketed by lifecycle phase
+workflows/    — Prose-first orchestration seeds (SDLC + others) compiled by adapters
 wiki/         — OKF v0.1 knowledge base (progressive-disclosure)
 agents/       — Agent definition files (identity + wired skills)
 commands/     — Slash command wrappers

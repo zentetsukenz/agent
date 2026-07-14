@@ -305,7 +305,7 @@ while IFS= read -r wiki_file; do
   validate_wiki_file "$wiki_file"
 done < <(collect_markdown_files "agent/wiki")
 
-for link_root in agent/skills agent/wiki agent/agents agent/commands; do
+for link_root in agent/skills agent/workflows agent/wiki agent/agents agent/commands; do
   while IFS= read -r markdown_file; do
     check_markdown_links "$markdown_file"
   done < <(collect_markdown_files "$link_root")

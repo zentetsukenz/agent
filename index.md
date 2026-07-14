@@ -6,7 +6,9 @@ description: Progressive-disclosure root for the loom content-only agent framewo
 # loom
 
 Top-level directories:
-- [skills/](skills/) — ~33 lifecycle-bucketed agent skills (agentskills.io conformant)
+
+- [skills/](skills/) — lifecycle-bucketed agent skills (agentskills.io conformant)
+- [workflows/](workflows/) — prose-first orchestration seeds compiled into harnesses by adapters (SDLC + others)
 - [wiki/](wiki/) — dogfooded OKF knowledge wiki
 - [agents/](agents/) — agent definitions (Thoth + others)
 - [commands/](commands/) — slash command wrappers

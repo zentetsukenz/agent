@@ -77,7 +77,7 @@ curl -s http://localhost:3001/api/health
 curl -s http://localhost:5173 | head -5
 ```
 
-If either fails, use [server-operations.md](../../server-operations.md) first.
+If either fails, use [server-operations](../../implementation/server-operations/SKILL.md) first.
 
 ### Step 3: Delegate to Subagent
 

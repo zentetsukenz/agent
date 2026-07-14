@@ -496,3 +496,4 @@ If any answer is "no" → not done yet
 - [visual-verification](../visual-verification/SKILL.md) — UI verification via subagent
 - [browser-console-debugging](../browser-console-debugging/SKILL.md) — Debug frontend errors
 - [qa-witness-protocol](../qa-witness-protocol/SKILL.md) — Behavioral QA witness workflow
+- [server-operations](../../implementation/server-operations/SKILL.md) — Start/verify servers before checking

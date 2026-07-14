@@ -1,3 +1,8 @@
+---
+name: server-operations
+description: Start, stop, and verify development servers using separate terminals to avoid stdin signal conflicts. Use when launching or restarting backend/frontend dev servers, checking ports, or verifying server health during implementation and verification.
+---
+
 # Server Operations
 
 > Start, stop, and verify development servers. Uses separate terminals to avoid signal conflicts.

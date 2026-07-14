@@ -39,6 +39,7 @@ An autonomous entity with a clear identity and bounded responsibility. Agents sp
 Centralized knowledge repository. Contains principles, patterns, environments, and glossary. Reference material, not procedures.
 
 **Structure**:
+
 - `principles/` — Core philosophy and decision-making frameworks
 - `patterns/` — Reusable design patterns and best practices
 - `environments/` — Development environment setup and tools
@@ -67,6 +68,7 @@ An extension point that allows external code to hook into a system. Plugins exte
 A document that records a significant architectural decision, its context, and consequences. ADRs live in `agent/wiki/adr/`.
 
 **Format**:
+
 - Status (Proposed/Accepted/Deprecated)
 - Context (Why this decision?)
 - Decision (What did we decide?)
@@ -107,6 +109,33 @@ To use your own tools and systems. "Eating your own dogfood" means the framework
 ---
 
 ## Workflow Concepts
+
+### Workflow
+
+An ordered orchestration document for a specific lifecycle. A workflow is **prose-first**:
+it describes phases, gates, recommended skills, and policies as guidance for an interpreting
+agent — not as a machine-parseable contract. It is a **seed** an [Adapter](#adapter) compiles
+into a concrete harness (agent configs, skill wiring, commands) for a target tool. Distinct
+from a [Skill](#skill) (single judgment pattern) and an [Agent](#agent) (identity wiring
+skills).
+
+**Example**: The SDLC workflow defines five ordered phases (Discovery → Planning →
+Implementation → Verification → Preservation).
+
+**See**: [workflows](../../workflows/index.md), `mem:adr/adr-002-workflow-as-adapter-seed`
+
+---
+
+### Orchestrator
+
+An agent role that runs the Implementation loop: it gauges each task's size and **dispatches
+it to the correct implementation-agent class** (high / mid / low intelligence) to maximize
+the chance of a successful implementation. It does not rely on a small agent self-assessing
+its own capability. The Orchestrator also enforces the architecture-prerequisite gate.
+
+**See**: [SDLC Implementation phase](../../workflows/sdlc/implementation.md)
+
+---
 
 ### RPI (Research → Plan → Implement)
 

@@ -1,3 +1,8 @@
+---
+name: checkpoint
+description: Preserve context for fresh continuation by writing a compressed checkpoint at natural boundaries or context thresholds. Use when context usage is high, a phase completes, a significant discovery is made, or the human asks to checkpoint.
+---
+
 # Checkpoint
 
 > **Strategy**: WRITE + COMPRESS  
@@ -135,5 +140,6 @@ Tell the user:
 
 ## Related Skills
 
-- [session-bootstrap.md](session-bootstrap.md) — Starting from a checkpoint
-- [dispatch-context.md](dispatch-context.md) — Uses similar compression
+- [session-bootstrap](../../discovery/session-bootstrap/SKILL.md) — Starting from a checkpoint
+- [dispatch-context](../../planning/dispatch-context/SKILL.md) — Uses similar compression
+- [context-compression](../../meta/context-compression/SKILL.md) — Core compression primitive
