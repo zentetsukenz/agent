@@ -121,20 +121,25 @@ The visual-qa agent returns a structured text description:
 
 ```markdown
 ## Page Overview
+
 [What page/view is shown]
 
 ## Layout Assessment
+
 [Header, navigation, main content, footer status]
 
 ## Visual Issues Found
+
 - [Specific issues with locations]
 
 ## UI Polish Check
+
 - Spacing/alignment: [status]
 - Typography: [status]
 - Colors/contrast: [status]
 
 ## Recommendation
+
 [Priority-ordered fixes]
 ```
 
@@ -158,7 +163,7 @@ When constructing instructions:
 
 ```
 ✅ Good: "Check homepage, endpoints page, and test results" (3 screenshots)
-✅ Good: "Verify desktop and mobile views of dashboard" (2 screenshots)  
+✅ Good: "Verify desktop and mobile views of dashboard" (2 screenshots)
 ❌ Bad: "Check all 10 pages of the application" (exceeds limit)
 ```
 
@@ -205,4 +210,4 @@ Continue with clean context
 ## Related Skills
 
 - [verification-before-completion](../verification-before-completion/SKILL.md) — Full verification checklist
-- [browser-console-debugging](../browser-console-debugging/SKILL.md) — Debug runtime errors
+- [frontend-runtime-debugging](../../implementation/frontend-runtime-debugging/SKILL.md) — Debug frontend runtime failures

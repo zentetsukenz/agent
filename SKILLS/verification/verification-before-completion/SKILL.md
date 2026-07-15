@@ -13,6 +13,7 @@ Claiming work is complete without verification is dishonesty, not efficiency.
 **Core principle:** Evidence before claims, always.
 
 **The Golden Rule:**
+
 > "If not sure, verify. If can't verify, ask. Never claim 'done' when it's not."
 
 **Violating the letter of this rule is violating the spirit of this rule.**
@@ -178,7 +179,7 @@ When criterion requires "logic handles X":
 1. Read the specific function
 2. Verify branches exist for the case
 3. Check error handling present
-4. Rate confidence: does the logic *actually* handle it, or just *appear* to?
+4. Rate confidence: does the logic _actually_ handle it, or just _appear_ to?
 
 ### Phase 5: Manual Testing
 
@@ -207,13 +208,13 @@ When criterion requires "logic handles X":
 
 Test at the edges of valid input:
 
-| Boundary | What to try |
-| -------- | ----------- |
-| Empty | `""`, `[]`, `{}`, `null`, `undefined` |
-| Max length | String at limit, array at limit |
-| Negative | `-1`, negative amounts, negative indices |
-| Zero | `0`, empty collections, zero-length |
-| Overflow | Integer overflow, huge payloads |
+| Boundary      | What to try                                |
+| ------------- | ------------------------------------------ |
+| Empty         | `""`, `[]`, `{}`, `null`, `undefined`      |
+| Max length    | String at limit, array at limit            |
+| Negative      | `-1`, negative amounts, negative indices   |
+| Zero          | `0`, empty collections, zero-length        |
+| Overflow      | Integer overflow, huge payloads            |
 | Special chars | `<script>`, `'`, `"`, `\n`, unicode, emoji |
 
 ### Phase 6: Visual Verification (if UI changes)
@@ -226,17 +227,15 @@ Test at the edges of valid input:
 
 See [visual-verification](../visual-verification/SKILL.md).
 
-### Phase 7: Browser Console Check (if frontend)
+### Phase 7: Frontend Runtime Check (if frontend)
 
 If runtime errors suspected:
 
-- [ ] No red errors in console
-- [ ] No React warnings
+- [ ] No red errors in the console
+- [ ] No framework warnings (keys, hydration, deprecations)
 - [ ] No failed network requests
 
-**For debugging → dispatch to `browser-console-debugger` subagent**
-
-See [browser-console-debugging](../browser-console-debugging/SKILL.md).
+**For debugging → [frontend-runtime-debugging](../../implementation/frontend-runtime-debugging/SKILL.md)** — classify the symptom, capture structured evidence, apply per-class fixes.
 
 ### Phase 8: Integration, E2E, and Regression
 
@@ -259,11 +258,11 @@ Missing e2e for UI/core flows → report gap + assertions. Missing unit tests �
 
 Rate each verified criterion:
 
-| Score | Meaning | When to use |
-| ----- | ------- | ----------- |
-| **HIGH** | Proven correct via automated test + logic review | Test passes AND logic is sound |
-| **MEDIUM** | Passes checks but has caveats | Test passes but edge cases unclear, or logic review shows potential issues |
-| **LOW** | Cannot fully verify | No test exists, or verification is indirect/circumstantial |
+| Score      | Meaning                                          | When to use                                                                |
+| ---------- | ------------------------------------------------ | -------------------------------------------------------------------------- |
+| **HIGH**   | Proven correct via automated test + logic review | Test passes AND logic is sound                                             |
+| **MEDIUM** | Passes checks but has caveats                    | Test passes but edge cases unclear, or logic review shows potential issues |
+| **LOW**    | Cannot fully verify                              | No test exists, or verification is indirect/circumstantial                 |
 
 A task with any LOW-confidence criteria should flag it in the report even if "passing."
 
@@ -273,6 +272,7 @@ Record what you verified:
 
 ```markdown
 ## Verification
+
 - [x] `npm run lint` — passed
 - [x] `npm run test` — 42 tests passed
 - [x] Manual test: created user, logged in, saw dashboard
@@ -349,6 +349,7 @@ When verification fails, don't just report "FAILED." Investigate like an elite Q
 🚨 BLOCKED: [Task description]
 
 **What was tried:**
+
 1. [Approach 1]: [Why it failed]
 2. [Approach 2]: [Why it failed]
 3. [Approach 3]: [Why it failed]
@@ -365,30 +366,37 @@ When verification fails, don't just report "FAILED." Investigate like an elite Q
 **Status**: ❌ FAILED at Phase <N>: <phase name>
 
 ## Summary
+
 <1-2 sentences: what's broken>
 
 ## Reproduction
+
 <exact command to see the failure>
 
 ## Evidence
+
 <truncated output — just the relevant error, 10-20 lines max>
 
 ## Analysis
+
 - **Root cause hypothesis**: <your best guess>
 - **Confidence**: HIGH/MEDIUM/LOW
 - **Impact**: blocker / minor / edge-case
 
 ## Context for Fix
+
 - Files involved: <list with brief reason>
 - Related code: <key functions/modules>
 - What was verified before failure: <phases that passed>
 
 ## Suggested Fix Direction
+
 1. <Most likely fix>
 2. <Alternative approach>
 3. <What to check if above don't work>
 
 ## Re-verification Command
+
 <exact command to confirm fix works>
 ```
 
@@ -415,10 +423,12 @@ When verification fails, don't just report "FAILED." Investigate like an elite Q
 [Brief description]
 
 **Verification:**
+
 - [Evidence 1]
 - [Evidence 2]
 
 **Files changed:**
+
 - [file1](path1)
 - [file2](path2)
 ```
@@ -432,26 +442,28 @@ When verification fails, don't just report "FAILED." Investigate like an elite Q
 
 ## Phase Results
 
-| Phase | Status | Duration |
-| ----- | ------ | -------- |
-| 0. Pre-conditions | ✅ | - |
-| 1. Structural | ✅ | <time> |
-| 2. Unit/Integration | ✅ | <time> |
-| 3. Success Criteria | ✅ | <time> |
-| 4. E2E | ✅ / ⏭️ N/A | <time> |
-| 5. Regression | ✅ | <time> |
-| 6. Exploratory | ✅ / ⏭️ skipped (low-risk) | <time> |
+| Phase               | Status                     | Duration |
+| ------------------- | -------------------------- | -------- |
+| 0. Pre-conditions   | ✅                         | -        |
+| 1. Structural       | ✅                         | <time>   |
+| 2. Unit/Integration | ✅                         | <time>   |
+| 3. Success Criteria | ✅                         | <time>   |
+| 4. E2E              | ✅ / ⏭️ N/A                | <time>   |
+| 5. Regression       | ✅                         | <time>   |
+| 6. Exploratory      | ✅ / ⏭️ skipped (low-risk) | <time>   |
 
 ## Success Criteria Verification
 
-| # | Criterion | Method | Confidence | Result |
-| - | --------- | ------ | ---------- | ------ |
-| 1 | <description> | <method> | HIGH/MED/LOW | ✅ |
+| #   | Criterion     | Method   | Confidence   | Result |
+| --- | ------------- | -------- | ------------ | ------ |
+| 1   | <description> | <method> | HIGH/MED/LOW | ✅     |
 
 ## Gap Analysis
+
 - (or "No significant gaps identified")
 
 ## Confidence Summary
+
 - Overall confidence: HIGH/MEDIUM/LOW
 - Caveats: <anything suspicious even though passing>
 ```
@@ -472,14 +484,14 @@ If any answer is "no" → not done yet
 
 ## Verification Dimensions
 
-| Dimension | How to Verify | When Required |
-|-----------|---------------|---------------|
-| **Functional** | Run it, see it work | Always |
-| **Structural** | Lint, type check | Always |
-| **Test** | Run test suite | When tests exist |
-| **Visual** | visual-qa subagent | UI changes |
-| **Console** | browser-console-debugger | Runtime errors |
-| **Performance** | Load test, profiling | When relevant |
+| Dimension            | How to Verify                    | When Required                          |
+| -------------------- | -------------------------------- | -------------------------------------- |
+| **Functional**       | Run it, see it work              | Always                                 |
+| **Structural**       | Lint, type check                 | Always                                 |
+| **Test**             | Run test suite                   | When tests exist                       |
+| **Visual**           | visual-qa subagent               | UI changes                             |
+| **Frontend runtime** | frontend-runtime-debugging skill | Console/network/rendering/state errors |
+| **Performance**      | Load test, profiling             | When relevant                          |
 
 ## Anti-patterns
 
@@ -494,6 +506,6 @@ If any answer is "no" → not done yet
 ## Related Skills
 
 - [visual-verification](../visual-verification/SKILL.md) — UI verification via subagent
-- [browser-console-debugging](../browser-console-debugging/SKILL.md) — Debug frontend errors
+- [frontend-runtime-debugging](../../implementation/frontend-runtime-debugging/SKILL.md) — Debug frontend runtime failures
 - [qa-witness-protocol](../qa-witness-protocol/SKILL.md) — Behavioral QA witness workflow
 - [server-operations](../../implementation/server-operations/SKILL.md) — Start/verify servers before checking

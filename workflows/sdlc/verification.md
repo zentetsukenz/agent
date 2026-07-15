@@ -16,9 +16,11 @@ Confirm that the **whole** delivered change satisfies the success criteria defin
 ## 2. Gates
 
 **Entry gate**
+
 - Implementation reports its tasks complete with unit tests green.
 
 **Exit gate**
+
 - Success criteria are demonstrably met via **evidence, not assertion**.
 - [verification-before-completion](../../SKILLS/verification/verification-before-completion/SKILL.md) is satisfied.
 - No "done" claim exists without proof.
@@ -28,7 +30,7 @@ Confirm that the **whole** delivered change satisfies the success criteria defin
 1. [verification-before-completion](../../SKILLS/verification/verification-before-completion/SKILL.md) — the completion gate: fresh evidence before any success claim.
 2. [qa-witness-protocol](../../SKILLS/verification/qa-witness-protocol/SKILL.md) — evidence-based behavioral confirmation.
 3. [visual-verification](../../SKILLS/verification/visual-verification/SKILL.md) — for UI surfaces.
-4. [browser-console-debugging](../../SKILLS/verification/browser-console-debugging/SKILL.md) — for runtime/frontend surfaces.
+4. [frontend-runtime-debugging](../../SKILLS/implementation/frontend-runtime-debugging/SKILL.md) — for runtime/frontend surfaces.
 
 ## 4. Agent-effort policy
 
