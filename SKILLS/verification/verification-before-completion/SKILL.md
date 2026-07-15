@@ -223,7 +223,8 @@ Test at the edges of valid input:
 - [ ] Responsive behavior correct
 - [ ] No visual regressions
 
-**For thorough visual verification → dispatch to `visual-qa` subagent**
+**For thorough visual verification → dispatch to an isolated capture mechanism** (e.g. the
+`visual-qa` subagent) so screenshot bytes never enter this context.
 
 See [visual-verification](../visual-verification/SKILL.md).
 
@@ -484,14 +485,14 @@ If any answer is "no" → not done yet
 
 ## Verification Dimensions
 
-| Dimension            | How to Verify                    | When Required                          |
-| -------------------- | -------------------------------- | -------------------------------------- |
-| **Functional**       | Run it, see it work              | Always                                 |
-| **Structural**       | Lint, type check                 | Always                                 |
-| **Test**             | Run test suite                   | When tests exist                       |
-| **Visual**           | visual-qa subagent               | UI changes                             |
-| **Frontend runtime** | frontend-runtime-debugging skill | Console/network/rendering/state errors |
-| **Performance**      | Load test, profiling             | When relevant                          |
+| Dimension            | How to Verify                                   | When Required                          |
+| -------------------- | ----------------------------------------------- | -------------------------------------- |
+| **Functional**       | Run it, see it work                             | Always                                 |
+| **Structural**       | Lint, type check                                | Always                                 |
+| **Test**             | Run test suite                                  | When tests exist                       |
+| **Visual**           | Isolated capture mechanism (visual-qa subagent) | UI changes                             |
+| **Frontend runtime** | frontend-runtime-debugging skill                | Console/network/rendering/state errors |
+| **Performance**      | Load test, profiling                            | When relevant                          |
 
 ## Anti-patterns
 
@@ -505,7 +506,7 @@ If any answer is "no" → not done yet
 
 ## Related Skills
 
-- [visual-verification](../visual-verification/SKILL.md) — UI verification via subagent
+- [visual-verification](../visual-verification/SKILL.md) — Frontend UI/UX verification via an isolated capture mechanism
 - [frontend-runtime-debugging](../../implementation/frontend-runtime-debugging/SKILL.md) — Debug frontend runtime failures
 - [qa-witness-protocol](../qa-witness-protocol/SKILL.md) — Behavioral QA witness workflow
 - [server-operations](../../implementation/server-operations/SKILL.md) — Start/verify servers before checking

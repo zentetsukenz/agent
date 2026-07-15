@@ -11,3 +11,4 @@ Agents available in this framework release.
 | Agent | Purpose | Mode |
 |-------|---------|------|
 | [Thoth](thoth.md) | Wiki-focused scribe for OKF initialization, curation, querying, auditing, and crosslinking | subagent |
+| [Visual QA](visual-qa.md) | Isolated frontend visual verification — captures screenshots, returns text-only findings | subagent |
