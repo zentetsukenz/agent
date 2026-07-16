@@ -16,3 +16,4 @@ Slash command wrappers available in this framework release.
 | [wiki-audit](wiki-audit.md) | Audit wiki health, gaps, links, and drift | Thoth |
 | [wiki-crosslink](wiki-crosslink.md) | Add high-signal links between related wiki pages | Thoth |
 | [release-notes](release-notes.md) | Generate user-facing release notes from git history | oracle |
+| [wayfinder](wayfinder.md) | Chart or work through a wayfinder map of decision tickets | — |

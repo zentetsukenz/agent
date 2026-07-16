@@ -22,4 +22,3 @@ conformance rules.
 ## Related
 
 - [workflows](../workflows/index.md) — orchestration seeds that reference these skills by intent.
-</content>

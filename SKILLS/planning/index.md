@@ -13,3 +13,4 @@ description: Skills for designing and decomposing work before implementation
 | [triage](triage/SKILL.md) | Triage bugs and feature requests |
 | [domain-model](domain-model/SKILL.md) | Challenge plan against domain model |
 | [design-an-interface](design-an-interface/SKILL.md) | Generate multiple radically different interface designs |
+| [wayfinder](wayfinder/SKILL.md) | Chart huge, multi-session work as a shared map of decision tickets on the issue tracker, and resolve them one at a time |
