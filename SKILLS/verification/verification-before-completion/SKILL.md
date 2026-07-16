@@ -81,12 +81,12 @@ set -a; source .qa-witness.env; set +a
 BASE_URL="${HOST}:${PORT}"
 ```
 
-Legacy health-check pattern:
+Then health-check against the resolved coordinates (read `<HEALTH_PATH>` from the project's backend routes/docs):
 
-```fish
+```bash
 # Check servers are accessible
-curl -s http://localhost:3001/api/health  # Backend
-curl -s http://localhost:5173 | head -5    # Frontend
+curl -s "${BASE_URL}<HEALTH_PATH>"        # Backend
+curl -s "${FRONTEND_URL}" | head -5        # Frontend
 ```
 
 If not running, use server-operations first. Not met → ask human. **Never skip.**
