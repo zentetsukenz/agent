@@ -27,6 +27,7 @@ description: <one-line description, ≤1024 chars>
 ```
 
 Constraints:
+
 - `name`: kebab-case, ≤64 characters, no leading/trailing hyphens, lowercase
 - `description`: non-empty string, ≤1024 characters
 
@@ -80,6 +81,7 @@ All inter-framework links use **relative paths** from the `agent/` root:
 ```
 
 Rules:
+
 - No absolute file paths
 - No `../` traversals that escape `agent/`
 - Every link must resolve to an existing file (enforced by `scripts/validate.sh`)
@@ -89,12 +91,13 @@ Rules:
 
 ## Lifecycle bucket definitions
 
-Skills are organised into 6 lifecycle buckets under `skills/`:
+Skills are organised into 7 lifecycle buckets under `skills/`:
 
 | Bucket | Path | Purpose |
 |---|---|---|
 | discovery | `skills/discovery/` | Explore a problem space before committing |
-| planning | `skills/planning/` | Design and decompose work before implementation |
+| design | `skills/design/` | Shape the solution — domain model, interfaces, and deep-module architecture — before decomposing it |
+| planning | `skills/planning/` | Decompose a shaped solution into risk-ordered, dispatchable tasks |
 | implementation | `skills/implementation/` | Build, debug, and refactor |
 | verification | `skills/verification/` | Validate, test, and review |
 | preservation | `skills/preservation/` | Hand off, document, and maintain knowledge |
@@ -133,6 +136,7 @@ The adapter layer (deferred to v2) is responsible for loading framework content
 into a consuming tool (OpenCode, Claude Code, Cursor, Aider, etc.).
 
 See `wiki/adr/adr-001-adapter-pattern.md` for the full design, including:
+
 - Path X: TypeScript OpenCode plugin
 - Path Y: Rust CLI (`loom` binary)
 - Path Z: Hybrid

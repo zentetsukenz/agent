@@ -38,7 +38,7 @@ contract this seeds into.
 
 | Workflow | Description |
 |---|---|
-| [sdlc](sdlc/index.md) | Software Development Life Cycle — five ordered phases (Discovery → Planning → Implementation → Verification → Preservation) with shift-left verification, documentation, and architecture-first discipline baked into every phase. |
+| [sdlc](sdlc/index.md) | Software Development Life Cycle — six ordered phases (Discovery → Design → Planning → Implementation → Verification → Preservation) grouped into three ownership stages (Shaping → Delivery → Closing), with shift-left verification, documentation, and architecture-first discipline baked into every phase. |
 
 ## Related
 

@@ -6,6 +6,21 @@ description: Chronological record of significant changes to workflows
 
 # Workflows Log
 
+## 2026-07-16
+
+- Added a **Design phase** (`design/` bucket) between Discovery and Planning — the SDLC
+  now has **six** ordered phases. Design shapes the solution (domain model, interfaces,
+  deep-module architecture) into artifacts before Planning decomposes it.
+- Introduced a **three-stage ownership overlay** — Shaping (Discovery + Design),
+  Delivery (Planning + Implementation + Verification), Closing (Preservation) — naming the
+  real handoff seams without adding gates. Verification stays a named phase inside Delivery
+  so the evidence gate does not erode.
+- Moved the solution-shaping skills (`domain-model`, `design-an-interface`,
+  `improve-codebase-architecture`) into the new `design/` bucket, and extracted their shared
+  deep-module vocabulary into a new [codebase-design](../SKILLS/design/codebase-design/SKILL.md)
+  skill. Planning now *consumes* Design's artifacts and loops back on a design gap rather
+  than improvising shape inside a task.
+
 ## 2026-07-14
 
 - Introduced the `workflows/` top-level directory: prose-first orchestration documents

@@ -46,7 +46,7 @@ This checks:
 
 - **Must** open with YAML frontmatter containing `name` and `description`
 - `name`: kebab-case, lowercase, ≤64 chars, no leading/trailing hyphens
-- Lifecycle buckets: `discovery`, `planning`, `implementation`, `verification`, `preservation`, `meta`
+- Lifecycle buckets: `discovery`, `design`, `planning`, `implementation`, `verification`, `preservation`, `meta`
 - Each bucket has an `index.md` cataloging its skills
 
 ### Wiki files (`wiki/**/*.md`)

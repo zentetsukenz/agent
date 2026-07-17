@@ -119,8 +119,9 @@ into a concrete harness (agent configs, skill wiring, commands) for a target too
 from a [Skill](#skill) (single judgment pattern) and an [Agent](#agent) (identity wiring
 skills).
 
-**Example**: The SDLC workflow defines five ordered phases (Discovery → Planning →
-Implementation → Verification → Preservation).
+**Example**: The SDLC workflow defines six ordered phases (Discovery → Design → Planning →
+Implementation → Verification → Preservation), grouped into three ownership stages
+(Shaping → Delivery → Closing).
 
 **See**: [workflows](../../workflows/index.md), `mem:adr/adr-002-workflow-as-adapter-seed`
 

@@ -6,7 +6,7 @@ description: Policy governing how the Verification phase performs — confirm th
 
 # Verification Phase
 
-> **Bucket:** `verification/` · **Position:** 4 of 5 · **Follows:** [Implementation](implementation.md) · **Precedes:** [Preservation](preservation.md)
+> **Bucket:** `verification/` · **Position:** 5 of 6 · **Stage:** Delivery · **Follows:** [Implementation](implementation.md) · **Precedes:** [Preservation](preservation.md)
 
 ## 1. Intent
 

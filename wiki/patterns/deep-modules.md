@@ -10,6 +10,8 @@ timestamp: 2026-01-07T00:00:00Z
 
 From "A Philosophy of Software Design" by John Ousterhout.
 
+> **Applied vocabulary:** the [codebase-design](../../SKILLS/design/codebase-design/SKILL.md) skill operationalises this pattern into a working glossary (module, interface, seam, adapter, leverage, locality) and design principles (the deletion test, "the interface is the test surface"). This page is the conceptual reference; the skill is the vocabulary agents design with.
+
 ## Core Idea
 
 **Deep module** = small interface + lots of implementation
@@ -126,11 +128,13 @@ logger.log("event 2");
 ## When to Break This Rule
 
 Deep modules are ideal for:
+
 - Core infrastructure (file I/O, networking, databases)
 - Frequently-used utilities
 - Complex domains (auth, validation, data transformation)
 
 Shallow modules are OK for:
+
 - Thin adapters (wrapping external libraries)
 - Simple pass-through layers
 - Temporary scaffolding

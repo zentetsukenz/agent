@@ -1,7 +1,7 @@
 ---
 type: Index
 title: SDLC Workflow
-description: A prose-first Software Development Life Cycle workflow — five ordered phases with shift-left verification, documentation, and architecture-first discipline baked into every phase
+description: A prose-first Software Development Life Cycle workflow — six ordered phases grouped into three ownership stages, with shift-left verification, documentation, and architecture-first discipline baked into every phase
 ---
 
 # SDLC Workflow
@@ -13,15 +13,15 @@ is a hardcoded contract; everything is prose the agent interprets against the ta
 environment's actual capabilities. See [workflows](../index.md) for the prose-first
 principle.
 
-## The five phases
+## The six phases
 
-Work flows through five ordered phases, each mapping to a loom lifecycle bucket. The
+Work flows through six ordered phases, each mapping to a loom lifecycle bucket. The
 `meta` bucket is **not** a phase — it is an always-available toolbox any phase may draw on.
 
 ```text
-Discovery ──▶ Planning ──▶ Implementation ──▶ Verification ──▶ Preservation
-    │            │               │                  │               │
-    └────────────┴───────────────┴──────────────────┴───────────────┘
+Discovery ─▶ Design ─▶ Planning ─▶ Implementation ─▶ Verification ─▶ Preservation
+    │          │           │              │                │              │
+    └──────────┴───────────┴──────────────┴────────────────┴──────────────┘
                   shift-left · documentation · architecture-first
                        (cross-cutting, woven into every phase)
 ```
@@ -29,10 +29,37 @@ Discovery ──▶ Planning ──▶ Implementation ──▶ Verification ─
 | # | Phase | Bucket | Intent |
 |---|---|---|---|
 | 1 | [Discovery](discovery.md) | `discovery/` | Understand the problem space and constraints before committing to a solution. |
-| 2 | [Planning](planning.md) | `planning/` | Turn an understood problem into a decomposed, risk-ordered, executable plan. |
-| 3 | [Implementation](implementation.md) | `implementation/` | Execute the plan into working, tested, documented changes — one right-sized task at a time. |
-| 4 | [Verification](verification.md) | `verification/` | Confirm the *whole* delivered change satisfies the success criteria — via evidence, not assertion. |
-| 5 | [Preservation](preservation.md) | `preservation/` | Capture learnings, curate knowledge, hand off, and feed improvements back into the framework. |
+| 2 | [Design](design.md) | `design/` | Shape the solution — domain model, interfaces, architecture — into design artifacts before decomposing it. |
+| 3 | [Planning](planning.md) | `planning/` | Decompose a shaped solution into a risk-ordered, right-sized, executable plan. |
+| 4 | [Implementation](implementation.md) | `implementation/` | Execute the plan into working, tested, documented changes — one right-sized task at a time. |
+| 5 | [Verification](verification.md) | `verification/` | Confirm the *whole* delivered change satisfies the success criteria — via evidence, not assertion. |
+| 6 | [Preservation](preservation.md) | `preservation/` | Capture learnings, curate knowledge, hand off, and feed improvements back into the framework. |
+
+## The three stages (ownership overlay)
+
+The six phases group into three **stages** that mark the real handoff seams — the points
+where ownership changes hands. Stages are an orchestration overlay: they carry no gates of
+their own (each phase keeps its own gates and DNA); they name *who* owns the work and *what
+artifact* crosses each seam.
+
+```text
+┌─ SHAPING ──────────┐   ┌─ DELIVERY ─────────────────────────────────┐   ┌─ CLOSING ────┐
+│ Discovery ▶ Design │──▶│ Planning ▶ Implementation ▶ Verification    │──▶│ Preservation │
+└────────────────────┘   └─────────────────────────────────────────────┘   └──────────────┘
+   shaping owner            delivery team                                     the org learns
+   → milestone + design docs   → shipped, verified change                     → durable knowledge
+```
+
+| Stage | Phases | Owner (illustrative) | Seam artifact |
+|---|---|---|---|
+| **Shaping** | Discovery, Design | Product owner / designer / lead | A milestone with design docs (domain model, interfaces, ADRs). |
+| **Delivery** | Planning, Implementation, Verification | Delivery team | A shipped, verified change proven against the success criteria. |
+| **Closing** | Preservation | The organisation | Durable, curated knowledge fed back into the framework. |
+
+Stages express the workflow's real-life narrative — a shaping owner researches and designs a
+solution, hands a milestone to a team that plans, builds, and verifies it, and the org
+preserves what was learned. The **Verification** phase stays a *named* phase inside Delivery,
+never an unnamed step: the evidence gate is not allowed to erode into "we shipped it."
 
 ## Phase policy anatomy
 

@@ -6,7 +6,7 @@ description: Policy governing how the Preservation phase performs — consolidat
 
 # Preservation Phase
 
-> **Bucket:** `preservation/` · **Position:** 5 of 5 · **Follows:** [Verification](verification.md) · **Closes the loop back to:** the framework itself
+> **Bucket:** `preservation/` · **Position:** 6 of 6 · **Stage:** Closing · **Follows:** [Verification](verification.md) · **Closes the loop back to:** the framework itself
 
 ## 1. Intent
 
@@ -16,9 +16,11 @@ agent or human can pick up cold.
 ## 2. Gates
 
 **Entry gate**
+
 - Verification passed; the change is accepted.
 
 **Exit gate**
+
 - Durable knowledge is captured and cross-linked in the wiki.
 - A handoff exists.
 - No orphaned or undocumented decisions remain.

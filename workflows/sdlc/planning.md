@@ -6,19 +6,24 @@ description: Policy governing how the Planning phase performs — decompose an u
 
 # Planning Phase
 
-> **Bucket:** `planning/` · **Position:** 2 of 5 · **Follows:** [Discovery](discovery.md) · **Precedes:** [Implementation](implementation.md)
+> **Bucket:** `planning/` · **Position:** 3 of 6 · **Stage:** Delivery · **Follows:** [Design](design.md) · **Precedes:** [Implementation](implementation.md)
 
 ## 1. Intent
 
-Turn an understood problem into a decomposed, risk-ordered, executable plan whose tasks
-are self-contained and individually dispatchable.
+Turn a *shaped solution* into a decomposed, risk-ordered, executable plan whose tasks
+are self-contained and individually dispatchable. Design decided the solution's shape;
+Planning shards that shape into work.
 
 ## 2. Gates
 
 **Entry gate**
-- Discovery's exit artifacts exist: problem, constraints, and testable success criteria.
+
+- Design's exit artifacts exist: a named solution shape, interface designs, a current
+  domain model, and any identified architecture-upgrade prerequisite.
+- Transitively, Discovery's success criteria and constraints (Design carried them forward).
 
 **Exit gate**
+
 - Work is decomposed into right-sized tasks with explicit dependencies.
 - Each task carries its own verification/acceptance criteria.
 - High-risk items are sequenced first.
@@ -27,13 +32,13 @@ are self-contained and individually dispatchable.
 
 ## 3. Recommended skills
 
-1. [improve-codebase-architecture](../../SKILLS/discovery/improve-codebase-architecture/SKILL.md) — referenced cross-bucket; **mandatory for architectural work** to confirm whether an ADR/architecture change is required.
-2. [domain-model](../../SKILLS/planning/domain-model/SKILL.md) — establish the canonical language and high-level model.
-3. [design-an-interface](../../SKILLS/planning/design-an-interface/SKILL.md) — design contracts / UX so they can be validated early.
-4. [task-sizing](../../SKILLS/planning/task-sizing/SKILL.md) — gauge size and break work down (the gatekeeper for the Output-Plan Policy).
-5. [triage](../../SKILLS/planning/triage/SKILL.md) — order by risk and priority.
-6. [to-issues](../../SKILLS/planning/to-issues/SKILL.md) — emit discrete, zero-question task documents.
-7. [dispatch-context](../../SKILLS/planning/dispatch-context/SKILL.md) — prepare delegation bundles for sub-agents.
+1. [task-sizing](../../SKILLS/planning/task-sizing/SKILL.md) — gauge size and break work down (the gatekeeper for the Output-Plan Policy).
+2. [triage](../../SKILLS/planning/triage/SKILL.md) — order by risk and priority.
+3. [to-issues](../../SKILLS/planning/to-issues/SKILL.md) — emit discrete, zero-question task documents.
+4. [dispatch-context](../../SKILLS/planning/dispatch-context/SKILL.md) — prepare delegation bundles for sub-agents.
+5. [wayfinder](../../SKILLS/planning/wayfinder/SKILL.md) — chart huge, multi-session work as a map of decision tickets, resolved one at a time.
+
+Solution-shaping skills — [domain-model](../../SKILLS/design/domain-model/SKILL.md), [design-an-interface](../../SKILLS/design/design-an-interface/SKILL.md), [improve-codebase-architecture](../../SKILLS/design/improve-codebase-architecture/SKILL.md) — belong to [Design](design.md). Planning *consumes* their artifacts; if a design gap surfaces mid-plan (an interface that was never shaped, a term missing from the glossary), loop back to Design rather than improvising the shape inside a task.
 
 ## 4. Agent-effort policy
 
@@ -51,22 +56,23 @@ meets this shape. This is a constraint on the *plan output*, not merely an effor
 
 ## High-level Domain Model (mandatory)
 
-Planning **must** provide a high-level domain model so each sub-task knows which part of
-the system it touches and understands the big picture. Provide a **link** to an existing
-domain-model document. **If none exists, create a proper one as part of project
-initialization.** Use [domain-model](../../SKILLS/planning/domain-model/SKILL.md).
+Planning **must** cite a high-level domain model so each sub-task knows which part of
+the system it touches and understands the big picture. This model is a **Design artifact** —
+provide a **link** to it. If it does not exist, that is a Design gap: loop back to
+[Design](design.md) and use [domain-model](../../SKILLS/design/domain-model/SKILL.md) to
+create one, rather than inventing the model inside the plan.
 
 ## Architecture Gate (mandatory for complex work)
 
 Per [architecture-first](../../wiki/principles/architecture-first.md):
 
 - The plan **must cite** the relevant System Design Architecture documents / ADRs
-  (`wiki/adr/`).
+  (`wiki/adr/`) — including any produced during [Design](design.md).
 - If any decision rests on an **unknown**, require research or a spike (from
   [Discovery](discovery.md)) *before* the decision drives the plan.
-- If an **architecture upgrade or constitutional update** is needed, sequence it as the
-  **first, blocking task(s)** — it lands *before* any code that depends on it, never
-  retrofitted after.
+- If [Design](design.md) identified an **architecture upgrade or constitutional update**,
+  sequence it as the **first, blocking task(s)** — it lands *before* any code that depends
+  on it, never retrofitted after.
 - **Complexity-scaled:** this gate binds for genuinely complex/architectural work. Trivial
   localized fixes (e.g. a one-function bugfix) are exempt — the sizing scorecard's
   *uncertainty* dimension plus architectural blast radius is the trigger.
@@ -75,14 +81,15 @@ Per [architecture-first](../../wiki/principles/architecture-first.md):
 
 - Every task carries its acceptance/verification criteria **with it** — verification is
   planned per-task, not deferred.
-- Interface/contract design happens now, so it can be validated early.
+- Tasks are written against the **interface designs Design produced**, so contracts are
+  fixed before code depends on them. Planning does not invent new interface shapes — a
+  missing contract is a Design gap to loop back on.
 - **Documentation is planned explicitly:** the plan must incorporate documentation tasks
   (not an afterthought).
 
 ## 6. Artifacts
 
-- A linked/created high-level domain model (glossary update as needed).
-- Interface designs.
+- A **link** to the high-level domain model and interface designs produced in [Design](design.md).
 - A risk-ordered set of right-sized tasks, each with acceptance criteria and explicit
   dependencies.
 - Dispatch-ready context bundles.
@@ -143,7 +150,8 @@ context tests. Fix inline; never output a document that fails.
 
 ## Related
 
-- [Discovery](discovery.md) — supplies the success criteria and architecture findings.
+- [Design](design.md) — supplies the solution shape, interface designs, domain model, and any architecture prerequisite this phase decomposes.
+- [Discovery](discovery.md) — the ultimate source of success criteria and constraints (carried forward through Design).
 - [Implementation](implementation.md) — consumes the task documents produced here.
 - [architecture-first](../../wiki/principles/architecture-first.md) — the principle behind the Architecture Gate.
 </content>

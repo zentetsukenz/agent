@@ -6,7 +6,7 @@ description: Policy governing how the Implementation phase performs — an Orche
 
 # Implementation Phase
 
-> **Bucket:** `implementation/` · **Position:** 3 of 5 · **Follows:** [Planning](planning.md) · **Precedes:** [Verification](verification.md)
+> **Bucket:** `implementation/` · **Position:** 4 of 6 · **Stage:** Delivery · **Follows:** [Planning](planning.md) · **Precedes:** [Verification](verification.md)
 
 ## 1. Intent
 
@@ -16,12 +16,14 @@ at a time.
 ## 2. Gates
 
 **Entry gate**
+
 - A risk-ordered, right-sized task with acceptance criteria and a dispatch-context bundle
   exists.
 - Any architecture/constitution prerequisite for the task has **already landed** (see the
   Orchestrator gate below).
 
 **Exit gate**
+
 - Each task's acceptance criteria are met with tests passing.
 - The change is integrated with no known regressions left unaddressed.
 - Documentation is updated for the task.
@@ -79,18 +81,21 @@ Orchestrator — not the executing agent — owns task routing:
 Each dispatched task runs through five phases. Do not skip Orient/Scout to "save time".
 
 ### Phase 1 — ORIENT
+
 Read the task file completely; read every file in "Context to Load" and every "Exemplar".
 Identify the single objective. **Check prerequisites — if any incomplete (including an
 un-landed architecture change), STOP and report.** If blast radius exceeds the files
 listed, flag before proceeding.
 
 ### Phase 2 — SCOUT
+
 Recon before implementing. Find existing patterns (match them, don't invent). Read
 callers/consumers of code you'll touch. Detect traps: circular deps, implicit contracts,
 hidden side effects, stale types. If the riskiest assumption is untested, write a
 throwaway spike (≤10 min, delete after).
 
 ### Phase 3 — IMPLEMENT (vertical-slice TDD)
+
 **One test → one implementation → repeat. Never write all tests first.**
 
 ```text
@@ -105,16 +110,19 @@ never while RED. Test **what**, not **how**: assert observable outcomes, mock on
 system boundaries (external APIs, DB, time/randomness), never internal collaborators.
 
 ### Phase 4 — VERIFY
+
 Run **every** verification command from the task. Self-review the diff (logic errors,
 edge cases, dead code, type-safety gaps, naming). Run the full relevant suite, not just
 new tests. **If any criterion fails → fix and re-run all verification. No "done" with a
 failing check.**
 
 ### Phase 5 — MARK DONE
+
 Only after Phase 4 passes completely: remove debug artifacts, mark the task done, save
 evidence.
 
 ### Escape hatches
+
 - Stuck > 5 min on an unexpected issue → **STOP**, escalate.
 - Blast radius grows beyond task scope → **STOP**, flag scope creep.
 - A "must escalate" item is hit → **STOP**, ask the human/Orchestrator.

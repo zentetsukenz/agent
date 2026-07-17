@@ -26,7 +26,7 @@ is either resolved with evidence or explicitly flagged, never silently assumed.
 
 - Plans **must reference** the relevant System Design Architecture documents / ADRs
   (`wiki/adr/`) and, when architectural, use
-  [improve-codebase-architecture](../../SKILLS/discovery/improve-codebase-architecture/SKILL.md).
+  [improve-codebase-architecture](../../SKILLS/design/improve-codebase-architecture/SKILL.md).
 - Any **architecture upgrade or constitutional update** must be put in place **first** —
   sequenced as the blocking prerequisite task(s) — **before** any code that depends on it.
 - It is **never** retrofitted after the code. Code that assumes a structure the codebase

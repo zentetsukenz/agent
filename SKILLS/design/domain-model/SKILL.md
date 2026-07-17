@@ -4,10 +4,11 @@ description: Grilling session that challenges your plan against the existing dom
 ---
 
 > **Path flexibility:** Resolves glossary path in priority order:
+>
 > 1. `loom.toml` `paths.glossary` (when loom adapter ships)
 > 2. Framework default: `wiki/glossary/index.md`
 > 3. Legacy fallback: `CONTEXT.md`
-Interview me relentlessly about every aspect of this plan until we reach a shared understanding. Walk down each branch of the design tree, resolving dependencies between decisions one-by-one. For each question, provide your recommended answer.
+>    Interview me relentlessly about every aspect of this plan until we reach a shared understanding. Walk down each branch of the decision tree, resolving dependencies between decisions one-by-one. For each question, provide your recommended answer.
 
 Ask the questions one at a time, waiting for feedback on each question before continuing.
 
