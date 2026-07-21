@@ -13,7 +13,9 @@ Top-level directories:
 - [agents/](agents/) — agent definitions (Thoth + others)
 - [commands/](commands/) — slash command wrappers
 - [docs/](docs/) — framework meta-documentation
-- [adapters/](adapters/) — placeholder for v2 adapter implementations
+- [adapters/](adapters/) — adapter content; `mirai/` ships the first concrete target (see [ADR-004](wiki/adr/adr-004-loom-mirai-setup.md)), the general v2 adapter layer remains deferred
 - [scripts/](scripts/) — validation and utility scripts
 
 See [SPEC.md](SPEC.md) for conformance rules and [CHANGELOG.md](CHANGELOG.md) for release history.
+
+To install loom into a project running the Mirai VS Code harness, start at [SETUP.md](SETUP.md).

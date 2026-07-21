@@ -152,3 +152,24 @@ at runtime in priority order:
 
 This preamble appears at the top of: `grill-with-docs`, `domain-model`,
 `improve-codebase-architecture`.
+
+---
+
+## Mirai delivery conformance
+
+Unlike the deferred general adapter above, the **Mirai** harness is a concrete v1 target
+(see `wiki/adr/adr-004-loom-mirai-setup.md`). When a project's `.mirai/` directory
+contains loom-authored content, `scripts/validate.sh` additionally checks:
+
+- `.mirai/skills/<name>/SKILL.md` — required `name` (kebab-case, ≤64 chars, **must equal
+  the folder name** — a Mirai-specific requirement beyond the generic skill rule above)
+  and required `description` (non-empty, ≤1024 chars).
+- `.mirai/agents/*.agent.md` and `.mirai/prompts/*.prompt.md` — required non-empty
+  `description`.
+- `.mirai/instructions/*.instructions.md` — required non-empty `description`.
+- `.mirai/hooks/*.json` — must parse as valid JSON.
+- Exactly one of root `AGENTS.md` or `.mirai/mirai-instructions.md` may exist — never both.
+
+See `wiki/environments/mirai.md` for the full frontmatter reference these checks enforce
+a subset of, and `SKILLS/meta/setup-loom/SKILL.md` for the skill that generates
+conformant `.mirai/` content.

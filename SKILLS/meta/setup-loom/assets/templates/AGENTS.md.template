@@ -1,0 +1,28 @@
+# {{PROJECT_NAME}} — Agent Instructions
+
+<!-- loom:setup-loom:begin -->
+## loom SDLC (Mirai)
+
+This project uses the loom SDLC framework via the Mirai harness. Available delivery
+tiers:
+
+{{STAGE_SKILL_LIST}}
+
+- Quick path: `.mirai/prompts/*.prompt.md` (fast, combo of skills + preset model).
+- Deep path: `.mirai/agents/*.agent.md` (full workflow discipline for a stage).
+- Granular skills live at `.mirai/skills/<slug>/SKILL.md`.
+
+See `wiki/adr/adr-004-loom-mirai-setup.md` in the loom repo for why this is shaped this
+way, if this project vendors loom's wiki; otherwise this section is self-contained.
+<!-- loom:setup-loom:end -->
+
+## Build and Test
+
+{{BUILD_CMD}}
+{{TEST_CMD}}
+
+## Conventions
+
+<!-- Project-specific conventions go here — filled during the setup interview, never
+     overwritten by a later `update` run without asking. -->
+</content>

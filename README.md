@@ -39,6 +39,8 @@ agent/
 4. Compose `agents/` from skills, wiki references, and tool contracts.
 5. Expose common workflows through `commands/` wrappers.
 6. Keep implementation-specific integration in `adapters/`, not framework docs.
+7. To install loom into a project running the **Mirai** VS Code harness, paste
+   [SETUP.md](SETUP.md) to an agent — see [ADR-004](wiki/adr/adr-004-loom-mirai-setup.md).
 
 ## Conformance
 

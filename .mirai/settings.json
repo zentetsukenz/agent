@@ -1,0 +1,12 @@
+{
+  "chat.tools.terminal.autoApprove": {
+    "/^bash scripts/validate\\.sh 2>&1 \\| tail -20$/": {
+      "approve": true,
+      "matchCommandLine": true
+    },
+    "/^bash scripts/validate\\.sh 2>&1 \\| tail -5$/": {
+      "approve": true,
+      "matchCommandLine": true
+    }
+  }
+}

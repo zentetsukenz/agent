@@ -10,6 +10,7 @@ shopt -s nullglob
 failures=0
 skills_validated=0
 wiki_validated=0
+mirai_validated=0
 links_checked=0
 
 report_error() {
@@ -162,6 +163,143 @@ validate_wiki_file() {
   ((wiki_validated += 1))
 }
 
+validate_mirai_skill() {
+  local file="$1"
+  local expected_name
+  local name
+  local description
+  local status
+
+  printf 'validating .mirai skill: %s\n' "$file"
+
+  expected_name="${file%/SKILL.md}"
+  expected_name="${expected_name##*/}"
+
+  set +e
+  frontmatter_value "$file" "name"
+  status=$?
+  set -e
+  if ((status != 0)); then
+    report_error "$file" "$(frontmatter_error "$status" "name")"
+  else
+    name="$(strip_yaml_scalar "$FRONTMATTER_VALUE")"
+    if [[ -z "$name" ]]; then
+      report_error "$file" "frontmatter name is empty"
+    elif ((${#name} > 64)); then
+      report_error "$file" "frontmatter name exceeds 64 chars (${#name})"
+    elif [[ ! "$name" =~ ^[a-z0-9]+(-[a-z0-9]+)*$ ]]; then
+      report_error "$file" "frontmatter name must be kebab-case with no leading/trailing hyphen: $name"
+    elif [[ "$name" != "$expected_name" ]]; then
+      report_error "$file" "frontmatter name '$name' must match folder name '$expected_name' (Mirai requirement)"
+    fi
+  fi
+
+  set +e
+  frontmatter_value "$file" "description"
+  status=$?
+  set -e
+  if ((status != 0)); then
+    report_error "$file" "$(frontmatter_error "$status" "description")"
+  else
+    description="$(strip_yaml_scalar "$FRONTMATTER_VALUE")"
+    if [[ -z "$description" ]]; then
+      report_error "$file" "frontmatter description is empty"
+    elif ((${#description} > 1024)); then
+      report_error "$file" "frontmatter description exceeds 1024 chars (${#description})"
+    fi
+  fi
+
+  ((mirai_validated += 1))
+}
+
+validate_mirai_agent_or_prompt() {
+  local file="$1"
+  local description
+  local status
+
+  printf 'validating .mirai agent/prompt: %s\n' "$file"
+
+  set +e
+  frontmatter_value "$file" "description"
+  status=$?
+  set -e
+  if ((status != 0)); then
+    report_error "$file" "$(frontmatter_error "$status" "description")"
+  else
+    description="$(strip_yaml_scalar "$FRONTMATTER_VALUE")"
+    if [[ -z "$description" ]]; then
+      report_error "$file" "frontmatter description is empty"
+    fi
+  fi
+
+  ((mirai_validated += 1))
+}
+
+validate_mirai_instruction() {
+  local file="$1"
+  local description
+  local status
+
+  printf 'validating .mirai instruction: %s\n' "$file"
+
+  set +e
+  frontmatter_value "$file" "description"
+  status=$?
+  set -e
+  if ((status != 0)); then
+    report_error "$file" "$(frontmatter_error "$status" "description")"
+  else
+    description="$(strip_yaml_scalar "$FRONTMATTER_VALUE")"
+    if [[ -z "$description" ]]; then
+      report_error "$file" "frontmatter description is empty"
+    fi
+  fi
+
+  ((mirai_validated += 1))
+}
+
+validate_mirai_config() {
+  local root="agent/.mirai"
+  local file
+  local base
+  local has_agents_md
+  local has_mirai_instructions
+
+  [[ -d "$root" ]] || return 0
+
+  for file in "$root"/skills/*/SKILL.md; do
+    [[ -f "$file" ]] && validate_mirai_skill "$file"
+  done
+
+  for file in "$root"/agents/*.agent.md "$root"/prompts/*.prompt.md; do
+    [[ -f "$file" ]] && validate_mirai_agent_or_prompt "$file"
+  done
+
+  for file in "$root"/instructions/*.instructions.md; do
+    [[ -f "$file" ]] && validate_mirai_instruction "$file"
+  done
+
+  has_agents_md=0
+  has_mirai_instructions=0
+  [[ -f "agent/AGENTS.md" ]] && has_agents_md=1
+  [[ -f "$root/mirai-instructions.md" ]] && has_mirai_instructions=1
+  if ((has_agents_md == 1 && has_mirai_instructions == 1)); then
+    report_error "agent/AGENTS.md / $root/mirai-instructions.md" "both agent-instruction files exist — Mirai requires exactly one (AGENTS.md OR mirai-instructions.md, never both)"
+  fi
+
+  for file in "$root"/hooks/*.json; do
+    [[ -f "$file" ]] || continue
+    base="${file##*/}"
+    printf 'validating .mirai hook: %s\n' "$file"
+    if ! python3 -c "import json,sys; json.load(open(sys.argv[1]))" "$file" >/dev/null 2>&1; then
+      if ! node -e "JSON.parse(require('fs').readFileSync(process.argv[1]))" "$file" >/dev/null 2>&1; then
+        report_error "$file" "hook file is not valid JSON"
+      fi
+    fi
+    ((mirai_validated += 1))
+  done
+}
+
 collect_markdown_files() {
   local root="$1"
   local dir
@@ -305,6 +443,8 @@ while IFS= read -r wiki_file; do
   validate_wiki_file "$wiki_file"
 done < <(collect_markdown_files "agent/wiki")
 
+validate_mirai_config
+
 for link_root in agent/skills agent/workflows agent/wiki agent/agents agent/commands; do
   while IFS= read -r markdown_file; do
     check_markdown_links "$markdown_file"
@@ -312,10 +452,10 @@ for link_root in agent/skills agent/workflows agent/wiki agent/agents agent/comm
 done
 
 if ((failures > 0)); then
-  printf 'validation failed: %d violation(s); skills: %d validated, wiki: %d validated, links: %d checked\n' \
-    "$failures" "$skills_validated" "$wiki_validated" "$links_checked" >&2
+  printf 'validation failed: %d violation(s); skills: %d validated, wiki: %d validated, .mirai: %d validated, links: %d checked\n' \
+    "$failures" "$skills_validated" "$wiki_validated" "$mirai_validated" "$links_checked" >&2
   exit 1
 fi
 
-printf 'skills: %d validated, wiki: %d validated, links: %d checked, all OK\n' \
-  "$skills_validated" "$wiki_validated" "$links_checked"
+printf 'skills: %d validated, wiki: %d validated, .mirai: %d validated, links: %d checked, all OK\n' \
+  "$skills_validated" "$wiki_validated" "$mirai_validated" "$links_checked"
