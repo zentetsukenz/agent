@@ -1,7 +1,7 @@
 ---
 type: Environment
 title: Mirai (VS Code Agent Harness)
-description: Mirai's customization primitives — exact frontmatter, file locations, and official doc links — as the authoritative reference for loom's setup-loom skill
+description: Mirai's customization primitives — exact frontmatter, file locations, and official doc links — as the authoritative reference for loom's Mirai adapter setup instruction
 tags: [mirai, vscode, harness, customization, adapter, setup]
 timestamp: 2026-07-20T00:00:00Z
 ---
@@ -10,10 +10,10 @@ timestamp: 2026-07-20T00:00:00Z
 
 Mirai is a VS Code-based agent harness — a **superset of Claude Code**. It reads `.mirai/`
 first, and falls back to `.agents/` and `.claude/` for the primitives those tools share
-(skills, hooks). This page is the authoritative reference the `setup-loom` skill
-(see [SKILLS/meta/setup-loom](../../SKILLS/meta/setup-loom/SKILL.md))
+(skills, hooks). This page is the authoritative reference the Mirai adapter's setup
+instruction (see [adapters/mirai/setup.md](../../adapters/mirai/setup.md))
 consults when generating a bespoke `.mirai/` configuration for a project. It exists so
-that skill doesn't have to re-derive Mirai's customization model from scratch every run.
+that instruction doesn't have to re-derive Mirai's customization model from scratch every run.
 
 Source of truth: the bundled `agent-customization` skill shipped with Mirai
 (`.../extensions/copilot/assets/prompts/skills/agent-customization/`) plus the official
@@ -140,15 +140,15 @@ Slash-command / auto-load matrix:
 | `false` | `true` | No | No |
 
 **loom mapping**: `.mirai/skills/<name>/` is where loom's existing `SKILLS/<bucket>/<slug>/`
-content lands, customized per project during setup. The `setup-loom` init skill itself
-ships as `disable-model-invocation: true` (mattpocock-shaped: user-invoked only, never
-auto-loaded as a subagent) per the locked plan.
+content lands, customized per project during setup. The Mirai adapter's setup instruction
+([adapters/mirai/setup.md](../../adapters/mirai/setup.md)) is read and followed by an
+agent (it is not itself a `.mirai/skills/` entry).
 
 ## Cross-tool compatibility note
 
 Because Mirai is a superset of Claude Code, `skills` and `hooks` written to `.claude/`
 paths are also honored — useful when a project already has a `.claude/` setup and the
-`setup-loom` skill should extend rather than duplicate it. Agents, prompts, and file
+Mirai adapter setup instruction should extend rather than duplicate it. Agents, prompts, and file
 instructions have **no** Claude Code equivalent path and only ever live under `.mirai/`.
 
 ## Common pitfalls (carried from the source skill)
@@ -171,8 +171,8 @@ instructions have **no** Claude Code equivalent path and only ever live under `.
   mapping, stage → prompt/agent mapping, model-archetype table.
 - [adapters/mirai/STAGES.md](../../adapters/mirai/STAGES.md) — Shaping/Delivery/Closing
   stage groupings and their prompt+agent pairs.
-- [SKILLS/meta/setup-loom](../../SKILLS/meta/setup-loom/SKILL.md) — the
-  skill that reads this page to generate a project's `.mirai/` configuration.
+- [adapters/mirai/setup.md](../../adapters/mirai/setup.md) — the adapter setup instruction
+  that reads this page to generate a project's `.mirai/` configuration.
 - [wiki/adr/adr-004-loom-mirai-setup.md](../adr/adr-004-loom-mirai-setup.md) — the ADR
   recording why this 4-layer setup approach was chosen.
 </content>

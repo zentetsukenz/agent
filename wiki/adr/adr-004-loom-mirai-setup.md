@@ -127,6 +127,9 @@ duplicates already-written config.
 
 ## Related
 
+- [ADR-005](adr-005-harness-agnostic-setup.md) — the harness-agnostic setup entrypoint and
+  universal setup contract; **this ADR is the Mirai adapter — the first implementation of
+  that contract.**
 - [ADR-001](adr-001-adapter-pattern.md) — the general adapter layer this setup approach
   precedes and informs.
 - [ADR-002](adr-002-workflow-as-adapter-seed.md) — prose-first principle this setup flow
@@ -137,6 +140,6 @@ duplicates already-written config.
   mapping and model-archetype table.
 - [adapters/mirai/STAGES.md](../../adapters/mirai/STAGES.md) — Shaping/Delivery/Closing
   stage groupings, each delivered as prompt(combo) + agent(deep).
-- [SKILLS/meta/setup-loom](../../SKILLS/meta/setup-loom/SKILL.md) — the
-  skill implementing this decision.
+- [adapters/mirai/setup.md](../../adapters/mirai/setup.md) — the adapter setup
+  instruction implementing this decision.
 </content>

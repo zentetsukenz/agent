@@ -1,6 +1,6 @@
 # loom Stages in Mirai
 
-> Concrete Shaping/Delivery/Closing groupings for the `setup-loom` skill. Each stage gets
+> Concrete Shaping/Delivery/Closing groupings for the Mirai adapter's [setup.md](setup.md). Each stage gets
 > **two** delivery tiers (prompt = quick combo, agent = deep workflow) per
 > [ADR-004](../../wiki/adr/adr-004-loom-mirai-setup.md) and
 > [MAPPING.md](MAPPING.md#2-stages--prompts-combo--agents-deep). This file supplies the
@@ -20,7 +20,7 @@ with design docs (domain model, interfaces, ADRs). See
 | Agent file | `.mirai/agents/shaping.agent.md` |
 
 Skill roster (full default; pruned per the Scope interview table in
-[references/interview.md](../../SKILLS/meta/setup-loom/references/interview.md)):
+[references/interview.md](references/interview.md)):
 
 - `discovery/session-bootstrap`, `discovery/zoom-out`, `discovery/grill-me`,
   `discovery/grill-with-docs`, `discovery/research`, `discovery/research-recommend`
@@ -76,8 +76,8 @@ Skill roster:
 
 ## Meta bucket — not a stage
 
-`SKILLS/meta/*` (`skill-creator`, `caveman`, `context-compression`, `edit-article`,
-`setup-loom` itself) is an always-available toolbox, not tied to a stage. `setup-loom`
+`SKILLS/meta/*` (`skill-creator`, `caveman`, `context-compression`, `edit-article`) is an
+always-available toolbox, not tied to a stage. The Mirai adapter's [setup.md](setup.md)
 copies any meta skill a stage's skills reference (e.g. `context-compression` referenced
 by `planning/dispatch-context`) into `.mirai/skills/` alongside the referencing skill, so
 relative links resolve — see
@@ -95,6 +95,6 @@ Utility Agents interview table.
 - [ADR-004](../../wiki/adr/adr-004-loom-mirai-setup.md) — the decision this implements.
 - [workflows/sdlc/index.md](../../workflows/sdlc/index.md) — the six phases and three
   stages this file maps 1:1 onto.
-- [SKILLS/meta/setup-loom](../../SKILLS/meta/setup-loom/SKILL.md) — the skill that reads
+- [setup.md](setup.md) — the Mirai adapter setup instruction that reads
   this file during Write (step 5).
 </content>

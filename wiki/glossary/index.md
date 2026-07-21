@@ -47,11 +47,46 @@ Centralized knowledge repository. Contains principles, patterns, environments, a
 
 ---
 
+### Harness
+
+The agent tool a project runs in — the thing that reads customization files and drives the
+model (Mirai, Claude Code, Cursor, Aider, OpenCode, …). Each harness stores its
+customization (instructions, agents, skills, prompts, hooks) in its own **native format**
+and location. loom is harness-agnostic; a [Harness Adapter](#adapter) is what teaches loom
+a given harness's format.
+
+**Example**: Mirai reads `.mirai/agents/*.agent.md`; Claude Code reads `.claude/agents/*.md`.
+Same loom agent, two native formats — one adapter each.
+
+**See**: [wiki/environments/](../environments/index.md), `mem:adr/adr-001-adapter-pattern`
+
+---
+
 ### Adapter
 
-A thin wrapper that translates between two interfaces. Adapters compose systems without modifying core logic.
+In loom, a **harness adapter**: the module that maps loom's generic content (skills,
+agents, workflow) onto a specific [Harness](#harness)'s native config format. It owns the
+harness-specific knowledge so the [SETUP.md](../../SETUP.md) entrypoint and the
+[Setup contract](#setup-contract) stay harness-agnostic. Supporting a new harness = adding
+an adapter under `adapters/<harness>/`, not modifying loom's core content.
 
-**Example**: An HTTP adapter translates REST requests to internal service calls.
+**Example**: `adapters/mirai/` (its `setup.md` instruction, `MAPPING.md`, `STAGES.md`,
+references, and templates) is loom's Mirai adapter — it knows `.mirai/`'s six primitives
+and exact frontmatter; nothing else in loom does.
+
+**See**: `mem:adr/adr-001-adapter-pattern`, `mem:adr/adr-004-loom-mirai-setup`
+
+---
+
+### Setup contract
+
+The universal, harness-agnostic flow every [Adapter](#adapter) implements to install loom
+into a project: **explore → interview → present & confirm → generate (in the harness's
+native format) → verify**. [SETUP.md](../../SETUP.md) defines the contract; each adapter
+supplies the harness-specific "generate" and "verify" steps. Interview-driven, not a
+mechanical copy — the interview tailors which skills/agents/stages the project needs.
+
+**See**: [SETUP.md](../../SETUP.md), `mem:adr/adr-004-loom-mirai-setup`
 
 ---
 

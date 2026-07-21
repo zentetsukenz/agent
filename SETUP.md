@@ -1,54 +1,86 @@
-# Setting up loom in Mirai
+# Setting up loom
 
-You're an AI coding agent running inside the **Mirai** VS Code harness. A human has
-pointed you at this file because they want loom's SDLC framework (skills, agents,
-prompts) wired up for their project.
+You're an AI coding agent, pointed at this file to wire loom's SDLC framework (skills,
+agents, prompts, workflow) into a project. This file is the **harness-agnostic
+entrypoint** — the whole bootstrap. A human shouldn't have to paste more than a link to it.
 
-**Paste this whole file's instructions to yourself** (or have the human paste it into a
-fresh Mirai chat) to bootstrap the setup.
+> One-line invite a human pastes into a fresh agent chat:
+> *"Set up loom in this project by following <https://raw.githubusercontent.com/zentetsukenz/agent/main/SETUP.md> — use `curl` to read it and the files it points to, not WebFetch."*
 
-## What to do
+loom is content-only. It does **not** ship a fixed config to copy. Instead you run a
+universal **setup contract** — *explore → interview → generate harness-native config →
+verify* — through the **adapter** for whatever **harness** the project uses. This file
+picks the adapter; the adapter knows the harness's exact config format. See
+[ADR-001](wiki/adr/adr-001-adapter-pattern.md) (adapter pattern) and
+[ADR-002](wiki/adr/adr-002-workflow-as-adapter-seed.md) (why setup is interpreted, not baked).
 
-1. Open [SKILLS/meta/setup-loom/SKILL.md](SKILLS/meta/setup-loom/SKILL.md) and follow it
-   exactly. It is a **user-invocable, interview-driven** skill — it will explore the
-   target project, interview the human one question at a time (always leading with a
-   recommended default), present a proposed `.mirai/` configuration, wait for
-   confirmation, write it in Mirai's exact format, and verify the result.
-2. If this is the **first time** setting up loom for this project, run it in `init` mode.
-   If a `.mirai/` config already exists from a prior loom setup, run it in `update` mode
-   instead — see the skill's "Mode: `init` vs `update`" section for how to tell which
-   applies.
-3. Do not skip the interview to save time. A mechanical copy of loom's skills produces
-   bloat and irrelevant triggers — the interview is what makes the result fit the actual
-   project. See [ADR-004](wiki/adr/adr-004-loom-mirai-setup.md) for why.
+## Step 0 — Identify the harness and its adapter
 
-## What you'll produce
+An **agent harness** is the tool the project's agent runs in (Mirai, Claude Code, Cursor,
+Aider, OpenCode, …). Each harness stores customization differently, so loom ships one
+**adapter** per supported harness — a module that knows that harness's native config
+format and maps loom's generic content onto it.
 
-A `.mirai/` tree tailored to the target project:
+1. Determine which harness you're running in (check your own environment; if unsure, ask
+   the human).
+2. Select its adapter from the table below. **If no adapter exists for the harness, stop
+   and say so** — don't improvise a config in a format loom hasn't been taught. Adding a
+   new harness means adding an adapter (see [ADR-001](wiki/adr/adr-001-adapter-pattern.md)),
+   not stretching an existing one.
 
-- `.mirai/agents/*.agent.md` — per-stage deep-workflow agents, plus any utility agents
-  the human wants.
-- `.mirai/prompts/*.prompt.md` — per-stage quick-combo prompts.
-- `.mirai/skills/<slug>/SKILL.md` — the subset of loom's `SKILLS/` the project adopted.
-- Root `AGENTS.md` (or `.mirai/mirai-instructions.md` — never both) — the project's own
-  conventions, plus a short pointer to what loom wired up.
+| Harness | Adapter entrypoint | Reference material |
+| --- | --- | --- |
+| **Mirai** (VS Code) | [`adapters/mirai/setup.md`](adapters/mirai/setup.md) | [wiki/environments/mirai.md](wiki/environments/mirai.md), [adapters/mirai/MAPPING.md](adapters/mirai/MAPPING.md), [adapters/mirai/STAGES.md](adapters/mirai/STAGES.md) |
 
-## Reference material the skill will consult
+## Step 1 — Get loom's files in front of you
 
-You do not need to read these up front — the skill points you at each one exactly when
-it's needed:
+- **If loom's files already exist in this workspace**, read them via the relative links above.
+- **Otherwise** (the common case — a target project that doesn't vendor loom), fetch them
+  with `curl` from loom's canonical repo (`https://github.com/zentetsukenz/agent`, branch
+  `main`, raw base `https://raw.githubusercontent.com/zentetsukenz/agent/main/`).
+  **Use `curl`, not WebFetch** — WebFetch summarizes and drops the exact frontmatter and
+  formats the adapter must reproduce verbatim. Read your adapter's entrypoint first; it
+  tells you which further files to fetch.
 
-- [wiki/environments/mirai.md](wiki/environments/mirai.md) — Mirai's six customization
-  primitives and their exact frontmatter.
-- [adapters/mirai/MAPPING.md](adapters/mirai/MAPPING.md) — the SKILLS→`.mirai/skills`
-  table and the model-archetype table.
-- [adapters/mirai/STAGES.md](adapters/mirai/STAGES.md) — the Shaping/Delivery/Closing
-  stage rosters and workflow-prose sourcing.
+  (e.g. `curl -fsSL https://raw.githubusercontent.com/zentetsukenz/agent/main/adapters/mirai/setup.md`)
 
-## If you're not sure this is the right tool
+## Step 2 — Run the adapter's setup, following the contract
 
-This file only sets up the **Mirai** harness. If the target project uses a different
-tool (Cursor, Aider, plain Claude, OpenCode), there is no adapter for it yet — see
-[ADR-001](wiki/adr/adr-001-adapter-pattern.md). Say so rather than improvising a
-non-Mirai config with this skill.
+Both first-time setup (`init`) and later refreshes (`update`) run **through this file and
+its adapter** — there is no slash command to invoke and nothing to clone; an agent just
+reads these instructions (locally or remotely) and follows them. Follow the adapter
+entrypoint exactly. Every adapter implements the same **setup contract**:
+
+1. **Explore** — read the project deeply (stack, build/test commands, existing agent
+   config). Never ask what you can read.
+2. **Interview** — grill the human one question at a time, always leading with a
+   recommended default, to tailor which skills/agents/stages the project actually needs.
+   Do **not** skip this — a mechanical copy produces bloat and irrelevant triggers; the
+   interview is what makes the result fit the project.
+3. **Present & confirm** — show the full proposed config tree and wait for an explicit
+   "go" before writing anything.
+4. **Generate** — write the config in the **harness's native format** (the adapter defines
+   this exactly). First run = `init`; refreshing an existing loom setup = `update`
+   (idempotent, patch in place, never duplicate).
+5. **Verify** — run the adapter's verification checklist before reporting done.
+
+## Universal safety rules (harness-agnostic; doubly so for a live/production project)
+
+- **Never overwrite or delete existing files.** Edit only loom-owned sections (adapters
+  mark these with provenance comments); leave the human's own content untouched.
+- **Leave pre-existing agent config from other tools alone** unless the human explicitly
+  asks to migrate it.
+- **Change zero application code, CI, or runtime config.** You only add files in the
+  harness's customization location (the adapter says where).
+- **Model matching: ask** for the human's available model list; don't guess model-name
+  strings — confirm them against what the harness actually offers.
+- **Recommend a fresh git branch** so the generated config lands in a reviewable diff, not
+  directly on the main branch.
+
+## No adapter for your harness?
+
+Then loom can't set it up yet — say so plainly rather than improvising a config in an
+unsupported format. Supporting a new harness is a first-class contribution: a new adapter
+under `adapters/<harness>/` plus its setup entrypoint, implementing the contract above.
+See [ADR-001](wiki/adr/adr-001-adapter-pattern.md).
 </content>

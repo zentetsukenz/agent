@@ -1,7 +1,7 @@
 # Interview decision tables
 
-Walked in order by [SKILL.md](../SKILL.md) step 2, via
-[grill-with-docs](../../../discovery/grill-with-docs/SKILL.md) — one question at a time,
+Walked in order by [setup.md](../setup.md) step 2, via
+[grill-with-docs](../../../SKILLS/discovery/grill-with-docs/SKILL.md) — one question at a time,
 always leading with the recommended default, waiting for feedback before continuing.
 Skip a table entirely if Explore already answered it unambiguously from the filesystem.
 
@@ -33,7 +33,7 @@ time.
 
 Recommended default: ask for the user's available model list directly (no reliable
 auto-detect yet — see the Open item in
-[adapters/mirai/MAPPING.md](../../../../adapters/mirai/MAPPING.md)), then map:
+[MAPPING.md](../MAPPING.md)), then map:
 
 | Archetype | Ask | Recommended default if user has no preference |
 |---|---|---|

@@ -1,38 +1,44 @@
----
-name: setup-loom
-description: Set up or update loom's SDLC framework (skills, agents, prompts) inside the Mirai VS Code harness for THIS project — generating a bespoke .mirai/ configuration tailored to the project, not a mechanical copy. Use when a user says "set up loom", "install loom", "init loom for this project", "wire up the SDLC skills in Mirai", or "update my .mirai config" after loom itself has changed. Runs an interview, then writes .mirai/agents, .mirai/prompts, .mirai/skills, and root AGENTS.md in Mirai's exact format.
-disable-model-invocation: true
-argument-hint: "init | update"
----
+# Setup loom for Mirai — the Mirai adapter
 
-> **Path flexibility:** This skill assumes it is invoked _from within the loom repo_
-> against some **target project** (which may be the same repo or a separate one the user
-> names). It reads three loom references and never re-derives their content:
-> [wiki/environments/mirai.md](../../../wiki/environments/mirai.md) (Mirai's six
-> customization primitives, exact frontmatter), [adapters/mirai/MAPPING.md](../../../adapters/mirai/MAPPING.md)
+> **This is loom's Mirai adapter** — one implementation of the harness-agnostic setup
+> contract defined in [SETUP.md](../../SETUP.md) (see
+> [ADR-005](../../wiki/adr/adr-005-harness-agnostic-setup.md)). It is Mirai-specific by
+> design; the generic entrypoint is the root `SETUP.md`, not this file. This is an
+> **adapter instruction an agent reads and follows** — not a loom skill, not a command.
+>
+> **Read remotely — do not clone loom.** An agent runs this by _reading_ these
+> instructions and the three references below, either from a local loom checkout if one is
+> present, or straight from the canonical repo (e.g. `curl` the raw files). Cloning the
+> loom repo into the target project is unnecessary and discouraged — it would pollute the
+> target with framework source. There is **no command to invoke**; reading and following
+> this file (in `init` or `update` mode) is the whole mechanism.
+>
+> It runs against some **target project** (which may be the loom repo itself, or a separate
+> project the user names) and reads three loom references, never re-deriving their content:
+> [wiki/environments/mirai.md](../../wiki/environments/mirai.md) (Mirai's six
+> customization primitives, exact frontmatter), [MAPPING.md](MAPPING.md)
 > (SKILLS→`.mirai/skills` table, model-archetype table), and
-> [adapters/mirai/STAGES.md](../../../adapters/mirai/STAGES.md) (stage → prompt/agent
+> [STAGES.md](STAGES.md) (stage → prompt/agent
 > rosters). If any of the three is missing or stale, stop and say so rather than guessing.
-
-# Setup loom (for Mirai)
 
 Turn loom's generic SDLC skills/wiki/workflow into a **bespoke, correctly-formatted**
 `.mirai/` configuration for a specific project — through an interview, not a mechanical
-1:1 copy. See [ADR-004](../../../wiki/adr/adr-004-loom-mirai-setup.md) for why this skill
-is shaped the way it is.
+1:1 copy. See [ADR-004](../../wiki/adr/adr-004-loom-mirai-setup.md) for why this adapter
+is shaped the way it is, and [ADR-005](../../wiki/adr/adr-005-harness-agnostic-setup.md)
+for the harness-agnostic contract it implements.
 
 ## Trigger
 
-Use this skill when the user wants to:
+Follow this adapter instruction when the user wants to:
 
 - Set up loom's SDLC framework in a project that uses the Mirai harness (`init`)
 - Refresh/patch an existing `.mirai/` config after loom's skills or workflow changed, or
   after the project's own conventions changed (`update`)
 
-Do **not** use this skill for: writing a single ad-hoc `.mirai/` file (edit directly),
+Do **not** use it for: writing a single ad-hoc `.mirai/` file (edit directly),
 general loom framework maintenance unrelated to Mirai delivery, or setting up a different
 target harness (there is no adapter for those yet — see
-[ADR-001](../../../wiki/adr/adr-001-adapter-pattern.md)).
+[ADR-001](../../wiki/adr/adr-001-adapter-pattern.md)).
 
 ## Mode: `init` vs `update`
 
@@ -58,14 +64,14 @@ Read the target project (its own `AGENTS.md`/`mirai-instructions.md` if present,
 `package.json`/build config, its existing `.mirai/`, `.agents/`, or `.claude/` directories)
 before asking anything. Never ask a question explorable from the filesystem.
 
-For `update`: also diff against what this skill last wrote (compare each generated
-file's content against what [adapters/mirai/MAPPING.md](../../../adapters/mirai/MAPPING.md)
-and [STAGES.md](../../../adapters/mirai/STAGES.md) currently say it _should_ contain) to
+For `update`: also diff against what this adapter last wrote (compare each generated
+file's content against what [MAPPING.md](MAPPING.md)
+and [STAGES.md](STAGES.md) currently say it _should_ contain) to
 scope the interview to what actually changed — see "Detecting drift" below.
 
 ### 2. Grill / interview
 
-Interview the user using loom's own [grill-with-docs](../../discovery/grill-with-docs/SKILL.md)
+Interview the user using loom's own [grill-with-docs](../../SKILLS/discovery/grill-with-docs/SKILL.md)
 skill as the interview engine — one question at a time, always leading with a recommended
 default, waiting for feedback before the next question. Walk the decision tables in
 [references/interview.md](references/interview.md) in order:
@@ -95,11 +101,11 @@ user pushes back on any section — do not silently proceed past an objection.
 
 Write every file in **Mirai's exact format** — do not invent frontmatter fields. Consult:
 
-- [wiki/environments/mirai.md](../../../wiki/environments/mirai.md) for the frontmatter
+- [wiki/environments/mirai.md](../../wiki/environments/mirai.md) for the frontmatter
   schema of each of the six primitives.
-- [adapters/mirai/MAPPING.md](../../../adapters/mirai/MAPPING.md) for which loom skill
+- [MAPPING.md](MAPPING.md) for which loom skill
   goes where and the model-archetype table.
-- [adapters/mirai/STAGES.md](../../../adapters/mirai/STAGES.md) for each stage prompt's
+- [STAGES.md](STAGES.md) for each stage prompt's
   skill roster and each stage agent's workflow-prose sourcing.
 - [assets/templates/stage.agent.md.template](assets/templates/stage.agent.md.template),
   [stage.prompt.md.template](assets/templates/stage.prompt.md.template), and
@@ -144,10 +150,9 @@ If the project's own conventions changed, re-run the full interview for step 5
 
 ## Related
 
-- [ADR-004](../../../wiki/adr/adr-004-loom-mirai-setup.md) — the decision this skill implements.
-- [wiki/environments/mirai.md](../../../wiki/environments/mirai.md) — Mirai primitive reference.
-- [adapters/mirai/MAPPING.md](../../../adapters/mirai/MAPPING.md), [STAGES.md](../../../adapters/mirai/STAGES.md) — concrete lookup tables.
-- [grill-with-docs](../../discovery/grill-with-docs/SKILL.md) — the interview engine this skill delegates to.
-- [SETUP.md](../../../SETUP.md) — the root "paste this to your agent" bootstrap entrypoint for this skill.
-- [commands/setup-loom.md](../../../commands/setup-loom.md), [commands/update-loom.md](../../../commands/update-loom.md) — guided command wrappers for the `init`/`update` modes.
+- [ADR-004](../../wiki/adr/adr-004-loom-mirai-setup.md) — the decision this adapter implements.
+- [wiki/environments/mirai.md](../../wiki/environments/mirai.md) — Mirai primitive reference.
+- [MAPPING.md](MAPPING.md), [STAGES.md](STAGES.md) — concrete lookup tables.
+- [grill-with-docs](../../SKILLS/discovery/grill-with-docs/SKILL.md) — the interview engine this adapter delegates to.
+- [SETUP.md](../../SETUP.md) — the harness-agnostic entrypoint an agent reads to reach this adapter (both `init` and `update` modes; no command wrapper).
   </content>

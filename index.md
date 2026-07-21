@@ -18,4 +18,7 @@ Top-level directories:
 
 See [SPEC.md](SPEC.md) for conformance rules and [CHANGELOG.md](CHANGELOG.md) for release history.
 
-To install loom into a project running the Mirai VS Code harness, start at [SETUP.md](SETUP.md).
+To install loom into a project, start at [SETUP.md](SETUP.md) — the harness-agnostic
+entrypoint an agent reads to run the setup contract for whatever harness the project uses
+(see [ADR-005](wiki/adr/adr-005-harness-agnostic-setup.md)). Mirai is the first supported
+harness ([ADR-004](wiki/adr/adr-004-loom-mirai-setup.md)).

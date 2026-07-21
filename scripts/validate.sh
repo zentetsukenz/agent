@@ -445,7 +445,7 @@ done < <(collect_markdown_files "agent/wiki")
 
 validate_mirai_config
 
-for link_root in agent/skills agent/workflows agent/wiki agent/agents agent/commands; do
+for link_root in agent/skills agent/workflows agent/wiki agent/agents agent/commands agent/adapters; do
   while IFS= read -r markdown_file; do
     check_markdown_links "$markdown_file"
   done < <(collect_markdown_files "$link_root")

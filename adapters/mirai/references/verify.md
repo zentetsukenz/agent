@@ -1,8 +1,9 @@
 # Verify checklist
 
-Run every item after step 5 (Write), before reporting Done in [SKILL.md](../SKILL.md).
-This is a *manual* checklist for the writing agent to walk — there is no script yet (see
-the validate.sh extension tracked as a separate phase in the locked setup plan).
+Run every item after step 5 (Write), before reporting Done in [setup.md](../setup.md).
+This is a *manual* checklist for the writing agent to walk — it complements the
+repo-level `scripts/validate.sh` (which link-checks framework docs, not a target
+project's generated `.mirai/`).
 
 ## Frontmatter
 
@@ -13,7 +14,7 @@ the validate.sh extension tracked as a separate phase in the locked setup plan).
 - [ ] Every written `.mirai/prompts/*.prompt.md` has a `description` (recommended, not
       strictly required by Mirai, but omitting it hurts discoverability).
 - [ ] No unescaped colons inside unquoted YAML string values (a common silent-failure
-      cause — see [wiki/environments/mirai.md](../../../../wiki/environments/mirai.md)'s
+      cause — see [wiki/environments/mirai.md](../../../wiki/environments/mirai.md)'s
       pitfalls section).
 
 ## File placement

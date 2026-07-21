@@ -3,7 +3,7 @@
 > Adapter content for the Mirai harness. See [ADR-004](../../wiki/adr/adr-004-loom-mirai-setup.md)
 > for why this mapping exists and [wiki/environments/mirai.md](../../wiki/environments/mirai.md)
 > for Mirai's customization primitives. This file is the concrete lookup table the
-> `setup-loom` skill (see [SKILLS/meta/setup-loom](../../SKILLS/meta/setup-loom/SKILL.md))
+> Mirai adapter's setup instruction (see [setup.md](setup.md))
 > consults when generating a project's `.mirai/` configuration. See
 > [STAGES.md](STAGES.md) for the Shaping/Delivery/Closing stage groupings this table feeds.
 
@@ -25,8 +25,9 @@ preserving any `references/`, `scripts/`, or `assets/` subdirectories one level 
 `description` to reference the project's actual tools/paths (e.g. its issue tracker or
 test command) — never its core procedure.
 
-**Setup skill itself is not copied.** `setup-loom` stays a loom-repo-only authoring tool;
-it is what *writes* `.mirai/`, not content that ships inside it.
+**The setup instruction itself is not copied.** `adapters/mirai/setup.md` stays a
+loom-repo-only authoring instruction; it is what *writes* `.mirai/`, not content that
+ships inside it.
 
 ## 2. Stages → prompts (combo) + agents (deep)
 
@@ -51,7 +52,7 @@ into three stages. Each stage gets **two** delivery tiers — the user picks per
 
 ## 3. Utility agents (à la OMO)
 
-Independent of the three SDLC stages, `setup-loom` offers a small utility-agent roster —
+Independent of the three SDLC stages, the setup instruction offers a small utility-agent roster —
 plain `.mirai/agents/*.agent.md` files any stage agent or the user can dispatch to as
 subagents:
 
@@ -83,7 +84,7 @@ config.
 
 | Archetype | Working style | Assigned to | Example fallback array |
 |---|---|---|---|
-| **Communicator** | Interviews, planning, writing, sociable lead/orchestrate | Shaping stage (both tiers), `writing` utility agent, `setup-loom` itself | `['Claude Sonnet 4.5 (copilot)', 'GPT-5 (copilot)']` |
+| **Communicator** | Interviews, planning, writing, sociable lead/orchestrate | Shaping stage (both tiers), `writing` utility agent, the setup instruction itself | `['Claude Sonnet 4.5 (copilot)', 'GPT-5 (copilot)']` |
 | **Deep Specialist** | Architecture, hard debugging, high-stakes correctness | Delivery agent tier (deep), `deep` utility agent, `architect-review`-flavored prompts | `['GPT-5 (copilot)', 'Claude Opus (copilot)']` |
 | **Utility** | Cheap/fast, mechanical, high-volume, low-risk | `explore`/`quick` utility agents, Closing stage prompt tier, exploratory subagent dispatch | `['GPT-5 mini (copilot)', 'Claude Haiku (copilot)']` |
 
@@ -102,6 +103,5 @@ programmatic way to enumerate currently available models (VS Code LM API, or a `
 - [ADR-004](../../wiki/adr/adr-004-loom-mirai-setup.md) — the decision this mapping implements.
 - [wiki/environments/mirai.md](../../wiki/environments/mirai.md) — Mirai primitive reference.
 - [STAGES.md](STAGES.md) — stage groupings, skill rosters, workflow-prose sourcing.
-- [SKILLS/meta/setup-loom](../../SKILLS/meta/setup-loom/SKILL.md) — the
-  skill that reads this file.
+- [setup.md](setup.md) — the Mirai adapter setup instruction that reads this file.
 </content>

@@ -1,7 +1,7 @@
 # Write format & idempotency rules
 
-Consulted by [SKILL.md](../SKILL.md) step 5. Every file this skill writes must be valid
-in **Mirai's exact format** — see [wiki/environments/mirai.md](../../../../wiki/environments/mirai.md)
+Consulted by [setup.md](../setup.md) step 5. Every file the setup instruction writes must
+be valid in **Mirai's exact format** — see [wiki/environments/mirai.md](../../../wiki/environments/mirai.md)
 for the authoritative frontmatter schema per primitive. This file only adds the
 loom-specific conventions for *how* the write happens (idempotency, provenance marking,
 placeholder-filling) — it does not restate Mirai's schema.
@@ -43,8 +43,8 @@ procedure — stop and ask rather than guessing or leaving it blank.
 | Placeholder | Source |
 |---|---|
 | `{{STAGE_NAME}}` | One of `shaping`, `delivery`, `closing` |
-| `{{STAGE_WORKFLOW_PROSE}}` | Concatenated body of the stage's `workflows/sdlc/<phase>.md` file(s) — see [STAGES.md](../../../../adapters/mirai/STAGES.md) |
-| `{{STAGE_SKILL_LIST}}` | The stage's adopted skill roster from [STAGES.md](../../../../adapters/mirai/STAGES.md), pruned per the Scope interview table |
+| `{{STAGE_WORKFLOW_PROSE}}` | Concatenated body of the stage's `workflows/sdlc/<phase>.md` file(s) — see [STAGES.md](../STAGES.md) |
+| `{{STAGE_SKILL_LIST}}` | The stage's adopted skill roster from [STAGES.md](../STAGES.md), pruned per the Scope interview table |
 | `{{MODEL_FALLBACK_ARRAY}}` | The archetype-matched model array from the Model Matching interview table |
 | `{{PROJECT_NAME}}`, `{{BUILD_CMD}}`, `{{TEST_CMD}}` | Explore step — read from the target project's own config |
 
@@ -69,5 +69,5 @@ When copying a loom `SKILLS/<bucket>/<slug>/SKILL.md` into `.mirai/skills/<slug>
   full workflow prose — the prompt references skills to invoke; it does not re-embed the
   deep workflow text.
 - Never invent a frontmatter field not documented in
-  [wiki/environments/mirai.md](../../../../wiki/environments/mirai.md).
+  [wiki/environments/mirai.md](../../../wiki/environments/mirai.md).
 </content>

@@ -17,5 +17,3 @@ Slash command wrappers available in this framework release.
 | [wiki-crosslink](wiki-crosslink.md) | Add high-signal links between related wiki pages | Thoth |
 | [release-notes](release-notes.md) | Generate user-facing release notes from git history | oracle |
 | [wayfinder](wayfinder.md) | Chart or work through a wayfinder map of decision tickets | — |
-| [setup-loom](setup-loom.md) | Set up loom's SDLC framework inside the Mirai VS Code harness for a project | — |
-| [update-loom](update-loom.md) | Refresh an existing loom-in-Mirai setup, targeted to what changed | — |

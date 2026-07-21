@@ -155,10 +155,40 @@ This preamble appears at the top of: `grill-with-docs`, `domain-model`,
 
 ---
 
+## Setup contract conformance
+
+loom installs into a project through a **harness-agnostic entrypoint** (`SETUP.md`) that
+runs a universal **setup contract** via the target harness's **adapter** (see
+`wiki/adr/adr-005-harness-agnostic-setup.md`; terms defined in `wiki/glossary/index.md`).
+Every adapter MUST conform to the following:
+
+- **Implements the five-step contract**: explore → interview → present & confirm →
+  generate (in the harness's native format) → verify. The interview is not optional — a
+  mechanical copy is non-conformant.
+- **Owns only harness-specific knowledge.** The generic entrypoint (`SETUP.md`), the
+  universal safety rules, and the contract itself stay harness-agnostic; per-harness config
+  formats, paths, and frontmatter live under `adapters/<harness>/` and the adapter's setup
+  entrypoint. Harness detail MUST NOT leak into `SETUP.md` or other shared documents.
+- **Honors the universal safety rules**: never overwrite/delete existing files (edit only
+  loom-owned, provenance-marked sections); change no application code, CI, or runtime
+  config; confirm the proposed tree before writing; ask for the model list rather than
+  guessing model-name strings.
+- **Is invoked by reading, not by a command**: an agent runs an adapter by reading
+  `SETUP.md` and the adapter entrypoint (locally or remotely) — loom ships no setup slash
+  command and requires no repo clone. `init` and `update` are modes of the contract, not
+  separate commands.
+- **Is registered in `SETUP.md`'s harness table** so the entrypoint can route to it.
+
+Adding support for a new harness means adding an adapter that conforms to the above, never
+editing the entrypoint's core.
+
+---
+
 ## Mirai delivery conformance
 
-Unlike the deferred general adapter above, the **Mirai** harness is a concrete v1 target
-(see `wiki/adr/adr-004-loom-mirai-setup.md`). When a project's `.mirai/` directory
+The **Mirai** harness is loom's first concrete adapter — the first implementation of the
+setup contract above (see `wiki/adr/adr-004-loom-mirai-setup.md`, which implements
+`wiki/adr/adr-005-harness-agnostic-setup.md`). When a project's `.mirai/` directory
 contains loom-authored content, `scripts/validate.sh` additionally checks:
 
 - `.mirai/skills/<name>/SKILL.md` — required `name` (kebab-case, ≤64 chars, **must equal
@@ -171,5 +201,5 @@ contains loom-authored content, `scripts/validate.sh` additionally checks:
 - Exactly one of root `AGENTS.md` or `.mirai/mirai-instructions.md` may exist — never both.
 
 See `wiki/environments/mirai.md` for the full frontmatter reference these checks enforce
-a subset of, and `SKILLS/meta/setup-loom/SKILL.md` for the skill that generates
-conformant `.mirai/` content.
+a subset of, and `adapters/mirai/setup.md` for the adapter setup instruction that
+generates conformant `.mirai/` content.
