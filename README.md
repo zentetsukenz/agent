@@ -1,54 +1,36 @@
-# loom agent framework
+# loom
 
-loom is a content-only framework for reusable agent skills, knowledge wiki
-pages, agent definitions, and command wrappers. It keeps implementation concerns
-out of the root so downstream tools can adapt the same content model without
-forking its language or runtime.
+loom installs disciplined workflows into your AI coding agent — portable Markdown
+skills, knowledge, and orchestration that an agent adapts to whatever harness you use.
+The SDLC workflow (discovery → design → planning → implementation → verification →
+preservation) ships first; loom is built to carry any workflow you want.
 
-## What is included
+*loom is early: the SDLC workflow and the Mirai adapter ship today; more workflows and
+harness adapters are planned.*
 
-- Lifecycle-bucketed skills that conform to the agentskills.io shape.
-- OKF wiki pages for progressive-disclosure knowledge.
-- Agent definitions that compose skills and wiki context.
-- Slash command wrappers for repeatable entry points.
-- Meta-documentation for framework conformance and release history.
-- Placeholder adapter and script directories for later framework tooling.
+## How it works
 
-## Directory structure
+- **Content** — portable Markdown: lifecycle-bucketed skills, workflow orchestration
+  seeds, and an OKF knowledge wiki.
+- **Adapters** — loom is harness-agnostic; a per-harness adapter renders its content for
+  a specific tool. **Mirai** is the first supported adapter, with more planned.
+- **Agent-run setup** — point an agent at `SETUP.md`; it interviews you about your
+  project, then generates harness-native config tailored to what it learns. It doesn't
+  copy static files.
+
+## Get started
+
+Give your AI coding agent this:
 
 ```text
-agent/
-├── skills/      # agent skills, grouped by lifecycle bucket
-├── wiki/        # OKF knowledge wiki
-├── agents/      # agent definitions
-├── commands/    # slash command wrappers
-├── docs/        # framework meta-documentation
-├── adapters/    # v2 adapter implementation placeholders
-├── scripts/     # validation and utility scripts
-├── index.md     # OKF progressive-disclosure root
-├── log.md       # OKF chronological framework log
-├── CHANGELOG.md # semver release history
-└── README.md    # framework overview
+Set up loom in this project by following
+https://raw.githubusercontent.com/zentetsukenz/agent/main/SETUP.md
 ```
 
-## How to use
+`SETUP.md` is the one and only setup entrypoint — no slash commands, no repo clone.
+`init` (first-time) and `update` (idempotent re-run) are modes of the same setup
+contract (see [ADR-005](wiki/adr/adr-005-harness-agnostic-setup.md)).
 
-1. Start at [index.md](index.md) to discover top-level framework content.
-2. Load skills from `skills/` when a task matches their descriptions.
-3. Use `wiki/` as the dogfooded OKF knowledge base for durable context.
-4. Compose `agents/` from skills, wiki references, and tool contracts.
-5. Expose common workflows through `commands/` wrappers.
-6. Keep implementation-specific integration in `adapters/`, not framework docs.
-7. To install loom into a project, point an agent at [SETUP.md](SETUP.md) — the
-   harness-agnostic entrypoint that runs the setup contract for whatever harness the
-   project uses (see [ADR-005](wiki/adr/adr-005-harness-agnostic-setup.md)). **Mirai** is
-   the first supported harness ([ADR-004](wiki/adr/adr-004-loom-mirai-setup.md)).
+## Explore
 
-## Conformance
-
-[SPEC.md](SPEC.md) is forthcoming and will define framework rules for
-agentskills.io skills, OKF files, adapters, and validation scripts.
-
-## Release history
-
-See [CHANGELOG.md](CHANGELOG.md) for semver release notes.
+Explore loom → [index.md](index.md)
