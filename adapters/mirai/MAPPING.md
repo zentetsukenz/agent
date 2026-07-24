@@ -32,38 +32,52 @@ ships inside it.
 ## 2. Stages → prompts (combo) + agents (deep)
 
 The SDLC's six phases (see [workflows/sdlc/index.md](../../workflows/sdlc/index.md)) group
-into three stages. Each stage gets **two** delivery tiers — the user picks per invocation:
+into three stages. Each stage gets a **quick prompt** tier and a **deep agent** tier — the
+user picks per invocation:
 
-| Stage | Phases | Prompt (quick combo) | Agent (deep workflow) |
+| Stage | Phases | Prompt (quick combo) | Deep agent(s) |
 |---|---|---|---|
 | Shaping | Discovery, Design | `.mirai/prompts/shape.prompt.md` | `.mirai/agents/shaping.agent.md` |
-| Delivery | Planning, Implementation, Verification | `.mirai/prompts/deliver.prompt.md` | `.mirai/agents/delivery.agent.md` |
+| Delivery | Planning, Implementation, Verification | `.mirai/prompts/deliver.prompt.md` | `.mirai/agents/planner.agent.md` + `.mirai/agents/orchestrator.agent.md` (dispatchers); verification dispatched to the `verifier` utility |
 | Closing | Preservation | `.mirai/prompts/close.prompt.md` | `.mirai/agents/closing.agent.md` |
 
-- A **prompt** (`.mirai/prompts/<stage>.prompt.md`) is a preset bundle: `agent:` field
-  names the stage's tools/model combo, body references the specific skills to invoke
-  in order for the quick path. It IS the bundle — no separate bundle-skill layer exists.
-- An **agent** (`.mirai/agents/<stage>.agent.md`) carries the corresponding
-  `workflows/sdlc/<phase>.md` DEEP workflow prose in its system prompt (concatenated
-  across the stage's phases), plus a preset `model:` (with fallback array) matched to the
-  stage's role archetype (below).
-- See [STAGES.md](STAGES.md) for the exact skill roster and workflow-prose sourcing per
-  stage.
+- A **prompt** (`.mirai/prompts/<stage>.prompt.md`) is a preset bundle whose body references
+  the specific skills to invoke for the quick path. Its `agent:` field names a **base
+  agent** (a Mirai built-in — `plan` for read-only Shaping, `agent` otherwise), **not** the
+  custom deep stage agent: the prompt stays decoupled from the deep agent, and read-only
+  stages inherit the harness's no-edit guarantee from `plan` mode
+  ([ADR-006](../../wiki/adr/adr-006-capability-based-roles.md)). A short in-body **stance**
+  line is the portable backstop. It IS the bundle — no separate bundle-skill layer exists.
+- A **deep agent** (`.mirai/agents/<role>.agent.md`) carries the corresponding
+  `workflows/sdlc/<phase>.md` DEEP workflow prose, a preset `model:` (fallback array), and
+  a **role-scoped capability set** ([ADR-006](../../wiki/adr/adr-006-capability-based-roles.md))
+  — the withheld capabilities are load-bearing.
+- **Delivery is split** into a Planner and an Orchestrator (dispatchers, no `edit`) per
+  [ADR-008](../../wiki/adr/adr-008-delivery-dispatchers.md); execution goes to the
+  `quick`/`deep` utilities and verification to the `verifier` utility. The old single
+  `delivery.agent.md` is retired.
+- See [STAGES.md](STAGES.md) for the exact skill roster, capability set, and workflow-prose
+  sourcing per role.
 
 ## 3. Utility agents (à la OMO)
 
-Independent of the three SDLC stages, the setup instruction offers a small utility-agent roster —
-plain `.mirai/agents/*.agent.md` files any stage agent or the user can dispatch to as
-subagents:
+Independent of the three SDLC stages, the setup instruction offers a small utility-agent
+roster — plain `.mirai/agents/*.agent.md` files that a [Dispatcher](../../wiki/glossary/index.md#dispatcher)
+(the Orchestrator, a future plan-reviewer) or the user can dispatch to as subagents. This is
+the **dispatched** tier of [role-scoped-capabilities](../../wiki/patterns/role-scoped-capabilities.md):
 
-| Utility agent | Purpose | Archetype |
-|---|---|---|
-| `explore.agent.md` | Read-only codebase exploration and Q&A (mirrors loom's own `Explore` subagent) | Utility |
-| `quick.agent.md` | Fast, cheap mechanical edits (formatting, small fixes, boilerplate) | Utility |
-| `deep.agent.md` | Hard architectural/debugging problems needing a strong reasoning model | Deep Specialist |
-| `writing.agent.md` | Prose — commit messages, PR descriptions, docs, release notes | Communicator |
+| Utility agent | Purpose | Archetype | Capabilities |
+|---|---|---|---|
+| `explore.agent.md` | Read-only codebase exploration and Q&A (mirrors loom's own `Explore` subagent) | Utility | `read`, `search` |
+| `quick.agent.md` | Fast, cheap mechanical edits — executor (formatting, small fixes, boilerplate) | Utility | `read`, `edit`, `search`, `shell`, `tasks` |
+| `deep.agent.md` | Hard architectural/debugging problems — executor, strong reasoning model | Deep Specialist | `read`, `edit`, `search`, `shell`, `delegate`, `persist`, `tasks` (+ `docs-lookup` if opted) |
+| `verifier.agent.md` | Verify an artifact against its acceptance criteria; return evidence, don't fix | Deep Specialist (extended-thinking) | `read`, `search`, `shell`, `persist` — **no `edit`** |
+| `writing.agent.md` | Prose — commit messages, PR descriptions, docs, release notes | Communicator | `read`, `edit`, `search` — **DEFERRED** |
 
-These are optional; the setup interview asks which of them the project wants generated.
+The **Verifier** ([ADR-008](../../wiki/adr/adr-008-delivery-dispatchers.md)) is a utility,
+not a Delivery stage agent, so multiple dispatchers can reuse it (Orchestrator → verify a
+change; future plan-reviewer → verify a plan). These are optional; the setup interview asks
+which the project wants generated (Verifier defaults to Yes when Delivery is adopted).
 
 ## 4. AGENTS.md role
 
@@ -98,10 +112,36 @@ above as *illustrative*, not literal defaults to hardcode.
 programmatic way to enumerate currently available models (VS Code LM API, or a `mirai`/
 `code` CLI command) for auto-detect. Until resolved, the interview asks the user directly.
 
+## 6. Capability → Mirai tool mapping
+
+loom names agent [capabilities](../../wiki/patterns/role-scoped-capabilities.md) generically
+([ADR-006](../../wiki/adr/adr-006-capability-based-roles.md)); this table maps each to its
+Mirai tool. The setup step writes the mapped names into each agent's `tools:` array. The
+adapter **tolerates deviation** — where a mapped name is harness-/version-specific, it is
+discovered or confirmed against the user's actual tool list at setup, never hardcoded blind
+(same discipline as model-name strings). Full detail:
+[references/capabilities.md](references/capabilities.md).
+
+| Capability | Mirai tool | Kind | Notes |
+|---|---|---|---|
+| `read` | `read` | alias | stable |
+| `edit` | `edit` | alias | stable |
+| `shell` | `execute` | alias | stable |
+| `delegate` | `agent` | alias | dispatch subagents |
+| `web` | `web` | alias | stable |
+| `tasks` | `todo` | alias | stable |
+| `persist` | e.g. `vscode/memory` | specific tool | **discover/confirm at setup** — not an alias |
+| `interview` | e.g. `vscode/askQuestions` | specific tool | **discover/confirm at setup** — not an alias |
+| `docs-lookup` | MCP `<server>/*` (e.g. `context7/*`) | MCP server | **opt-in** ([ADR-007](../../wiki/adr/adr-007-docs-lookup-capability.md)); server config lives outside the agent file |
+
 ## Related
 
-- [ADR-004](../../wiki/adr/adr-004-loom-mirai-setup.md) — the decision this mapping implements.
+- [ADR-004](../../wiki/adr/adr-004-loom-mirai-setup.md) — the base setup approach this mapping implements.
+- [ADR-006](../../wiki/adr/adr-006-capability-based-roles.md) — capability-based role discipline (§6 above).
+- [ADR-007](../../wiki/adr/adr-007-docs-lookup-capability.md) — the optional `docs-lookup` capability.
+- [ADR-008](../../wiki/adr/adr-008-delivery-dispatchers.md) — the Delivery dispatcher split (§2, §3).
 - [wiki/environments/mirai.md](../../wiki/environments/mirai.md) — Mirai primitive reference.
-- [STAGES.md](STAGES.md) — stage groupings, skill rosters, workflow-prose sourcing.
+- [references/capabilities.md](references/capabilities.md) — full capability→tool mapping and docs-lookup wiring.
+- [STAGES.md](STAGES.md) — stage groupings, skill rosters, capability sets, workflow-prose sourcing.
 - [setup.md](setup.md) — the Mirai adapter setup instruction that reads this file.
 </content>

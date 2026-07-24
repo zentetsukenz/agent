@@ -77,14 +77,23 @@ default, waiting for feedback before the next question. Walk the decision tables
 [references/interview.md](references/interview.md) in order:
 
 1. **Scope** — which SDLC stages/skills does this project actually need?
-2. **Delivery tiers** — prompts only, agents only, or both per stage?
+2. **Delivery tiers** — prompts only, agents only, or both per stage? (The Delivery deep
+   tier is **two dispatcher agents** — Planner + Orchestrator — plus the `verifier` utility,
+   per [ADR-008](../../wiki/adr/adr-008-delivery-dispatchers.md).)
 3. **Model matching** — the user's available models, mapped onto the three archetypes.
-4. **Utility agents** — which of `explore`/`quick`/`deep`/`writing` to generate.
-5. **AGENTS.md vs `mirai-instructions.md`** — which file already exists (edit that one;
+   Includes the **Verifier's extended-thinking model** (long-context) when Delivery is
+   adopted.
+4. **Utility agents** — which of `explore`/`quick`/`deep`/`verifier`/`writing` to generate.
+5. **Documentation-lookup capability** — does the project want up-to-date external docs
+   lookup (e.g. Context7 via MCP)? Off by default
+   ([ADR-007](../../wiki/adr/adr-007-docs-lookup-capability.md)); if yes, wire `docs-lookup`
+   into Shaping + Planner (+ `deep`).
+6. **AGENTS.md vs `mirai-instructions.md`** — which file already exists (edit that one;
    never create the other; ask only if neither exists).
-6. **Existing `.claude/`/`.agents/` content** — extend, leave alone, or migrate?
+7. **Existing `.claude/`/`.agents/` content** — extend, leave alone, or migrate?
 
-Fold model-matching into this same interview pass — it is not a separate step.
+Fold model-matching and capability-name resolution (`persist`/`interview` tool names) into
+this same interview pass — they are not separate steps.
 
 ### 3. Present proposed config
 
@@ -103,14 +112,33 @@ Write every file in **Mirai's exact format** — do not invent frontmatter field
 
 - [wiki/environments/mirai.md](../../wiki/environments/mirai.md) for the frontmatter
   schema of each of the six primitives.
-- [MAPPING.md](MAPPING.md) for which loom skill
-  goes where and the model-archetype table.
-- [STAGES.md](STAGES.md) for each stage prompt's
-  skill roster and each stage agent's workflow-prose sourcing.
-- [assets/templates/stage.agent.md.template](assets/templates/stage.agent.md.template),
+- [MAPPING.md](MAPPING.md) for which loom skill goes where, the model-archetype table, and
+  the **capability → Mirai tool mapping** (§6).
+- [STAGES.md](STAGES.md) for each stage prompt's skill roster, each role's
+  **capability set** and quick base-agent/stance, and each agent's workflow-prose sourcing.
+- [references/capabilities.md](references/capabilities.md) for resolving each generic
+  capability to its Mirai tool name.
+- [assets/templates/role.agent.md.template](assets/templates/role.agent.md.template),
   [stage.prompt.md.template](assets/templates/stage.prompt.md.template), and
   [AGENTS.md.template](assets/templates/AGENTS.md.template) for seed file skeletons —
   fill in the placeholders, don't restate the whole template inline.
+
+**Resolve capabilities to tool names.** Each agent's `tools:` array is built from its
+role's generic capability set (STAGES.md) mapped through
+[references/capabilities.md](references/capabilities.md). Alias-backed capabilities
+(`read`/`edit`/`shell`/`delegate`/`web`/`tasks`) map to stable Mirai aliases. For
+capabilities that resolve to a **specific tool name** (`persist`, `interview`) or an **MCP
+server** (`docs-lookup`), do not hardcode a guessed string — **discover or confirm the
+actual name against the user's tool list** (ask the user or read the harness tool list),
+the same discipline used for model-name strings. If a harness deviates from the default
+mapping, override the mapped name rather than emitting a name that won't resolve.
+
+**Delivery emits role agents, not one `delivery.agent.md`.** Per
+[ADR-008](../../wiki/adr/adr-008-delivery-dispatchers.md), generate `planner.agent.md` and
+`orchestrator.agent.md` (dispatchers, no `edit`) from `role.agent.md.template`, and the
+`verifier.agent.md` in the utility roster. On `update`, if a prior single
+`delivery.agent.md` exists, **replace it** with the split (see the migration note in
+[references/write-format.md](references/write-format.md)).
 
 Idempotency rule: if a target file already exists, **patch it in place** (preserve any
 user-added content outside loom-authored sections, marked as described in

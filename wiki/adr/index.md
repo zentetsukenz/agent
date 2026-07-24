@@ -15,3 +15,6 @@ Architectural decisions for the loom framework, organized chronologically.
 | [ADR-003](adr-003-architecture-first-ordering.md) | Architecture and constitutional changes land before dependent code | Accepted | architecture, sequencing, research, sdlc, loom |
 | [ADR-004](adr-004-loom-mirai-setup.md) | loom setup approach for the Mirai harness | Accepted | mirai, setup, adapter, agent, skill, model-matching, loom |
 | [ADR-005](adr-005-harness-agnostic-setup.md) | Harness-agnostic setup entrypoint and universal setup contract | Accepted | setup, adapter, harness, entrypoint, prose-first, loom |
+| [ADR-006](adr-006-capability-based-roles.md) | Capability-based role discipline | Accepted | agent, role, capability, enforcement, mirai, adapter, loom |
+| [ADR-007](adr-007-docs-lookup-capability.md) | Optional up-to-date documentation-lookup capability | Accepted | capability, docs-lookup, mcp, adapter, mirai, loom |
+| [ADR-008](adr-008-delivery-dispatchers.md) | Delivery dispatchers delegate execution and verification to the utility tier | Accepted | agent, role, delivery, orchestrator, planner, verifier, dispatch, sdlc, mirai, loom |

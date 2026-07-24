@@ -10,3 +10,7 @@ description: Chronological log of glossary changes
 - 2026-07-21 — Added **Harness** and **Setup contract**; sharpened **Adapter** to loom's
   harness-adapter sense (was generic). Bakes the harness-agnostic setup vocabulary that
   `SETUP.md` and `adapters/*` rely on into the domain language.
+- 2026-07-24 — Added **Capability**, **Role**, **Dispatcher**, **Utility (dispatched) agent**;
+  sharpened **Agent** (now also defined by its capability grant, not domain alone) and
+  **Orchestrator** (canonical Dispatcher: `delegate` yes, `edit` no). Establishes the
+  role-scoped-capability vocabulary for the new pattern and ADR-006/008.

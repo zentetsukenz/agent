@@ -73,9 +73,15 @@ tools: [search, web]                # optional
 
 - Model fallback array: `['GPT-5 (copilot)', 'Claude Sonnet 4.5 (copilot)']` — first
   available model wins.
+- The `agent:` field names a **base agent** the prompt runs in: a built-in (`ask` | `agent`
+  | `plan`) or a custom agent name. `plan` is read-only — an inherent no-edit mode.
 - **loom mapping**: a `.mirai/prompts/<x>.prompt.md` IS the "quick" stage combo — a bundle
   of skills-to-invoke plus a preset model. There is no separate bundle-skill layer; the
-  prompt file itself is the bundle.
+  prompt file itself is the bundle. loom sets `agent:` to a **base agent per stage** —
+  `plan` for read-only Shaping (so the quick path inherits the harness's no-edit guarantee),
+  `agent` otherwise — plus a one-line **stance** in the body as the portable backstop, per
+  [ADR-006](../adr/adr-006-capability-based-roles.md). The prompt does **not** bind to the
+  custom deep stage agent (they stay decoupled).
 
 ## 4. Hooks
 
@@ -111,12 +117,24 @@ hooks: { PreToolUse: [...] }            # optional: inline hooks, see above
 Tool aliases: `execute` `read` `edit` `search` `agent` `web` `todo`. `tools: []` = none;
 omitting the key = defaults.
 
-**loom mapping**: this is where loom's **per-stage agents** (Shaping / Delivery /
-Closing) go — each carrying its DEEP-workflow system prompt (from
-`workflows/sdlc/<phase>.md`) plus a preset model matched to its role archetype (see
-[MAPPING.md](../../adapters/mirai/MAPPING.md)). loom's **utility agents**
-(explore, quick, deep, writing, ...) are also plain `.agent.md` files, typically
-`disable-model-invocation: false` so other agents can dispatch to them as subagents.
+**loom mapping**: this is where loom's **per-role agents** go — each carrying its
+DEEP-workflow system prompt (from `workflows/sdlc/<phase>.md`), a preset model, and a
+**role-scoped capability set** written into `tools:`
+([ADR-006](../adr/adr-006-capability-based-roles.md)). The withheld capabilities are
+load-bearing: a role with no `edit` cannot write code. Shaping is one agent; **Delivery is
+two dispatcher agents** — `planner` and `orchestrator`, neither holding `edit`
+([ADR-008](../adr/adr-008-delivery-dispatchers.md)); Closing is one agent. loom's **utility
+agents** (explore, quick, deep, **verifier**, writing) are also plain `.agent.md` files,
+`disable-model-invocation: false` so dispatchers can invoke them as subagents. The
+generic-capability → `tools:` mapping is in
+[MAPPING.md §6](../../adapters/mirai/MAPPING.md#6-capability--mirai-tool-mapping) and
+[references/capabilities.md](../../adapters/mirai/references/capabilities.md).
+
+Note the tool aliases are exactly `execute` `read` `edit` `search` `agent` `web` `todo`.
+loom's `persist` (memory) and `interview` (ask-user) capabilities are **specific tool
+names** (e.g. `vscode/memory`, `vscode/askQuestions`), **not** aliases — discover/confirm
+them against the harness tool list rather than hardcoding. loom's `docs-lookup` capability
+maps to an MCP `<server>/*` tool (below).
 
 ## 6. Skills
 
@@ -144,6 +162,20 @@ content lands, customized per project during setup. The Mirai adapter's setup in
 ([adapters/mirai/setup.md](../../adapters/mirai/setup.md)) is read and followed by an
 agent (it is not itself a `.mirai/skills/` entry).
 
+## MCP servers (for the `docs-lookup` capability)
+
+MCP servers are not one of the six primitives — they are an external **tool source**. An
+agent uses one by listing its glob in `tools:` (e.g. `"context7/*"`); the server itself is
+**configured outside** the `.agent.md`, per the official MCP docs. loom uses MCP only to
+implement the optional `docs-lookup` capability
+([ADR-007](../adr/adr-007-docs-lookup-capability.md)):
+
+- **In the agent file:** add `"<server>/*"` to `tools:` — confirm the exact server name
+  against the user's tool list.
+- **Server config:** lives in Mirai's MCP configuration (see the official `mcp` doc page);
+  treat its exact path/format as **verify-later** — do not invent it. If the server isn't
+  configured, the `tools:` entry simply won't resolve until the user sets it up.
+
 ## Cross-tool compatibility note
 
 Because Mirai is a superset of Claude Code, `skills` and `hooks` written to `.claude/`
@@ -163,16 +195,27 @@ instructions have **no** Claude Code equivalent path and only ever live under `.
 ## Official docs
 
 `https://code.visualstudio.com/docs/copilot/customization/<page>` where `<page>` is one of:
-`overview`, `agent-skills`, `custom-agents`, `custom-instructions`, `prompt-files`, `hooks`.
+`overview`, `agent-skills`, `custom-agents`, `custom-instructions`, `prompt-files`, `hooks`,
+`mcp`.
 
 ## Related
 
 - [adapters/mirai/MAPPING.md](../../adapters/mirai/MAPPING.md) — loom SKILLS → `.mirai/skills`
   mapping, stage → prompt/agent mapping, model-archetype table.
 - [adapters/mirai/STAGES.md](../../adapters/mirai/STAGES.md) — Shaping/Delivery/Closing
-  stage groupings and their prompt+agent pairs.
+  stage groupings, role capability sets, and their prompt+agent pairs.
+- [adapters/mirai/references/capabilities.md](../../adapters/mirai/references/capabilities.md)
+  — generic capability → Mirai tool mapping and docs-lookup/MCP wiring.
 - [adapters/mirai/setup.md](../../adapters/mirai/setup.md) — the adapter setup instruction
   that reads this page to generate a project's `.mirai/` configuration.
 - [wiki/adr/adr-004-loom-mirai-setup.md](../adr/adr-004-loom-mirai-setup.md) — the ADR
   recording why this 4-layer setup approach was chosen.
+- [wiki/adr/adr-006-capability-based-roles.md](../adr/adr-006-capability-based-roles.md) —
+  capability-based role discipline (the `tools:` capability sets).
+- [wiki/adr/adr-007-docs-lookup-capability.md](../adr/adr-007-docs-lookup-capability.md) —
+  the optional `docs-lookup` capability (MCP).
+- [wiki/adr/adr-008-delivery-dispatchers.md](../adr/adr-008-delivery-dispatchers.md) — the
+  Delivery dispatcher split.
+- [wiki/patterns/role-scoped-capabilities.md](../patterns/role-scoped-capabilities.md) — the
+  underlying pattern.
 </content>

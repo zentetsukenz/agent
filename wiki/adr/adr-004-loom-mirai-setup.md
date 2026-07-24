@@ -130,6 +130,10 @@ duplicates already-written config.
 - [ADR-005](adr-005-harness-agnostic-setup.md) — the harness-agnostic setup entrypoint and
   universal setup contract; **this ADR is the Mirai adapter — the first implementation of
   that contract.**
+- [ADR-006](adr-006-capability-based-roles.md) — refines this adapter's generated agents:
+  their single hardcoded capability set becomes per-role capability grants.
+- [ADR-008](adr-008-delivery-dispatchers.md) — splits this adapter's single Delivery agent
+  into Planner + Orchestrator dispatchers plus a Verifier utility.
 - [ADR-001](adr-001-adapter-pattern.md) — the general adapter layer this setup approach
   precedes and informs.
 - [ADR-002](adr-002-workflow-as-adapter-seed.md) — prose-first principle this setup flow

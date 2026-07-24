@@ -28,9 +28,79 @@ A reusable judgment pattern. Not just "how" but "when" and "why". A skill encode
 
 An autonomous entity with a clear identity and bounded responsibility. Agents specialize by problem domain, not technology.
 
+Identity is only half the picture: an agent is also defined by its [Role](#role) — the
+scoped set of [Capabilities](#capability) it is granted. Two agents can share a problem
+domain yet differ sharply in what they are *allowed to do* (e.g. an [Orchestrator](#orchestrator)
+that may `delegate` but not `edit`).
+
 **Example**: An "Authentication Agent" handles all auth concerns (login, tokens, permissions), not a "Node.js Agent" that does everything in Node.
 
-**See**: `mem:principles/wisdom` — "Identity shapes behavior"
+**See**: `mem:principles/wisdom` — "Identity shapes behavior"; [Role](#role), [Capability](#capability)
+
+---
+
+### Capability
+
+A generic, harness-agnostic power an [Agent](#agent) may hold: `read`, `edit`, `shell`,
+`delegate`, `persist`, `interview`, `web`, `docs-lookup`, `tasks`. Capabilities are named
+independently of any tool; each [Adapter](#adapter) maps them onto its [Harness](#harness)'s
+concrete tool names — and tolerates deviation when a harness's names differ (a mapping the
+adapter discovers or is told, never hardcodes blindly).
+
+Granting or **withholding** a capability is how loom enforces a [Role](#role): withholding
+`edit` is a *forcing function* — an agent that physically cannot edit must find another
+path (design, plan, dispatch, verify) rather than defaulting to writing code.
+
+**Example**: `delegate` (dispatch subagents) maps to Mirai's `agent` tool alias; `persist`
+(memory) maps to a specific tool name like `vscode/memory`, discovered from the harness's
+tool list rather than assumed.
+
+**See**: `mem:patterns/role-scoped-capabilities`, `mem:adr/adr-006-capability-based-roles`
+
+---
+
+### Role
+
+An [Agent](#agent) defined by its **scoped set of [Capabilities](#capability)** — what it is
+allowed to do — rather than only by its problem domain. The role *is* the capability grant:
+change the grant and you change the role. Enforcement lives in the grant, not in prose
+asking the agent to behave.
+
+Roles divide into two kinds by whether they hold `delegate`: a [Dispatcher](#dispatcher)
+routes work to others; a [Utility (dispatched) agent](#utility-dispatched-agent) receives
+and executes it.
+
+**Example**: A Planner and an executor may both touch the same feature, but the Planner's
+role withholds `edit` (it produces a plan, not code) while the executor's role grants it.
+
+**See**: `mem:patterns/role-scoped-capabilities`, `mem:adr/adr-006-capability-based-roles`
+
+---
+
+### Dispatcher
+
+A [Role](#role) that holds the `delegate` [Capability](#capability): it routes work to other
+agents rather than doing it itself. Dispatchers typically **withhold `edit`**, which forces
+them to delegate instead of quietly doing the work in-place. The [Orchestrator](#orchestrator)
+is the canonical dispatcher; a future plan-reviewer that dispatches verification is another.
+
+**See**: [Orchestrator](#orchestrator), `mem:patterns/role-scoped-capabilities`
+
+---
+
+### Utility (dispatched) agent
+
+A [Role](#role) that **receives** dispatched work — it holds execution [Capabilities](#capability)
+(`edit`, `shell`) but not `delegate` as its purpose. Utility agents are the reusable
+executor/verifier pool a [Dispatcher](#dispatcher) hands tasks to: `explore` (read-only
+recon), `quick` (mechanical edits), `deep` (hard problems), and the Verifier (checks an
+artifact against its acceptance criteria, `edit`-free so it verifies rather than fixes).
+
+Because a single utility can serve *multiple* dispatchers (the Verifier is dispatched by
+the Orchestrator today and by a plan-reviewer tomorrow), it sits at a real seam — worth
+factoring out as its own agent, per `mem:patterns/deep-modules` ("two consumers = a real seam").
+
+**See**: [Dispatcher](#dispatcher), `mem:patterns/role-scoped-capabilities`
 
 ---
 
@@ -164,12 +234,18 @@ Implementation → Verification → Preservation), grouped into three ownership 
 
 ### Orchestrator
 
-An agent role that runs the Implementation loop: it gauges each task's size and **dispatches
-it to the correct implementation-agent class** (high / mid / low intelligence) to maximize
-the chance of a successful implementation. It does not rely on a small agent self-assessing
-its own capability. The Orchestrator also enforces the architecture-prerequisite gate.
+An agent [Role](#role) that runs the Implementation loop: it gauges each task's size and
+**dispatches it to the correct implementation-agent class** (high / mid / low intelligence)
+to maximize the chance of a successful implementation. It does not rely on a small agent
+self-assessing its own capability. The Orchestrator also enforces the architecture-prerequisite
+gate.
 
-**See**: [SDLC Implementation phase](../../workflows/sdlc/implementation.md)
+The Orchestrator is loom's canonical [Dispatcher](#dispatcher): its role grants `delegate`
+but **withholds `edit`**, so it must route work to [Utility (dispatched) agents](#utility-dispatched-agent)
+rather than implementing (or verifying) it itself.
+
+**See**: [SDLC Implementation phase](../../workflows/sdlc/implementation.md), [Dispatcher](#dispatcher),
+`mem:adr/adr-008-delivery-dispatchers`
 
 ---
 

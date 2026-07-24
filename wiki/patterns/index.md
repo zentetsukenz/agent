@@ -11,6 +11,7 @@ Reusable design patterns and best practices for agent framework development.
 | Pattern | Summary |
 |---------|---------|
 | [Deep Modules](deep-modules.md) | Design interfaces that hide complexity |
+| [Role-Scoped Capabilities](role-scoped-capabilities.md) | A role is a scoped capability set; enforce it by withholding capabilities, not prose |
 | [Backend API Patterns](backend-api-patterns.md) | Reference implementations for Express.js, Prisma, and REST API development |
 | [Backend API Gotchas](backend-api-gotchas.md) | Learn from common mistakes in Express.js, Prisma, and REST API development |
 | [Prisma Patterns](prisma-patterns.md) | Prisma 7 patterns and best practices |

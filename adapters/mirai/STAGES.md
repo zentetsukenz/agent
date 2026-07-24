@@ -1,10 +1,23 @@
 # loom Stages in Mirai
 
-> Concrete Shaping/Delivery/Closing groupings for the Mirai adapter's [setup.md](setup.md). Each stage gets
-> **two** delivery tiers (prompt = quick combo, agent = deep workflow) per
-> [ADR-004](../../wiki/adr/adr-004-loom-mirai-setup.md) and
+> Concrete Shaping/Delivery/Closing groupings for the Mirai adapter's [setup.md](setup.md).
+> Each stage gets **two** delivery tiers (prompt = quick combo, agent(s) = deep workflow)
+> per [ADR-004](../../wiki/adr/adr-004-loom-mirai-setup.md) and
 > [MAPPING.md](MAPPING.md#2-stages--prompts-combo--agents-deep). This file supplies the
-> exact skill roster per stage and where each agent's workflow prose comes from.
+> exact skill roster per stage, each agent's **role-scoped capabilities**
+> ([ADR-006](../../wiki/adr/adr-006-capability-based-roles.md)), and where each agent's
+> workflow prose comes from.
+>
+> **Capabilities are generic; the adapter maps them.** Each `Capabilities` row below names
+> generic capabilities (`read` `edit` `shell` `delegate` `persist` `interview` `web`
+> `docs-lookup` `tasks`); the setup step resolves them to Mirai tool names via
+> [references/capabilities.md](references/capabilities.md) and tolerates deviation. The
+> **withheld** capabilities are load-bearing — a role with no `edit` cannot write code, and
+> that is the point.
+>
+> **`docs-lookup`** rows are shown *if the project opted into it* (interview table 7); omit
+> otherwise. **`persist`/`interview`** resolve to specific harness tool names discovered at
+> setup, not aliases.
 
 ## Shaping (Discovery + Design)
 
@@ -18,6 +31,9 @@ with design docs (domain model, interfaces, ADRs). See
 | Model archetype | Communicator |
 | Prompt file | `.mirai/prompts/shape.prompt.md` |
 | Agent file | `.mirai/agents/shaping.agent.md` |
+| Capabilities | `read`, `search`, `shell`, `persist`, `interview`, `tasks` (+ `docs-lookup` if opted). **No `edit`** — Shaping produces understanding and design, not code. |
+| Quick base agent | `plan` — Mirai's built-in read-only mode, so the quick path inherits the no-edit guarantee. |
+| Quick stance | "You are shaping, not building — produce understanding and design artifacts. Do NOT edit application code." |
 
 Skill roster (full default; pruned per the Scope interview table in
 [references/interview.md](references/interview.md)):
@@ -27,34 +43,66 @@ Skill roster (full default; pruned per the Scope interview table in
 - `design/domain-model`, `design/design-an-interface`, `design/codebase-design`,
   `design/improve-codebase-architecture`
 
+**Spike escape hatch:** a Discovery throwaway spike that needs to write code is dispatched
+to an executor utility (`quick`/`deep`) — Shaping itself stays edit-free.
+
 ## Delivery (Planning + Implementation + Verification)
 
 **Owner (illustrative)**: delivery team. **Seam artifact**: a shipped, verified change
 proven against the success criteria.
 
+Delivery is **not** one agent. Per
+[ADR-008](../../wiki/adr/adr-008-delivery-dispatchers.md) it is split into **two dispatcher
+agents** — a Planner and an Orchestrator — that *delegate* execution and verification to the
+[utility roster](#utility-agents-cross-stage) (`quick`/`deep` execute; the Verifier
+verifies). Neither dispatcher holds `edit`; that withholding is what forces them to plan and
+dispatch rather than write code themselves. The single quick prompt
+(`.mirai/prompts/deliver.prompt.md`) still serves the low-ceremony path for small work.
+
 | | |
 |---|---|
-| Workflow prose source | `workflows/sdlc/planning.md` + `workflows/sdlc/implementation.md` + `workflows/sdlc/verification.md`, concatenated |
-| Model archetype | Deep Specialist (agent tier) / Communicator (planning-heavy prompt tier — see note below) |
-| Prompt file | `.mirai/prompts/deliver.prompt.md` |
-| Agent file | `.mirai/agents/delivery.agent.md` |
+| Quick prompt file | `.mirai/prompts/deliver.prompt.md` |
+| Quick base agent | `agent` |
+| Quick stance | "Size and plan before you implement, and verify before you call it done — don't skip a gate to save time." |
+| Deep agent files | `.mirai/agents/planner.agent.md`, `.mirai/agents/orchestrator.agent.md` |
+
+### Planner — `.mirai/agents/planner.agent.md`
+
+| | |
+|---|---|
+| Phase | Planning |
+| Workflow prose source | `workflows/sdlc/planning.md` |
+| Model archetype | Communicator |
+| Capabilities | `read`, `search`, `shell` (read-only investigation), `persist`, `interview`, `tasks` (+ `docs-lookup` if opted). **No `edit`, no `delegate`.** |
+| Role | Pure plan-author: reads Design + findings, decomposes into a risk-ordered, right-sized execution plan. A research need is a loop back to Shaping, not a dispatch. |
 
 Skill roster:
 
 - `planning/task-sizing`, `planning/dispatch-context`, `planning/plan-review`,
   `planning/to-prd`, `planning/to-issues`, `planning/triage`, `planning/wayfinder`
+
+### Orchestrator — `.mirai/agents/orchestrator.agent.md`
+
+| | |
+|---|---|
+| Phase | Implementation (+ dispatches Verification) |
+| Workflow prose source | `workflows/sdlc/implementation.md` + `workflows/sdlc/verification.md`, concatenated |
+| Model archetype | Deep Specialist |
+| Capabilities | `read`, `search`, `delegate`, `persist`, `tasks`. **No `edit`** — the forcing function that makes it dispatch. |
+| Role | Reads the plan; dispatches tasks (parallel/sequential) to `quick`/`deep` executors and verification to the Verifier; gauges size; enforces the architecture-prerequisite gate; re-routes on mis-size. |
+
+Skill roster:
+
 - `implementation/tdd`, `implementation/prototype`, `implementation/diagnose`,
   `implementation/systematic-debugging`, `implementation/frontend-runtime-debugging`,
   `implementation/architect-review`, `implementation/server-operations`
 - `verification/verification-before-completion`, `verification/visual-verification`,
   `verification/qa-witness-protocol`
 
-**Note on model archetype**: Delivery is the one stage that spans genuinely different
-working styles (planning is Communicator-shaped; hard implementation/debugging is Deep
-Specialist-shaped). Default: the **agent** tier gets the Deep Specialist fallback array
-(it carries the highest-stakes work); the **prompt** tier gets the Communicator fallback
-array (quick planning/dispatch tasks dominate the quick path). The interview may ask the
-user to confirm this split rather than assuming it.
+**Note on model archetypes**: the Planner is Communicator-shaped (decomposition, plan
+authoring); the Orchestrator is Deep Specialist-shaped (high-stakes routing/gating). The
+quick **prompt** tier gets the Communicator fallback array (quick planning/dispatch
+dominates the quick path). The interview may ask the user to confirm.
 
 ## Closing (Preservation)
 
@@ -67,6 +115,9 @@ fed back into the framework.
 | Model archetype | Utility |
 | Prompt file | `.mirai/prompts/close.prompt.md` |
 | Agent file | `.mirai/agents/closing.agent.md` |
+| Capabilities | `read`, `edit` (documentation/wiki only), `search`, `persist`, `tasks`. |
+| Quick base agent | `agent` |
+| Quick stance | "Curate durable knowledge; don't change application code." |
 
 Skill roster:
 
@@ -85,16 +136,40 @@ relative links resolve — see
 
 ## Utility agents (cross-stage)
 
-See [MAPPING.md](MAPPING.md#3-utility-agents-à-la-omo) for the `explore`/`quick`/`deep`/
-`writing` roster — these are independent of the three stages above and generated per the
-Utility Agents interview table.
+Utility agents are the **dispatched** roster ([role-scoped-capabilities](../../wiki/patterns/role-scoped-capabilities.md)):
+a [Dispatcher](../../wiki/glossary/index.md#dispatcher) (the Orchestrator, or a future
+plan-reviewer) hands them scoped tasks. They are independent of the three stages and
+generated per the Utility Agents interview table. See
+[MAPPING.md](MAPPING.md#3-utility-agents-à-la-omo) for the roster overview.
+
+| Utility | Purpose | Capabilities |
+|---|---|---|
+| `explore` | Read-only recon and Q&A | `read`, `search` |
+| `quick` | Fast mechanical edits (executor) | `read`, `edit`, `search`, `shell`, `tasks` |
+| `deep` | Hard problems (executor) | `read`, `edit`, `search`, `shell`, `delegate`, `persist`, `tasks` (+ `docs-lookup` if opted) |
+| `verifier` | Verify an artifact against its acceptance criteria; return evidence | `read`, `search`, `shell` (run tests), `persist`. **No `edit`** — verifies, doesn't fix. |
+| `writing` | Prose (commit messages, PRs, docs) | `read`, `edit` (docs), `search` — **DEFERRED for now** |
+
+### Verifier — `.mirai/agents/verifier.agent.md`
+
+A dispatched utility running an **extended-thinking / long-context** model. It checks a
+delivered artifact against its acceptance criteria and returns pass/fail **evidence**; it
+holds no `edit`, so defects route back to the dispatcher rather than being silently patched.
+It is a *utility*, not a Delivery stage agent, because more than one dispatcher uses it: the
+Orchestrator dispatches it to verify a change today, and a future plan-reviewer will
+dispatch it to verify a *plan* (two consumers = a real seam — see
+[ADR-008](../../wiki/adr/adr-008-delivery-dispatchers.md)). Its model is named by the user
+at setup (the extended-thinking intent, not a hardcoded string).
 
 ## Related
 
 - [MAPPING.md](MAPPING.md) — the general lookup table this file's rosters plug into.
-- [ADR-004](../../wiki/adr/adr-004-loom-mirai-setup.md) — the decision this implements.
+- [ADR-004](../../wiki/adr/adr-004-loom-mirai-setup.md) — the base setup approach.
+- [ADR-006](../../wiki/adr/adr-006-capability-based-roles.md) — capability-based role discipline (the `Capabilities` rows above).
+- [ADR-008](../../wiki/adr/adr-008-delivery-dispatchers.md) — the Delivery dispatcher split and Verifier-as-utility.
+- [references/capabilities.md](references/capabilities.md) — generic capability → Mirai tool-name mapping.
 - [workflows/sdlc/index.md](../../workflows/sdlc/index.md) — the six phases and three
-  stages this file maps 1:1 onto.
+  stages this file maps onto.
 - [setup.md](setup.md) — the Mirai adapter setup instruction that reads
   this file during Write (step 5).
 </content>

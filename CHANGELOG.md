@@ -2,6 +2,26 @@
 
 All notable changes to this framework are documented here.
 
+## [Unreleased] — 2026-07-24
+
+### Added
+
+- **Role-scoped capabilities** — a harness-agnostic loom pattern: an agent's role is the scoped set of capabilities it is granted, and enforcement comes from *withholding* capabilities (a role with no `edit` cannot write code), not from prose. See `wiki/patterns/role-scoped-capabilities.md`.
+  - `wiki/adr/adr-006-capability-based-roles.md` — capability-based role discipline; generic capability names the adapter maps to harness tool names and tolerates deviation; no-`edit` as a forcing function; per-stage quick base agent (`plan` for read-only Shaping) + stance line
+  - `wiki/adr/adr-007-docs-lookup-capability.md` — optional, tool-agnostic `docs-lookup` capability (Context7/MCP is the current impl), off by default and interview-gated
+  - `wiki/adr/adr-008-delivery-dispatchers.md` — Delivery splits into Planner + Orchestrator dispatchers (neither holds `edit`); execution dispatched to the `quick`/`deep` utilities and verification to a reusable `verifier` utility; retires the single `delivery.agent.md`
+  - Glossary: **Capability**, **Role**, **Dispatcher**, **Utility (dispatched) agent**; sharpened **Agent** and **Orchestrator**
+  - `adapters/mirai/references/capabilities.md` — generic capability → Mirai tool mapping and docs-lookup/MCP wiring
+  - `adapters/mirai/MAPPING.md` §6 — the capability → Mirai tool mapping table
+
+### Changed
+
+- Mirai adapter now generates **role-scoped** agents: the shared agent template (`assets/templates/stage.agent.md.template` → renamed `role.agent.md.template`) is parameterised by `{{ROLE_TOOLS}}`/`{{ROLE_MODEL}}` instead of a hardcoded tool set; Shaping drops `edit` and gains `persist`/`interview`; Delivery emits `planner.agent.md` + `orchestrator.agent.md` (dispatchers) plus a `verifier.agent.md` utility
+- Quick prompts (`stage.prompt.md.template`) now set a per-stage **base agent** (`plan` for Shaping, `agent` otherwise) and carry an in-body **stance** line — fixes `shaping-quick` running in the generic agent and jumping to code
+- `adapters/mirai/STAGES.md` — per-role capability rows, quick base-agent/stance, Delivery dispatcher split, Verifier in the utility roster
+- `adapters/mirai/setup.md`, `references/interview.md`, `references/write-format.md`, `references/verify.md` — capability-to-tool resolution (discover/confirm harness-specific names), docs-lookup and Delivery-split interview tables, an `update` frontmatter-reconcile rule (frontmatter lives above the provenance marker), a `delivery.agent.md`→dispatchers migration note, and capability checks
+- `wiki/environments/mirai.md` — prompt base-agent mapping, role-capability `tools:` mapping, `persist`/`interview` are specific tool names (not aliases), and an MCP-for-`docs-lookup` subsection
+
 ## [Unreleased] — 2026-07-20
 
 ### Added

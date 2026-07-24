@@ -41,6 +41,32 @@ project's generated `.mirai/`).
       of strings — never a bare unquoted string with a colon inside it.
 - [ ] The model names used were confirmed against the user's actual Mirai model picker
       during the interview, not guessed.
+- [ ] The `verifier` (if generated) uses the extended-thinking / long-context model the
+      user named — not the default Deep Specialist model unless the user chose so.
+
+## Role capabilities ([ADR-006](../../../wiki/adr/adr-006-capability-based-roles.md), [ADR-008](../../../wiki/adr/adr-008-delivery-dispatchers.md))
+
+- [ ] The `shaping`, `planner`, `orchestrator`, and `verifier` agents' `tools:` arrays do
+      **not** contain `edit` — a role that jumped to code is the failure this prevents.
+- [ ] The `orchestrator` has `agent` (delegate) in `tools:`; the `planner` does **not**
+      (it plans, it doesn't dispatch).
+- [ ] The executor utilities (`quick`, `deep`) **do** have `edit`.
+- [ ] Delivery emitted **two** dispatcher agents (`planner.agent.md`,
+      `orchestrator.agent.md`) — and no single `delivery.agent.md` remains (an `update`
+      must have retired it; see [write-format.md](write-format.md) migration note).
+- [ ] The `verifier` is in the **utility** roster (`.mirai/agents/verifier.agent.md`), not
+      presented as a Delivery stage agent.
+- [ ] `persist`/`interview` capabilities were written as the **actual** harness tool names
+      (confirmed against the tool list), not a guessed alias.
+- [ ] `docs-lookup` (`<server>/*`) appears in `tools:` **only** if the interview opted in;
+      absent otherwise.
+
+## Quick prompts
+
+- [ ] Each `.mirai/prompts/*.prompt.md` has a non-empty **stance** line in its body.
+- [ ] Each quick prompt's `agent:` is the correct base agent — `plan` for `shape.prompt.md`,
+      `agent` for `deliver.prompt.md` / `close.prompt.md` — not a stale `agent: "agent"` on
+      the Shaping prompt.
 
 ## Report
 
