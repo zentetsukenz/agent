@@ -69,6 +69,22 @@ generating `deep` or `writing`.
 | `verifier` | Generate the verification subagent (extended-thinking; dispatched to check artifacts vs. acceptance criteria; reusable by a future plan-reviewer)? | Yes when Delivery is adopted |
 | `writing` | Generate dedicated prose/commit-message/docs subagent? | Ask — **DEFERRED** by default |
 
+### Domain-specialized utilities
+
+Scoped by problem *domain*, not intelligence tier
+([ADR-009](../../../wiki/adr/adr-009-frontend-domain-utility.md)). Offer only when the project
+*has* that domain — detect a frontend from the project (a `vite`/`next`/`svelte`/`astro` config,
+a `src/components` tree, a browser-facing `package.json`). Skip both for a backend-only repo.
+
+| Utility agent | Ask | Recommended default |
+|---|---|---|
+| `frontend` | Project has a frontend — generate the frontend dev + runtime-debugging subagent (wires `frontend-runtime-debugging` + support skills; `edit`-capable; delegates pixel-looking to `visual-qa`)? | Yes when a frontend is detected |
+| `visual-qa` | Generate the isolated, vision-capable visual-verification subagent (screenshots → text-only findings; `edit`-free)? | Yes when a frontend is detected — **required** if `frontend` is generated (it is `frontend`'s pixel-isolation seam) |
+
+If `frontend` is generated, `visual-qa` **must** be too — `frontend` delegates all pixel-looking
+to it, so without `visual-qa` the isolation seam breaks. Pin `visual-qa` to a **vision-capable**
+model (confirm with the user; a non-vision model silently "sees" nothing).
+
 ## 4b. Documentation-lookup capability (`docs-lookup`)
 
 Optional, **off by default** ([ADR-007](../../../wiki/adr/adr-007-docs-lookup-capability.md)).

@@ -94,6 +94,15 @@ a real one.* A Verifier dispatched by both an Orchestrator (verify a change) and
 plan-reviewer (verify a plan) is a real seam: a small interface (*artifact + acceptance
 criteria → evidence*) hiding substantial checking behavior, reused across callers.
 
+Utilities can be scoped two ways. Most of the roster is scoped by **intelligence tier**
+(`explore`/`quick`/`deep`/`verifier`). A
+[domain-specialized utility](../glossary/index.md#domain-specialized-utility) is instead
+scoped by **problem domain** — it wires that domain's skill cluster. The `frontend` agent
+(dev + runtime debugging, wiring the frontend skill cluster and *delegating* pixel-looking
+to `visual-qa`) is the first — see [ADR-009](../adr/adr-009-frontend-domain-utility.md). This
+is the roster's expression of the wisdom principle *"specialize by problem domain, not
+technology."*
+
 ## When to apply
 
 - Designing or generating a roster of agents that must divide labour (design vs. plan vs.
@@ -115,6 +124,7 @@ criteria → evidence*) hiding substantial checking behavior, reused across call
 
 - [ADR-006 — Capability-based role discipline](../adr/adr-006-capability-based-roles.md)
 - [ADR-008 — Delivery dispatchers delegate execution and verification](../adr/adr-008-delivery-dispatchers.md)
+- [ADR-009 — Frontend as a domain-specialized utility agent](../adr/adr-009-frontend-domain-utility.md) — the first domain-scoped utility on this roster
 - [Deep Modules](deep-modules.md) — the "two consumers = a real seam" test for factoring utilities
 - [SDLC Implementation phase](../../workflows/sdlc/implementation.md) — the pre-existing Orchestrator role this pattern generalises
 - [codebase-design](../../SKILLS/design/codebase-design/SKILL.md) — the deep-module vocabulary

@@ -79,6 +79,27 @@ not a Delivery stage agent, so multiple dispatchers can reuse it (Orchestrator �
 change; future plan-reviewer → verify a plan). These are optional; the setup interview asks
 which the project wants generated (Verifier defaults to Yes when Delivery is adopted).
 
+### Domain-specialized utilities
+
+The roster above is differentiated by **intelligence tier**. A
+[domain-specialized utility](../../wiki/glossary/index.md#domain-specialized-utility)
+([ADR-009](../../wiki/adr/adr-009-frontend-domain-utility.md)) is instead scoped to a
+**problem domain** and wires that domain's skill cluster. These are offered only when the
+project has that domain (the setup interview gates them — e.g. skip both for a backend-only
+repo):
+
+| Utility agent | Purpose | Archetype | Capabilities |
+|---|---|---|---|
+| `frontend.agent.md` | Frontend development + runtime debugging; delegates pixel-looking to `visual-qa` | Deep Specialist | `read`, `edit`, `search`, `shell`, `delegate`, `persist`, `tasks` (+ `docs-lookup` if opted) |
+| `visual-qa.agent.md` | Isolated, vision-capable visual verification — captures screenshots, returns text-only findings | Deep Specialist (vision) | `read`, `search`, `shell` — **no `edit`** (verifies, doesn't fix) |
+
+The two form the frontend isolation seam ([ADR-009](../../wiki/adr/adr-009-frontend-domain-utility.md)):
+`frontend` (`edit`-capable, dev + runtime debug) *delegates* pixel-looking to `visual-qa`
+(`edit`-free, vision-capable) so screenshot bytes never enter the edit-capable context. Source
+agents: [agents/frontend.md](../../agents/frontend.md), [agents/visual-qa.md](../../agents/visual-qa.md).
+The shared browser-drive knowledge both wire lives in
+[wiki/patterns/browser-capture.md](../../wiki/patterns/browser-capture.md).
+
 ## 4. AGENTS.md role
 
 Root `AGENTS.md` (or `.mirai/mirai-instructions.md` — pick one, see
@@ -140,6 +161,7 @@ discovered or confirmed against the user's actual tool list at setup, never hard
 - [ADR-006](../../wiki/adr/adr-006-capability-based-roles.md) — capability-based role discipline (§6 above).
 - [ADR-007](../../wiki/adr/adr-007-docs-lookup-capability.md) — the optional `docs-lookup` capability.
 - [ADR-008](../../wiki/adr/adr-008-delivery-dispatchers.md) — the Delivery dispatcher split (§2, §3).
+- [ADR-009](../../wiki/adr/adr-009-frontend-domain-utility.md) — the `frontend` + `visual-qa` domain-specialized utilities (§3).
 - [wiki/environments/mirai.md](../../wiki/environments/mirai.md) — Mirai primitive reference.
 - [references/capabilities.md](references/capabilities.md) — full capability→tool mapping and docs-lookup wiring.
 - [STAGES.md](STAGES.md) — stage groupings, skill rosters, capability sets, workflow-prose sourcing.

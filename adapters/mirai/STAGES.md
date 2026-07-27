@@ -150,6 +150,15 @@ generated per the Utility Agents interview table. See
 | `verifier` | Verify an artifact against its acceptance criteria; return evidence | `read`, `search`, `shell` (run tests), `persist`. **No `edit`** — verifies, doesn't fix. |
 | `writing` | Prose (commit messages, PRs, docs) | `read`, `edit` (docs), `search` — **DEFERRED for now** |
 
+**Domain-specialized utilities** ([ADR-009](../../wiki/adr/adr-009-frontend-domain-utility.md)):
+scoped by problem *domain* rather than intelligence tier, offered only when the project has
+that domain (interview-gated — skip for a backend-only repo):
+
+| Utility | Purpose | Capabilities |
+|---|---|---|
+| `frontend` | Frontend development + runtime debugging; delegates pixel-looking to `visual-qa` | `read`, `edit`, `search`, `shell`, `delegate`, `persist`, `tasks` (+ `docs-lookup` if opted) |
+| `visual-qa` | Isolated, vision-capable visual verification — screenshots → text-only findings | `read`, `search`, `shell`. **No `edit`** — verifies, doesn't fix. |
+
 ### Verifier — `.mirai/agents/verifier.agent.md`
 
 A dispatched utility running an **extended-thinking / long-context** model. It checks a
@@ -161,12 +170,33 @@ dispatch it to verify a *plan* (two consumers = a real seam — see
 [ADR-008](../../wiki/adr/adr-008-delivery-dispatchers.md)). Its model is named by the user
 at setup (the extended-thinking intent, not a hardcoded string).
 
+### Frontend + Visual QA — the frontend isolation seam
+
+Two domain-specialized utilities that pair up
+([ADR-009](../../wiki/adr/adr-009-frontend-domain-utility.md)):
+
+- **`frontend`** (`.mirai/agents/frontend.agent.md`) — the `edit`-capable dev + runtime-debug
+  agent. Wires `frontend-runtime-debugging` (primary), `systematic-debugging`, `diagnose`,
+  `server-operations`, `tdd`, and `visual-verification`. Holds `delegate` for one narrow purpose:
+  handing pixel-looking to `visual-qa` inside a fix→verify loop. Source:
+  [agents/frontend.md](../../agents/frontend.md).
+- **`visual-qa`** (`.mirai/agents/visual-qa.agent.md`) — the `edit`-free, vision-capable
+  isolation seam. Captures screenshots in a discarded context and returns text-only findings;
+  never returns image bytes. Wires `visual-verification`. Source:
+  [agents/visual-qa.md](../../agents/visual-qa.md).
+
+`frontend` never loads screenshot bytes into its own edit-capable context — it *delegates* pixel
+review to `visual-qa`, keeping the byte-bloat the [visual-verification](../../SKILLS/verification/visual-verification/SKILL.md)
+ISOLATE strategy forbids out of a long-lived edit context. The shared browser-drive knowledge both
+wire lives in [wiki/patterns/browser-capture.md](../../wiki/patterns/browser-capture.md).
+
 ## Related
 
 - [MAPPING.md](MAPPING.md) — the general lookup table this file's rosters plug into.
 - [ADR-004](../../wiki/adr/adr-004-loom-mirai-setup.md) — the base setup approach.
 - [ADR-006](../../wiki/adr/adr-006-capability-based-roles.md) — capability-based role discipline (the `Capabilities` rows above).
 - [ADR-008](../../wiki/adr/adr-008-delivery-dispatchers.md) — the Delivery dispatcher split and Verifier-as-utility.
+- [ADR-009](../../wiki/adr/adr-009-frontend-domain-utility.md) — the `frontend` + `visual-qa` domain-specialized utilities added to the roster above.
 - [references/capabilities.md](references/capabilities.md) — generic capability → Mirai tool-name mapping.
 - [workflows/sdlc/index.md](../../workflows/sdlc/index.md) — the six phases and three
   stages this file maps onto.

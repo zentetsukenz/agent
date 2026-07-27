@@ -109,6 +109,11 @@ logs bloat working memory fast. Write the full evidence to a temp file
 relevant summary into the conversation. This keeps context clean whether you're working solo or
 an orchestrator has handed the capture to a separate session.
 
+> The generic browser-drive moves (discover the URL from config, choose the automation tool,
+> capture without contaminating context) are shared with the visual skill — see
+> [wiki/patterns/browser-capture.md](../../../wiki/patterns/browser-capture.md). This step adds the
+> *runtime lens*: the channels below and the capture caveats specific to runtime evidence.
+
 ### Capability checklist — what any capture must provide
 
 The capture tool is your choice; it just has to deliver these channels:
@@ -200,6 +205,8 @@ didn't watch reproduce-then-pass is not verified — see
 - [server-operations](../server-operations/SKILL.md) — start/verify dev servers.
 - [visual-verification](../../verification/visual-verification/SKILL.md) — visual UI review.
 - [verification-before-completion](../../verification/verification-before-completion/SKILL.md) — evidence before "done".
+- [wiki/patterns/browser-capture.md](../../../wiki/patterns/browser-capture.md) — the shared browser-drive substrate this skill specializes with a *runtime* lens.
+- [agents/frontend.md](../../../agents/frontend.md) — the domain-specialized utility that wires this skill as its primary.
 
 ---
 

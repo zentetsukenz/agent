@@ -18,3 +18,4 @@ Architectural decisions for the loom framework, organized chronologically.
 | [ADR-006](adr-006-capability-based-roles.md) | Capability-based role discipline | Accepted | agent, role, capability, enforcement, mirai, adapter, loom |
 | [ADR-007](adr-007-docs-lookup-capability.md) | Optional up-to-date documentation-lookup capability | Accepted | capability, docs-lookup, mcp, adapter, mirai, loom |
 | [ADR-008](adr-008-delivery-dispatchers.md) | Delivery dispatchers delegate execution and verification to the utility tier | Accepted | agent, role, delivery, orchestrator, planner, verifier, dispatch, sdlc, mirai, loom |
+| [ADR-009](adr-009-frontend-domain-utility.md) | Frontend is a domain-specialized utility agent that delegates pixel-looking | Accepted | agent, role, frontend, utility, domain, visual, isolation, mirai, loom |

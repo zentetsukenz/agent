@@ -1,5 +1,11 @@
 # Capture Contract & Deterministic Recipe
 
+> The generic browser-drive moves (discover the URL from config, choose Playwright/Chrome
+> DevTools MCP, isolate/capture, stabilize) live in the shared
+> [wiki/patterns/browser-capture.md](../../../wiki/patterns/browser-capture.md). This file adds the
+> *pixels lens* on top: the vision + isolation contract and the visual-specific instruction
+> examples. The runtime-debug skill adds its own lens to the same substrate.
+
 ## The capability contract
 
 The capture mechanism is your choice — the `visual-qa` subagent, a browser-automation MCP, a

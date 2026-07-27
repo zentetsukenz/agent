@@ -104,6 +104,25 @@ factoring out as its own agent, per `mem:patterns/deep-modules` ("two consumers 
 
 ---
 
+### Domain-specialized utility
+
+A [Utility (dispatched) agent](#utility-dispatched-agent) scoped to a **problem domain**
+(e.g. frontend) rather than an **intelligence tier** (`quick`/`deep`). It wires that
+domain's skill cluster and is dispatched for work in that domain. This closes the gap
+between the tier-based roster and the wisdom principle *"specialize by problem domain, not
+technology"* — the tier utilities are difficulty-shaped; a domain-specialized utility is
+domain-shaped.
+
+**Example**: The `frontend` agent (development + runtime debugging) wires
+`frontend-runtime-debugging`, `systematic-debugging`, `diagnose`, `server-operations`,
+`tdd`, and `visual-verification`, and *delegates* pixel-looking to the `visual-qa`
+isolation seam. It is the first domain-specialized utility.
+
+**See**: [Utility (dispatched) agent](#utility-dispatched-agent),
+`mem:adr/adr-009-frontend-domain-utility`, `mem:patterns/role-scoped-capabilities`
+
+---
+
 ### Wiki
 
 Centralized knowledge repository. Contains principles, patterns, environments, and glossary. Reference material, not procedures.
