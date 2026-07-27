@@ -58,7 +58,7 @@ procedure — stop and ask rather than guessing or leaving it blank.
 | Placeholder | Source |
 |---|---|
 | `{{STAGE_NAME}}` | One of `shape`, `deliver`, `close` (the quick-prompt stage) |
-| `{{STAGE_BASE_AGENT}}` | The quick base agent from [STAGES.md](../STAGES.md): `plan` for read-only Shaping, `agent` for Delivery/Closing |
+| `{{STAGE_BASE_AGENT}}` | The quick base agent from [STAGES.md](../STAGES.md): `Plan` for read-only Shaping, `agent` for Delivery/Closing |
 | `{{STAGE_STANCE}}` | The stage's one-line stance from [STAGES.md](../STAGES.md) (the portable no-jump-to-conclusions backstop) |
 | `{{STAGE_SKILL_LIST}}` | The stage's adopted skill roster from [STAGES.md](../STAGES.md), pruned per the Scope interview table |
 | `{{MODEL_FALLBACK_ARRAY}}` | The archetype-matched model array from the Model Matching interview table |
@@ -93,7 +93,7 @@ On `update`, after replacing the marked body, **reconcile the loom-authored fron
 fields** against what [STAGES.md](../STAGES.md), [capabilities.md](capabilities.md), and the
 prompt/role templates now say they should be:
 
-- Prompt `agent:` — must be the current base agent (`plan` for Shaping, `agent` otherwise),
+- Prompt `agent:` — must be the current base agent (`Plan` for Shaping, `agent` otherwise),
   not a stale `agent: "agent"` from an earlier version.
 - Agent `tools:` — must match the role's current capability set (e.g. a Shaping agent that
   still carries `edit` from an old run must have it **removed**).

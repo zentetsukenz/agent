@@ -64,7 +64,7 @@ project's generated `.mirai/`).
 ## Quick prompts
 
 - [ ] Each `.mirai/prompts/*.prompt.md` has a non-empty **stance** line in its body.
-- [ ] Each quick prompt's `agent:` is the correct base agent — `plan` for `shape.prompt.md`,
+- [ ] Each quick prompt's `agent:` is the correct base agent — `Plan` for `shape.prompt.md`,
       `agent` for `deliver.prompt.md` / `close.prompt.md` — not a stale `agent: "agent"` on
       the Shaping prompt.
 

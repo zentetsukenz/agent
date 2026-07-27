@@ -32,7 +32,7 @@ with design docs (domain model, interfaces, ADRs). See
 | Prompt file | `.mirai/prompts/shape.prompt.md` |
 | Agent file | `.mirai/agents/shaping.agent.md` |
 | Capabilities | `read`, `search`, `shell`, `persist`, `interview`, `tasks` (+ `docs-lookup` if opted). **No `edit`** — Shaping produces understanding and design, not code. |
-| Quick base agent | `plan` — Mirai's built-in read-only mode, so the quick path inherits the no-edit guarantee. |
+| Quick base agent | `Plan` — Mirai's built-in read-only mode, so the quick path inherits the no-edit guarantee. |
 | Quick stance | "You are shaping, not building — produce understanding and design artifacts. Do NOT edit application code." |
 
 Skill roster (full default; pruned per the Scope interview table in

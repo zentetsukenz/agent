@@ -43,9 +43,9 @@ user picks per invocation:
 
 - A **prompt** (`.mirai/prompts/<stage>.prompt.md`) is a preset bundle whose body references
   the specific skills to invoke for the quick path. Its `agent:` field names a **base
-  agent** (a Mirai built-in — `plan` for read-only Shaping, `agent` otherwise), **not** the
+  agent** (a Mirai built-in — `Plan` for read-only Shaping, `agent` otherwise), **not** the
   custom deep stage agent: the prompt stays decoupled from the deep agent, and read-only
-  stages inherit the harness's no-edit guarantee from `plan` mode
+  stages inherit the harness's no-edit guarantee from `Plan` mode
   ([ADR-006](../../wiki/adr/adr-006-capability-based-roles.md)). A short in-body **stance**
   line is the portable backstop. It IS the bundle — no separate bundle-skill layer exists.
 - A **deep agent** (`.mirai/agents/<role>.agent.md`) carries the corresponding
