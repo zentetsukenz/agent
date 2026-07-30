@@ -14,3 +14,7 @@ description: Chronological log of patterns changes
   contract that `visual-verification` (pixels lens) and `frontend-runtime-debugging`
   (runtime lens) both specialize, so the browser-drive knowledge lives in one module
   instead of drifting across two skills. Grounds ADR-009.
+- 2026-07-30 — Added **Seam Artifact Protocol** — one deep contract (namespaced ledger +
+  manifest; produce@exit, discover@entry) consolidating the three shallow context-movers
+  (`handoff`, `session-bootstrap`, `dispatch-context`) so context survives the stage seams.
+  Mandatory at the two stage seams; substrate is a per-project setup choice. Grounds ADR-011.

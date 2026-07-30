@@ -18,6 +18,21 @@ agent or human can pick up cold.
 **Entry gate**
 
 - Verification passed; the change is accepted.
+- **The Delivery seam artifact has been discovered** — this is the Closing side of the
+  Delivery → Closing handoff (see below).
+
+## Stage seam — DISCOVER (Delivery → Closing)
+
+Preservation is the **Closing stage**, so its entry is where the organisation receives the baton.
+Per the [Seam Artifact Protocol](../../wiki/patterns/seam-artifact-protocol.md), Closing
+**discovers** the Delivery seam artifact rather than reconstructing what shipped from memory:
+
+- Read the ledger manifest, find the latest `shipped` row for the milestone, and load
+  `delivery/<milestone>/verified-change.md` — it tells Closing exactly what to curate.
+- Use [session-bootstrap](../../SKILLS/discovery/session-bootstrap/SKILL.md) (the DISCOVER
+  adapter) and the project's [communication protocol document](../../wiki/patterns/seam-artifact-protocol.md#4-the-communication-protocol-document).
+- On completion, Closing may register a final `preserved` row pointing at the curated wiki
+  entries, closing the ledger trail for the milestone.
 
 **Exit gate**
 

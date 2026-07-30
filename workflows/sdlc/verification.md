@@ -24,6 +24,21 @@ Confirm that the **whole** delivered change satisfies the success criteria defin
 - Success criteria are demonstrably met via **evidence, not assertion**.
 - [verification-before-completion](../../SKILLS/verification/verification-before-completion/SKILL.md) is satisfied.
 - No "done" claim exists without proof.
+- **The Delivery seam artifact is produced and registered** — this is the
+  Delivery → Closing handoff (see below).
+
+## Stage seam — PRODUCE (Delivery → Closing)
+
+Verification is the **last phase of the Delivery stage**, so its exit hands the baton to
+Closing. Per the [Seam Artifact Protocol](../../wiki/patterns/seam-artifact-protocol.md), the
+exit gate is not satisfied until the **seam artifact** is written and registered (mandatory at
+the stage seam):
+
+- Write `delivery/<milestone>/verified-change.md` to the ledger: what shipped, the acceptance
+  **evidence**, and links to PRs/commits/issues — referenced by path, not re-embedded.
+- Register a row in the ledger manifest with status `shipped`.
+- Use [handoff](../../SKILLS/preservation/handoff/SKILL.md) (the PRODUCE adapter) and the
+  project's [communication protocol document](../../wiki/patterns/seam-artifact-protocol.md#4-the-communication-protocol-document).
 
 ## 3. Recommended skills
 

@@ -18,3 +18,7 @@ description: Chronological log of glossary changes
   to a problem domain (e.g. frontend) rather than an intelligence tier; wires the domain's
   skill cluster. Names the role kind introduced by the `frontend` agent (ADR-009) and
   closes on the wisdom principle "specialize by problem domain, not technology."
+- 2026-07-30 — Added **Stage**, **Seam artifact**, **Ledger**, and **Communication protocol
+  document** — the vocabulary for the Seam Artifact Protocol (ADR-011): stages are the
+  ownership seams, a seam artifact is the baton, the ledger is its namespaced+manifested
+  store, and the communication protocol document is the per-project contract agents reference.

@@ -155,9 +155,27 @@ discovered or confirmed against the user's actual tool list at setup, never hard
 | `interview` | e.g. `vscode/askQuestions` | specific tool | **discover/confirm at setup** — not an alias |
 | `docs-lookup` | MCP `<server>/*` (e.g. `context7/*`) | MCP server | **opt-in** ([ADR-007](../../wiki/adr/adr-007-docs-lookup-capability.md)); server config lives outside the agent file |
 
+## 7. Communication protocol document → `.mirai/instructions/`
+
+loom's abstract [communication protocol document](../../wiki/glossary/index.md#communication-protocol-document)
+([ADR-011](../../wiki/adr/adr-011-seam-artifact-protocol.md)) maps to a **description-triggered file
+instruction** in Mirai:
+
+| loom concept | Mirai concretization | Notes |
+|---|---|---|
+| Communication protocol document | `.mirai/instructions/handoff.instructions.md` | Description-triggered (**no `applyTo`**) so it loads on demand, not every request. |
+| [Ledger](../../wiki/glossary/index.md#ledger) substrate → `persist` target | Mirai repo memory (`/memories/repo/loom/…`) and/or a committed `.loom/handoffs/` folder | Chosen in [interview table 4d](references/interview.md#4d-handoff--communication-protocol); the `persist` capability (§6) resolves the memory tool. |
+| Ledger manifest | `<ledger-root>/index.md` | Seeded empty at setup; producers register rows. |
+| PRODUCE / DISCOVER obligations | `handoffs:` frontmatter between stage agents + `persist` in their `tools:` + a body reference to the instruction | See [STAGES.md](STAGES.md#the-communication-protocol-document-cross-stage). |
+
+The protocol document is **always generated** (handoff is part of the SDLC process); only its
+substrate/namespace are user choices. Template:
+[assets/templates/handoff.instructions.md.template](assets/templates/handoff.instructions.md.template).
+
 ## Related
 
 - [ADR-004](../../wiki/adr/adr-004-loom-mirai-setup.md) — the base setup approach this mapping implements.
+- [ADR-011](../../wiki/adr/adr-011-seam-artifact-protocol.md) — the seam-artifact handoff protocol (§7 above).
 - [ADR-006](../../wiki/adr/adr-006-capability-based-roles.md) — capability-based role discipline (§6 above).
 - [ADR-007](../../wiki/adr/adr-007-docs-lookup-capability.md) — the optional `docs-lookup` capability.
 - [ADR-008](../../wiki/adr/adr-008-delivery-dispatchers.md) — the Delivery dispatcher split (§2, §3).

@@ -11,6 +11,15 @@ description: Compress and dispatch the current session context to reduce token o
 > **Strategy**: ISOLATE + COMPRESS  
 > **Purpose**: Engineer minimal context for subagent work
 
+This is the **within-stage** context-mover in the [Seam Artifact Protocol](../../../wiki/patterns/seam-artifact-protocol.md)
+family: where [handoff](../../preservation/handoff/SKILL.md) writes a durable **seam artifact**
+across a _stage_ boundary and [session-bootstrap](../../discovery/session-bootstrap/SKILL.md)
+discovers it, this skill engineers an **ephemeral** dispatch payload for a subagent inside a stage
+(dispatcher → utility). It shares the protocol's discipline — reference artifacts by path, don't
+re-embed — but its payload is transient, not registered in the ledger. When the dispatched work
+_produces_ something the next stage needs, persist it as a seam artifact via `handoff` rather than
+leaving it in the ephemeral return.
+
 ---
 
 ## Trigger
@@ -42,20 +51,20 @@ Before dispatching, determine:
 
 Use [task-sizing](../task-sizing/SKILL.md) to confirm dispatch is appropriate.
 
-| Size | Context Cost | Action |
-|------|--------------|--------|
-| Small (<5%) | Single file, quick fix | Do directly |
-| Medium (5-20%) | Few files, moderate logic | Consider dispatch |
+| Size             | Context Cost              | Action            |
+| ---------------- | ------------------------- | ----------------- |
+| Small (<5%)      | Single file, quick fix    | Do directly       |
+| Medium (5-20%)   | Few files, moderate logic | Consider dispatch |
 | **Large (>20%)** | Many files, complex logic | **Must dispatch** |
 
 ### 2. Choose Subagent
 
-| Subagent | When to Use |
-|----------|-------------|
-| **visual-qa** | UI verification, screenshots |
-| **Plan** | Complex multi-step research |
-| **Implementer** | Large code changes |
-| **Researcher** | Deep exploration tasks |
+| Subagent        | When to Use                  |
+| --------------- | ---------------------------- |
+| **visual-qa**   | UI verification, screenshots |
+| **Plan**        | Complex multi-step research  |
+| **Implementer** | Large code changes           |
+| **Researcher**  | Deep exploration tasks       |
 
 ### 3. Engineer the Context
 
@@ -65,12 +74,15 @@ Use [task-sizing](../task-sizing/SKILL.md) to confirm dispatch is appropriate.
 ## Context for [Subagent]
 
 ### Background
+
 [1-2 sentences: what project this is, what we're building]
 
 ### Relevant Code
+
 [Only the specific snippets needed — NOT full files]
 
 ### Constraints
+
 [Any rules, patterns, or standards to follow]
 ```
 
@@ -87,9 +99,11 @@ One clear objective:
 
 ```markdown
 ## Task
+
 [Single sentence: what to accomplish]
 
 ## Success Criteria
+
 - [ ] [Specific, verifiable criterion]
 - [ ] [Another criterion]
 - [ ] [Final criterion]
@@ -101,7 +115,9 @@ Tell subagent what to report back:
 
 ```markdown
 ## Return Format
+
 Provide a summary (~500 tokens max) including:
+
 - What was done
 - Key findings or results
 - Any issues encountered
@@ -136,18 +152,21 @@ Dispatch payload with:
 
 ## Dispatch Template
 
-```markdown
+````markdown
 # Task for [Subagent Name]
 
 ## Context
+
 [Project]: [1 sentence]
 [Current Phase]: [R/P/I]
 [What you need to know]: [2-3 sentences]
 
 ## Relevant Code
+
 ```[language]
 [Only the specific snippet needed]
 ```
+````
 
 ## Task
 
@@ -192,17 +211,17 @@ Provide TEXT summary only (~500 tokens):
 ```
 
 TheEngineer (orchestrator)
-    │
-    │ dispatch: context (~500 tokens) + task + criteria
-    ↓
+│
+│ dispatch: context (~500 tokens) + task + criteria
+↓
 Subagent (isolated context)
-    │
-    │ executes in own context window
-    │ (screenshots, research, code stay here)
-    ↓
+│
+│ executes in own context window
+│ (screenshots, research, code stay here)
+↓
 Returns: TEXT summary (~500 tokens)
-    │
-    ↓
+│
+↓
 TheEngineer continues (main context clean)
 
 ```
@@ -211,5 +230,7 @@ TheEngineer continues (main context clean)
 
 ## Related Skills
 
+- [seam-artifact-protocol](../../../wiki/patterns/seam-artifact-protocol.md) — the family this within-stage mover belongs to
 - [task-sizing](../task-sizing/SKILL.md) — Decide whether to dispatch
-- [handoff](../../preservation/handoff/SKILL.md) — Uses similar compression
+- [handoff](../../preservation/handoff/SKILL.md) — the cross-stage PRODUCE adapter (durable, ledgered)
+```

@@ -61,6 +61,17 @@ solution, hands a milestone to a team that plans, builds, and verifies it, and t
 preserves what was learned. The **Verification** phase stays a *named* phase inside Delivery,
 never an unnamed step: the evidence gate is not allowed to erode into "we shipped it."
 
+### Seam artifacts cross the stage boundaries
+
+The two stage seams are where ownership changes hands, so they are also where context must not
+drop. Each seam is governed by the [Seam Artifact Protocol](../../wiki/patterns/seam-artifact-protocol.md):
+the producing stage's **exit gate** writes a namespaced **seam artifact** to a **ledger** and
+registers it in a manifest; the receiving stage's **entry gate** discovers and loads it. This is
+**mandatory at the two stage seams** (Shaping → Delivery, Delivery → Closing) and advisory within
+a stage. It is what makes the multi-agent workflow real: a planner in a fresh session can be told
+"plan the `<milestone>` findings" and locate everything Shaping produced, without any conversation
+carried over. See [ADR-011](../../wiki/adr/adr-011-seam-artifact-protocol.md).
+
 ## Phase policy anatomy
 
 Every phase file states its policy across the same six dimensions, so an interpreting
@@ -118,5 +129,7 @@ Two playbooks form the operational core of the middle phases:
 - [workflows index](../index.md) — what a workflow is and the prose-first principle
 - [adr-002-workflow-as-adapter-seed](../../wiki/adr/adr-002-workflow-as-adapter-seed.md) — why the workflow is a prose seed
 - [adr-003-architecture-first-ordering](../../wiki/adr/adr-003-architecture-first-ordering.md) — why architecture changes land first
+- [seam-artifact-protocol](../../wiki/patterns/seam-artifact-protocol.md) — how context crosses the stage seams
+- [adr-011-seam-artifact-protocol](../../wiki/adr/adr-011-seam-artifact-protocol.md) — the decision behind the stage-seam handoff
 - [SKILLS](../../SKILLS/) — the lifecycle-bucketed skills the phases reference
 </content>

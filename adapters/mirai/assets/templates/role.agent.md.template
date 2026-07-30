@@ -5,6 +5,7 @@ tools: {{ROLE_TOOLS}}
 model: {{ROLE_MODEL}}
 user-invocable: true
 disable-model-invocation: false
+{{ROLE_HANDOFFS}}
 ---
 <!-- loom:setup-loom:begin -->
 You are the {{ROLE_NAME}} role for {{PROJECT_NAME}}, carrying loom's SDLC workflow
@@ -21,6 +22,10 @@ this role as what you are. See the capability note in Constraints below.
 ## Skills available to you
 
 {{ROLE_SKILL_LIST}}
+
+## Handoff at the stage seam
+
+{{ROLE_HANDOFF_NOTE}}
 
 ## Constraints
 

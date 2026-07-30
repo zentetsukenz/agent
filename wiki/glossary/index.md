@@ -251,6 +251,60 @@ Implementation → Verification → Preservation), grouped into three ownership 
 
 ---
 
+### Stage
+
+An ownership grouping of [Workflow](#workflow) phases that marks a real handoff **seam** — the
+point where ownership changes hands. The SDLC workflow has three: **Shaping** (Discovery+Design),
+**Delivery** (Planning+Implementation+Verification), and **Closing** (Preservation). Stages carry
+no gates of their own; they name *who* owns the work and *what* [Seam artifact](#seam-artifact)
+crosses each seam.
+
+**See**: [SDLC workflow](../../workflows/sdlc/index.md), [Seam artifact](#seam-artifact)
+
+---
+
+### Seam artifact
+
+The document that crosses a [Stage](#stage) boundary — the baton one stage's owner hands to the
+next. Shaping emits a milestone with design docs (findings, domain model, design decisions);
+Delivery emits a shipped, verified change with its acceptance evidence; Closing emits durable,
+curated knowledge. A seam artifact carries the *connective tissue* the next agent needs — it
+**references** PRDs, plans, ADRs, commits, and diffs by path or URL rather than re-embedding them.
+The [Seam Artifact Protocol](../patterns/seam-artifact-protocol.md) defines where it lives and how
+it is discovered.
+
+**See**: `mem:patterns/seam-artifact-protocol`, `mem:adr/adr-011-seam-artifact-protocol`, [Ledger](#ledger)
+
+---
+
+### Ledger
+
+The durable store for [Seam artifacts](#seam-artifact). Its root resolves through the
+[`persist`](#capability) capability (harness-agnostic); artifacts are addressed by
+`<ledger-root>/<stage>/<milestone-slug>/*.md` and indexed by a **manifest** at
+`<ledger-root>/index.md` (milestone, stage, artifact, status, updated — latest row wins). A
+producing agent writes and registers; a receiving agent reads the manifest and loads the latest
+artifact for its seam. The concrete substrate (harness memory / committed folder / both) is a
+per-project setup choice.
+
+**See**: `mem:patterns/seam-artifact-protocol`, `mem:adr/adr-011-seam-artifact-protocol`, [Seam artifact](#seam-artifact)
+
+---
+
+### Communication protocol document
+
+A dedicated, standalone per-project document stating where that project's [Ledger](#ledger) lives,
+its namespace convention, and each [Stage](#stage)'s expected [Seam artifacts](#seam-artifact). It
+is separate from per-project context ([AGENTS.md](#adapter)) and from any single agent or skill:
+it is the shared contract they all point at. Agents and skills that participate in handoff
+**reference** it rather than re-deriving the convention. Each [Adapter](#adapter) concretizes it
+in the harness's native always-available, on-demand form (for Mirai, a description-triggered file
+instruction).
+
+**See**: `mem:patterns/seam-artifact-protocol`, `mem:adr/adr-011-seam-artifact-protocol`
+
+---
+
 ### Orchestrator
 
 An agent [Role](#role) that runs the Implementation loop: it gauges each task's size and

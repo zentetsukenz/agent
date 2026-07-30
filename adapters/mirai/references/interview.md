@@ -105,6 +105,27 @@ must be confirmed against the user's actual tool list rather than guessed:
 | `persist` (memory) | "What is your memory tool's exact name?" | e.g. `vscode/memory` — harness/version-specific; override the default if it differs |
 | `interview` (ask-user) | "What is your ask-the-user tool's exact name?" | e.g. `vscode/askQuestions` — same caution |
 
+## 4d. Handoff / communication protocol
+
+Configures the [Seam Artifact Protocol](../../../wiki/patterns/seam-artifact-protocol.md) for this
+project — how context crosses the stage seams. Always asked (handoff is part of the SDLC process),
+but the *substrate* and *namespace* are the user's choice, revisable via a later `update`.
+
+| Question | Recommended default | Signal to deviate |
+|---|---|---|
+| Where should the seam-artifact **ledger** live? | **Both** — durable artifacts in a committed `.loom/handoffs/` folder + a lightweight manifest pointer in Mirai repo memory (`/memories/repo/loom/`) for fast agent discovery | Team wants zero new committed files → memory only; team has no cross-conversation-memory culture / wants everything in PRs → committed folder only |
+| **Ledger root** path? | Committed: `.loom/handoffs/` · Memory: `/memories/repo/loom/handoffs/` | Project already namespaces tooling under a different dir (e.g. `.tooling/`) — match it |
+| **Namespace** convention within the ledger? | `<stage>/<milestone-slug>/*.md` (human-readable slug, not a timestamp) | User prefers sequential `handoff-NNN/` or timestamped — allow, but warn it loses milestone grouping |
+| Which docs does each stage emit at its seam? | Shaping → `findings.md`, `domain-model.md` (or link), `design-decisions.md` · Delivery → `verified-change.md` · Closing → `knowledge.md` | Project has extra stage-specific artifacts (e.g. a `test-plan.md`) — add them |
+| Generate the **communication protocol document**? | Yes — as a description-triggered file instruction `.mirai/instructions/handoff.instructions.md` (on-demand, so it never burns context via `applyTo:"**"`) | Never skip — it is the shared contract every participating agent references |
+
+The interview writes the chosen substrate, root, namespace, and per-stage doc set into the
+generated communication protocol document (see
+[write-format.md](write-format.md#communication-protocol-document) and the
+[handoff-protocol template](../assets/templates/handoff.instructions.md.template)), and seeds an
+empty ledger **manifest** at `<ledger-root>/index.md`. On `update`, changing the substrate migrates
+existing artifacts (or, if that is unsafe, surfaces them and asks) rather than silently orphaning them.
+
 ## 5. AGENTS.md vs `mirai-instructions.md`
 
 Not really a question — a filesystem check with one exception:

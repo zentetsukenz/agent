@@ -68,6 +68,18 @@ project's generated `.mirai/`).
       `agent` for `deliver.prompt.md` / `close.prompt.md` — not a stale `agent: "agent"` on
       the Shaping prompt.
 
+## Handoff / communication protocol ([ADR-011](../../../wiki/adr/adr-011-seam-artifact-protocol.md))
+
+- [ ] `.mirai/instructions/handoff.instructions.md` exists, has a non-empty `description`, and
+      **no** `applyTo` (it must be description-triggered, not always-on).
+- [ ] No leftover `{{PLACEHOLDER}}` tokens — the ledger substrate, root, namespace, and per-stage
+      artifacts are all filled from interview table 4d.
+- [ ] The ledger manifest (`<ledger-root>/index.md`) was seeded (table header present).
+- [ ] The PRODUCE/DISCOVER stage agents (`shaping`, `planner`, `orchestrator`, `closing`) carry
+      `persist` in `tools:` and reference the protocol document in their body.
+- [ ] Stage agents' `handoffs:` point at the next stage's agent (`shaping → planner`,
+      `orchestrator → closing`).
+
 ## Report
 
 After the checklist passes, report to the user:

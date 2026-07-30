@@ -21,6 +21,24 @@ Planning shards that shape into work.
 - Design's exit artifacts exist: a named solution shape, interface designs, a current
   domain model, and any identified architecture-upgrade prerequisite.
 - Transitively, Discovery's success criteria and constraints (Design carried them forward).
+- **The Shaping seam artifact has been discovered** — this is the Delivery side of the
+  Shaping → Delivery handoff (see below).
+
+## Stage seam — DISCOVER (Shaping → Delivery)
+
+Planning is the **first phase of the Delivery stage**, so its entry is where Delivery *receives*
+the baton. Per the [Seam Artifact Protocol](../../wiki/patterns/seam-artifact-protocol.md), before
+decomposing anything the Planner **discovers** the Shaping seam artifact rather than assuming it
+is in the conversation:
+
+- Read the ledger manifest (`<ledger-root>/index.md`), find the latest `ready-for-delivery` row
+  for the milestone, and load `shaping/<milestone>/` (findings, domain model, design decisions).
+- Use [session-bootstrap](../../SKILLS/discovery/session-bootstrap/SKILL.md) (the DISCOVER
+  adapter) and the project's [communication protocol document](../../wiki/patterns/seam-artifact-protocol.md#4-the-communication-protocol-document).
+
+This makes "start planning on the already-created research findings" a one-line instruction: the
+Planner locates and loads the Shaping output itself, in a fresh session, with no context carried
+over from the shaping agent.
 
 **Exit gate**
 

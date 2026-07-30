@@ -36,6 +36,25 @@ output — a milestone with design docs — is what a later planner picks up to 
 - Any needed **architecture upgrade is identified and sequenced first** (feeds Planning's
   Architecture Gate) — never retrofitted after dependent code.
 - Interfaces are designed well enough to be validated early, but no task breakdown yet.
+- **The Shaping seam artifact is produced and registered** — this is the
+  Shaping → Delivery handoff (see below).
+
+## Stage seam — PRODUCE (Shaping → Delivery)
+
+Design is the **last phase of the Shaping stage**, so its exit is a real ownership handoff.
+Per the [Seam Artifact Protocol](../../wiki/patterns/seam-artifact-protocol.md), the exit gate
+is not satisfied until the **seam artifact** is written to the ledger and registered in the
+manifest — this is mandatory at the stage seam (not merely advisory):
+
+- Write `shaping/<milestone>/` to the ledger: **findings** (Discovery's evidence-backed
+  unknowns), the **domain model** (or a link to where it lives), and the **design decisions**
+  (interfaces + ADR references). Reference PRDs/ADRs/commits by path — don't re-embed them.
+- Register a row in the ledger manifest with status `ready-for-delivery`.
+- Use [handoff](../../SKILLS/preservation/handoff/SKILL.md) (the PRODUCE adapter) to write it,
+  and follow the project's [communication protocol document](../../wiki/patterns/seam-artifact-protocol.md#4-the-communication-protocol-document).
+
+This is what lets a planner in a fresh session simply be told "plan the `<milestone>` findings"
+and discover everything Shaping produced — the workflow's core multi-agent guarantee.
 
 ## 3. Recommended skills
 

@@ -6,7 +6,14 @@ description: Start a fresh session with optimal context—read checkpoint, load 
 # Session Bootstrap
 
 > **Strategy**: SELECT  
-> **Purpose**: Start a fresh session with optimal context
+> **Purpose**: Start a fresh session with optimal context  
+> **Role**: the **DISCOVER** adapter of the [Seam Artifact Protocol](../../../wiki/patterns/seam-artifact-protocol.md)
+
+This skill is how a receiving agent **discovers a seam artifact** left by a producing agent — it
+reads the ledger manifest and loads the latest artifact for the seam it is picking up. See the
+[Seam Artifact Protocol](../../../wiki/patterns/seam-artifact-protocol.md) for the contract, and
+the project's [communication protocol document](../../../wiki/patterns/seam-artifact-protocol.md#4-the-communication-protocol-document)
+for where that project's ledger lives.
 
 ---
 
@@ -15,8 +22,9 @@ description: Start a fresh session with optimal context—read checkpoint, load 
 Use this skill when:
 
 - Starting a new chat/session
-- Continuing from a checkpoint
-- Human says "continue from checkpoint"
+- Continuing from a checkpoint or a stage handoff
+- Human says "continue from checkpoint", or names a milestone to pick up (e.g. "start planning the `<milestone>` findings")
+- Receiving the baton at a stage seam (Delivery picking up Shaping, Closing picking up Delivery)
 - Context was reset
 
 ---
@@ -34,15 +42,19 @@ Identify what's available:
 
 ## Procedure
 
-### 1. Read Checkpoint First
+### 1. Discover the seam artifact (read the manifest first)
 
-```
-Read CHECKPOINT.md
-```
+1. Resolve `<ledger-root>` from the project's [communication protocol document](../../../wiki/patterns/seam-artifact-protocol.md#4-the-communication-protocol-document).
+2. Read the manifest at `<ledger-root>/index.md`. Find the latest row for the milestone you were
+   asked to pick up (or, if none was named, the newest `ready-for-*` row) — **latest row wins**.
+3. Load only that artifact — e.g. `shaping/<milestone>/` when Delivery is picking up Shaping, or
+   `delivery/<milestone>/verified-change.md` when Closing is picking up Delivery.
 
-Extract:
+If the project has no ledger (loom not set up), fall back to reading `CHECKPOINT.md`.
 
-- Current phase (R/P/I)
+Extract from the artifact:
+
+- Current phase / stage
 - Next steps
 - Files to re-read
 - Key context
@@ -51,10 +63,10 @@ Extract:
 
 Based on current phase and task:
 
-| Phase | Typically Need |
-|-------|----------------|
-| **Research** | architecture.md, tech-stack.md |
-| **Plan** | patterns/*.md, STANDARDS.md |
+| Phase         | Typically Need                       |
+| ------------- | ------------------------------------ |
+| **Research**  | architecture.md, tech-stack.md       |
+| **Plan**      | patterns/\*.md, STANDARDS.md         |
 | **Implement** | KNOWLEDGE.md, relevant feature files |
 
 **Only SELECT what's needed for the immediate task.**
@@ -93,13 +105,13 @@ Pick up exactly where the checkpoint left off.
 
 When selecting documents, stay within budget:
 
-| Document Type | Typical Size | Priority |
-|---|---|---|
-| CHECKPOINT.md | ~500 tokens | Always load |
-| NOTES.md | ~500 tokens | Usually load |
-| KNOWLEDGE.md | ~1000 tokens | Load for implementation |
-| architecture.md | ~500 tokens | Load for research |
-| Full source files | 1000+ tokens | Load only when editing |
+| Document Type     | Typical Size | Priority                |
+| ----------------- | ------------ | ----------------------- |
+| CHECKPOINT.md     | ~500 tokens  | Always load             |
+| NOTES.md          | ~500 tokens  | Usually load            |
+| KNOWLEDGE.md      | ~1000 tokens | Load for implementation |
+| architecture.md   | ~500 tokens  | Load for research       |
+| Full source files | 1000+ tokens | Load only when editing  |
 
 **Goal**: Start session at <10% context, leaving room for work.
 
@@ -142,5 +154,6 @@ Ready to continue. [First action I'll take]
 
 ## Related Skills
 
-- [handoff](../../preservation/handoff/SKILL.md) — Creating checkpoints
+- [seam-artifact-protocol](../../../wiki/patterns/seam-artifact-protocol.md) — the contract this skill discovers from
+- [handoff](../../preservation/handoff/SKILL.md) — the PRODUCE adapter that writes what this reads
 - [task-sizing](../../planning/task-sizing/SKILL.md) — Assess before starting work

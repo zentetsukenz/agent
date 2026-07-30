@@ -88,9 +88,13 @@ default, waiting for feedback before the next question. Walk the decision tables
    lookup (e.g. Context7 via MCP)? Off by default
    ([ADR-007](../../wiki/adr/adr-007-docs-lookup-capability.md)); if yes, wire `docs-lookup`
    into Shaping + Planner (+ `deep`).
-6. **AGENTS.md vs `mirai-instructions.md`** — which file already exists (edit that one;
+6. **Handoff / communication protocol** — the [Seam Artifact Protocol](../../wiki/patterns/seam-artifact-protocol.md)
+   config: ledger substrate (memory / committed folder / both), ledger root, namespace
+   convention, and per-stage seam artifacts. Always generates the communication protocol
+   document ([ADR-011](../../wiki/adr/adr-011-seam-artifact-protocol.md)).
+7. **AGENTS.md vs `mirai-instructions.md`** — which file already exists (edit that one;
    never create the other; ask only if neither exists).
-7. **Existing `.claude/`/`.agents/` content** — extend, leave alone, or migrate?
+8. **Existing `.claude/`/`.agents/` content** — extend, leave alone, or migrate?
 
 Fold model-matching and capability-name resolution (`persist`/`interview` tool names) into
 this same interview pass — they are not separate steps.
@@ -140,6 +144,22 @@ mapping, override the mapped name rather than emitting a name that won't resolve
 `delivery.agent.md` exists, **replace it** with the split (see the migration note in
 [references/write-format.md](references/write-format.md)).
 
+**Generate the handoff / communication protocol.** Per
+[ADR-011](../../wiki/adr/adr-011-seam-artifact-protocol.md):
+
+- Write the **communication protocol document** to
+  `.mirai/instructions/handoff.instructions.md` from
+  [assets/templates/handoff.instructions.md.template](assets/templates/handoff.instructions.md.template),
+  filling the ledger substrate, root, namespace, and per-stage seam artifacts chosen in
+  interview table 4d. Use a **description-triggered** file instruction (no `applyTo:"**"`) so it
+  loads on demand rather than burning context.
+- Seed an empty ledger **manifest** at `<ledger-root>/index.md` (the table header only).
+- **Wire the stage agents to it**: the Shaping and Verification (Orchestrator) roles carry
+  `persist` and reference the protocol document in their body (PRODUCE at the seam); the Planner
+  and Closing roles reference it to DISCOVER at their entry. See
+  [STAGES.md](STAGES.md) for which role produces vs. discovers, and set each stage agent's
+  `handoffs:` frontmatter to the next stage's agent so Mirai can offer the transition.
+
 Idempotency rule: if a target file already exists, **patch it in place** (preserve any
 user-added content outside loom-authored sections, marked as described in
 [references/write-format.md](references/write-format.md)) — never write a second file for
@@ -171,9 +191,11 @@ If the project's own conventions changed, re-run the full interview for step 5
 
 ## Output
 
-- A `.mirai/` tree: `agents/`, `prompts/`, `skills/<slug>/`, `instructions/` (only if the
-  interview called for file-scoped instructions), plus root `AGENTS.md` (or
+- A `.mirai/` tree: `agents/`, `prompts/`, `skills/<slug>/`, `instructions/` (always includes
+  `handoff.instructions.md` — the communication protocol document; other file-scoped
+  instructions only if the interview called for them), plus root `AGENTS.md` (or
   `.mirai/mirai-instructions.md` — never both).
+- A seeded ledger manifest at the chosen `<ledger-root>/index.md`.
 - A short report of created vs. patched paths.
 
 ## Related

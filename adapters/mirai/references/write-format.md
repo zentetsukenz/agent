@@ -52,6 +52,8 @@ procedure — stop and ask rather than guessing or leaving it blank.
 | `{{ROLE_WORKFLOW_PROSE}}` | Concatenated body of the role's `workflows/sdlc/<phase>.md` file(s) — see [STAGES.md](../STAGES.md) |
 | `{{ROLE_SKILL_LIST}}` | The role's adopted skill roster from [STAGES.md](../STAGES.md), pruned per the Scope interview table |
 | `{{ROLE_MODEL}}` | The archetype-matched model fallback array (Model Matching interview table) — Verifier uses the extended-thinking archetype |
+| `{{ROLE_HANDOFFS}}` | `handoffs: [<next-stage-agent>]` for stage agents at a producing seam (`shaping → planner`, `orchestrator → closing`); omit the line entirely (empty string) for roles with no downstream stage transition |
+| `{{ROLE_HANDOFF_NOTE}}` | The role's PRODUCE or DISCOVER instruction from [STAGES.md](../STAGES.md), pointing at `.mirai/instructions/handoff.instructions.md`; for a role at no stage seam (e.g. a utility), a one-line "within-stage dispatch is ephemeral — see `dispatch-context`" note |
 
 ### `stage.prompt.md.template` placeholders
 
@@ -63,11 +65,39 @@ procedure — stop and ask rather than guessing or leaving it blank.
 | `{{STAGE_SKILL_LIST}}` | The stage's adopted skill roster from [STAGES.md](../STAGES.md), pruned per the Scope interview table |
 | `{{MODEL_FALLBACK_ARRAY}}` | The archetype-matched model array from the Model Matching interview table |
 
+### `handoff.instructions.md.template` placeholders
+
+| Placeholder | Source |
+|---|---|
+| `{{LEDGER_SUBSTRATE}}` | Handoff interview table 4d — `memory`, `committed folder`, or `both` |
+| `{{LEDGER_ROOT}}` | Handoff interview table 4d — e.g. `.loom/handoffs/` and/or `/memories/repo/loom/handoffs/` |
+| `{{SHAPING_ARTIFACTS}}` | Handoff interview table 4d — Shaping seam docs (default `findings.md`, `domain-model.md` or link, `design-decisions.md`) |
+| `{{DELIVERY_ARTIFACTS}}` | Handoff interview table 4d — Delivery seam docs (default `verified-change.md`) |
+| `{{CLOSING_ARTIFACTS}}` | Handoff interview table 4d — Closing seam docs (default `knowledge.md`) |
+
 ### Shared
 
 | Placeholder | Source |
 |---|---|
 | `{{PROJECT_NAME}}`, `{{BUILD_CMD}}`, `{{TEST_CMD}}` | Explore step — read from the target project's own config |
+
+## Communication protocol document
+
+The [handoff.instructions.md.template](../assets/templates/handoff.instructions.md.template) is
+written to `.mirai/instructions/handoff.instructions.md` — the project's
+[communication protocol document](../../../wiki/patterns/seam-artifact-protocol.md#4-the-communication-protocol-document)
+([ADR-011](../../../wiki/adr/adr-011-seam-artifact-protocol.md)). Rules:
+
+- It is a **description-triggered** file instruction — set a keyword-rich `description` and **no**
+  `applyTo` (an `applyTo:"**"` would load it on every request and burn context; see
+  [wiki/environments/mirai.md](../../../wiki/environments/mirai.md#2-file-instructions)).
+- Seed the ledger **manifest** at the chosen `<ledger-root>/index.md` with the table header only
+  (no rows) so producers have somewhere to register.
+- On `update`, if the user changes the substrate/root, **migrate** existing artifacts to the new
+  location and rewrite the manifest paths; if migration is unsafe (e.g. memory → committed with
+  secrets), surface the artifacts and ask rather than moving silently.
+- The stage agents reference this document rather than restating the convention — patch their
+  bodies (inside the markers) to point at it, don't duplicate the protocol into each agent.
 
 ## Skill copy rules
 

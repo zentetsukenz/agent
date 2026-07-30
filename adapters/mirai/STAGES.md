@@ -46,6 +46,14 @@ Skill roster (full default; pruned per the Scope interview table in
 **Spike escape hatch:** a Discovery throwaway spike that needs to write code is dispatched
 to an executor utility (`quick`/`deep`) — Shaping itself stays edit-free.
 
+**Seam artifact — PRODUCE (Shaping → Delivery).** Per
+[ADR-011](../../wiki/adr/adr-011-seam-artifact-protocol.md), the Shaping agent's exit gate writes
+the seam artifact (`findings`, `domain-model` or link, `design-decisions`) to the ledger and
+registers it in the manifest, following the project's
+[communication protocol document](#the-communication-protocol-document-cross-stage). Its `persist`
+capability is what lets it write the ledger; its body references the protocol document (not a
+restated convention). Set `handoffs:` to `planner` so Mirai offers the transition to Delivery.
+
 ## Delivery (Planning + Implementation + Verification)
 
 **Owner (illustrative)**: delivery team. **Seam artifact**: a shipped, verified change
@@ -76,6 +84,12 @@ dispatch rather than write code themselves. The single quick prompt
 | Capabilities | `read`, `search`, `shell` (read-only investigation), `persist`, `interview`, `tasks` (+ `docs-lookup` if opted). **No `edit`, no `delegate`.** |
 | Role | Pure plan-author: reads Design + findings, decomposes into a risk-ordered, right-sized execution plan. A research need is a loop back to Shaping, not a dispatch. |
 
+**Seam artifact — DISCOVER (Shaping → Delivery).** The Planner's entry gate **discovers** the
+Shaping seam artifact rather than assuming it's in the conversation: it reads the ledger manifest,
+loads the latest `ready-for-delivery` `shaping/<milestone>/` set, and plans from it — this is what
+makes "start planning the `<milestone>` findings" a one-liner. Its `persist` capability + the
+[communication protocol document](#the-communication-protocol-document-cross-stage) drive this.
+
 Skill roster:
 
 - `planning/task-sizing`, `planning/dispatch-context`, `planning/plan-review`,
@@ -90,6 +104,12 @@ Skill roster:
 | Model archetype | Deep Specialist |
 | Capabilities | `read`, `search`, `delegate`, `persist`, `tasks`. **No `edit`** — the forcing function that makes it dispatch. |
 | Role | Reads the plan; dispatches tasks (parallel/sequential) to `quick`/`deep` executors and verification to the Verifier; gauges size; enforces the architecture-prerequisite gate; re-routes on mis-size. |
+
+**Seam artifact — PRODUCE (Delivery → Closing).** At the Verification exit gate the Orchestrator
+writes the Delivery seam artifact (`verified-change.md` — what shipped + the Verifier's acceptance
+evidence, links to PRs/commits by path) to the ledger and registers a `shipped` manifest row. Set
+`handoffs:` to `closing`. Its `persist` capability + the
+[communication protocol document](#the-communication-protocol-document-cross-stage) drive this.
 
 Skill roster:
 
@@ -119,11 +139,42 @@ fed back into the framework.
 | Quick base agent | `agent` |
 | Quick stance | "Curate durable knowledge; don't change application code." |
 
+**Seam artifact — DISCOVER (Delivery → Closing).** The Closing agent's entry gate **discovers**
+the Delivery seam artifact (reads the manifest, loads the latest `shipped`
+`delivery/<milestone>/verified-change.md`) to know exactly what to curate, then may register a
+final `preserved` row pointing at the curated wiki entries. It also **produces** within Closing via
+`preservation/handoff`. Its `persist` capability + the
+[communication protocol document](#the-communication-protocol-document-cross-stage) drive this.
+
 Skill roster:
 
 - `preservation/handoff`, `preservation/wiki-init`, `preservation/wiki-curator`,
   `preservation/wiki-query`, `preservation/wiki-audit`, `preservation/wiki-crosslink`,
   `preservation/checkpoint`
+
+## The communication protocol document (cross-stage)
+
+Every stage handoff above routes through one shared artifact: the project's **communication
+protocol document**, generated at `.mirai/instructions/handoff.instructions.md` (a
+description-triggered file instruction — see
+[references/write-format.md](references/write-format.md#communication-protocol-document)). It
+states, for this project, where the [ledger](../../wiki/patterns/seam-artifact-protocol.md#1-the-ledger-and-its-namespace)
+lives, the namespace, and each stage's expected seam artifacts — the choices collected in
+[references/interview.md](references/interview.md) table 4d and revisable via `update`.
+
+- **PRODUCE roles** (`shaping`, `orchestrator`, and `closing` at its own exit) carry `persist` and
+  reference this document to write + register a seam artifact at their exit gate.
+- **DISCOVER roles** (`planner`, `closing` at entry) carry `persist` and reference this document to
+  read the manifest and load the latest seam artifact at their entry gate.
+- Each stage agent's `handoffs:` frontmatter points at the next stage's agent (`shaping → planner`,
+  `orchestrator → closing`) so Mirai can offer the transition.
+- The skills `preservation/handoff` (PRODUCE) and `discovery/session-bootstrap` (DISCOVER) are the
+  thin adapters that implement the read/write; agents invoke them rather than re-deriving the
+  convention.
+
+This is mandatory at the **two stage seams** only (Shaping → Delivery, Delivery → Closing);
+within-stage dispatch stays ephemeral via `planning/dispatch-context`. See
+[ADR-011](../../wiki/adr/adr-011-seam-artifact-protocol.md).
 
 ## Meta bucket — not a stage
 
@@ -197,6 +248,8 @@ wire lives in [wiki/patterns/browser-capture.md](../../wiki/patterns/browser-cap
 - [ADR-006](../../wiki/adr/adr-006-capability-based-roles.md) — capability-based role discipline (the `Capabilities` rows above).
 - [ADR-008](../../wiki/adr/adr-008-delivery-dispatchers.md) — the Delivery dispatcher split and Verifier-as-utility.
 - [ADR-009](../../wiki/adr/adr-009-frontend-domain-utility.md) — the `frontend` + `visual-qa` domain-specialized utilities added to the roster above.
+- [ADR-011](../../wiki/adr/adr-011-seam-artifact-protocol.md) — the stage-seam handoff protocol the PRODUCE/DISCOVER notes above implement.
+- [wiki/patterns/seam-artifact-protocol.md](../../wiki/patterns/seam-artifact-protocol.md) — the protocol contract.
 - [references/capabilities.md](references/capabilities.md) — generic capability → Mirai tool-name mapping.
 - [workflows/sdlc/index.md](../../workflows/sdlc/index.md) — the six phases and three
   stages this file maps onto.
