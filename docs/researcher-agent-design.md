@@ -248,12 +248,22 @@ and compress your findings into actionable summaries.
 
 ### 4.4 Tools
 
-**Required tools:**
+The researcher is defined by **capabilities**, not specific tool names, and stays
+keyless-by-default (see [wiki/principles/keyless-by-default.md](../wiki/principles/keyless-by-default.md)):
 
-- `mcp_web-search_full-web-search` — For comprehensive web research
-- `mcp_web-search_get-single-web-page-content` — For following specific URLs
-- `read_file` — For workspace exploration
-- `grep_search` / `semantic_search` — For codebase exploration
+**Required capabilities:**
+
+- `web` — Fetch URLs and search the web for external research. The keyless baseline; a web
+  search/fetch MCP (e.g. `mcp_web-search_*`) is an *example* the harness may map this to, not
+  a hard requirement.
+- `read` / `search` — Workspace exploration (`read_file`, `grep_search` / `semantic_search`).
+
+**Optional capabilities (opt-in):**
+
+- `docs-lookup` — Current library documentation via an MCP such as Context7, wired only if
+  the project opted in ([ADR-007](../wiki/adr/adr-007-docs-lookup-capability.md)). Absent it,
+  the researcher relies on `web` + model knowledge and notes the reduced coverage — it never
+  stalls on an unconfigured server or missing key.
 
 **Explicitly NOT available:**
 
@@ -521,7 +531,9 @@ compare deployment options"
 ```markdown
 ---
 description: "Research specialist for deep exploration tasks. Spawned via subagent delegation when main agent needs to investigate a topic, compare options, or gather information. Returns synthesized findings (~500 tokens) keeping calling agent's context clean."
-tools: ["web-search/*", "read", "search"]
+# Capabilities, not tools: `web` is the keyless baseline. Add an opt-in docs-lookup
+# MCP glob (e.g. "context7/*") only if the project enabled it — see ADR-007 / keyless-by-default.
+tools: ["web", "read", "search"]
 ---
 
 # Researcher Agent

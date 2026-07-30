@@ -31,11 +31,24 @@ The parameter set should include evaluation criteria, disqualifiers, and any pro
 
 ## Phase 3 — Parallel max-breadth search
 
-Search broadly and in parallel across these sources:
+Search broadly and in parallel across the **capabilities** you have. This skill names
+capabilities, not specific tools — use whatever your harness maps each one to, and never
+require a tool that isn't configured (see [keyless-by-default](../../../wiki/principles/keyless-by-default.md)):
 
-1. Web search with Exa/websearch.
-2. GitHub examples with `grep_app_searchGitHub`.
-3. Library documentation with Context7 (`context7_resolve-library-id` and `context7_query-docs`).
+1. **Web search** — broad discovery of candidates and current signal (`web` capability).
+2. **Code-example search** — real-world usage across public repositories, if you have a
+   code-search tool available.
+3. **Library-docs lookup** — authoritative, current library documentation, if the optional
+   `docs-lookup` capability is configured ([ADR-007](../../../wiki/adr/adr-007-docs-lookup-capability.md)).
+
+Concrete tools (e.g. Exa/websearch for web search, a GitHub code-search MCP for examples,
+Context7 for docs) are **examples if available** — not required steps.
+
+**Degrade gracefully.** Use the capabilities you actually have; skip the ones you don't and
+note the reduced coverage in `search-log.md` (e.g. "no docs-lookup configured — library
+claims rely on web sources + model knowledge"). With zero external tools, fall back to `web`
+plus the model's own knowledge and say so. Never stall on a missing key or unconfigured
+server.
 
 Evaluate at least 5 candidates when 5 viable candidates exist. If fewer than 5 viable candidates are found, state that explicitly and do not pad with weak candidates.
 
@@ -57,8 +70,9 @@ Loop until the user confirms the shortlist. Ask one question at a time when cand
 
 For each confirmed candidate:
 
-- Use `webfetch` on the top relevant URLs.
-- Use Context7 `query-docs` for libraries with available documentation.
+- Fetch the top relevant URLs (`web` capability) to read primary sources directly.
+- If the optional `docs-lookup` capability is configured, pull current library documentation
+  for candidates that are libraries; if not, rely on the fetched sources and note it.
 - Capture strengths, weaknesses, constraints, maturity signals, maintenance signals, integration cost, and decision-specific fit.
 
 Keep the analysis comparative. Do not turn the deep dive into unrelated implementation planning.

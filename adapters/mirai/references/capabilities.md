@@ -46,7 +46,10 @@ of a role's grant; where a role lists `read, search` in STAGES.md, write both al
 
 `docs-lookup` is the generic "query up-to-date external documentation" capability
 ([ADR-007](../../../wiki/adr/adr-007-docs-lookup-capability.md)). It is **off by default**;
-wire it only if the interview (§4b) says yes.
+wire it only if the interview (§4b) says yes. This is the canonical instance of the
+[keyless-by-default](../../../wiki/principles/keyless-by-default.md) principle
+([ADR-010](../../../wiki/adr/adr-010-keyless-by-default-recommendations.md)): any capability
+that resolves to an API-key/account tool follows the same opt-in, degrade-gracefully rule.
 
 - **Wiring into an agent:** add the MCP server glob to the agent's `tools:` array, e.g.
   `"context7/*"` (or whichever server the user runs). Confirm the exact server name against
@@ -66,4 +69,5 @@ wire it only if the interview (§4b) says yes.
 - [MAPPING.md](../MAPPING.md#6-capability--mirai-tool-mapping) — the same table in the mapping doc.
 - [STAGES.md](../STAGES.md) — each role's generic capability set.
 - [interview.md](interview.md) — §4b docs-lookup, §4c tool-name resolution.
-- [ADR-006](../../../wiki/adr/adr-006-capability-based-roles.md), [ADR-007](../../../wiki/adr/adr-007-docs-lookup-capability.md).
+- [ADR-006](../../../wiki/adr/adr-006-capability-based-roles.md), [ADR-007](../../../wiki/adr/adr-007-docs-lookup-capability.md), [ADR-010](../../../wiki/adr/adr-010-keyless-by-default-recommendations.md).
+- [wiki/principles/keyless-by-default.md](../../../wiki/principles/keyless-by-default.md) — default recommendations are keyless; API-key tools are opt-in.

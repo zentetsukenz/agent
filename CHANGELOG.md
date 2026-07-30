@@ -2,6 +2,20 @@
 
 All notable changes to this framework are documented here.
 
+## [Unreleased] — 2026-07-30
+
+### Added
+
+- **Keyless-by-default recommendations** — default recommendations must work with no API key or account; tools that need one are opt-in capabilities with a keyless fallback. Generalizes ADR-007 (docs-lookup) to every external tool.
+  - `wiki/principles/keyless-by-default.md` — the principle: name the capability not the tool, keep API-key tools opt-in, degrade gracefully; keyless-local tools (Playwright/Chrome DevTools) may stay defaults
+  - `wiki/adr/adr-010-keyless-by-default-recommendations.md` — the decision generalizing ADR-007
+
+### Changed
+
+- `SKILLS/discovery/research-recommend/SKILL.md` — Phases 3 & 5 now describe **capabilities** (web search, code-example search, library-docs lookup) with concrete tools (Exa, a GitHub code-search MCP, Context7) as *examples if available*, plus explicit graceful degradation when a capability isn't configured — no longer requires API-key tools
+- `docs/researcher-agent-design.md` §4.4 — "Required tools" reframed as required **capabilities** (`web`, `read`/`search`) with `docs-lookup` opt-in; example agent `tools:` array uses `web` instead of a hardcoded `web-search/*` glob
+- `wiki/adr/adr-007-docs-lookup-capability.md`, `adapters/mirai/references/capabilities.md` — cross-linked to the new principle/ADR-010
+
 ## [Unreleased] — 2026-07-24
 
 ### Added

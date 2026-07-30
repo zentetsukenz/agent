@@ -53,5 +53,7 @@ vocabulary: "query up-to-date external documentation." It is:
 ## Related
 
 - [ADR-006](adr-006-capability-based-roles.md) — the capability discipline this extends.
+- [ADR-010](adr-010-keyless-by-default-recommendations.md) — generalizes this opt-in rule from `docs-lookup` to all API-key tools.
+- [wiki/principles/keyless-by-default.md](../principles/keyless-by-default.md) — the principle this decision is an instance of.
 - [wiki/patterns/role-scoped-capabilities.md](../patterns/role-scoped-capabilities.md) — capability vocabulary.
 - [adapters/mirai/references/capabilities.md](../../adapters/mirai/references/capabilities.md) — how the Mirai adapter wires `docs-lookup`.
