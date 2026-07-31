@@ -13,7 +13,8 @@ Top-level directories:
 - [agents/](agents/) — agent definitions (Thoth + others)
 - [commands/](commands/) — slash command wrappers
 - [docs/](docs/) — framework meta-documentation
-- [adapters/](adapters/) — adapter content; `mirai/` ships the first concrete target (see [ADR-004](wiki/adr/adr-004-loom-mirai-setup.md)), the general v2 adapter layer remains deferred
+- [contract/](contract/index.md) — the shared adapter-contract core: the generic setup-contract body every adapter references and the four port obligations each must supply (see [ADR-013](wiki/adr/adr-013-shared-adapter-contract-core.md))
+- [adapters/](adapters/) — adapter content; `mirai/` ships the first concrete target (see [ADR-004](wiki/adr/adr-004-loom-mirai-setup.md)) and implements the `contract/` core, the general v2 adapter layer remains deferred
 - [scripts/](scripts/) — validation and utility scripts
 
 See [SPEC.md](SPEC.md) for conformance rules and [CHANGELOG.md](CHANGELOG.md) for release history.

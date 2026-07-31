@@ -10,7 +10,12 @@ entrypoint** — the whole bootstrap. A human shouldn't have to paste more than 
 loom is content-only. It does **not** ship a fixed config to copy. Instead you run a
 universal **setup contract** — *explore → interview → generate harness-native config →
 verify* — through the **adapter** for whatever **harness** the project uses. This file
-picks the adapter; the adapter knows the harness's exact config format. See
+picks the adapter; the adapter knows the harness's exact config format. The **generic body**
+of that contract (the five steps, `init`/`update` semantics, the six primitives, skill
+rosters, capability sets, model archetypes, interview questions, and invariant-checks) lives
+once in the shared [`contract/`](contract/index.md) core; each adapter references it and
+supplies only its four harness-specific [port obligations](contract/PORTS.md). See
+[ADR-013](wiki/adr/adr-013-shared-adapter-contract-core.md) (the shared core),
 [ADR-001](wiki/adr/adr-001-adapter-pattern.md) (adapter pattern) and
 [ADR-002](wiki/adr/adr-002-workflow-as-adapter-seed.md) (why setup is interpreted, not baked).
 
@@ -49,7 +54,10 @@ format and maps loom's generic content onto it.
 Both first-time setup (`init`) and later refreshes (`update`) run **through this file and
 its adapter** — there is no slash command to invoke and nothing to clone; an agent just
 reads these instructions (locally or remotely) and follows them. Follow the adapter
-entrypoint exactly. Every adapter implements the same **setup contract**:
+entrypoint exactly. Every adapter implements the same **setup contract**, whose generic body
+and the four port obligations an adapter must supply live in the shared
+[`contract/`](contract/index.md) core (read [`contract/index.md`](contract/index.md) for the
+full body and [`contract/PORTS.md`](contract/PORTS.md) for the obligations). The five steps:
 
 1. **Explore** — read the project deeply (stack, build/test commands, existing agent
    config). Never ask what you can read.

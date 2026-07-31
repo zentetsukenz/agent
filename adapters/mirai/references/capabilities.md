@@ -1,12 +1,12 @@
 # Capability → Mirai tool mapping
 
-> Consulted by [setup.md](../setup.md) step 5 when building each agent's `tools:` array.
-> loom names agent capabilities generically
-> ([wiki/patterns/role-scoped-capabilities.md](../../../wiki/patterns/role-scoped-capabilities.md),
+> **This is Mirai's answer to the [`capability→tool` port](../../../contract/PORTS.md#port-1--capabilitytool).**
+> The generic capability *vocabulary* and the "discover, don't guess" discipline are the core's
+> ([contract/primitives.md](../../../contract/primitives.md), [wiki/patterns/role-scoped-capabilities.md](../../../wiki/patterns/role-scoped-capabilities.md),
 > [ADR-006](../../../wiki/adr/adr-006-capability-based-roles.md)); this file resolves each
-> generic capability to its Mirai tool. The authoritative Mirai tool model lives in
-> [wiki/environments/mirai.md](../../../wiki/environments/mirai.md) — this file only adds the
-> loom capability layer on top of it.
+> generic capability to its concrete Mirai tool and states the Mirai **withhold mechanism**. The
+> authoritative Mirai tool model lives in [wiki/environments/mirai.md](../../../wiki/environments/mirai.md).
+> Consulted by [setup.md](../setup.md) step 5 when building each agent's `tools:` array.
 
 ## The mapping
 
@@ -32,10 +32,18 @@ outside that set is a **specific tool name** that is harness-/version-dependent:
   build, `vscode/memory` and `vscode/askQuestions`). These names can change across Mirai
   versions or differ on another harness.
 - **Rule:** resolve these against the user's *actual* tool list (read the tool list, or ask
-  — see [interview.md](interview.md) §4c). If the discovered name differs from the default
-  above, **override the default** — write the name that will actually resolve. Never emit a
-  guessed name that might silently fail to bind. This is the same discipline loom applies to
+  — see [interview.md](interview.md)). If the discovered name differs from the default above,
+  **override the default** — write the name that will actually resolve. Never emit a guessed
+  name that might silently fail to bind. This is the same discipline loom applies to
   model-name strings.
+
+## Withhold mechanism (Mirai)
+
+A role *denied* a capability (the load-bearing withholding — a Shaping agent with no `edit`)
+simply **omits** the tool from its `tools:` array. Mirai grants only what is listed; an
+absent alias is an absent capability. (The port obligation requires an adapter to state its
+withhold mechanism — Mirai's is omission; other harnesses may use an explicit
+`permission: deny`.)
 
 ## `search`
 

@@ -169,6 +169,14 @@ Every adapter MUST conform to the following:
   universal safety rules, and the contract itself stay harness-agnostic; per-harness config
   formats, paths, and frontmatter live under `adapters/<harness>/` and the adapter's setup
   entrypoint. Harness detail MUST NOT leak into `SETUP.md` or other shared documents.
+- **Supplies the four port obligations and references — never restates — the shared core.**
+  The generic contract body (five steps, `init`/`update`, the six primitives with their skill
+  rosters/capability sets/model archetypes, the interview questions, and the invariant-checks)
+  lives once in `contract/` (`wiki/adr/adr-013-shared-adapter-contract-core.md`). An adapter
+  MUST supply the four port obligations enumerated in `contract/PORTS.md` (the three
+  render-binding ports — `capability→tool`, `archetype→model`, `seam-obligation→wiring` — plus
+  the `primitive→file` manifest) and reference the generic content in `contract/` rather than
+  restating any of it.
 - **Honors the universal safety rules**: never overwrite/delete existing files (edit only
   loom-owned, provenance-marked sections); change no application code, CI, or runtime
   config; confirm the proposed tree before writing; ask for the model list rather than

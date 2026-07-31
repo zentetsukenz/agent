@@ -1,10 +1,15 @@
-# Write format & idempotency rules
+# Mirai write format & template mechanics
 
 Consulted by [setup.md](../setup.md) step 5. Every file the setup instruction writes must
 be valid in **Mirai's exact format** — see [wiki/environments/mirai.md](../../../wiki/environments/mirai.md)
-for the authoritative frontmatter schema per primitive. This file only adds the
-loom-specific conventions for *how* the write happens (idempotency, provenance marking,
-placeholder-filling) — it does not restate Mirai's schema.
+for the authoritative frontmatter schema per primitive.
+
+> **The generic write disciplines live once in the core** — provenance/idempotency, the
+> `update` frontmatter-reconcile rule, and the marker convention are harness-agnostic:
+> [contract/discipline.md](../../../contract/discipline.md)
+> ([ADR-013](../../../wiki/adr/adr-013-shared-adapter-contract-core.md)). This file adds only
+> Mirai's **template-filling mechanics** and the Mirai-specific field lists the reconcile
+> operates on — it does not restate the generic discipline or Mirai's frontmatter schema.
 
 Templates referenced below live at
 [../assets/templates/role.agent.md.template](../assets/templates/role.agent.md.template),
@@ -13,8 +18,9 @@ and [../assets/templates/AGENTS.md.template](../assets/templates/AGENTS.md.templ
 
 ## Provenance marking (for idempotent patching)
 
-Every file this skill writes gets an HTML comment marker so a later `update` run can find
-and replace the loom-authored section without touching user additions:
+The generic provenance/idempotency discipline is the core's
+([contract/discipline.md](../../../contract/discipline.md#provenance-marking-for-idempotent-patching)).
+Mirai namespaces the HTML-comment marker to this setup instruction:
 
 ```markdown
 <!-- loom:setup-loom:begin -->
@@ -22,16 +28,9 @@ and replace the loom-authored section without touching user additions:
 <!-- loom:setup-loom:end -->
 ```
 
-- For `SKILL.md`/`.agent.md`/`.prompt.md` files that are **entirely** loom-authored (e.g.
-  a copied `SKILLS/<bucket>/<slug>/SKILL.md`), the marker wraps the whole body — a patch
-  simply replaces everything between the markers.
-- For root `AGENTS.md` (which mixes loom-authored and project-specific content), the
-  marker wraps only the sections this skill owns (e.g. a "loom SDLC" section listing
-  available stage prompts/agents) — never the user's own Architecture/Build/Conventions
-  sections.
-- If a file has no markers yet (hand-written before this skill existed), **do not**
-  silently rewrite it. Ask the user whether to adopt it (wrap it in markers, migrating
-  its content into the loom-authored section) or leave it untouched and write alongside it.
+Wrap the whole body of an entirely loom-authored file; for a mixed root `AGENTS.md`, wrap
+only the loom-owned sections (never the user's Architecture/Build/Conventions). If a file has
+no markers yet, do not silently rewrite it — ask (per the core discipline).
 
 ## Filling templates
 
@@ -97,7 +96,7 @@ it follows deterministically from *what kind of role* this is:
 
 - **`orchestrator` and `frontend` both hold `delegate`, yet differ:** `orchestrator` is a stage
   agent (`front-door`); `frontend` is a utility (`dispatched`). Derive from the role kind, not from
-  whether it delegates — see [MAPPING.md §2/§3](../MAPPING.md#3-utility-agents-à-la-omo).
+  whether it delegates — see [MAPPING.md §2/§3](../MAPPING.md#3-utility-agents--miraiagentsagentmd).
 - **Why `front-door` sets `disable-model-invocation: true`:** it stops a peer from silently pulling
   a stage in as a subagent (collapsing the stage seam). It does **not** block the stage's
   `handoffs:` transitions — those are keyed on agent name, a separate mechanism (see
@@ -167,14 +166,16 @@ When copying a loom `SKILLS/<bucket>/<slug>/SKILL.md` into `.mirai/skills/<slug>
 
 ## Frontmatter reconcile rule (for `update`)
 
-The provenance markers wrap only the **body**. Frontmatter (`agent:`, `tools:`, `model:`,
-`name:`, `description:`, `argument-hint:`, `user-invocable:`, `disable-model-invocation:`)
-lives **above** the `<!-- loom:setup-loom:begin -->` marker. A body-only patch therefore
-**will not** fix stale frontmatter.
+> The generic reconcile *discipline* (frontmatter lives above the body markers, so a body-only
+> patch won't fix it; reconcile only loom-owned fields, preserve user additions, ask if in
+> doubt) is the core's: [contract/discipline.md](../../../contract/discipline.md#frontmatter-reconcile-for-update).
+> Below are the **Mirai fields** it operates on.
 
-On `update`, after replacing the marked body, **reconcile the loom-authored frontmatter
-fields** against what [STAGES.md](../STAGES.md), [capabilities.md](capabilities.md), and the
-prompt/role templates now say they should be:
+The Mirai frontmatter (`agent:`, `tools:`, `model:`, `name:`, `description:`,
+`argument-hint:`, `user-invocable:`, `disable-model-invocation:`) lives **above** the
+`<!-- loom:setup-loom:begin -->` marker. On `update`, after replacing the marked body,
+**reconcile these loom-authored fields** against what [STAGES.md](../STAGES.md),
+[capabilities.md](capabilities.md), and the prompt/role templates now say they should be:
 
 - Prompt `agent:` — must be the current base agent (`Plan` for Shaping, `agent` otherwise),
   not a stale `agent: "agent"` from an earlier version.

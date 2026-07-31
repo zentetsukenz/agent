@@ -2,6 +2,25 @@
 
 All notable changes to this framework are documented here.
 
+## [Unreleased] — 2026-07-31
+
+### Added
+
+- **Shared adapter-contract core** — the generic half of the setup contract now lives once in a new top-level `contract/` directory; adapters reference it and supply only their four harness-specific port obligations. Implements `wiki/adr/adr-013-shared-adapter-contract-core.md` (Design B: prose obligations over template packs; reference, never restate). Resolves [#9](https://github.com/zentetsukenz/agent/issues/9).
+  - `contract/index.md` — the five-step setup contract, `init`/`update` semantics, universal safety rules
+  - `contract/primitives.md` — the six loom primitives + generic content: stage groupings, per-stage skill rosters, capability-set-per-role, model archetypes, the communication-protocol obligation
+  - `contract/interview.md` — the harness-agnostic interview questions (Scope, tiers, model matching, utility agents, docs-lookup, handoff)
+  - `contract/discipline.md` — provenance/idempotency discipline + the generic invariant-checks the verify step inherits
+  - `contract/PORTS.md` — the four port obligations (`capability→tool`, `archetype→model`, `seam-obligation→wiring`, `primitive→file` manifest) as prose (no schema/DSL)
+
+### Changed
+
+- **`adapters/mirai/` refactored to reference the core** — generic content deleted from the adapter and sourced from `contract/`; only Mirai's four port answers + the harness manifest remain. `setup.md` is now a thin orchestrator (211→128 lines); `STAGES.md` (284→107) and `references/interview.md` (153→55) keep only Mirai render bindings; `references/verify.md` split into generic invariant-checks (core) + Mirai format-checks (local); `MAPPING.md`, `write-format.md`, `capabilities.md` reframed as port answers that link — never restate — the generic content
+- `SETUP.md` — Step 2 now points at `contract/` for the generic contract body + the four port obligations
+- `SPEC.md` "Setup contract conformance" — adds the four-port + reference-not-restate conformance rule
+- `index.md` — registers the `contract/` directory
+- `scripts/validate.sh` — link-checks the new `contract/` tree
+
 ## [Unreleased] — 2026-07-30
 
 ### Added
