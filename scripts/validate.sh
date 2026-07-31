@@ -11,6 +11,7 @@ failures=0
 skills_validated=0
 wiki_validated=0
 mirai_validated=0
+opencode_validated=0
 links_checked=0
 
 report_error() {
@@ -300,6 +301,104 @@ validate_mirai_config() {
   done
 }
 
+validate_opencode_skill() {
+  local file="$1"
+  local expected_name
+  local name
+  local description
+  local status
+
+  printf 'validating .opencode skill: %s\n' "$file"
+
+  expected_name="${file%/SKILL.md}"
+  expected_name="${expected_name##*/}"
+
+  set +e
+  frontmatter_value "$file" "name"
+  status=$?
+  set -e
+  if ((status != 0)); then
+    report_error "$file" "$(frontmatter_error "$status" "name")"
+  else
+    name="$(strip_yaml_scalar "$FRONTMATTER_VALUE")"
+    if [[ -z "$name" ]]; then
+      report_error "$file" "frontmatter name is empty"
+    elif ((${#name} > 64)); then
+      report_error "$file" "frontmatter name exceeds 64 chars (${#name})"
+    elif [[ ! "$name" =~ ^[a-z0-9]+(-[a-z0-9]+)*$ ]]; then
+      report_error "$file" "frontmatter name must be kebab-case with no leading/trailing hyphen: $name"
+    elif [[ "$name" != "$expected_name" ]]; then
+      report_error "$file" "frontmatter name '$name' must match folder name '$expected_name' (OpenCode requirement)"
+    fi
+  fi
+
+  set +e
+  frontmatter_value "$file" "description"
+  status=$?
+  set -e
+  if ((status != 0)); then
+    report_error "$file" "$(frontmatter_error "$status" "description")"
+  else
+    description="$(strip_yaml_scalar "$FRONTMATTER_VALUE")"
+    if [[ -z "$description" ]]; then
+      report_error "$file" "frontmatter description is empty"
+    elif ((${#description} > 1024)); then
+      report_error "$file" "frontmatter description exceeds 1024 chars (${#description})"
+    fi
+  fi
+
+  ((opencode_validated += 1))
+}
+
+validate_opencode_agent_or_command() {
+  local file="$1"
+  local description
+  local status
+
+  printf 'validating .opencode agent/command: %s\n' "$file"
+
+  set +e
+  frontmatter_value "$file" "description"
+  status=$?
+  set -e
+  if ((status != 0)); then
+    report_error "$file" "$(frontmatter_error "$status" "description")"
+  else
+    description="$(strip_yaml_scalar "$FRONTMATTER_VALUE")"
+    if [[ -z "$description" ]]; then
+      report_error "$file" "frontmatter description is empty"
+    fi
+  fi
+
+  ((opencode_validated += 1))
+}
+
+validate_opencode_config() {
+  local root="agent/.opencode"
+  local file
+
+  [[ -d "$root" ]] || return 0
+
+  for file in "$root"/skills/*/SKILL.md; do
+    [[ -f "$file" ]] && validate_opencode_skill "$file"
+  done
+
+  for file in "$root"/agents/*.md "$root"/commands/*.md; do
+    [[ -f "$file" ]] && validate_opencode_agent_or_command "$file"
+  done
+
+  for file in "agent/opencode.json" "agent/opencode.jsonc"; do
+    [[ -f "$file" ]] || continue
+    printf 'validating opencode config: %s\n' "$file"
+    if ! python3 -c "import json,sys; json.load(open(sys.argv[1]))" "$file" >/dev/null 2>&1; then
+      if ! node -e "JSON.parse(require('fs').readFileSync(process.argv[1]))" "$file" >/dev/null 2>&1; then
+        report_error "$file" "opencode config file is not valid JSON"
+      fi
+    fi
+    ((opencode_validated += 1))
+  done
+}
+
 collect_markdown_files() {
   local root="$1"
   local dir
@@ -444,6 +543,7 @@ while IFS= read -r wiki_file; do
 done < <(collect_markdown_files "agent/wiki")
 
 validate_mirai_config
+validate_opencode_config
 
 for link_root in agent/skills agent/workflows agent/wiki agent/agents agent/commands agent/adapters agent/contract; do
   while IFS= read -r markdown_file; do
@@ -452,10 +552,10 @@ for link_root in agent/skills agent/workflows agent/wiki agent/agents agent/comm
 done
 
 if ((failures > 0)); then
-  printf 'validation failed: %d violation(s); skills: %d validated, wiki: %d validated, .mirai: %d validated, links: %d checked\n' \
-    "$failures" "$skills_validated" "$wiki_validated" "$mirai_validated" "$links_checked" >&2
+  printf 'validation failed: %d violation(s); skills: %d validated, wiki: %d validated, .mirai: %d validated, .opencode: %d validated, links: %d checked\n' \
+    "$failures" "$skills_validated" "$wiki_validated" "$mirai_validated" "$opencode_validated" "$links_checked" >&2
   exit 1
 fi
 
-printf 'skills: %d validated, wiki: %d validated, .mirai: %d validated, links: %d checked, all OK\n' \
-  "$skills_validated" "$wiki_validated" "$mirai_validated" "$links_checked"
+printf 'skills: %d validated, wiki: %d validated, .mirai: %d validated, .opencode: %d validated, links: %d checked, all OK\n' \
+  "$skills_validated" "$wiki_validated" "$mirai_validated" "$opencode_validated" "$links_checked"

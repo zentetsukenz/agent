@@ -36,6 +36,7 @@ format and maps loom's generic content onto it.
 | Harness | Adapter entrypoint | Reference material |
 | --- | --- | --- |
 | **Mirai** (VS Code) | [`adapters/mirai/setup.md`](adapters/mirai/setup.md) | [wiki/environments/mirai.md](wiki/environments/mirai.md), [adapters/mirai/MAPPING.md](adapters/mirai/MAPPING.md), [adapters/mirai/STAGES.md](adapters/mirai/STAGES.md) |
+| **OpenCode** (terminal) | [`adapters/opencode/setup.md`](adapters/opencode/setup.md) | [wiki/environments/opencode.md](wiki/environments/opencode.md), [adapters/opencode/MAPPING.md](adapters/opencode/MAPPING.md), [adapters/opencode/STAGES.md](adapters/opencode/STAGES.md), [adapters/opencode/references/omo.md](adapters/opencode/references/omo.md) |
 
 ## Step 1 — Get loom's files in front of you
 

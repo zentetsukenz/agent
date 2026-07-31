@@ -1,0 +1,32 @@
+# {{PROJECT_NAME}} — Agent Instructions
+
+<!-- loom:setup-opencode:begin -->
+## loom SDLC (OpenCode)
+
+This project uses the loom SDLC framework via the OpenCode harness. Available delivery
+tiers:
+
+{{STAGE_SKILL_LIST}}
+
+- Quick path: `.opencode/commands/*.md` (fast, combo of skills + preset model; run with `/name`).
+- Deep path: `.opencode/agents/*.md` primary agents (full workflow discipline for a stage;
+  `Tab`-select them).
+- Utility subagents: `.opencode/agents/*.md` with `mode: subagent` (dispatched via `@mention`).
+- Granular skills live at `.opencode/skills/<slug>/SKILL.md`.
+- **Handoffs:** context crosses stage seams through the committed ledger at
+  `.loom/handoffs/` — see `.loom/handoffs/protocol.md` (also listed in `opencode.json`'s
+  `instructions:`). Produce a seam artifact at a stage exit; discover it at the next stage's entry.
+
+See `wiki/adr/adr-014-loom-opencode-setup.md` in the loom repo for why this is shaped this
+way, if this project vendors loom's wiki; otherwise this section is self-contained.
+<!-- loom:setup-opencode:end -->
+
+## Build and Test
+
+{{BUILD_CMD}}
+{{TEST_CMD}}
+
+## Conventions
+
+<!-- Project-specific conventions go here — filled during the setup interview, never
+     overwritten by a later `update` run without asking. -->

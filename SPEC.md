@@ -211,3 +211,32 @@ contains loom-authored content, `scripts/validate.sh` additionally checks:
 See `wiki/environments/mirai.md` for the full frontmatter reference these checks enforce
 a subset of, and `adapters/mirai/setup.md` for the adapter setup instruction that
 generates conformant `.mirai/` content.
+
+---
+
+## OpenCode delivery conformance
+
+The **OpenCode** harness is loom's second concrete adapter — another implementation of the
+setup contract above (see `wiki/adr/adr-014-loom-opencode-setup.md`, which implements
+`wiki/adr/adr-005-harness-agnostic-setup.md` and references the shared core of
+`wiki/adr/adr-013-shared-adapter-contract-core.md`). When a project's `.opencode/` directory
+contains loom-authored content, `scripts/validate.sh` additionally checks:
+
+- `.opencode/skills/<name>/SKILL.md` — required `name` (kebab-case, ≤64 chars, **must equal
+  the folder name** — an OpenCode requirement, same as the generic skill rule) and required
+  `description` (non-empty, ≤1024 chars).
+- `.opencode/agents/*.md` — required non-empty `description`.
+- `.opencode/commands/*.md` — required non-empty `description`.
+- `opencode.json` (if present) — must parse as valid JSON.
+
+The OpenCode adapter additionally supplies its four port answers as prose (capability →
+`permission:` key with `deny` as the withhold; `archetype→model` as inline `model:` or an
+opt-in `omo.json`; the seam obligation as a committed `.loom/handoffs/` ledger, since OpenCode
+has no memory tool or `handoffs:` primitive; the `primitive→file` manifest for skills/agents/commands)
+and references — never restates — the generic `contract/` content, per the Setup contract
+conformance rules above. **The OMO model-tiering layer is opt-in** — a bare-OpenCode project
+must not be forced into it.
+
+See `wiki/environments/opencode.md` for the full frontmatter/config reference these checks
+enforce a subset of, and `adapters/opencode/setup.md` for the adapter setup instruction that
+generates conformant `.opencode/` content.

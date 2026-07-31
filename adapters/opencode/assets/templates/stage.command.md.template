@@ -1,0 +1,18 @@
+---
+description: "{{STAGE_NAME}} stage — quick combo path. Bundles {{PROJECT_NAME}}'s {{STAGE_NAME}}-stage skills with a preset model for fast, low-ceremony work."
+agent: "{{STAGE_BASE_AGENT}}"
+model: {{STAGE_MODEL}}
+---
+<!-- loom:setup-opencode:begin -->
+**Stance:** {{STAGE_STANCE}}
+
+Work through this {{STAGE_NAME}}-stage task using the quick-combo path. Invoke whichever
+of these skills fits, in whatever order the task needs — you do not need to walk every
+phase of the deep workflow:
+
+{{STAGE_SKILL_LIST}}
+
+If the task turns out to need the full deep workflow (multi-phase, high-stakes,
+architectural), say so and recommend the `{{STAGE_NAME}}` primary agent instead of forcing
+it through the quick path.
+<!-- loom:setup-opencode:end -->
