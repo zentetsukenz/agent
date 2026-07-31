@@ -52,8 +52,29 @@ procedure — stop and ask rather than guessing or leaving it blank.
 | `{{ROLE_WORKFLOW_PROSE}}` | Concatenated body of the role's `workflows/sdlc/<phase>.md` file(s) — see [STAGES.md](../STAGES.md) |
 | `{{ROLE_SKILL_LIST}}` | The role's adopted skill roster from [STAGES.md](../STAGES.md), pruned per the Scope interview table |
 | `{{ROLE_MODEL}}` | The archetype-matched model fallback array (Model Matching interview table) — Verifier uses the extended-thinking archetype |
-| `{{ROLE_HANDOFFS}}` | `handoffs: [<next-stage-agent>]` for stage agents at a producing seam (`shaping → planner`, `orchestrator → closing`); omit the line entirely (empty string) for roles with no downstream stage transition |
+| `{{ROLE_HANDOFFS}}` | A `handoffs:` block for stage agents at a producing seam (`shaping → planner`, `orchestrator → closing`), written as an **array of objects** (see the schema below) — **not** a bare array of agent names. Expand to the **empty string** (omit the key entirely) for roles with no downstream stage transition. |
 | `{{ROLE_HANDOFF_NOTE}}` | The role's PRODUCE or DISCOVER instruction from [STAGES.md](../STAGES.md), pointing at `.mirai/instructions/handoff.instructions.md`; for a role at no stage seam (e.g. a utility), a one-line "within-stage dispatch is ephemeral — see `dispatch-context`" note |
+
+#### `handoffs:` frontmatter — object schema (do NOT use a bare array)
+
+Mirai requires each `handoffs` entry to be an **object** with `label`, `agent`, `prompt`, and
+optional `send` (see [wiki/environments/mirai.md](../../../wiki/environments/mirai.md#5-custom-agents)).
+Writing `handoffs: [planner]` fails validation with *"Each handoff in the 'handoffs' attribute
+must be an object with 'label', 'agent', 'prompt' and optional 'send'."* Fill `{{ROLE_HANDOFFS}}`
+like this (indentation matters — it sits at frontmatter top level):
+
+```yaml
+handoffs:
+  - label: "Plan this milestone"
+    agent: planner
+    prompt: "Discover the Shaping seam artifact for this milestone from the ledger and start planning from it."
+    send: false
+```
+
+- `shaping.agent.md` → `agent: planner` (label/prompt about planning the discovered findings).
+- `orchestrator.agent.md` → `agent: closing` (label/prompt about curating the shipped, verified change).
+- Any role with no downstream stage (planner, closing, all utilities): `{{ROLE_HANDOFFS}}` is the
+  **empty string** — do not emit a `handoffs:` key at all.
 
 ### `stage.prompt.md.template` placeholders
 

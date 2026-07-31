@@ -52,7 +52,9 @@ the seam artifact (`findings`, `domain-model` or link, `design-decisions`) to th
 registers it in the manifest, following the project's
 [communication protocol document](#the-communication-protocol-document-cross-stage). Its `persist`
 capability is what lets it write the ledger; its body references the protocol document (not a
-restated convention). Set `handoffs:` to `planner` so Mirai offers the transition to Delivery.
+restated convention). Add a `handoffs:` **object** targeting `agent: planner` (with a `label` and
+`prompt`, not a bare `[planner]` — see the [schema](references/write-format.md#handoffs-frontmatter--object-schema-do-not-use-a-bare-array))
+so Mirai offers the transition to Delivery.
 
 ## Delivery (Planning + Implementation + Verification)
 
@@ -107,8 +109,10 @@ Skill roster:
 
 **Seam artifact — PRODUCE (Delivery → Closing).** At the Verification exit gate the Orchestrator
 writes the Delivery seam artifact (`verified-change.md` — what shipped + the Verifier's acceptance
-evidence, links to PRs/commits by path) to the ledger and registers a `shipped` manifest row. Set
-`handoffs:` to `closing`. Its `persist` capability + the
+evidence, links to PRs/commits by path) to the ledger and registers a `shipped` manifest row. Add a
+`handoffs:` **object** targeting `agent: closing` (with a `label` and `prompt`, not a bare
+`[closing]` — see the [schema](references/write-format.md#handoffs-frontmatter--object-schema-do-not-use-a-bare-array)).
+Its `persist` capability + the
 [communication protocol document](#the-communication-protocol-document-cross-stage) drive this.
 
 Skill roster:
@@ -166,8 +170,10 @@ lives, the namespace, and each stage's expected seam artifacts — the choices c
   reference this document to write + register a seam artifact at their exit gate.
 - **DISCOVER roles** (`planner`, `closing` at entry) carry `persist` and reference this document to
   read the manifest and load the latest seam artifact at their entry gate.
-- Each stage agent's `handoffs:` frontmatter points at the next stage's agent (`shaping → planner`,
-  `orchestrator → closing`) so Mirai can offer the transition.
+- Each stage agent's `handoffs:` frontmatter is an **array of objects** (`label`, `agent`,
+  `prompt`, optional `send` — **not** a bare array of agent names) pointing at the next stage's
+  agent (`shaping → planner`, `orchestrator → closing`) so Mirai can offer the transition. See the
+  [schema](references/write-format.md#handoffs-frontmatter--object-schema-do-not-use-a-bare-array).
 - The skills `preservation/handoff` (PRODUCE) and `discovery/session-bootstrap` (DISCOVER) are the
   thin adapters that implement the read/write; agents invoke them rather than re-deriving the
   convention.

@@ -78,7 +78,10 @@ project's generated `.mirai/`).
 - [ ] The PRODUCE/DISCOVER stage agents (`shaping`, `planner`, `orchestrator`, `closing`) carry
       `persist` in `tools:` and reference the protocol document in their body.
 - [ ] Stage agents' `handoffs:` point at the next stage's agent (`shaping → planner`,
-      `orchestrator → closing`).
+      `orchestrator → closing`), written as an **array of objects** — each entry has `label`,
+      `agent`, and `prompt` (optional `send`), **never** a bare array of agent-name strings. (A
+      bare array fails Mirai validation: *"Each handoff … must be an object with 'label', 'agent',
+      'prompt' and optional 'send'."*)
 
 ## Report
 

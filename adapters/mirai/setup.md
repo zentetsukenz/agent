@@ -158,7 +158,10 @@ mapping, override the mapped name rather than emitting a name that won't resolve
   `persist` and reference the protocol document in their body (PRODUCE at the seam); the Planner
   and Closing roles reference it to DISCOVER at their entry. See
   [STAGES.md](STAGES.md) for which role produces vs. discovers, and set each stage agent's
-  `handoffs:` frontmatter to the next stage's agent so Mirai can offer the transition.
+  `handoffs:` frontmatter to the next stage's agent so Mirai can offer the transition. **`handoffs`
+  is an array of objects** (`label`, `agent`, `prompt`, optional `send`) — never a bare array of
+  agent names; see the
+  [schema](references/write-format.md#handoffs-frontmatter--object-schema-do-not-use-a-bare-array).
 
 Idempotency rule: if a target file already exists, **patch it in place** (preserve any
 user-added content outside loom-authored sections, marked as described in

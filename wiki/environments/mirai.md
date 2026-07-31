@@ -109,13 +109,23 @@ argument-hint: "Task..."                # optional
 agents: [agent1, agent2]                # optional: restrict allowed subagents (omit = all, [] = none)
 user-invocable: true                    # optional, default true
 disable-model-invocation: false         # optional, default false
-handoffs: [...]                         # optional: transitions to other agents
+handoffs:                               # optional: transitions to other agents — each entry is an OBJECT
+  - label: "Plan this milestone"        #   required: human-readable button/menu label
+    agent: planner                      #   required: the target agent's name
+    prompt: "Plan the discovered findings for this milestone."  # required: the prompt handed to the target
+    send: false                         #   optional (default false): true = auto-send the prompt, false = pre-fill for the user
 hooks: { PreToolUse: [...] }            # optional: inline hooks, see above
 ---
 ```
 
 Tool aliases: `execute` `read` `edit` `search` `agent` `web` `todo`. `tools: []` = none;
 omitting the key = defaults.
+
+**`handoffs` schema (load-bearing):** `handoffs` is an **array of objects**, *not* a bare
+array of agent-name strings. Each entry **must** have `label`, `agent`, and `prompt`; `send`
+is optional (defaults `false`). Writing `handoffs: [planner]` fails validation with
+*"Each handoff in the 'handoffs' attribute must be an object with 'label', 'agent', 'prompt'
+and optional 'send'."*
 
 **loom mapping**: this is where loom's **per-role agents** go — each carrying its
 DEEP-workflow system prompt (from `workflows/sdlc/<phase>.md`), a preset model, and a
