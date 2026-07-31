@@ -18,3 +18,8 @@ description: Chronological log of patterns changes
   manifest; produce@exit, discover@entry) consolidating the three shallow context-movers
   (`handoff`, `session-bootstrap`, `dispatch-context`) so context survives the stage seams.
   Mandatory at the two stage seams; substrate is a per-project setup choice. Grounds ADR-011.
+- 2026-07-31 — Extended **Role-Scoped Capabilities** with the **invocation surface** facet —
+  a second axis scoped the same way capabilities are: who may *start* a role (human picker vs.
+  subagent dispatch). Names `front-door` (stage agents) and `dispatched` (utilities);
+  orthogonal to the dispatcher/utility split; adapter maps each to the harness flag pair.
+  Adds a forward-pointer to autopilot (handoff `send:true`). Grounds ADR-012.

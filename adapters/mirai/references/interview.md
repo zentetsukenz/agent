@@ -61,6 +61,14 @@ Recommended default: generate `explore` and `quick` (cheap, broadly useful) and 
 (when Delivery is adopted — the Orchestrator dispatches to it); ask explicitly before
 generating `deep` or `writing`.
 
+**Not asked — the [invocation surface](../../../wiki/glossary/index.md#invocation-surface) is
+derived, not chosen** ([ADR-012](../../../wiki/adr/adr-012-invocation-surface.md)). Every utility
+generated here is `dispatched` (`user-invocable:false`, `disable-model-invocation:false`), and
+every stage agent is `front-door` (`user-invocable:true`, `disable-model-invocation:true`). This
+follows from the role kind, so there is no interview question for it — the setup step fills the
+`{{ROLE_INVOCATION_SURFACE}}` placeholder from the table in
+[write-format.md](write-format.md#role-invocation-surface).
+
 | Utility agent | Ask | Recommended default |
 |---|---|---|
 | `explore` | Generate read-only exploration subagent? | Yes |

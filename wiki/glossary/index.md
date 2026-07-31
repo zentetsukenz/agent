@@ -123,6 +123,37 @@ isolation seam. It is the first domain-specialized utility.
 
 ---
 
+### Invocation surface
+
+The set of entry points that may **start** a [Role](#role) — a facet of the role parallel to
+its [Capability](#capability) set. Where the capability set answers *what the role may do*,
+the invocation surface answers *who may start it*: a **human** (the harness's agent picker /
+UI front door) or **another agent** (subagent dispatch). loom names two surfaces:
+
+- **`front-door`** — human-startable, and *not* silently dispatchable as a subagent by a
+  peer. The lifecycle stage agents ([shaping, planner, orchestrator, closing](#stage)) — a
+  human enters a stage from the picker, or an explicit [handoff](#stage) crosses into it;
+  a peer never pulls it in mid-task.
+- **`dispatched`** — subagent-only: hidden from the picker, reachable only when a
+  [Dispatcher](#dispatcher) delegates to it. The whole [utility](#utility-dispatched-agent)
+  roster (`explore`, `quick`, `deep`, `verifier`, `frontend`, `visual-qa`, …).
+
+Like a withheld capability, a withheld invocation surface is a **forcing function**:
+withholding the human front door from a dispatched utility keeps a human from running `deep`
+directly and bypassing the dispatcher that sizes and routes work. The surface is *orthogonal*
+to the dispatcher/utility split — both `orchestrator` (front-door) and `frontend`
+(dispatched) hold `delegate`, so "holds `delegate`" does not predict the surface; that
+orthogonality is why the facet is named separately.
+
+**Example**: The `deep` utility is `dispatched` (a human can't pick it; the Orchestrator
+delegates to it). The `orchestrator` stage agent is `front-door` (a human starts it, or the
+Planner hands off to it) yet is *not* subagent-invocable.
+
+**See**: [Role](#role), [Capability](#capability), [Dispatcher](#dispatcher),
+`mem:patterns/role-scoped-capabilities`, `mem:adr/adr-012-invocation-surface`
+
+---
+
 ### Wiki
 
 Centralized knowledge repository. Contains principles, patterns, environments, and glossary. Reference material, not procedures.

@@ -22,3 +22,8 @@ description: Chronological log of glossary changes
   document** — the vocabulary for the Seam Artifact Protocol (ADR-011): stages are the
   ownership seams, a seam artifact is the baton, the ledger is its namespaced+manifested
   store, and the communication protocol document is the per-project contract agents reference.
+- 2026-07-31 — Added **Invocation surface** — the entry points that may *start* a role
+  (human picker vs. subagent dispatch), a facet parallel to the capability set. Names the
+  two surfaces `front-door` (stage agents; human/handoff-entered, not subagent-invocable)
+  and `dispatched` (the utility roster; subagent-only). Orthogonal to the dispatcher/utility
+  split. Establishes the vocabulary for ADR-012.

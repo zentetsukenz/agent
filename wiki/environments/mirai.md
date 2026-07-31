@@ -134,11 +134,27 @@ DEEP-workflow system prompt (from `workflows/sdlc/<phase>.md`), a preset model, 
 load-bearing: a role with no `edit` cannot write code. Shaping is one agent; **Delivery is
 two dispatcher agents** — `planner` and `orchestrator`, neither holding `edit`
 ([ADR-008](../adr/adr-008-delivery-dispatchers.md)); Closing is one agent. loom's **utility
-agents** (explore, quick, deep, **verifier**, writing) are also plain `.agent.md` files,
-`disable-model-invocation: false` so dispatchers can invoke them as subagents. The
-generic-capability → `tools:` mapping is in
+agents** (explore, quick, deep, **verifier**, writing, frontend, visual-qa) are also plain
+`.agent.md` files. The generic-capability → `tools:` mapping is in
 [MAPPING.md §6](../../adapters/mirai/MAPPING.md#6-capability--mirai-tool-mapping) and
 [references/capabilities.md](../../adapters/mirai/references/capabilities.md).
+
+The `user-invocable` / `disable-model-invocation` pair encodes loom's
+[invocation surface](../glossary/index.md#invocation-surface) facet
+([ADR-012](../adr/adr-012-invocation-surface.md)) — a role's *second* scoped facet alongside
+its capability set (*who may start it*, not just *what it may do*). loom uses exactly two of
+the four flag combinations:
+
+| loom invocation surface | `user-invocable` | `disable-model-invocation` | Assigned to |
+|---|---|---|---|
+| **`front-door`** | `true` | `true` | the stage agents (`shaping`, `planner`, `orchestrator`, `closing`) — a human enters from the picker, or a `handoffs:` transition crosses in; no peer silently pulls it in as a subagent |
+| **`dispatched`** | `false` | `false` | the utility roster (`explore`, `quick`, `deep`, `verifier`, `writing`, `frontend`, `visual-qa`) — hidden from the picker, reachable only when a dispatcher delegates |
+
+Setting `disable-model-invocation: true` on a `front-door` stage agent does **not** block its
+`handoffs:` targets — handoffs are keyed on agent name, a separate transition mechanism from
+subagent invocation. The two unused combinations (startable by nobody; human-only-and-
+undispatchable) name no loom role. The surface is derived from the role kind at setup, not
+asked — see [write-format.md](../../adapters/mirai/references/write-format.md#role-invocation-surface).
 
 Note the tool aliases are exactly `execute` `read` `edit` `search` `agent` `web` `todo`.
 loom's `persist` (memory) and `interview` (ask-user) capabilities are **specific tool
@@ -226,6 +242,8 @@ instructions have **no** Claude Code equivalent path and only ever live under `.
   the optional `docs-lookup` capability (MCP).
 - [wiki/adr/adr-008-delivery-dispatchers.md](../adr/adr-008-delivery-dispatchers.md) — the
   Delivery dispatcher split.
+- [wiki/adr/adr-012-invocation-surface.md](../adr/adr-012-invocation-surface.md) — the
+  invocation-surface facet the `user-invocable`/`disable-model-invocation` pair encodes.
 - [wiki/patterns/role-scoped-capabilities.md](../patterns/role-scoped-capabilities.md) — the
   underlying pattern.
 </content>

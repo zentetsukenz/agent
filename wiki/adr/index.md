@@ -21,3 +21,4 @@ Architectural decisions for the loom framework, organized chronologically.
 | [ADR-009](adr-009-frontend-domain-utility.md) | Frontend is a domain-specialized utility agent that delegates pixel-looking | Accepted | agent, role, frontend, utility, domain, visual, isolation, mirai, loom |
 | [ADR-010](adr-010-keyless-by-default-recommendations.md) | Recommendations are keyless by default; API-key tools are opt-in | Accepted | capability, tool-agnostic, opt-in, mcp, api-key, degradation, skill, loom |
 | [ADR-011](adr-011-seam-artifact-protocol.md) | Seam artifacts cross stage boundaries through a namespaced, manifest-indexed ledger | Accepted | handoff, seam, artifact, ledger, communication, multi-agent, sdlc, persist, mirai, loom |
+| [ADR-012](adr-012-invocation-surface.md) | Invocation surface is a role facet; stage agents are front doors, utilities are dispatched | Accepted | agent, role, invocation, user-invocable, dispatch, handoff, autopilot, mirai, loom |

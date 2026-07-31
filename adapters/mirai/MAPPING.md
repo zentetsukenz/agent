@@ -49,9 +49,13 @@ user picks per invocation:
   ([ADR-006](../../wiki/adr/adr-006-capability-based-roles.md)). A short in-body **stance**
   line is the portable backstop. It IS the bundle — no separate bundle-skill layer exists.
 - A **deep agent** (`.mirai/agents/<role>.agent.md`) carries the corresponding
-  `workflows/sdlc/<phase>.md` DEEP workflow prose, a preset `model:` (fallback array), and
-  a **role-scoped capability set** ([ADR-006](../../wiki/adr/adr-006-capability-based-roles.md))
-  — the withheld capabilities are load-bearing.
+  `workflows/sdlc/<phase>.md` DEEP workflow prose, a preset `model:` (fallback array), a
+  **role-scoped capability set** ([ADR-006](../../wiki/adr/adr-006-capability-based-roles.md))
+  — the withheld capabilities are load-bearing — and a **`front-door`
+  [invocation surface](../../wiki/glossary/index.md#invocation-surface)**
+  ([ADR-012](../../wiki/adr/adr-012-invocation-surface.md)): `user-invocable:true` +
+  `disable-model-invocation:true`, so a human enters the stage from the picker (or a handoff
+  crosses into it) but no peer silently pulls it in as a subagent.
 - **Delivery is split** into a Planner and an Orchestrator (dispatchers, no `edit`) per
   [ADR-008](../../wiki/adr/adr-008-delivery-dispatchers.md); execution goes to the
   `quick`/`deep` utilities and verification to the `verifier` utility. The old single
@@ -63,16 +67,21 @@ user picks per invocation:
 
 Independent of the three SDLC stages, the setup instruction offers a small utility-agent
 roster — plain `.mirai/agents/*.agent.md` files that a [Dispatcher](../../wiki/glossary/index.md#dispatcher)
-(the Orchestrator, a future plan-reviewer) or the user can dispatch to as subagents. This is
+(the Orchestrator, a future plan-reviewer) dispatches to as subagents. This is
 the **dispatched** tier of [role-scoped-capabilities](../../wiki/patterns/role-scoped-capabilities.md):
+every utility carries a **`dispatched` [invocation surface](../../wiki/glossary/index.md#invocation-surface)**
+([ADR-012](../../wiki/adr/adr-012-invocation-surface.md)) — `user-invocable:false` (hidden from
+the agent picker) + `disable-model-invocation:false` (so dispatchers can still reach it). A human
+does **not** pick a utility directly; that would bypass the dispatcher that sizes and routes the
+work (the ADR-008 split, enforced at the UI layer).
 
-| Utility agent | Purpose | Archetype | Capabilities |
-|---|---|---|---|
-| `explore.agent.md` | Read-only codebase exploration and Q&A (mirrors loom's own `Explore` subagent) | Utility | `read`, `search` |
-| `quick.agent.md` | Fast, cheap mechanical edits — executor (formatting, small fixes, boilerplate) | Utility | `read`, `edit`, `search`, `shell`, `tasks` |
-| `deep.agent.md` | Hard architectural/debugging problems — executor, strong reasoning model | Deep Specialist | `read`, `edit`, `search`, `shell`, `delegate`, `persist`, `tasks` (+ `docs-lookup` if opted) |
-| `verifier.agent.md` | Verify an artifact against its acceptance criteria; return evidence, don't fix | Deep Specialist (extended-thinking) | `read`, `search`, `shell`, `persist` — **no `edit`** |
-| `writing.agent.md` | Prose — commit messages, PR descriptions, docs, release notes | Communicator | `read`, `edit`, `search` — **DEFERRED** |
+| Utility agent | Purpose | Archetype | Capabilities | Invocation surface |
+|---|---|---|---|---|
+| `explore.agent.md` | Read-only codebase exploration and Q&A (mirrors loom's own `Explore` subagent) | Utility | `read`, `search` | `dispatched` |
+| `quick.agent.md` | Fast, cheap mechanical edits — executor (formatting, small fixes, boilerplate) | Utility | `read`, `edit`, `search`, `shell`, `tasks` | `dispatched` |
+| `deep.agent.md` | Hard architectural/debugging problems — executor, strong reasoning model | Deep Specialist | `read`, `edit`, `search`, `shell`, `delegate`, `persist`, `tasks` (+ `docs-lookup` if opted) | `dispatched` |
+| `verifier.agent.md` | Verify an artifact against its acceptance criteria; return evidence, don't fix | Deep Specialist (extended-thinking) | `read`, `search`, `shell`, `persist` — **no `edit`** | `dispatched` |
+| `writing.agent.md` | Prose — commit messages, PR descriptions, docs, release notes | Communicator | `read`, `edit`, `search` — **DEFERRED** | `dispatched` |
 
 The **Verifier** ([ADR-008](../../wiki/adr/adr-008-delivery-dispatchers.md)) is a utility,
 not a Delivery stage agent, so multiple dispatchers can reuse it (Orchestrator → verify a
@@ -88,10 +97,10 @@ The roster above is differentiated by **intelligence tier**. A
 project has that domain (the setup interview gates them — e.g. skip both for a backend-only
 repo):
 
-| Utility agent | Purpose | Archetype | Capabilities |
-|---|---|---|---|
-| `frontend.agent.md` | Frontend development + runtime debugging; delegates pixel-looking to `visual-qa` | Deep Specialist | `read`, `edit`, `search`, `shell`, `delegate`, `persist`, `tasks` (+ `docs-lookup` if opted) |
-| `visual-qa.agent.md` | Isolated, vision-capable visual verification — captures screenshots, returns text-only findings | Deep Specialist (vision) | `read`, `search`, `shell` — **no `edit`** (verifies, doesn't fix) |
+| Utility agent | Purpose | Archetype | Capabilities | Invocation surface |
+|---|---|---|---|---|
+| `frontend.agent.md` | Frontend development + runtime debugging; delegates pixel-looking to `visual-qa` | Deep Specialist | `read`, `edit`, `search`, `shell`, `delegate`, `persist`, `tasks` (+ `docs-lookup` if opted) | `dispatched` |
+| `visual-qa.agent.md` | Isolated, vision-capable visual verification — captures screenshots, returns text-only findings | Deep Specialist (vision) | `read`, `search`, `shell` — **no `edit`** (verifies, doesn't fix) | `dispatched` |
 
 The two form the frontend isolation seam ([ADR-009](../../wiki/adr/adr-009-frontend-domain-utility.md)):
 `frontend` (`edit`-capable, dev + runtime debug) *delegates* pixel-looking to `visual-qa`
@@ -180,6 +189,7 @@ substrate/namespace are user choices. Template:
 - [ADR-007](../../wiki/adr/adr-007-docs-lookup-capability.md) — the optional `docs-lookup` capability.
 - [ADR-008](../../wiki/adr/adr-008-delivery-dispatchers.md) — the Delivery dispatcher split (§2, §3).
 - [ADR-009](../../wiki/adr/adr-009-frontend-domain-utility.md) — the `frontend` + `visual-qa` domain-specialized utilities (§3).
+- [ADR-012](../../wiki/adr/adr-012-invocation-surface.md) — the invocation-surface facet (`front-door` stage agents §2, `dispatched` utilities §3).
 - [wiki/environments/mirai.md](../../wiki/environments/mirai.md) — Mirai primitive reference.
 - [references/capabilities.md](references/capabilities.md) — full capability→tool mapping and docs-lookup wiring.
 - [STAGES.md](STAGES.md) — stage groupings, skill rosters, capability sets, workflow-prose sourcing.

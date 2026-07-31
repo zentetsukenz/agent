@@ -61,6 +61,18 @@ project's generated `.mirai/`).
 - [ ] `docs-lookup` (`<server>/*`) appears in `tools:` **only** if the interview opted in;
       absent otherwise.
 
+## Invocation surface ([ADR-012](../../../wiki/adr/adr-012-invocation-surface.md))
+
+- [ ] The stage agents (`shaping`, `planner`, `orchestrator`, `closing`) are **`front-door`**:
+      `user-invocable: true` **and** `disable-model-invocation: true`.
+- [ ] Every utility agent (`explore`, `quick`, `deep`, `verifier`, `writing`, `frontend`,
+      `visual-qa`) is **`dispatched`**: `user-invocable: false` **and**
+      `disable-model-invocation: false` — no utility appears in the agent picker.
+- [ ] No agent carries a stale `user-invocable: true` on a utility from a pre-ADR-012 run
+      (the `update` reconcile must have flipped it — see
+      [write-format.md](write-format.md#role-invocation-surface)).
+- [ ] No `{{ROLE_INVOCATION_SURFACE}}` token remains in any written `.agent.md`.
+
 ## Quick prompts
 
 - [ ] Each `.mirai/prompts/*.prompt.md` has a non-empty **stance** line in its body.

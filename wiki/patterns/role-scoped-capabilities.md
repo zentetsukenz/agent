@@ -1,8 +1,8 @@
 ---
 type: Pattern
 title: Role-Scoped Capabilities
-description: An agent's role is the scoped set of capabilities it is granted; enforcement comes from withholding capabilities, not from prose
-tags: [agent, role, capability, harness, adapter, enforcement, loom]
+description: An agent's role is the scoped set of capabilities it is granted plus the invocation surface it exposes; enforcement comes from withholding — capabilities and entry points — not from prose
+tags: [agent, role, capability, invocation-surface, harness, adapter, enforcement, loom]
 timestamp: 2026-07-24T00:00:00Z
 ---
 
@@ -103,6 +103,57 @@ to `visual-qa`) is the first — see [ADR-009](../adr/adr-009-frontend-domain-ut
 is the roster's expression of the wisdom principle *"specialize by problem domain, not
 technology."*
 
+## Invocation surface — a second facet, scoped the same way
+
+Capabilities answer *what a role may do*. A parallel facet answers *who may start it*: the
+role's **[invocation surface](../glossary/index.md#invocation-surface)**. The same discipline
+applies — **you shape a role by withholding an entry point, not by asking it not to be
+misused.**
+
+Two entry points exist: a **human** (the harness's agent picker / UI front door) and
+**another agent** (subagent dispatch). loom names two surfaces over them:
+
+| Surface | Human picker | Subagent dispatch | Who gets it |
+|---|---|---|---|
+| **`front-door`** | ✅ starts it | ❌ not pulled in as a subagent | the lifecycle stage agents — `shaping`, `planner`, `orchestrator`, `closing` |
+| **`dispatched`** | ❌ hidden | ✅ delegated to | the utility roster — `explore`, `quick`, `deep`, `verifier`, `frontend`, `visual-qa` |
+
+**Withholding the human front door is the forcing function.** A `dispatched` utility that
+were *also* user-invocable invites a human to run `deep` (or `frontend`) straight from the
+picker — bypassing the [Dispatcher](../glossary/index.md#dispatcher) that sizes and routes
+the work, reintroducing the very swiss-army collapse the dispatcher/utility split exists to
+prevent. Hiding it from the picker makes the dispatcher the only way in.
+
+**Withholding subagent dispatch from a stage** keeps a lifecycle checkpoint from being
+silently pulled in mid-task: a peer can't reach for `shaping` as a subagent to "just design
+something real quick" and erase the stage seam. A stage is entered by a human or an explicit
+**handoff** — never ad-hoc dispatch. (Handoffs are a *distinct* transition mechanism, keyed
+on agent name, so withholding subagent dispatch does **not** block a stage from being a
+handoff target — the `shaping → planner → orchestrator → closing` chain still flows.)
+
+**The facet is orthogonal to the dispatcher/utility split** — which is why it is named
+separately rather than derived from "holds `delegate`". Both `orchestrator` (`front-door`)
+and `frontend` (`dispatched`) hold `delegate`; the surface differs anyway. `frontend` is a
+`deep`/`quick`-tier executor with UI/UX awareness that the Orchestrator dispatches to — a
+utility by role, so `dispatched` by surface — even though it delegates pixel-looking onward
+to `visual-qa`.
+
+Each [Adapter](../glossary/index.md#adapter) maps the two surfaces onto its harness's
+concrete flags and tolerates deviation, the same way it maps capabilities. On Mirai:
+`front-door` = `user-invocable: true` + `disable-model-invocation: true`; `dispatched` =
+`user-invocable: false` + `disable-model-invocation: false`. The two remaining boolean
+corners (startable by nobody; human-only-and-undispatchable) name no loom role and are
+unreachable by construction.
+
+> **Toward automation.** The invocation surface is the *manual* half of the workflow
+> substrate — where a human enters. The `handoffs:` chain between stage agents is the
+> *automatic* half — where stages advance on their own. They are complementary: laying the
+> surface cleanly now is the prerequisite for later flipping handoffs to auto-advance
+> (`send: true`, the harness's autopilot). That automation is a separate effort with its own
+> open decisions (completing the `planner → orchestrator` link in the handoff chain, gating
+> auto-advance at the Verification seam); this facet does not depend on it. See
+> [ADR-012](../adr/adr-012-invocation-surface.md).
+
 ## When to apply
 
 - Designing or generating a roster of agents that must divide labour (design vs. plan vs.
@@ -119,12 +170,15 @@ technology."*
 - **Prose-only discipline** — relying on "please don't edit" while leaving `edit` granted.
 - **Hardcoded tool names** — baking a harness's specific tool string into a generic role,
   so the role breaks when the harness's names differ.
+- **Over-broad invocation surface** — leaving a dispatched utility user-invocable, so a
+  human can run it directly and skip the dispatcher that sizes and routes the work.
 
 ## Related
 
 - [ADR-006 — Capability-based role discipline](../adr/adr-006-capability-based-roles.md)
 - [ADR-008 — Delivery dispatchers delegate execution and verification](../adr/adr-008-delivery-dispatchers.md)
 - [ADR-009 — Frontend as a domain-specialized utility agent](../adr/adr-009-frontend-domain-utility.md) — the first domain-scoped utility on this roster
+- [ADR-012 — Invocation surface is a role facet](../adr/adr-012-invocation-surface.md) — the second facet this pattern scopes (who may start a role)
 - [Deep Modules](deep-modules.md) — the "two consumers = a real seam" test for factoring utilities
 - [SDLC Implementation phase](../../workflows/sdlc/implementation.md) — the pre-existing Orchestrator role this pattern generalises
 - [codebase-design](../../SKILLS/design/codebase-design/SKILL.md) — the deep-module vocabulary

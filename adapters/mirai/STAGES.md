@@ -18,6 +18,17 @@
 > **`docs-lookup`** rows are shown *if the project opted into it* (interview table 7); omit
 > otherwise. **`persist`/`interview`** resolve to specific harness tool names discovered at
 > setup, not aliases.
+>
+> **Invocation surface** ([ADR-012](../../wiki/adr/adr-012-invocation-surface.md)) is the second
+> role facet, alongside capabilities: *who may start the agent*. Every stage agent below is
+> **`front-door`** (a human enters the stage from the picker, or a handoff crosses into it —
+> never a silent subagent pull); every [utility](#utility-agents-cross-stage) is
+> **`dispatched`** (picker-hidden, dispatcher-only). The adapter maps each surface to the Mirai
+> flag pair — `front-door` = `user-invocable:true` + `disable-model-invocation:true`;
+> `dispatched` = `user-invocable:false` + `disable-model-invocation:false` — via the
+> `{{ROLE_INVOCATION_SURFACE}}` placeholder (see
+> [write-format.md](references/write-format.md#role-invocation-surface)). It is **derived from
+> the role kind, not a setup question.**
 
 ## Shaping (Discovery + Design)
 
@@ -32,6 +43,7 @@ with design docs (domain model, interfaces, ADRs). See
 | Prompt file | `.mirai/prompts/shape.prompt.md` |
 | Agent file | `.mirai/agents/shaping.agent.md` |
 | Capabilities | `read`, `search`, `shell`, `persist`, `interview`, `tasks` (+ `docs-lookup` if opted). **No `edit`** — Shaping produces understanding and design, not code. |
+| Invocation surface | **`front-door`** ([ADR-012](../../wiki/adr/adr-012-invocation-surface.md)) — human/handoff-entered, not subagent-invocable. |
 | Quick base agent | `Plan` — Mirai's built-in read-only mode, so the quick path inherits the no-edit guarantee. |
 | Quick stance | "You are shaping, not building — produce understanding and design artifacts. Do NOT edit application code." |
 
@@ -84,6 +96,7 @@ dispatch rather than write code themselves. The single quick prompt
 | Workflow prose source | `workflows/sdlc/planning.md` |
 | Model archetype | Communicator |
 | Capabilities | `read`, `search`, `shell` (read-only investigation), `persist`, `interview`, `tasks` (+ `docs-lookup` if opted). **No `edit`, no `delegate`.** |
+| Invocation surface | **`front-door`** ([ADR-012](../../wiki/adr/adr-012-invocation-surface.md)) — human/handoff-entered, not subagent-invocable. |
 | Role | Pure plan-author: reads Design + findings, decomposes into a risk-ordered, right-sized execution plan. A research need is a loop back to Shaping, not a dispatch. |
 
 **Seam artifact — DISCOVER (Shaping → Delivery).** The Planner's entry gate **discovers** the
@@ -105,6 +118,7 @@ Skill roster:
 | Workflow prose source | `workflows/sdlc/implementation.md` + `workflows/sdlc/verification.md`, concatenated |
 | Model archetype | Deep Specialist |
 | Capabilities | `read`, `search`, `delegate`, `persist`, `tasks`. **No `edit`** — the forcing function that makes it dispatch. |
+| Invocation surface | **`front-door`** ([ADR-012](../../wiki/adr/adr-012-invocation-surface.md)) — human/handoff-entered, not subagent-invocable (it holds `delegate`, yet is a front door, not a dispatched utility). |
 | Role | Reads the plan; dispatches tasks (parallel/sequential) to `quick`/`deep` executors and verification to the Verifier; gauges size; enforces the architecture-prerequisite gate; re-routes on mis-size. |
 
 **Seam artifact — PRODUCE (Delivery → Closing).** At the Verification exit gate the Orchestrator
@@ -140,6 +154,7 @@ fed back into the framework.
 | Prompt file | `.mirai/prompts/close.prompt.md` |
 | Agent file | `.mirai/agents/closing.agent.md` |
 | Capabilities | `read`, `edit` (documentation/wiki only), `search`, `persist`, `tasks`. |
+| Invocation surface | **`front-door`** ([ADR-012](../../wiki/adr/adr-012-invocation-surface.md)) — human/handoff-entered, not subagent-invocable. |
 | Quick base agent | `agent` |
 | Quick stance | "Curate durable knowledge; don't change application code." |
 
@@ -199,22 +214,27 @@ plan-reviewer) hands them scoped tasks. They are independent of the three stages
 generated per the Utility Agents interview table. See
 [MAPPING.md](MAPPING.md#3-utility-agents-à-la-omo) for the roster overview.
 
-| Utility | Purpose | Capabilities |
-|---|---|---|
-| `explore` | Read-only recon and Q&A | `read`, `search` |
-| `quick` | Fast mechanical edits (executor) | `read`, `edit`, `search`, `shell`, `tasks` |
-| `deep` | Hard problems (executor) | `read`, `edit`, `search`, `shell`, `delegate`, `persist`, `tasks` (+ `docs-lookup` if opted) |
-| `verifier` | Verify an artifact against its acceptance criteria; return evidence | `read`, `search`, `shell` (run tests), `persist`. **No `edit`** — verifies, doesn't fix. |
-| `writing` | Prose (commit messages, PRs, docs) | `read`, `edit` (docs), `search` — **DEFERRED for now** |
+Every utility is **`dispatched`** ([ADR-012](../../wiki/adr/adr-012-invocation-surface.md)):
+`user-invocable:false` (picker-hidden), `disable-model-invocation:false` (so a dispatcher can
+still reach it). A human never picks a utility directly — that would skip the dispatcher that
+sizes and routes the work.
+
+| Utility | Purpose | Capabilities | Invocation surface |
+|---|---|---|---|
+| `explore` | Read-only recon and Q&A | `read`, `search` | `dispatched` |
+| `quick` | Fast mechanical edits (executor) | `read`, `edit`, `search`, `shell`, `tasks` | `dispatched` |
+| `deep` | Hard problems (executor) | `read`, `edit`, `search`, `shell`, `delegate`, `persist`, `tasks` (+ `docs-lookup` if opted) | `dispatched` |
+| `verifier` | Verify an artifact against its acceptance criteria; return evidence | `read`, `search`, `shell` (run tests), `persist`. **No `edit`** — verifies, doesn't fix. | `dispatched` |
+| `writing` | Prose (commit messages, PRs, docs) | `read`, `edit` (docs), `search` — **DEFERRED for now** | `dispatched` |
 
 **Domain-specialized utilities** ([ADR-009](../../wiki/adr/adr-009-frontend-domain-utility.md)):
 scoped by problem *domain* rather than intelligence tier, offered only when the project has
 that domain (interview-gated — skip for a backend-only repo):
 
-| Utility | Purpose | Capabilities |
-|---|---|---|
-| `frontend` | Frontend development + runtime debugging; delegates pixel-looking to `visual-qa` | `read`, `edit`, `search`, `shell`, `delegate`, `persist`, `tasks` (+ `docs-lookup` if opted) |
-| `visual-qa` | Isolated, vision-capable visual verification — screenshots → text-only findings | `read`, `search`, `shell`. **No `edit`** — verifies, doesn't fix. |
+| Utility | Purpose | Capabilities | Invocation surface |
+|---|---|---|---|
+| `frontend` | Frontend development + runtime debugging; delegates pixel-looking to `visual-qa` | `read`, `edit`, `search`, `shell`, `delegate`, `persist`, `tasks` (+ `docs-lookup` if opted) | `dispatched` (holds `delegate`, yet a dispatched utility — see [ADR-012](../../wiki/adr/adr-012-invocation-surface.md)) |
+| `visual-qa` | Isolated, vision-capable visual verification — screenshots → text-only findings | `read`, `search`, `shell`. **No `edit`** — verifies, doesn't fix. | `dispatched` |
 
 ### Verifier — `.mirai/agents/verifier.agent.md`
 

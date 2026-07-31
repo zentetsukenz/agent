@@ -3,8 +3,7 @@ description: "{{ROLE_DESCRIPTION}}"
 name: "{{ROLE_NAME}}"
 tools: {{ROLE_TOOLS}}
 model: {{ROLE_MODEL}}
-user-invocable: true
-disable-model-invocation: false
+{{ROLE_INVOCATION_SURFACE}}
 {{ROLE_HANDOFFS}}
 ---
 <!-- loom:setup-loom:begin -->
