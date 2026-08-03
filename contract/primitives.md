@@ -111,8 +111,8 @@ loads the latest `ready-for-delivery` shaping set, and plans from it.
 
 Skill roster:
 
-- `implementation/tdd`, `implementation/prototype`, `implementation/diagnose`,
-  `implementation/systematic-debugging`, `implementation/frontend-runtime-debugging`,
+- `implementation/tdd`, `implementation/prototype`, `implementation/diagnosing-bugs`,
+  `implementation/frontend-runtime-debugging`, `implementation/resolving-merge-conflicts`,
   `implementation/architect-review`, `implementation/server-operations`
 - `verification/verification-before-completion`, `verification/visual-verification`,
   `verification/qa-witness-protocol`
@@ -232,6 +232,38 @@ at the **two stage seams** only (Shaping → Delivery, Delivery → Closing); wi
 dispatch stays ephemeral via `planning/dispatch-context`. See
 [ADR-011](../wiki/adr/adr-011-seam-artifact-protocol.md).
 
+## The quality baseline (not a new primitive — project context)
+
+The project's [quality baseline](../wiki/patterns/quality-baseline.md) — the four-aspect floor
+(lint, code-quality, security, coverage) the [quality gate](../workflows/sdlc/implementation.md#quality-gates)
+enforces — is **project context, not a seventh primitive**. It selects tools via the existing
+[`capability→tool` port](PORTS.md) discipline and is *recorded*, not *rendered* to a new file
+kind, so it adds no adapter port ([ADR-017](../wiki/adr/adr-017-quality-baseline.md)). Its home
+is chosen by precedence, collected in [interview.md §4e](interview.md#4e-quality-baseline--lint-code-quality-security-coverage):
+
+1. **Prefer the project's own committed tool config/scripts** (single source of truth,
+   CI-consumable) — loom records only a pointer to the run command per aspect.
+2. **Fall back to a provenance-marked *Quality baseline* section in the project-context file**
+   (below) when no committed config exists — the aspect tool, run command, and floor per aspect.
+
+The floor is a **ratchet** (no-regression) by default, with an optional absolute target; keyless
+tools are the default per aspect ([keyless-by-default](../wiki/principles/keyless-by-default.md)),
+and an aspect with no keyless option is recorded as `none` with a reason. The SDLC phases read
+this baseline at their gates ([Planning](../workflows/sdlc/planning.md#review-gate-cadence) states
+per-gate aspects, [Implementation](../workflows/sdlc/implementation.md#quality-gates) runs it per
+slice, [Verification](../workflows/sdlc/verification.md) runs the full baseline over the whole
+delivery).
+
+## The project-context file (always-on)
+
+The always-on project-context file (the harness's `AGENTS.md` / `mirai-instructions.md`
+equivalent — resolved per harness) holds per-project context: build/test commands, directory
+structure, conventions, and — when no committed tool config exists — the loom-owned **Quality
+baseline** section above. It is **not** workflow steering (that lives in stage-agent bodies,
+[ADR-002](../wiki/adr/adr-002-workflow-as-adapter-seed.md)); loom edits only its
+provenance-marked sections and never a human's own content
+([discipline.md](discipline.md#provenance-marking-for-idempotent-patching)).
+
 ## Meta bucket — not a stage
 
 `SKILLS/meta/*` (`skill-creator`, `caveman`, `context-compression`, `edit-article`) is an
@@ -247,3 +279,4 @@ alongside the referencing skill so relative links resolve.
 - [PORTS.md](PORTS.md) — the four render bindings an adapter supplies for the primitives above.
 - [workflows/sdlc/index.md](../workflows/sdlc/index.md) — the six phases and three stages this doc overlays.
 - [ADR-006](../wiki/adr/adr-006-capability-based-roles.md), [ADR-008](../wiki/adr/adr-008-delivery-dispatchers.md), [ADR-009](../wiki/adr/adr-009-frontend-domain-utility.md), [ADR-011](../wiki/adr/adr-011-seam-artifact-protocol.md), [ADR-012](../wiki/adr/adr-012-invocation-surface.md) — the disciplines encoded above.
+- [quality-baseline](../wiki/patterns/quality-baseline.md) / [ADR-017](../wiki/adr/adr-017-quality-baseline.md) — the quality floor recorded as project context (no new primitive/port).

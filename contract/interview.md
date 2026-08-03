@@ -136,6 +136,46 @@ generated communication protocol document, and seeds an empty ledger **manifest*
 `<ledger-root>/index.md`. On `update`, changing the substrate migrates existing artifacts
 (or, if that is unsafe, surfaces them and asks) rather than silently orphaning them.
 
+## 4e. Quality baseline — lint, code-quality, security, coverage
+
+Selects this project's [quality baseline](../wiki/patterns/quality-baseline.md) — the standing
+floor the [quality gate](../workflows/sdlc/implementation.md#quality-gates) re-checks at every
+slice and the [Verification](../workflows/sdlc/verification.md) final gate runs across the whole
+delivery ([ADR-017](../wiki/adr/adr-017-quality-baseline.md)). Always asked (quality is part of
+the SDLC process); the tools and floors are the user's choice, revisable via a later `update`.
+
+**Explore first — recommend from the detected stack.** Read the project's package/build config
+(`package.json`, `pyproject.toml`, `go.mod`, `Cargo.toml`, any existing lint/coverage/CI config)
+*before* asking, and lead each aspect with the tool the project already uses, else the
+keyless-first default for its stack. Recommendations are **keyless-first**
+([keyless-by-default](../wiki/principles/keyless-by-default.md)): the default tool per aspect
+runs locally with no API key/account. Hosted platforms (SonarCloud, Snyk, Codecov, …) are
+offered *only* as opt-in examples if the team already uses one — never a default. Resolving a
+generic aspect to a concrete tool command reuses the [`capability→tool` port](PORTS.md) discipline
+("discover/confirm, don't guess") — there is **no new port**.
+
+| Aspect | Ask (lead with the detected/recommended tool) | Keyless-first default by stack |
+|---|---|---|
+| **lint** | "Which linter should the gate run?" | JS/TS `eslint` · Python `ruff` · Go `go vet`+`gofmt` · Rust `clippy`+`fmt` |
+| **code-quality** | "Which complexity/duplication check should the gate run?" | `eslint` complexity rules / `jscpd` · Python `radon`/`ruff` complexity · Go `gocyclo` · Rust `clippy` pedantic |
+| **security** | "Which SAST / dependency-audit should the gate run?" | `npm audit`/`osv-scanner`/`semgrep` · `pip-audit`/`bandit` · `govulncheck` · `cargo audit` |
+| **coverage** | "Which coverage tool should the gate run, and to what floor?" | `vitest`/`jest`/`c8` · `pytest --cov` · `go test -cover` · `cargo tarpaulin` |
+
+For each aspect also settle:
+
+| Question | Recommended default | Signal to deviate |
+|---|---|---|
+| Floor for this aspect? | **Ratchet / no-regression** — capture the current level; a gate fails if it drops below it (finding count for lint/quality/security, % for coverage) | Team wants a hard number → add an absolute target; the gate then enforces `max(ratchet, target)` |
+| No keyless tool exists for this aspect on this stack? | Record the aspect as `none` **with a stated reason** | Team already pays for a hosted tool and opts in → record it, noting the key/account it needs |
+| Where is the baseline recorded? | **Prefer the project's own committed tool config/scripts** (single source of truth, CI-consumable) — record only a pointer to the run command | No committed config exists → write a provenance-marked **Quality baseline** section in the project-context file (fallback) |
+
+Adding a *new* committed config file needs explicit confirmation (setup changes no application
+code, CI, or runtime config on its own); the project-context fallback is what lets the baseline
+be recorded without touching project tooling. The chosen aspects, commands, and floors are
+written into whichever home wins the precedence above, and referenced by the gate — not restated
+per task. On `update`, re-measure the ratchet floor and reconcile it upward if the project's
+current level improved (the floor only climbs).
+
 ## Project-context / instruction file
 
 Not really a question — a filesystem check: the project's always-on context file (build/test
@@ -155,3 +195,4 @@ generic. Workflow discipline lives in each stage agent's body, not this file (AD
 - [index.md](index.md) — the setup contract these questions serve (step 2).
 - [primitives.md](primitives.md) — the rosters/archetypes these questions prune and tailor.
 - [PORTS.md](PORTS.md) — the harness-specific resolution steps an adapter adds on top of these questions.
+- [quality-baseline](../wiki/patterns/quality-baseline.md) / [ADR-017](../wiki/adr/adr-017-quality-baseline.md) — the baseline §4e selects.

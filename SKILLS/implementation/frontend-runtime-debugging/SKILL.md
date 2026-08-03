@@ -9,10 +9,9 @@ Runtime bugs in the browser hide behind vague symptoms — "it's broken", "blank
 
 It is a frontend specialization of the general debugging loop. The root-cause discipline lives elsewhere; this skill adds the browser-specific layer on top:
 
-- For the general root-cause method (four phases, the iron law) → [systematic-debugging](../systematic-debugging/SKILL.md).
-- For hard/intermittent bugs that need a **feedback loop** before you can even reproduce → [diagnose](../diagnose/SKILL.md).
+- For the general root-cause method — feedback loop, reproduce, hypothesise, fix — → [diagnosing-bugs](../diagnosing-bugs/SKILL.md).
 
-Use those for the _how do I isolate a cause_ mechanics. Use this for _what does this frontend symptom mean and how do I capture proof_.
+Use that for the _how do I isolate a cause_ mechanics. Use this for _what does this frontend symptom mean and how do I capture proof_.
 
 ---
 
@@ -30,7 +29,7 @@ Use those for the _how do I isolate a cause_ mechanics. Use this for _what does 
 - The dev server isn't running → [server-operations](../server-operations/SKILL.md).
 - Backend returns wrong data but the request succeeds → debug the backend, not the browser.
 - Pure visual/layout polish → [visual-verification](../../verification/visual-verification/SKILL.md).
-- A green test that should be red / logic bug with no runtime error → [systematic-debugging](../systematic-debugging/SKILL.md).
+- A green test that should be red / logic bug with no runtime error → [diagnosing-bugs](../diagnosing-bugs/SKILL.md).
 
 ---
 
@@ -45,8 +44,8 @@ Use those for the _how do I isolate a cause_ mechanics. Use this for _what does 
 ```
 
 Steps 1, 4-symptom-vs-origin, and 5 are the general loop — defer to
-[systematic-debugging](../systematic-debugging/SKILL.md) and [diagnose](../diagnose/SKILL.md)
-for the discipline. Steps 2 and 3 are what this skill adds.
+[diagnosing-bugs](../diagnosing-bugs/SKILL.md) for the discipline. Steps 2 and 3
+are what this skill adds.
 
 ---
 
@@ -112,7 +111,7 @@ an orchestrator has handed the capture to a separate session.
 > The generic browser-drive moves (discover the URL from config, choose the automation tool,
 > capture without contaminating context) are shared with the visual skill — see
 > [wiki/patterns/browser-capture.md](../../../wiki/patterns/browser-capture.md). This step adds the
-> *runtime lens*: the channels below and the capture caveats specific to runtime evidence.
+> _runtime lens_: the channels below and the capture caveats specific to runtime evidence.
 
 ### Capability checklist — what any capture must provide
 
@@ -159,8 +158,8 @@ With evidence in hand, open the sub-file for the class and trace from symptom to
 to the first line the stack trace names. The sub-files list the usual origins per class.
 
 Symptom-vs-origin tracing is core debugging discipline — see
-[systematic-debugging](../systematic-debugging/SKILL.md) (root-cause investigation) and
-[diagnose](../diagnose/SKILL.md) (backward tracing / feedback loops) for the method.
+[diagnosing-bugs](../diagnosing-bugs/SKILL.md) (root-cause investigation, backward tracing,
+feedback loops) for the method.
 
 ## Step 5 — Fix and verify
 
@@ -200,12 +199,11 @@ didn't watch reproduce-then-pass is not verified — see
 
 ## Related skills
 
-- [systematic-debugging](../systematic-debugging/SKILL.md) — general root-cause method.
-- [diagnose](../diagnose/SKILL.md) — feedback loops for hard/intermittent bugs.
+- [diagnosing-bugs](../diagnosing-bugs/SKILL.md) — general root-cause method + feedback loops for hard/intermittent bugs.
 - [server-operations](../server-operations/SKILL.md) — start/verify dev servers.
 - [visual-verification](../../verification/visual-verification/SKILL.md) — visual UI review.
 - [verification-before-completion](../../verification/verification-before-completion/SKILL.md) — evidence before "done".
-- [wiki/patterns/browser-capture.md](../../../wiki/patterns/browser-capture.md) — the shared browser-drive substrate this skill specializes with a *runtime* lens.
+- [wiki/patterns/browser-capture.md](../../../wiki/patterns/browser-capture.md) — the shared browser-drive substrate this skill specializes with a _runtime_ lens.
 - [agents/frontend.md](../../../agents/frontend.md) — the domain-specialized utility that wires this skill as its primary.
 
 ---

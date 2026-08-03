@@ -15,4 +15,5 @@ Core principles that guide decisions across all agents.
 | [Research → Plan → Implement (RPI)](rpi.md) | Disciplined workflow for complex tasks |
 | [Verification Culture](verification-culture.md) | Verify before claiming done |
 | [Architecture-First & Research-Backed](architecture-first.md) | Back every unknown with research; land architecture/constitutional changes before dependent code |
+| [Commit Often](commit-often.md) | Every green quality gate is a commit point — land verified work in small, reversible increments |
 | [Keyless by Default](keyless-by-default.md) | Default recommendations work with no API key; API-key tools are opt-in capabilities with a keyless fallback |

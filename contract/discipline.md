@@ -88,6 +88,19 @@ format-checks (frontmatter parses, native `name==folder` rules, etc.) on top.
 - [ ] The stage seams are wired (`shaping → planner`, `orchestrator → closing`) via the
       harness's handoff mechanism (the [`seam-obligation→wiring` port](PORTS.md)).
 
+### Quality baseline ([ADR-017](../wiki/adr/adr-017-quality-baseline.md))
+
+- [ ] A [quality baseline](../wiki/patterns/quality-baseline.md) was recorded — one entry per
+      aspect (`lint`, `code-quality`, `security`, `coverage`), each naming a tool + run command
+      + floor, **or** explicitly `none` with a stated reason.
+- [ ] The baseline lives in **one** home per the precedence: the project's committed tool
+      config/scripts (preferred, referenced by a command pointer) **or** a provenance-marked
+      *Quality baseline* section in the project-context file — never duplicated across both.
+- [ ] Every non-`none` aspect's tool is **keyless** (no API key/account) unless the interview
+      explicitly opted into a hosted tool ([keyless-by-default](../wiki/principles/keyless-by-default.md)).
+- [ ] Loom changed **no** application code, CI, or runtime config to record the baseline — a
+      *new* committed config file appears only if the user explicitly confirmed it.
+
 ### Structure
 
 - [ ] Every skill referenced by a stage prompt/agent body actually exists in the generated

@@ -46,6 +46,7 @@ over from the shaping agent.
 - Each task carries its own verification/acceptance criteria.
 - High-risk items are sequenced first.
 - The **Architecture Gate** (below) is satisfied.
+- The **Review-gate cadence** (below) is defined — slice boundaries are marked as quality gates.
 - The **Output-Plan Policy** (below) is met.
 
 ## 3. Recommended skills
@@ -95,6 +96,34 @@ Per [architecture-first](../../wiki/principles/architecture-first.md):
   localized fixes (e.g. a one-function bugfix) are exempt — the sizing scorecard's
   *uncertainty* dimension plus architectural blast radius is the trigger.
 
+## Review-gate cadence
+
+The plan **designs in the quality gates** the Orchestrator will enforce during
+[Implementation](implementation.md#quality-gates) — it does not leave review and committing to
+improvisation. A **quality gate** is a slice boundary where verified work is **reviewed on two
+axes (Standards + Spec) and committed** before the next slice starts, per
+[commit-often](../../wiki/principles/commit-often.md).
+
+Where the gates go:
+
+- **One gate per tracer-bullet boundary.** Each vertical slice from
+  [to-tickets](../../SKILLS/planning/to-tickets/SKILL.md) is independently demoable, so each is a
+  natural gate: verify → review → commit, then the next slice begins from that committed point.
+- **Mark them in the plan.** The dependency graph (Pass 4) already identifies slice boundaries;
+  the plan annotates which are gates and states each gate's review focus (which acceptance
+  criteria the Spec axis checks, which modules the Standards axis scrutinises) **and which
+  [quality-baseline](../../wiki/patterns/quality-baseline.md) aspects (lint, code-quality,
+  security, coverage) that gate's Verify step must run** — so baseline enforcement is designed
+  into the cadence, not improvised ([ADR-017](../../wiki/adr/adr-017-quality-baseline.md)).
+- **Scale with size.** Trivial single-slice work has **one gate at the end**. Multi-slice work
+  gates at **every** slice boundary — never a single end-of-plan review over an unreviewable
+  pile. The heavier the blast radius, the tighter the cadence.
+- **The final gate is Verification.** The last gate coincides with the
+  [Verification](verification.md) exit, whose commit the Delivery seam artifact references.
+
+This makes review a *planned checkpoint* like the Architecture Gate above — not an optional
+skill an agent might forget to invoke.
+
 ## 5. Shift-left obligation
 
 - Every task carries its acceptance/verification criteria **with it** — verification is
@@ -111,7 +140,8 @@ Per [architecture-first](../../wiki/principles/architecture-first.md):
 - A risk-ordered set of right-sized tasks, each with acceptance criteria and explicit
   dependencies.
 - Dispatch-ready context bundles.
-- A dependency graph identifying critical-path and parallel-safe tasks.
+- A dependency graph identifying critical-path and parallel-safe tasks, with **quality gates
+  marked** at the slice boundaries where work is reviewed and committed.
 
 ---
 
@@ -170,6 +200,8 @@ context tests. Fix inline; never output a document that fails.
 
 - [Design](design.md) — supplies the solution shape, interface designs, domain model, and any architecture prerequisite this phase decomposes.
 - [Discovery](discovery.md) — the ultimate source of success criteria and constraints (carried forward through Design).
-- [Implementation](implementation.md) — consumes the task documents produced here.
+- [Implementation](implementation.md) — consumes the task documents and executes the review-gate cadence produced here.
 - [architecture-first](../../wiki/principles/architecture-first.md) — the principle behind the Architecture Gate.
+- [commit-often](../../wiki/principles/commit-often.md) — the principle behind the review-gate cadence.
+- [quality-baseline](../../wiki/patterns/quality-baseline.md) — the four-aspect floor each gate's Verify step runs; the cadence names which aspects per gate.
 </content>

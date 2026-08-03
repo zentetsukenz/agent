@@ -114,7 +114,7 @@ technology"* — the tier utilities are difficulty-shaped; a domain-specialized 
 domain-shaped.
 
 **Example**: The `frontend` agent (development + runtime debugging) wires
-`frontend-runtime-debugging`, `systematic-debugging`, `diagnose`, `server-operations`,
+`frontend-runtime-debugging`, `diagnosing-bugs`, `server-operations`,
 `tdd`, and `visual-verification`, and *delegates* pixel-looking to the `visual-qa`
 isolation seam. It is the first domain-specialized utility.
 
@@ -378,6 +378,31 @@ Design philosophy that treats context as a first-class resource. Minimize what e
 Principle that work is not done until verified. "I added the code" is not done; "I ran it and saw expected output" is done.
 
 **See**: `mem:principles/verification-culture`
+
+---
+
+### Quality baseline
+
+A per-project quality floor recorded at [setup](#setup-contract) and re-checked at every
+[quality gate](../../workflows/sdlc/implementation.md#quality-gates)'s Verify step. It names one
+tool + run command + floor per [quality aspect](#quality-aspect), defaults to a **ratchet**
+(no-regression) floor, is built from **keyless-first** tools, and lives in a single source of
+truth (the project's committed tool config when present, else a loom-owned section in the
+project-context file). A metric dropping below its floor fails the gate.
+
+**See**: [patterns/quality-baseline](../patterns/quality-baseline.md), [ADR-017](../adr/adr-017-quality-baseline.md)
+
+---
+
+### Quality aspect
+
+One of the four distinct dimensions a [quality baseline](#quality-baseline) covers: **lint**
+(style/mechanical correctness), **code-quality** (complexity/duplication/maintainability),
+**security** (SAST + vulnerable dependencies), and **coverage** (test %). Each aspect names its
+own tool and floor; an aspect with no keyless tool for the stack is recorded as `none` with a
+reason.
+
+**See**: [patterns/quality-baseline](../patterns/quality-baseline.md)
 
 ---
 

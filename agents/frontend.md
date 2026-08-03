@@ -42,8 +42,8 @@ keeps you a focused executor, not a do-everything agent
   Rendering / State), capture structured evidence to a file, trace to the origin, fix, re-verify.
   Read [SKILLS/implementation/frontend-runtime-debugging/SKILL.md](../SKILLS/implementation/frontend-runtime-debugging/SKILL.md)
   and its `NETWORK.md` / `RENDERING.md` / `STATE.md` sub-files.
-- `systematic-debugging` — the general four-phase root-cause method the primary skill builds on.
-- `diagnose` — feedback loops for hard or intermittent bugs you can't yet reproduce.
+- `diagnosing-bugs` — the general root-cause method (feedback loop → reproduce → hypothesise → fix)
+  the primary skill builds on, including hard or intermittent bugs you can't yet reproduce.
 - `server-operations` — start and verify the dev server before capturing against it.
 - `tdd` — red-green-refactor discipline for the development half.
 - `visual-verification` — the contract for **when and how** to dispatch `visual-qa`; you delegate

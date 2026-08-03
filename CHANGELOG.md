@@ -2,6 +2,23 @@
 
 All notable changes to this framework are documented here.
 
+## [Unreleased] — 2026-08-03
+
+### Added
+
+- **Quality baseline** — a per-project quality floor across four aspects (lint, code-quality, security, coverage), chosen during setup from keyless-first tools and re-checked at every quality gate so quality can't silently drop between gates and get caught too late. Implements `wiki/adr/adr-017-quality-baseline.md`.
+  - `wiki/patterns/quality-baseline.md` — the pattern: four aspects, keyless-first selection, ratchet (no-regression) floor by default with optional absolute target, single source of truth (project committed config preferred; provenance-marked project-context section as fallback), enforced at the existing gate's Verify step
+  - `wiki/adr/adr-017-quality-baseline.md` — the decision (no new primitive, no fifth adapter port; tool selection reuses `capability→tool`, the record is project context)
+  - Glossary terms **Quality baseline** and **Quality aspect**
+
+### Changed
+
+- `contract/interview.md` — new **§4e Quality baseline** interview section (stack-driven, keyless-first, ratchet default, single-source-of-truth precedence)
+- `contract/primitives.md` — records the baseline home (committed config preferred, project-context fallback) as project context, not a new primitive
+- `contract/discipline.md` — new generic invariant-check group (baseline recorded, one home, keyless-or-`none`, no CI/runtime edits)
+- `workflows/sdlc/{implementation,planning,verification,index}.md` — the gate's Verify step now runs the baseline per slice; Planning names each gate's aspects; Verification runs the full baseline over the whole delivery; the workflow overview lists the quality-baseline cross-cutting concern
+- `adapters/{mirai,opencode}/setup.md` + `references/interview.md` — interview enumerations now include the quality-baseline question (adapters add only the reference; no new port)
+
 ## [Unreleased] — 2026-07-31
 
 ### Added

@@ -1,11 +1,13 @@
 ---
-name: diagnose
+name: diagnosing-bugs
 description: 'Disciplined diagnosis loop for hard bugs and performance regressions. Reproduce → minimise → hypothesise → instrument → fix → regression-test. Use when user says "diagnose this" / "debug this", reports a bug, says something is broken/throwing/failing, or describes a performance regression.'
 ---
 
-# Diagnose
+# Diagnosing Bugs
 
 A discipline for hard bugs. Skip phases only when explicitly justified.
+
+**The Iron Law:** no root-cause investigation, no fix. Symptom patches are failure. This skill _is_ that investigation — do not skip to a hypothesis before Phase 1's loop exists.
 
 When exploring the codebase, use the project's domain glossary to get a clear mental model of the relevant modules, and check ADRs in the area you're touching.
 
@@ -115,3 +117,19 @@ Required before declaring done:
 - [ ] The hypothesis that turned out correct is stated in the commit / PR message — so the next debugger learns
 
 **Then ask: what would have prevented this bug?** If the answer involves architectural change (no good test seam, tangled callers, hidden coupling) hand off to the `/improve-codebase-architecture` skill with the specifics. Make the recommendation **after** the fix is in, not before — you have more information now than when you started.
+
+## Rationalizations that mean STOP
+
+Every one of these is the urge to skip Phase 1 and jump to a fix. When you catch yourself thinking one, return to Phase 1 and build the loop.
+
+| Excuse                                        | Reality                                                                                                                     |
+| --------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| "Issue is simple, skip the process"           | Simple bugs have root causes too. The loop is fast for simple bugs.                                                         |
+| "Emergency, no time for the loop"             | Systematic diagnosis is _faster_ than guess-and-check thrashing.                                                            |
+| "Just try this one change and see"            | The first fix sets the pattern. A guess without a red loop is a symptom patch.                                              |
+| "I'll write the test after I confirm the fix" | Untested fixes don't stick. The red-capable loop proves the fix before you make it.                                         |
+| "Multiple fixes at once saves time"           | You can't tell which one worked, and you invite new bugs. One variable at a time (Phase 4).                                 |
+| "I see the problem, let me fix it"            | Seeing the symptom ≠ understanding the cause. Reproduce it first.                                                           |
+| "One more fix attempt" (after 2+ failures)    | 3+ failed fixes = an architecture problem, not a hypothesis problem. Stop and hand off to `/improve-codebase-architecture`. |
+
+If a human partner says _"stop guessing"_, _"is that actually happening?"_, or _"we're stuck?"_ — that is this table firing. Return to Phase 1.

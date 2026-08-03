@@ -37,7 +37,7 @@ core, don't re-derive it:**
 
 - **The five steps + `init`/`update` semantics + universal safety rules** — [contract/index.md](../../contract/index.md).
 - **The six primitives, stage groupings, skill rosters, capability sets, model archetypes** — [contract/primitives.md](../../contract/primitives.md).
-- **The interview questions** (Scope, tiers, model matching, utility agents, docs-lookup, handoff) — [contract/interview.md](../../contract/interview.md).
+- **The interview questions** (Scope, tiers, model matching, utility agents, docs-lookup, handoff, quality baseline) — [contract/interview.md](../../contract/interview.md).
 - **Provenance/idempotency discipline + the generic invariant-checks** — [contract/discipline.md](../../contract/discipline.md).
 
 The interview engine is loom's [grill-with-docs](../../SKILLS/discovery/grill-with-docs/SKILL.md)

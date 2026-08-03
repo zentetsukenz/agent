@@ -1,7 +1,7 @@
 # OpenCode interview resolution steps
 
 > The **generic interview questions** (Scope, delivery tiers, model matching, utility agents,
-> docs-lookup, handoff / communication protocol) are harness-agnostic and live once in the core:
+> docs-lookup, handoff / communication protocol, quality baseline) are harness-agnostic and live once in the core:
 > [contract/interview.md](../../../contract/interview.md). Walk them via
 > [grill-with-docs](../../../SKILLS/discovery/grill-with-docs/SKILL.md) — one question at a time,
 > leading with the recommended default. This file adds only the **OpenCode-specific resolution

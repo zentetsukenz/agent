@@ -37,8 +37,8 @@ domain rather than a difficulty tier — and keep pixel-looking on a separate is
 
 1. **`frontend` is a domain-specialized utility.** It owns frontend development *and* runtime
    debugging. Capabilities (deep-shaped): `read`, `edit`, `search`, `shell`, `delegate`,
-   `persist`, `tasks` (+ `docs-lookup` if opted). It wires six skills:
-   `frontend-runtime-debugging` (primary), `systematic-debugging`, `diagnose`,
+   `persist`, `tasks` (+ `docs-lookup` if opted). It wires five skills:
+   `frontend-runtime-debugging` (primary), `diagnosing-bugs`,
    `server-operations`, `tdd`, and `visual-verification`.
 
 2. **Two agents, not one — the isolation seam is preserved.** `visual-qa` stays unchanged as the

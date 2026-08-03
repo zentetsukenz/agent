@@ -1,7 +1,7 @@
 ---
 type: Index
 title: SDLC Workflow
-description: A prose-first Software Development Life Cycle workflow — six ordered phases grouped into three ownership stages, with shift-left verification, documentation, and architecture-first discipline baked into every phase
+description: A prose-first Software Development Life Cycle workflow — six ordered phases grouped into three ownership stages, with shift-left verification, documentation, architecture-first, and commit-often discipline baked into every phase
 ---
 
 # SDLC Workflow
@@ -22,7 +22,7 @@ Work flows through six ordered phases, each mapping to a loom lifecycle bucket. 
 Discovery ─▶ Design ─▶ Planning ─▶ Implementation ─▶ Verification ─▶ Preservation
     │          │           │              │                │              │
     └──────────┴───────────┴──────────────┴────────────────┴──────────────┘
-                  shift-left · documentation · architecture-first
+          shift-left · documentation · architecture-first · commit-often
                        (cross-cutting, woven into every phase)
 ```
 
@@ -89,7 +89,7 @@ agent can scan each phase uniformly:
 
 ## Cross-cutting principles
 
-Three concerns are woven into *every* phase, not deferred to a single late phase:
+Four concerns are woven into *every* phase, not deferred to a single late phase:
 
 - **Shift-left verification** — verification obligations start in Discovery (testable
   success criteria) and accrue through every phase. The Verification *phase* confirms the
@@ -102,6 +102,16 @@ Three concerns are woven into *every* phase, not deferred to a single late phase
   backed by research or a spike; any architecture or constitutional change lands **first**,
   as a blocking prerequisite, before dependent code. Complexity-scaled: trivial localized
   fixes are exempt.
+- **Commit often** — see [commit-often](../../wiki/principles/commit-often.md). Every green
+  [quality gate](implementation.md#quality-gates) (Verify → Review → Commit) is a commit
+  point; Planning sequences the gates as a [review-gate cadence](planning.md#review-gate-cadence)
+  and the Orchestrator holds each gate before advancing, so Delivery lands as small,
+  reversible, individually-reviewed commits — never one end-of-session drop.
+- **Quality baseline** — see [quality-baseline](../../wiki/patterns/quality-baseline.md). Each
+  gate's Verify step re-checks a per-project floor across four aspects (lint, code-quality,
+  security, coverage), chosen at setup from keyless-first tools; a metric that drops below its
+  floor fails the gate, so quality can never silently erode between gates and get caught too
+  late. The Verification phase runs the full baseline over the whole delivery.
 
 ## The Orchestrator role
 
@@ -122,13 +132,18 @@ Two playbooks form the operational core of the middle phases:
   plan-output policy: a plan is well-formed only when ~80% of its tasks are
   small-agent-executable.
 - **Implementation DNA** — the `ORIENT → SCOUT → IMPLEMENT (vertical-slice TDD) → VERIFY →
-  MARK DONE` execution loop lives in [implementation.md](implementation.md).
+  REVIEW, COMMIT, MARK DONE` execution loop lives in [implementation.md](implementation.md);
+  its last phase runs the [quality gate](implementation.md#quality-gates) (Verify → Review →
+  Commit).
 
 ## Related
 
 - [workflows index](../index.md) — what a workflow is and the prose-first principle
 - [adr-002-workflow-as-adapter-seed](../../wiki/adr/adr-002-workflow-as-adapter-seed.md) — why the workflow is a prose seed
 - [adr-003-architecture-first-ordering](../../wiki/adr/adr-003-architecture-first-ordering.md) — why architecture changes land first
+- [adr-016-embedded-review-gate](../../wiki/adr/adr-016-embedded-review-gate.md) — why code-review is an embedded quality gate + commit-often, not a standalone skill
+- [adr-017-quality-baseline](../../wiki/adr/adr-017-quality-baseline.md) — why a per-project quality floor is chosen at setup and enforced at every gate
+- [quality-baseline](../../wiki/patterns/quality-baseline.md) — the four-aspect floor the gates enforce
 - [seam-artifact-protocol](../../wiki/patterns/seam-artifact-protocol.md) — how context crosses the stage seams
 - [adr-011-seam-artifact-protocol](../../wiki/adr/adr-011-seam-artifact-protocol.md) — the decision behind the stage-seam handoff
 - [SKILLS](../../SKILLS/) — the lifecycle-bucketed skills the phases reference

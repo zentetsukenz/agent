@@ -15,7 +15,7 @@ actual state over time**, not an error message.
   value the source of truth holds — the gap tells you it's a propagation/closure bug, not a data
   bug.
 - **Repro rate for flakiness.** If it's intermittent, this is a feedback-loop problem first — go to
-  [diagnose](../diagnose/SKILL.md) and raise the reproduction rate before hypothesizing.
+  [diagnosing-bugs](../diagnosing-bugs/SKILL.md) and raise the reproduction rate before hypothesizing.
 
 ## Likely origins
 
@@ -49,11 +49,11 @@ actual state over time**, not an error message.
 State bugs punish symptom-fixing hardest — patching the display value hides the real desync. Trace
 backward from "the wrong value is shown here" to "the wrong value was written there" to "the write
 happened in the wrong order / from a stale snapshot". See
-[systematic-debugging](../systematic-debugging/SKILL.md) for backward tracing and
-[diagnose](../diagnose/SKILL.md) for making intermittent races reproducible.
+[diagnosing-bugs](../diagnosing-bugs/SKILL.md) for backward tracing and for making
+intermittent races reproducible.
 
 ## Verify
 
 Re-run the repro, including the rapid/interleaved variant that triggered it. For a race, run it
-many times (or drive the loop from [diagnose](../diagnose/SKILL.md)) and confirm the state now
+many times (or drive the loop from [diagnosing-bugs](../diagnosing-bugs/SKILL.md)) and confirm the state now
 converges correctly every time — a single passing run does not clear a race.
