@@ -37,7 +37,7 @@ the stage seam):
 - Write `delivery/<milestone>/verified-change.md` to the ledger: what shipped, the acceptance
   **evidence**, and links to PRs/commits/issues — referenced by path, not re-embedded.
 - Register a row in the ledger manifest with status `shipped`.
-- Use [handoff](../../SKILLS/preservation/handoff/SKILL.md) (the PRODUCE adapter) and the
+- Use [stage-handoff](../../SKILLS/preservation/stage-handoff/SKILL.md) (the PRODUCE adapter) and the
   project's [communication protocol document](../../wiki/patterns/seam-artifact-protocol.md#4-the-communication-protocol-document).
 
 ## 3. Recommended skills

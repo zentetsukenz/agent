@@ -1,10 +1,11 @@
 ---
-name: to-issues
-description: Break a plan, spec, or PRD into independently-grabbable issues on the project issue tracker using tracer-bullet vertical slices. Use when user wants to convert a plan into issues, create implementation tickets, or break down work into issues.
+name: to-tickets
+description: Break a plan, spec, or the current conversation into a set of tracer-bullet tickets, each declaring its blocking edges, published to the project issue tracker. Use when user wants to convert a plan into tickets, create implementation issues, or break work into independently-grabbable slices.
 ---
-# To Issues
 
-Break a plan into independently-grabbable issues using vertical slices (tracer bullets).
+# To Tickets
+
+Break a plan, spec, or conversation into a set of independently-grabbable **tickets** — tracer-bullet vertical slices, each declaring the tickets that **block** it.
 
 Resolve the issue tracker and triage label vocabulary via the [Issue Tracker](../../../wiki/environments/issue-tracker.md) environment doc — it defaults to a local-markdown tracker under `.scratch/` when the project hasn't configured one.
 

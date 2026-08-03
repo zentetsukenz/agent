@@ -39,14 +39,14 @@ Do not move existing docs unless user explicitly asks. Link to them from wiki pa
 
 Create minimum viable wiki:
 
-| Page | Purpose |
-|---|---|
-| `index.md` | Entry point and page map |
+| Page                | Purpose                          |
+| ------------------- | -------------------------------- |
+| `index.md`          | Entry point and page map         |
 | `glossary/index.md` | Shared terms and domain language |
-| `adr/index.md` | Decision record index |
-| `architecture.md` | System shape and boundaries |
-| `onboarding.md` | First-session reading path |
-| `runbooks/index.md` | Operational procedures |
+| `adr/index.md`      | Decision record index            |
+| `architecture.md`   | System shape and boundaries      |
+| `onboarding.md`     | First-session reading path       |
+| `runbooks/index.md` | Operational procedures           |
 
 ### 3. Seed Page Metadata
 
@@ -84,4 +84,4 @@ Mark source docs as canonical, supporting, or stale candidate when known.
 - **ADR index**: decision records and rationale timeline
 - **Link graph**: all wiki links and backlinks
 - **Orphan page**: page with no incoming wiki link
-- Related skills: [wiki-curator](../wiki-curator/SKILL.md), [wiki-crosslink](../wiki-crosslink/SKILL.md), [handoff](../handoff/SKILL.md)
+- Related skills: [wiki-curator](../wiki-curator/SKILL.md), [wiki-crosslink](../wiki-crosslink/SKILL.md), [stage-handoff](../stage-handoff/SKILL.md)

@@ -1,236 +1,99 @@
 ---
 name: dispatch-context
-description: Compress and dispatch the current session context to reduce token overhead. Invokes the context-compression core primitive.
+description: Engineer the minimal, essential context for within-stage delegation (dispatcher ↔ utility, planner ↔ orchestrator) and park it in an organized, transient lane of the ledger so peers can pick it up without polluting anyone's window. Use when delegating work to a peer agent inside a stage. NOT a cross-stage seam artifact (that is stage-handoff) and NOT self-notes (that is checkpoint).
 ---
 
-> **Shared primitive:** Context compression steps in this skill invoke the
-> `meta/context-compression` core primitive. See [context-compression](../../meta/context-compression/SKILL.md).
+> **Shared primitive:** Compression steps invoke the `meta/context-compression` core primitive.
+> See [context-compression](../../meta/context-compression/SKILL.md).
 
 # Dispatch Context
 
-> **Strategy**: ISOLATE + COMPRESS  
-> **Purpose**: Engineer minimal context for subagent work
+> **Strategy**: ISOLATE + ORGANIZE (within-stage)
+> **Purpose**: Give a peer exactly the context it needs — no more, no less — in a known place
 
 This is the **within-stage** context-mover in the [Seam Artifact Protocol](../../../wiki/patterns/seam-artifact-protocol.md)
-family: where [handoff](../../preservation/handoff/SKILL.md) writes a durable **seam artifact**
-across a _stage_ boundary and [session-bootstrap](../../discovery/session-bootstrap/SKILL.md)
-discovers it, this skill engineers an **ephemeral** dispatch payload for a subagent inside a stage
-(dispatcher → utility). It shares the protocol's discipline — reference artifacts by path, don't
-re-embed — but its payload is transient, not registered in the ledger. When the dispatched work
-_produces_ something the next stage needs, persist it as a seam artifact via `handoff` rather than
-leaving it in the ephemeral return.
+family. Where [stage-handoff](../../preservation/stage-handoff/SKILL.md) writes a durable seam
+artifact **across** a stage boundary and [checkpoint](../../preservation/checkpoint/SKILL.md)
+keeps **your own** thread, this skill engineers the context a **peer inside the same stage** needs
+— dispatcher → utility, planner ↔ orchestrator.
 
----
+Modern harnesses already know *how* to spawn a subagent; you do not need to teach them the
+mechanics. The value this skill adds is entirely in **what context to pass** and **where to put
+it** so the exchange stays clean and organized.
 
-## Trigger
+## The within-stage lane
 
-Use this skill when:
+Cross-stage artifacts are registered in the manifest; within-stage payloads are **not** — they
+are transient by design. But transient does not mean scattered. Park them in an organized,
+**unregistered** lane of the same ledger home:
 
-- Delegating work to a subagent
-- Task is context-heavy (>20% estimated)
-- Task involves expensive operations (screenshots, deep research)
-- You want to keep your main context clean
-
----
-
-## Input
-
-Before dispatching, determine:
-
-- [ ] Which subagent to use
-- [ ] What the subagent needs to know
-- [ ] What the subagent does NOT need to know
-- [ ] How to verify the subagent's work
-- [ ] What format you need back
-
----
-
-## Procedure
-
-### 1. Assess Task Size
-
-Use [task-sizing](../task-sizing/SKILL.md) to confirm dispatch is appropriate.
-
-| Size             | Context Cost              | Action            |
-| ---------------- | ------------------------- | ----------------- |
-| Small (<5%)      | Single file, quick fix    | Do directly       |
-| Medium (5-20%)   | Few files, moderate logic | Consider dispatch |
-| **Large (>20%)** | Many files, complex logic | **Must dispatch** |
-
-### 2. Choose Subagent
-
-| Subagent        | When to Use                  |
-| --------------- | ---------------------------- |
-| **visual-qa**   | UI verification, screenshots |
-| **Plan**        | Complex multi-step research  |
-| **Implementer** | Large code changes           |
-| **Researcher**  | Deep exploration tasks       |
-
-### 3. Engineer the Context
-
-**Include only what subagent needs:**
-
-```markdown
-## Context for [Subagent]
-
-### Background
-
-[1-2 sentences: what project this is, what we're building]
-
-### Relevant Code
-
-[Only the specific snippets needed — NOT full files]
-
-### Constraints
-
-[Any rules, patterns, or standards to follow]
+```text
+<ledger-root>/<stage>/<milestone-slug>/
+├── findings.md            ← seam artifacts (manifest-registered, cross-stage)
+├── ...
+└── working/               ← the within-stage lane (NOT manifest-registered)
+    └── <dispatch-slug>.md  ← the payload a peer picks up
 ```
 
-**Explicitly exclude:**
+Rules for the `working/` lane:
 
-- Full conversation history
-- Unrelated files
-- Previous failed attempts (unless relevant)
-- Your internal reasoning
+- **Not** registered in the manifest (only cross-stage seam artifacts are).
+- Same substrate as the ledger (resolve via the [communication protocol document](../../../wiki/patterns/seam-artifact-protocol.md#4-the-communication-protocol-document)).
+- Cleared or ignored once the stage produces its real seam artifact — if within-stage work
+  yields something the *next* stage needs, promote it via [stage-handoff](../../preservation/stage-handoff/SKILL.md).
+- If the harness has no ledger, an in-conversation payload is fine — the discipline below still applies.
 
-### 4. State Task Clearly
+## What to include
 
-One clear objective:
+Engineer the payload down to what the peer genuinely needs:
 
-```markdown
-## Task
+**Include**
+- Goal in one sentence, plus success criteria the peer can self-check against.
+- Only the specific code/artifacts in scope — by path, with the relevant snippet if small.
+- Constraints: the rules, patterns, ADRs, or glossary terms that bound the work.
+- The return shape you expect back (so integration is cheap).
 
-[Single sentence: what to accomplish]
+**Exclude**
+- Full conversation history and your internal reasoning.
+- Unrelated files, prior failed attempts (unless they inform the task).
+- Anything the peer can look up itself from a referenced path.
 
-## Success Criteria
-
-- [ ] [Specific, verifiable criterion]
-- [ ] [Another criterion]
-- [ ] [Final criterion]
-```
-
-### 5. Request Compressed Return
-
-Tell subagent what to report back:
+## Payload template
 
 ```markdown
-## Return Format
+# Dispatch: [one-line goal]
 
-Provide a summary (~500 tokens max) including:
-
-- What was done
-- Key findings or results
-- Any issues encountered
-- Files created/modified
-```
-
-### 6. Dispatch
-
-Use `runSubagent` with the engineered prompt.
-
-### 7. Integrate Result
-
-When subagent returns:
-
-- Read the summary (NOT full context)
-- Verify against success criteria
-- Update your own state
-- Continue with clean context
-
----
-
-## Output
-
-Dispatch payload with:
-
-- Minimal, relevant context
-- Clear single objective
-- Explicit success criteria
-- Compressed return format
-
----
-
-## Dispatch Template
-
-````markdown
-# Task for [Subagent Name]
+**Stage / milestone:** [stage] / [slug]
+**For:** [peer role — e.g. orchestrator, deep, explore]
 
 ## Context
+[2-3 sentences: what this is, why we're delegating]
 
-[Project]: [1 sentence]
-[Current Phase]: [R/P/I]
-[What you need to know]: [2-3 sentences]
-
-## Relevant Code
-
-```[language]
-[Only the specific snippet needed]
-```
-````
-
-## Task
-
-[Single clear objective]
-
-## Success Criteria
-
-- [ ] [Criterion 1]
-- [ ] [Criterion 2]
+## In scope (by path)
+- [path] — [why it matters] (+ snippet only if small)
 
 ## Constraints
+- [rule / pattern / ADR / glossary term]
 
-- [Any rules to follow]
-- [Patterns to use]
+## Success criteria
+- [ ] [verifiable]
 
-## Return Format
-
-Provide TEXT summary only (~500 tokens):
-
-- What was accomplished
-- Key findings
-- Files modified
-- Any blockers
-
+## Return shape
+[what to report back, and how compact]
 ```
-
----
 
 ## Anti-patterns
 
-- ❌ Sending full file contents when snippet suffices
-- ❌ Vague task descriptions ("fix the bug", "make it work")
-- ❌ No success criteria defined
-- ❌ Expecting full context return (always ask for summary)
-- ❌ Including your internal reasoning/frustrations
-- ❌ Dispatching multiple objectives (one task per dispatch)
-
----
-
-## Context Flow Diagram
-
-```
-
-TheEngineer (orchestrator)
-│
-│ dispatch: context (~500 tokens) + task + criteria
-↓
-Subagent (isolated context)
-│
-│ executes in own context window
-│ (screenshots, research, code stay here)
-↓
-Returns: TEXT summary (~500 tokens)
-│
-↓
-TheEngineer continues (main context clean)
-
-```
-
----
+- ❌ Explaining *how* to call a subagent — the harness handles that
+- ❌ Dumping full history or whole files instead of scoped paths + snippets
+- ❌ Registering a within-stage payload in the manifest (only cross-stage seam artifacts belong there)
+- ❌ Leaving payloads scattered instead of in the `working/` lane
+- ❌ Using this to cross a stage seam (promote via [stage-handoff](../../preservation/stage-handoff/SKILL.md))
 
 ## Related Skills
 
-- [seam-artifact-protocol](../../../wiki/patterns/seam-artifact-protocol.md) — the family this within-stage mover belongs to
-- [task-sizing](../task-sizing/SKILL.md) — Decide whether to dispatch
-- [handoff](../../preservation/handoff/SKILL.md) — the cross-stage PRODUCE adapter (durable, ledgered)
-```
+- [stage-handoff](../../preservation/stage-handoff/SKILL.md) — cross-stage, formal, manifest-registered
+- [checkpoint](../../preservation/checkpoint/SKILL.md) — within-session self-continuity
+- [seam-artifact-protocol](../../../wiki/patterns/seam-artifact-protocol.md) — the ledger home this lane lives in
+- [task-sizing](../task-sizing/SKILL.md) — decide whether the work is worth delegating at all
+- [context-compression](../../meta/context-compression/SKILL.md) — the compression primitive

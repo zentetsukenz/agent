@@ -1,145 +1,98 @@
 ---
 name: checkpoint
-description: Preserve context for fresh continuation by writing a compressed checkpoint at natural boundaries or context thresholds. Use when context usage is high, a phase completes, a significant discovery is made, or the human asks to checkpoint.
+description: Keep a running, traceable trail of decision→result nodes in the memory system so a session can compress without fear of losing its thread. Use throughout a long run — especially for utility agents (quick, deep) driving toward a goal — not only at the end. NOT the formal cross-stage seam artifact (that is stage-handoff).
 ---
 
 # Checkpoint
 
-> **Strategy**: WRITE + COMPRESS  
-> **Purpose**: Preserve context for fresh continuation
+> **Strategy**: JOURNAL + COMPRESS (within-session)
+> **Purpose**: Never lose your own thread — a traceable trail you can compress against fearlessly
+> **Scope**: within a single session, for yourself (or a trivial same-work restart)
+
+Checkpointing is **journalling as you go** — but selectively. You are not transcribing
+everything you do; you are dropping a **node** each time a decision meets its result. Strung
+together, these nodes form a small map — the same idea as a [wayfinder](../../planning/wayfinder/SKILL.md)
+map, at session scale — that another instance of you can trace from start to finish without
+re-deriving the journey.
+
+This is the **within-session self-continuity** skill. It is the informal, lightweight pole of
+loom's context-passing family. When ownership actually changes hands across a stage seam, that
+is a **formal** artifact — use [stage-handoff](../stage-handoff/SKILL.md) instead, not this.
+
+**Best fit:** utility agents (`quick`, `deep`) grinding toward a concrete goal across many
+steps, where the risk is *losing your own reasoning trail*, not handing off to someone else.
+
+---
+
+## What a node is
+
+Drop a node when a **decision produces a result worth remembering** — especially when the result
+was *not* what you expected. A node is three short lines:
+
+- **Decision** — what you chose to do, and the one-line why.
+- **Result** — what actually happened (worked / failed / surprised you).
+- **Next** — the move that result points to (only if non-obvious).
+
+Skip the noise. A node is not "read file X" or "ran the test." It is "chose approach A over B
+because Y → A dead-ended on Z → falling back to B." The trail should read like the decision
+tree you actually walked, not a keystroke log.
+
+---
+
+## Where it lives — the memory system, not a file
+
+Write nodes to the **memory system**, not a reused scratch file in the repo. Append to a
+session-scoped memory note (e.g. \`/memories/session/<task-slug>.md\`) as you work. Memory:
+
+- survives compression within the conversation,
+- is discoverable by a fresh instance without polluting the repo tree,
+- is cheap to append to mid-flight.
+
+If the harness has no memory system, fall back to a single session note file — but the memory
+system is the default.
 
 ---
 
 ## Trigger
 
-Use this skill when ANY of these conditions are true:
+Journal a node **as decisions resolve** — that is the main cadence. Additionally, compress the
+trail (fold older nodes into a tighter summary, keep recent ones raw) when:
 
-| Condition | Priority |
-|-----------|----------|
-| **~40% context used** | Proactive — context still fresh |
-| **Phase complete** (R→P, P→I) | Natural boundary |
-| **Significant discovery** | Preserve insight before it's lost |
-| **3-5 tasks completed** | Implementation rhythm |
-| **~80% context used** | Emergency — must checkpoint now |
-| **Session ending** | Final checkpoint |
-| **Human says "checkpoint"** | Explicit request |
-
----
-
-## Input
-
-Before generating a checkpoint, gather:
-
-- [ ] Current phase (Research / Plan / Implement)
-- [ ] What was accomplished this session
-- [ ] Key decisions and their rationale
-- [ ] Files created or modified
-- [ ] Current blockers or unknowns
-- [ ] What should happen next
+| Condition | Why |
+|---|---|
+| **~40% context used** | Compress early, while the thread is still fresh |
+| **A sub-goal completes** | Natural boundary — fold the finished branch into one line |
+| **~80% context used** | Emergency — compress now, prepare to continue fresh |
+| **Session ending** | Final fold, so the next instance starts clean |
 
 ---
 
 ## Procedure
 
-### 1. Assess Context State
-
-Ask yourself:
-
-- How much context have I accumulated?
-- Is my performance degrading? (repeating myself, forgetting earlier context)
-- Am I at a natural boundary?
-
-### 2. Compress Before Writing
-
-Apply compression priority:
-
-1. **Keep raw**: Current task, active errors, recent conversation
-2. **Compact**: Replace file contents with path references
-3. **Summarize**: Old decisions, completed work → bullet points
-
-### 3. Generate Checkpoint
-
-Use this exact template:
-
-```markdown
-# 📍 CHECKPOINT: [Brief Title]
-
-**Date**: [YYYY-MM-DD]  
-**Phase**: [Research | Plan | Implement]  
-**Context**: [~X% estimated]
-
----
-
-## Summary
-[2-3 sentences: what was accomplished]
-
-## Decisions Made
-| Decision | Rationale |
-|----------|-----------|
-| [What] | [Why] |
-
-## Code Changes
-- [file](path) — [what changed]
-
-## Current State
-- Phase: [R | P | I]
-- Tasks: [X/Y complete]
-- Blockers: [none | list]
-
-## Next Steps
-1. [Immediate next action]
-2. [Following action]
-
-## Files to Re-Read
-| File | Why Needed |
-|------|------------|
-| [path] | [reason] |
-
-## Key Context
-[Critical domain knowledge that must survive — compress but preserve]
-```
-
-### 4. Save to File
-
-Write checkpoint to `CHECKPOINT.md` (overwrite previous).
-
-### 5. Inform Human
-
-Tell the user:
-> "Checkpoint saved. Context is at ~X%. [Recommend: continue | suggest fresh start]"
-
----
-
-## Output
-
-- Updated `CHECKPOINT.md` file
-- Clear recommendation to human
-
----
-
-## Thresholds Reference
-
-| Threshold | State | Action |
-|-----------|-------|--------|
-| **<40%** | Fresh | Continue working |
-| **40-60%** | Proactive | Checkpoint, continue in same session |
-| **60-80%** | Heavy | Checkpoint, consider fresh start |
-| **>80%** | Emergency | Checkpoint immediately, fresh start required |
+1. **As you work**, append a node whenever a decision meets its result. Keep it to the three
+   lines above.
+2. **When context gets heavy**, compress the trail: keep the current branch and recent nodes
+   raw; fold resolved branches into single summary lines (decision + outcome, drop the detail).
+   Reference files by path, never paste their contents.
+3. **To continue**, a fresh instance reads the memory note top-to-bottom — the trail *is* the
+   context. Pair with [session-bootstrap](../../discovery/session-bootstrap/SKILL.md) if the
+   project has a ledger.
 
 ---
 
 ## Anti-patterns
 
-- ❌ Waiting until 80% to checkpoint (performance already degraded)
-- ❌ Including full file contents (use path references)
-- ❌ Vague summaries ("worked on stuff")
-- ❌ Forgetting "Files to Re-Read" section
-- ❌ Not specifying next steps
+- ❌ Journalling everything (keystroke log) instead of decision→result nodes
+- ❌ Reusing a committed repo file instead of the memory system
+- ❌ Waiting until 80% to start — the trail should already exist by then
+- ❌ Pasting file contents into a node (reference by path)
+- ❌ Using this for a real cross-stage handoff (that is [stage-handoff](../stage-handoff/SKILL.md))
 
 ---
 
 ## Related Skills
 
-- [session-bootstrap](../../discovery/session-bootstrap/SKILL.md) — Starting from a checkpoint
-- [dispatch-context](../../planning/dispatch-context/SKILL.md) — Uses similar compression
-- [context-compression](../../meta/context-compression/SKILL.md) — Core compression primitive
+- [stage-handoff](../stage-handoff/SKILL.md) — the formal, mandatory cross-stage seam artifact (the opposite pole)
+- [session-bootstrap](../../discovery/session-bootstrap/SKILL.md) — start a fresh session from the trail
+- [wayfinder](../../planning/wayfinder/SKILL.md) — the same map idea at multi-session scale
+- [context-compression](../../meta/context-compression/SKILL.md) — the compression primitive the fold step applies

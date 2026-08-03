@@ -90,11 +90,11 @@ in [MAPPING.md §7](MAPPING.md#7-communication-protocol-document--loomhandoffs))
 - **No native `handoffs:` frontmatter** — the transition between stages is the human selecting
   the next primary agent (`Tab`), which reads the ledger. loom does not fabricate an automatic
   transition; the ledger + the incoming agent's DISCOVER instruction *are* the wiring.
-- The skills `preservation/handoff` (PRODUCE) and `discovery/session-bootstrap` (DISCOVER) are
+- The skills `preservation/stage-handoff` (PRODUCE) and `discovery/session-bootstrap` (DISCOVER) are
   the thin adapters that implement the read/write against the committed folder.
 
 Mandatory at the **two stage seams** only (Shaping → Delivery, Delivery → Closing); within-stage
-dispatch stays ephemeral via `planning/dispatch-context`.
+dispatch stays ephemeral via `planning/dispatch-context` (its organized, unregistered `working/` lane).
 
 ## Meta bucket — not a stage
 

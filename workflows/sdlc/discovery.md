@@ -34,7 +34,7 @@ Referenced by intent — an interpreting agent maps these onto the target enviro
 
 1. [session-bootstrap](../../SKILLS/discovery/session-bootstrap/SKILL.md) — load prior context.
 2. [research-recommend](../../SKILLS/discovery/research-recommend/SKILL.md) — find prior art and back unknowns with evidence.
-3. [grill-me](../../SKILLS/discovery/grill-me/SKILL.md) / [grill-with-docs](../../SKILLS/discovery/grill-with-docs/SKILL.md) — interrogate the human and the docs relentlessly.
+3. [grill-with-docs](../../SKILLS/discovery/grill-with-docs/SKILL.md) — interrogate the human and the docs relentlessly, one question at a time.
 4. [zoom-out](../../SKILLS/discovery/zoom-out/SKILL.md) — sanity-check the framing against the bigger picture.
 5. [prototype](../../SKILLS/implementation/prototype/SKILL.md) — used here as a **throwaway de-risking spike** to test an assumption and then discard. *(Cross-bucket reference by intent: a Discovery prototype is learning-oriented and disposable, distinct from an Implementation prototype that may evolve toward the real thing.)*
 

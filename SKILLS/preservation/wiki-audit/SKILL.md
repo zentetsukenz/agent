@@ -83,4 +83,4 @@ Group findings by severity:
 - **Orphan page**: page with no incoming wiki links
 - **Dead-end page**: page with no outgoing wiki navigation
 - **Duplicate concept**: two pages claiming same canonical meaning
-- Related skills: [wiki-crosslink](../wiki-crosslink/SKILL.md), [wiki-curator](../wiki-curator/SKILL.md), [handoff](../handoff/SKILL.md)
+- Related skills: [wiki-crosslink](../wiki-crosslink/SKILL.md), [wiki-curator](../wiki-curator/SKILL.md), [stage-handoff](../stage-handoff/SKILL.md)

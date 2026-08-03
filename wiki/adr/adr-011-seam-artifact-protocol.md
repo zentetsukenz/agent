@@ -16,7 +16,8 @@ seam names a **seam artifact** that is supposed to cross it. But the workflow on
 artifacts — it never *located* them. Three separate, shallow modules moved context, each with its
 own mechanism and no shared contract:
 
-- [handoff](../../SKILLS/preservation/handoff/SKILL.md) wrote to a flat, un-namespaced
+- `handoff` (now [stage-handoff](../../SKILLS/preservation/stage-handoff/SKILL.md), renamed in
+  [ADR-015](adr-015-communication-line-refinement.md)) wrote to a flat, un-namespaced
   `.omo/handoffs/` directory (a stale path from an earlier harness), triggered by *context
   pressure* rather than by a seam;
 - [session-bootstrap](../../SKILLS/discovery/session-bootstrap/SKILL.md) read a single

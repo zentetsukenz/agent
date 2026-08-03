@@ -52,7 +52,7 @@ over from the shaping agent.
 
 1. [task-sizing](../../SKILLS/planning/task-sizing/SKILL.md) — gauge size and break work down (the gatekeeper for the Output-Plan Policy).
 2. [triage](../../SKILLS/planning/triage/SKILL.md) — order by risk and priority.
-3. [to-issues](../../SKILLS/planning/to-issues/SKILL.md) — emit discrete, zero-question task documents.
+3. [to-tickets](../../SKILLS/planning/to-tickets/SKILL.md) — break the plan into tracer-bullet tickets with blocking edges. Pair with [to-spec](../../SKILLS/planning/to-spec/SKILL.md) when the conversation needs synthesising into a spec first.
 4. [dispatch-context](../../SKILLS/planning/dispatch-context/SKILL.md) — prepare delegation bundles for sub-agents.
 5. [wayfinder](../../SKILLS/planning/wayfinder/SKILL.md) — chart huge, multi-session work as a map of decision tickets, resolved one at a time.
 

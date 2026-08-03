@@ -47,7 +47,7 @@ Per the [Seam Artifact Protocol](../../wiki/patterns/seam-artifact-protocol.md),
 2. [wiki-init](../../SKILLS/preservation/wiki-init/SKILL.md) / [wiki-curator](../../SKILLS/preservation/wiki-curator/SKILL.md) — place and curate knowledge.
 3. [wiki-crosslink](../../SKILLS/preservation/wiki-crosslink/SKILL.md) — link, never duplicate.
 4. [wiki-audit](../../SKILLS/preservation/wiki-audit/SKILL.md) — consistency and coverage check.
-5. [handoff](../../SKILLS/preservation/handoff/SKILL.md) — context transfer.
+5. [stage-handoff](../../SKILLS/preservation/stage-handoff/SKILL.md) — the formal cross-stage seam artifact (PRODUCE adapter).
 6. [checkpoint](../../SKILLS/preservation/checkpoint/SKILL.md) — used throughout long runs, not only at the end.
 
 ## 4. Agent-effort policy

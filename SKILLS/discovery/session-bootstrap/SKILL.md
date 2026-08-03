@@ -155,5 +155,5 @@ Ready to continue. [First action I'll take]
 ## Related Skills
 
 - [seam-artifact-protocol](../../../wiki/patterns/seam-artifact-protocol.md) — the contract this skill discovers from
-- [handoff](../../preservation/handoff/SKILL.md) — the PRODUCE adapter that writes what this reads
+- [stage-handoff](../../preservation/stage-handoff/SKILL.md) — the PRODUCE adapter that writes what this reads
 - [task-sizing](../../planning/task-sizing/SKILL.md) — Assess before starting work

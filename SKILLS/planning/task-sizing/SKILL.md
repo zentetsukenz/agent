@@ -15,13 +15,13 @@ Identify: Feature / Fix / Research / Refactor? List discrete operations needed.
 
 ### 2. Score Dimensions
 
-| Dimension | Low (1) | Medium (2) | High (3) |
-| ----------- | --------- | ------------ | ---------- |
-| Files to read | 1-2 | 3-5 | 6+ |
-| Files to write | 1 | 2-3 | 4+ |
-| Code volume | <50 lines | 50-200 lines | 200+ lines |
-| Commands to run | 0-1 | 2-4 | 5+ |
-| Uncertainty | Well-defined | Some unknowns | Exploratory |
+| Dimension       | Low (1)      | Medium (2)    | High (3)    |
+| --------------- | ------------ | ------------- | ----------- |
+| Files to read   | 1-2          | 3-5           | 6+          |
+| Files to write  | 1            | 2-3           | 4+          |
+| Code volume     | <50 lines    | 50-200 lines  | 200+ lines  |
+| Commands to run | 0-1          | 2-4           | 5+          |
+| Uncertainty     | Well-defined | Some unknowns | Exploratory |
 
 **Optional modifier — Integration surface (+0 to +3):**
 
@@ -34,31 +34,31 @@ Identify: Feature / Fix / Research / Refactor? List discrete operations needed.
 
 ### 3. Categorize
 
-| Base Score (5 dims) | Size | Action |
-| --------------------- | ------ | -------- |
-| 1-3 | Small | Direct (or dispatch if context precious) |
-| 4-8 | Medium | Dispatch preferred |
-| 9+ | Large | Must dispatch / must split |
+| Base Score (5 dims) | Size   | Action                                   |
+| ------------------- | ------ | ---------------------------------------- |
+| 1-3                 | Small  | Direct (or dispatch if context precious) |
+| 4-8                 | Medium | Dispatch preferred                       |
+| 9+                  | Large  | Must dispatch / must split               |
 
 **Threshold contract:** `start-task` splits when score > 8.
 
 ### 4. Estimate Context Budget
 
-| Size | Estimated context consumption |
-| ------ | ------------------------------- |
-| Small | ~1-5% |
-| Medium | ~5-20% |
-| Large | >20% |
+| Size   | Estimated context consumption |
+| ------ | ----------------------------- |
+| Small  | ~1-5%                         |
+| Medium | ~5-20%                        |
+| Large  | >20%                          |
 
 Formula (rough): `(files_read × 2%) + (files_write × 3%) + (commands × 1%)` — cap estimates at empirical ranges above.
 
 ### 5. Assess Confidence
 
-| Level | Criteria |
-| ------- | ---------- |
-| High | All dimensions certain, no unknowns |
-| Medium | 1-2 dimensions estimated |
-| Low | Uncertainty = 3 OR ≥2 dimensions guessed |
+| Level  | Criteria                                 |
+| ------ | ---------------------------------------- |
+| High   | All dimensions certain, no unknowns      |
+| Medium | 1-2 dimensions estimated                 |
+| Low    | Uncertainty = 3 OR ≥2 dimensions guessed |
 
 Low confidence → re-assess after scout/research phase.
 
@@ -89,13 +89,13 @@ Then one-line summary: `Medium (7) — dispatch preferred, ~8% context`
 
 When score > 8, recommend split strategy:
 
-| Pattern | When to use | How to split |
-| --------- | ------------- | -------------- |
-| **By layer** | Cross-layer work (frontend + backend + DB) | One task per layer |
-| **By file group** | Many files, same operation type | Batch into 2-4 file groups |
-| **By operation** | Mixed CRUD (create schema, write logic, add tests) | One task per operation phase |
-| **By uncertainty** | Part well-defined, part exploratory | Research task → Implementation task |
-| **By dependency** | Independent subtasks exist | Parallelize independent parts |
+| Pattern            | When to use                                        | How to split                        |
+| ------------------ | -------------------------------------------------- | ----------------------------------- |
+| **By layer**       | Cross-layer work (frontend + backend + DB)         | One task per layer                  |
+| **By file group**  | Many files, same operation type                    | Batch into 2-4 file groups          |
+| **By operation**   | Mixed CRUD (create schema, write logic, add tests) | One task per operation phase        |
+| **By uncertainty** | Part well-defined, part exploratory                | Research task → Implementation task |
+| **By dependency**  | Independent subtasks exist                         | Parallelize independent parts       |
 
 Split until each sub-task scores ≤ 8. Prefer splits that maximize parallelism.
 
@@ -107,15 +107,15 @@ Work on agent infrastructure (`<project-root>/.omo/skills/`, `<project-root>/.om
 
 **Request:** "Add retry logic to BigQuery client with exponential backoff"
 
-| Dimension | Assessment | Score |
-| ----------- | ----------- | ------- |
-| Files to read | client, config, types, existing retry patterns | 2 |
-| Files to write | client, tests, types | 2 |
-| Code volume | ~120 lines impl + ~80 lines test | 2 |
-| Commands to run | typecheck, test, lint | 2 |
-| Uncertainty | Pattern exists in codebase | 1 |
-| **Base total** | | **9** |
-| Integration | Single package | +0 |
+| Dimension       | Assessment                                     | Score |
+| --------------- | ---------------------------------------------- | ----- |
+| Files to read   | client, config, types, existing retry patterns | 2     |
+| Files to write  | client, tests, types                           | 2     |
+| Code volume     | ~120 lines impl + ~80 lines test               | 2     |
+| Commands to run | typecheck, test, lint                          | 2     |
+| Uncertainty     | Pattern exists in codebase                     | 1     |
+| **Base total**  |                                                | **9** |
+| Integration     | Single package                                 | +0    |
 
 ```yaml
 sizing:
@@ -138,7 +138,6 @@ sizing:
 ```
 
 `Large (9) — must split → by-operation into impl + tests`
-
 
 ---
 
@@ -176,21 +175,21 @@ For the task at hand, estimate:
 
 ### 1. Ask Sizing Questions
 
-| Question | Low Context | High Context |
-|----------|-------------|--------------|
-| How many files to read? | 1-2 | 5+ |
-| How much code to write? | <50 lines | 200+ lines |
-| How many commands to run? | 1-3 | 10+ |
-| Is it exploratory? | No, well-defined | Yes, unknown scope |
-| Does it involve media? | No | Screenshots, large outputs |
+| Question                  | Low Context      | High Context               |
+| ------------------------- | ---------------- | -------------------------- |
+| How many files to read?   | 1-2              | 5+                         |
+| How much code to write?   | <50 lines        | 200+ lines                 |
+| How many commands to run? | 1-3              | 10+                        |
+| Is it exploratory?        | No, well-defined | Yes, unknown scope         |
+| Does it involve media?    | No               | Screenshots, large outputs |
 
 ### 2. Apply Heuristics
 
-| Size | Context Cost | Indicators | Action |
-|------|--------------|------------|--------|
-| **Small** | ~1-5% | Single file, quick fix, clarification, config change | **Do directly** |
-| **Medium** | ~5-20% | Few files, moderate logic, some research, new feature | **Consider dispatch** |
-| **Large** | >20% | Many files, complex logic, deep research, UI verification | **Must dispatch** |
+| Size       | Context Cost | Indicators                                                | Action                |
+| ---------- | ------------ | --------------------------------------------------------- | --------------------- |
+| **Small**  | ~1-5%        | Single file, quick fix, clarification, config change      | **Do directly**       |
+| **Medium** | ~5-20%       | Few files, moderate logic, some research, new feature     | **Consider dispatch** |
+| **Large**  | >20%         | Many files, complex logic, deep research, UI verification | **Must dispatch**     |
 
 ### 3. Check for Dispatch Triggers
 
@@ -212,12 +211,12 @@ For the task at hand, estimate:
 ```
 IF task is Small (<5%):
     → Do directly
-    
+
 ELSE IF task is Medium (5-20%):
     → Consider current context level
     → If <40% context: probably do directly
     → If >40% context: probably dispatch
-    
+
 ELSE IF task is Large (>20%):
     → Must dispatch
 ```
@@ -266,7 +265,7 @@ Clear decision:
 ## Examples
 
 ### Small Task (Do Directly)
->
+
 > "Fix the typo in the button label"
 
 - 1 file to read
@@ -275,7 +274,7 @@ Clear decision:
 - **→ Do directly**
 
 ### Medium Task (Consider)
->
+
 > "Add validation to the form"
 
 - 2-3 files (component, service, tests)
@@ -284,7 +283,7 @@ Clear decision:
 - **→ Do directly if context <40%, dispatch if >40%**
 
 ### Large Task (Must Dispatch)
->
+
 > "Verify the entire checkout flow looks correct"
 
 - Multiple pages/states
@@ -306,4 +305,5 @@ Clear decision:
 ## Related Skills
 
 - [dispatch-context](../dispatch-context/SKILL.md) — How to dispatch
-- [handoff](../../preservation/handoff/SKILL.md) — If context is high, checkpoint first
+- [checkpoint](../../preservation/checkpoint/SKILL.md) — If context is high, journal your trail first
+- [stage-handoff](../../preservation/stage-handoff/SKILL.md) — At a stage seam, produce the formal artifact

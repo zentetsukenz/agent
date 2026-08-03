@@ -50,7 +50,7 @@ manifest — this is mandatory at the stage seam (not merely advisory):
   unknowns), the **domain model** (or a link to where it lives), and the **design decisions**
   (interfaces + ADR references). Reference PRDs/ADRs/commits by path — don't re-embed them.
 - Register a row in the ledger manifest with status `ready-for-delivery`.
-- Use [handoff](../../SKILLS/preservation/handoff/SKILL.md) (the PRODUCE adapter) to write it,
+- Use [stage-handoff](../../SKILLS/preservation/stage-handoff/SKILL.md) (the PRODUCE adapter) to write it,
   and follow the project's [communication protocol document](../../wiki/patterns/seam-artifact-protocol.md#4-the-communication-protocol-document).
 
 This is what lets a planner in a fresh session simply be told "plan the `<milestone>` findings"

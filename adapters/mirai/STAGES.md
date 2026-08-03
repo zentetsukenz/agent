@@ -81,11 +81,11 @@ in [MAPPING.md §7](MAPPING.md#7-communication-protocol-document--miraiinstructi
   `agent`, `prompt`, optional `send` — **never** a bare array of agent names) pointing at the
   next stage's agent (`shaping → planner`, `orchestrator → closing`) so Mirai offers the
   transition. See the [schema](references/write-format.md#handoffs-frontmatter--object-schema-do-not-use-a-bare-array).
-- The skills `preservation/handoff` (PRODUCE) and `discovery/session-bootstrap` (DISCOVER) are
+- The skills `preservation/stage-handoff` (PRODUCE) and `discovery/session-bootstrap` (DISCOVER) are
   the thin adapters that implement the read/write.
 
 Mandatory at the **two stage seams** only (Shaping → Delivery, Delivery → Closing); within-stage
-dispatch stays ephemeral via `planning/dispatch-context`.
+dispatch stays ephemeral via `planning/dispatch-context` (its organized, unregistered `working/` lane).
 
 ## Meta bucket — not a stage
 

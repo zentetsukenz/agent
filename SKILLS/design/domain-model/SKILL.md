@@ -1,24 +1,27 @@
 ---
 name: domain-model
-description: Grilling session that challenges your plan against the existing domain model, sharpens terminology, and updates documentation (CONTEXT.md, ADRs) inline as decisions crystallise. Use when user wants to stress-test a plan against their project's language and documented decisions.
+description: Build and sharpen a project's domain model — pin down the ubiquitous language, challenge fuzzy terms against concrete scenarios, and record architectural decisions. Use when the user wants to define or refine domain terminology, capture a decision as an ADR, or when another skill needs to maintain the domain model. NOT a grilling interview (use grill-with-docs for that) — this is the active discipline of changing the model, not stress-testing a plan.
 ---
 
-> **Path flexibility:** Resolves glossary path in priority order:
+> **Path flexibility:** Resolves glossary and ADR paths in priority order:
 >
-> 1. `loom.toml` `paths.glossary` (when loom adapter ships)
-> 2. Framework default: `wiki/glossary/index.md`
-> 3. Legacy fallback: `CONTEXT.md`
->    Interview me relentlessly about every aspect of this plan until we reach a shared understanding. Walk down each branch of the decision tree, resolving dependencies between decisions one-by-one. For each question, provide your recommended answer.
+> 1. `loom.toml` `paths.glossary` / `paths.adr` (when the loom adapter ships)
+> 2. Framework default: `wiki/glossary/index.md` and `wiki/adr/`
+> 3. Legacy fallback: `CONTEXT.md` and `docs/adr/`
 
-Ask the questions one at a time, waiting for feedback on each question before continuing.
+# Domain Model
 
-If a question can be answered by exploring the codebase, explore the codebase instead.
+Actively build and sharpen the project's domain model as you design. This is the _active_
+discipline — challenging terms, inventing edge-case scenarios, and writing the glossary and
+decisions down the moment they crystallise.
 
-## Domain awareness
+Merely _reading_ the glossary for vocabulary is **not** this skill — that's a one-line habit
+any skill can do. This skill is for when you're **changing** the model, not just consuming
+it. When you need to stress-test a whole plan through a relentless one-question-at-a-time
+interview, use [grill-with-docs](../../discovery/grill-with-docs/SKILL.md) instead — it drives
+the interview and calls back into this discipline to capture terms and decisions as they land.
 
-During codebase exploration, also look for existing documentation:
-
-### File structure
+## File structure
 
 Most repos have a single context:
 
@@ -72,7 +75,7 @@ When the user states how something works, check whether the code agrees. If you 
 
 When a term is resolved, update `CONTEXT.md` right there. Don't batch these up — capture them as they happen. Use the format in [CONTEXT-FORMAT.md](../../discovery/grill-with-docs/CONTEXT-FORMAT.md).
 
-Don't couple `CONTEXT.md` to implementation details. Only include terms that are meaningful to domain experts.
+`CONTEXT.md` should be totally devoid of implementation details. Do not treat `CONTEXT.md` as a spec, a scratch pad, or a repository for implementation decisions. It is a glossary and nothing else.
 
 ### Offer ADRs sparingly
 

@@ -75,4 +75,4 @@ Flag missing pages, stale terms, broken links, or decisions needing ADRs.
 - **Glossary term**: concept definition used to disambiguate answers
 - **ADR citation**: decision source for why system behaves this way
 - **File-back**: durable update made from useful Q&A
-- Related skills: [wiki-curator](../wiki-curator/SKILL.md), [wiki-audit](../wiki-audit/SKILL.md), [handoff](../handoff/SKILL.md)
+- Related skills: [wiki-curator](../wiki-curator/SKILL.md), [wiki-audit](../wiki-audit/SKILL.md), [stage-handoff](../stage-handoff/SKILL.md)

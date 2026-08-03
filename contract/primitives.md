@@ -60,7 +60,7 @@ adapter resolves them to harness tool names / withhold mechanisms via the
 
 Skill roster (full default; pruned per the Scope interview table in [interview.md](interview.md)):
 
-- `discovery/session-bootstrap`, `discovery/zoom-out`, `discovery/grill-me`,
+- `discovery/session-bootstrap`, `discovery/zoom-out`,
   `discovery/grill-with-docs`, `discovery/research`, `discovery/research-recommend`
 - `design/domain-model`, `design/design-an-interface`, `design/codebase-design`,
   `design/improve-codebase-architecture`
@@ -93,7 +93,7 @@ quick prompt still serves the low-ceremony path for small work.
 | Role | Pure plan-author: reads Design + findings, decomposes into a risk-ordered, right-sized execution plan. A research need is a loop back to Shaping, not a dispatch. |
 
 Skill roster: `planning/task-sizing`, `planning/dispatch-context`, `planning/plan-review`,
-`planning/to-prd`, `planning/to-issues`, `planning/triage`, `planning/wayfinder`.
+`planning/to-spec`, `planning/to-tickets`, `planning/triage`, `planning/wayfinder`.
 
 **Seam — DISCOVER (Shaping → Delivery):** the Planner's entry gate discovers the Shaping
 seam artifact rather than assuming it's in the conversation — reads the ledger manifest,
@@ -134,7 +134,7 @@ done — don't skip a gate to save time."
 | Capabilities | `read`, `edit` (documentation/wiki only), `search`, `persist`, `tasks`. |
 | Quick stance | "Curate durable knowledge; don't change application code." |
 
-Skill roster: `preservation/handoff`, `preservation/wiki-init`, `preservation/wiki-curator`,
+Skill roster: `preservation/stage-handoff`, `preservation/wiki-init`, `preservation/wiki-curator`,
 `preservation/wiki-query`, `preservation/wiki-audit`, `preservation/wiki-crosslink`,
 `preservation/checkpoint`.
 
@@ -142,7 +142,7 @@ Skill roster: `preservation/handoff`, `preservation/wiki-init`, `preservation/wi
 Delivery seam artifact (reads the manifest, loads the latest `shipped`
 `verified-change`) to know exactly what to curate, then may register a final `preserved`
 row pointing at the curated wiki entries. It also **produces** within Closing via
-`preservation/handoff`.
+`preservation/stage-handoff`.
 
 ## Utility agents (cross-stage)
 
@@ -221,7 +221,7 @@ expected seam artifacts — the choices collected in [interview.md](interview.md
   reference this document to write + register a seam artifact at their exit gate.
 - **DISCOVER roles** (Planner, Closing at entry) carry `persist` and reference this document
   to read the manifest and load the latest seam artifact at their entry gate.
-- The skills `preservation/handoff` (PRODUCE) and `discovery/session-bootstrap` (DISCOVER)
+- The skills `preservation/stage-handoff` (PRODUCE) and `discovery/session-bootstrap` (DISCOVER)
   are the thin adapters that implement the read/write; agents invoke them rather than
   re-deriving the convention.
 

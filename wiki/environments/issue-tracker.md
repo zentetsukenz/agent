@@ -8,7 +8,7 @@ timestamp: 2026-07-16T00:00:00Z
 
 # Issue Tracker
 
-Several skills — [to-prd](../../SKILLS/planning/to-prd/SKILL.md), [to-issues](../../SKILLS/planning/to-issues/SKILL.md),
+Several skills — [to-spec](../../SKILLS/planning/to-spec/SKILL.md), [to-tickets](../../SKILLS/planning/to-tickets/SKILL.md),
 [triage](../../SKILLS/planning/triage/SKILL.md), and [wayfinder](../../SKILLS/planning/wayfinder/SKILL.md) — read from
 and write to a project's **issue tracker**: the place work items, specs, and decision tickets live. This page defines
 the abstraction those skills consume, and the **local-markdown tracker** every project gets by default.
@@ -79,6 +79,6 @@ prefer its **native** primitives over the file conventions above:
 
 ## Related
 
-- [to-prd](../../SKILLS/planning/to-prd/SKILL.md), [to-issues](../../SKILLS/planning/to-issues/SKILL.md),
+- [to-spec](../../SKILLS/planning/to-spec/SKILL.md), [to-tickets](../../SKILLS/planning/to-tickets/SKILL.md),
   [triage](../../SKILLS/planning/triage/SKILL.md) — publish to and query this tracker.
 - [wayfinder](../../SKILLS/planning/wayfinder/SKILL.md) — the Wayfinding operations above.
