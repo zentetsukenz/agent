@@ -77,3 +77,35 @@ Initial wiki structure and content created.
   dispatchers plus a Verifier utility; per-stage quick base agent (`plan` for Shaping) +
   stance line; optional `docs-lookup` capability. See per-subtree logs
   (`adr/log.md`, `patterns/log.md`, `glossary/log.md`) for detail.
+
+---
+
+## Macro Project-Management vocabulary
+
+**2026-08-12**
+
+### Added
+
+- `adr/adr-018-macro-project-management.md` — macro PM is a recursive wayfinding layer over
+  SDLC runs (not a peer workflow), bound by an altitude-scoped substrate and a two-vocabulary
+  label seam.
+- Glossary: **Altitude**, **Substrate**, **Altitude seam**, **Resident agent** — the
+  vocabulary the macro-PM protocol (and the pending wayfinder extension + `contract/`
+  interview) will reference. See `glossary/log.md` and `adr/log.md` for detail.
+
+### Changed
+
+- `patterns/seam-artifact-protocol.md` — added the **networked/external store** substrate
+  class, an **altitude-scoped** substrate subsection, and a **macro section +
+  one-source-of-truth invariant** on the communication protocol document. See `patterns/log.md`.
+- `SKILLS/planning/wayfinder/SKILL.md` — added an opt-in **macro mode**: ticket-as-sub-map
+  recursion (Vision→Milestone→Epic as nested maps), the two-vocabulary seam (`wayfinder:*`
+  down / `sdlc:*` up), and a **mechanical dispatch table** that translates a buildable `task`
+  leaf into an SDLC run's `shaping/` seam artifact and reacts to `sdlc:*` returns
+  (`done`/`needs-recharter`→sub-map/`needs-clarification`→`grilling` ticket). Reuses the
+  existing charting loop; no parallel skill. Grounds ADR-018.
+- `contract/interview.md` — added **§4f Macro project-management (optional)**, off by default:
+  extends §4d with a macro substrate (default networked store), a fit-assessment gate, and
+  provisioning of the two label vocabularies, written into the comm-protocol document's macro
+  section under the one-source-of-truth invariant. The resident daemon stays an adapter
+  concern (no new port; ADR-005 preserved). Grounds ADR-018.

@@ -27,3 +27,11 @@ description: Chronological log of glossary changes
   two surfaces `front-door` (stage agents; human/handoff-entered, not subagent-invocable)
   and `dispatched` (the utility roster; subagent-only). Orthogonal to the dispatcher/utility
   split. Establishes the vocabulary for ADR-012.
+- 2026-08-12 — Added **Altitude**, **Substrate**, **Altitude seam**, and **Resident agent** —
+  the vocabulary for macro project-management (ADR-018): altitude is the macro/micro scale
+  split, substrate generalizes "where the ledger lands" to three classes (memory / committed
+  folder / networked store) chosen per-project *and* per-altitude, the altitude seam is the
+  translator (two-vocabulary label protocol: `wayfinder:*` down, `sdlc:*` up) joining the two,
+  and the resident agent is the memory-bearing reactive worker that runs the macro altitude
+  over a networked source of truth (board = single source of truth; the daemon is an adapter
+  concern).

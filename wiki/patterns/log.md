@@ -29,3 +29,11 @@ description: Chronological log of patterns changes
   and re-checked at every [quality gate](../../workflows/sdlc/implementation.md#quality-gates)'s
   Verify step on a ratchet (no-regression) floor so quality can never silently drop between
   gates. Gives the ADR-016 gate a standing floor. Grounds ADR-017.
+- 2026-08-12 — Extended **Seam Artifact Protocol** for the macro altitude (ADR-018): added a
+  third **substrate class** (networked/external store) alongside memory and committed folder,
+  because neither existing option fits macro PM (memory doesn't distribute; a committed folder
+  pollutes the code tree); made substrate **altitude-scoped** (macro = networked store, micro =
+  memory, joined only by the altitude-seam translator re-using this same PRODUCE/DISCOVER
+  contract); and grew the **communication protocol document** with an altitude-aware macro
+  section naming the single source of truth plus a **substrate-agnostic one-source-of-truth
+  invariant** (a second unregistered tracker is the violation, not the substrate choice).

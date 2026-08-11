@@ -1,13 +1,15 @@
 ---
 name: wayfinder
-description: Plan a huge chunk of work — more than one agent session can hold — as a shared map of decision tickets on your issue tracker, and resolve them one at a time until the way to the destination is clear.
+description: Plan a huge chunk of work — more than one agent session can hold — as a shared map of decision tickets on your issue tracker, and resolve them one at a time until the way to the destination is clear. In opt-in macro mode, nest maps and dispatch buildable leaves down into SDLC runs across the altitude seam.
 disable-model-invocation: true
 ---
 
 > **Path flexibility:** Tracker operations below (map, child ticket, blocking, frontier, claim, resolve) resolve
 > against the project's issue tracker in priority order: `loom.toml#paths.tracker` (when the loom adapter ships) →
 > a project's own `docs/agents/issue-tracker.md` → the [Issue Tracker](../../../wiki/environments/issue-tracker.md)
-> environment doc's local-markdown default and "Wayfinding operations" section.
+> environment doc's local-markdown default and "Wayfinding operations" section. In [macro mode](#macro-mode-dispatching-into-sdlc-runs)
+> the tracker is also the macro **source of truth** named in the project's
+> [communication protocol document](../../../wiki/patterns/seam-artifact-protocol.md#the-macro-section-and-the-one-source-of-truth-invariant).
 
 A loose idea has arrived — too big for one agent session, and wrapped in fog: the way from here to the **destination** isn't visible yet. Wayfinding is about finding that way, not charging at the destination. This skill charts the way as a **shared map** on the repo's issue tracker, then works its **decision tickets** — questions whose resolution is a decision, not slices of a build to execute — one at a time until the route is clear.
 
@@ -16,6 +18,8 @@ The destination varies per effort, and naming it is the first act of charting �
 ## Plan, don't do
 
 Wayfinder is **planning** by default: each ticket resolves a decision, and the map is done when the way is clear — nothing left to decide before someone goes and does the thing. The pull to just do the work is usually the signal you've reached the edge of the map and it's time to hand off. An effort can override this in its **Notes** — carrying execution into the map itself — but absent that, produce decisions, not deliverables.
+
+> **Macro mode** ([below](#macro-mode-dispatching-into-sdlc-runs)) is exactly that override, formalized: a `task` ticket's execution is not done in the map session — it is **dispatched into an SDLC run** across the [altitude seam](../../../wiki/glossary/index.md#altitude-seam). The map stays a planner; the building happens one altitude down. Absent macro mode, this section stands unchanged.
 
 ## Refer by name
 
@@ -84,6 +88,8 @@ Every ticket is either **HITL** — human in the loop, worked _with_ a human who
 - **Grilling** (HITL): Conversation via the [grill-with-docs](../../discovery/grill-with-docs/SKILL.md) skill, one question at a time. The default case.
 - **Task** (HITL or AFK): Manual work that must happen before a _decision_ can be made — nothing to decide, prototype, or research, but the discussion is blocked until it's done. Signing up for a service so its API can be judged, provisioning access, moving data so its shape can be seen. This is the one type that _does_ rather than decides — and it earns its place by unblocking a decision, not by delivering the destination. The agent drives it alone where it can (AFK); otherwise it hands the human a precise checklist (HITL). Resolved when the work is done; the answer records what was done and any resulting facts (credentials location, new URLs, row counts) later tickets depend on.
 
+> In **[macro mode](#macro-mode-dispatching-into-sdlc-runs)** a `task` ticket carries a further sense: a **buildable leaf** — a decided, specified chunk of the destination — dispatched _down_ into an SDLC run rather than done in the map session. This is the "carry execution into the map" override from [Plan, don't do](#plan-dont-do). Outside macro mode, `task` keeps only its decision-unblocking sense above.
+
 ## Fog of war
 
 The map is _deliberately_ incomplete: don't chart what you can't yet see. Beyond the live tickets lies the **fog of war** — the dim view of decisions and investigations you can tell are coming but can't yet pin down, because they hang on questions still open. Resolving a ticket clears the fog ahead of it, graduating whatever's now specifiable into fresh tickets — one at a time, until the way to the destination is clear and no tickets remain.
@@ -131,3 +137,45 @@ User invokes with a map (URL or number). A ticket is **optional** — without on
 5. Add newly-surfaced tickets (create-then-wire); graduate any fog the answer has made specifiable, clearing each graduated patch from **Not yet specified** so it lives only as its new ticket. If the answer reveals a ticket — this one or another — sits beyond the destination, **rule it out of scope** rather than resolving it on the route. If the decision invalidates other parts of the map, update or delete those tickets.
 
 The user may run unblocked tickets in parallel, so expect other sessions to be editing the tracker concurrently.
+
+## Macro mode: dispatching into SDLC runs
+
+Everything above is wayfinding at the **macro [altitude](../../../wiki/glossary/index.md#altitude)** — charting effort too big for one [SDLC](../../../workflows/sdlc/index.md) run. **Macro mode** turns the map from a pure planner into the layer that _drives_ the build: its buildable leaves are dispatched **down** into SDLC runs, and those runs report **up** to the map. It is the [Plan, don't do](#plan-dont-do) override made concrete, and it is governed by [ADR-018](../../../wiki/adr/adr-018-macro-project-management.md). Absent macro mode, ignore this section — wayfinder plans and hands off, unchanged.
+
+Macro mode is **opt-in per effort**, enabled from the map's **Notes** (e.g. `mode: macro`). It requires the project's [communication protocol document](../../../wiki/patterns/seam-artifact-protocol.md#the-macro-section-and-the-one-source-of-truth-invariant) to name the macro **source of truth** (this tracker) — the map obeys the **one-source-of-truth invariant**: do not open a second, unregistered tracker (a local `TODO.md`, an off-board list) for state that belongs on the map.
+
+### Nesting: a ticket that is itself a map
+
+Vision → Milestone → Epic is **recursion, not new levels**: a ticket may graduate into its own **sub-map** (a child `wayfinder:map`) when resolving it turns out to need more than one session of its own charting. The parent ticket links its sub-map; the sub-map's destination is that ticket's question. This is the ordinary [fog-of-war](#fog-of-war) graduation — a patch of fog becoming _a map_ instead of _a ticket_ — so nothing new is needed to chart deep work: an Epic is a map, its Milestone a parent map, and so on up. Keep nesting shallow: only split into a sub-map when a single map can't hold the effort, never to mirror an org chart.
+
+### The two-vocabulary seam
+
+The map talks to SDLC runs through two label vocabularies on the tracker — the whole [altitude seam](../../../wiki/glossary/index.md#altitude-seam), no side channel:
+
+- **`wayfinder:*` flows down** — the ticket types this skill already emits (`research`, `prototype`, `grilling`, `task`). They say what the board hands _into_ a run.
+- **`sdlc:*` flows up** — an **evolving status** an SDLC run writes back on the leaf it was dispatched from. It mirrors this skill's own HITL/AFK split:
+
+| `sdlc:*` status            | Kind     | What the map does (mechanically)                                                                                                                                                             |
+| -------------------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `sdlc:in-progress`         | —        | A run has claimed the leaf; leave it.                                                                                                                                                        |
+| `sdlc:done`                | terminal | Close the leaf, record the linked PR/commit in **Decisions so far**, advance the frontier.                                                                                                   |
+| `sdlc:needs-recharter`     | AFK      | The run couldn't decompose the leaf (too big). **Graduate it to a sub-map** (see nesting) and re-chart.                                                                                      |
+| `sdlc:needs-clarification` | HITL     | The run hit spec ambiguity (e.g. repeated verification failure). **Open a `wayfinder:grilling` ticket** and surface it to the human — the up-vocabulary folds back into the down-vocabulary. |
+
+The status names the **routing target**; the _cause_ (why it needs re-charter or clarification) lives in the linked artifact, not the label.
+
+### Dispatch is mechanical — the ticket decides, not the agent
+
+A macro session **routes by label + status, never by its own judgment** — this is what keeps the tracker the single source of truth and the loop restart-safe (a fresh session on the same board routes identically). The routing table:
+
+| Frontier ticket                              | Dispatch to                                                       | Translation (down)                                                                                                                                                                                    |
+| -------------------------------------------- | ----------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `wayfinder:research`                         | [research](../../discovery/research/SKILL.md) subagent (as today) | —                                                                                                                                                                                                     |
+| `wayfinder:grilling` / `wayfinder:prototype` | HITL — worked in-session with the human (as today)                | —                                                                                                                                                                                                     |
+| `wayfinder:task` (buildable leaf)            | an **SDLC run**                                                   | write the ticket + its linked artifacts as a `shaping/<milestone>/` [seam artifact](../../../wiki/glossary/index.md#seam-artifact) in the run's memory ledger, which Planning's DISCOVER gate expects |
+
+**Down** (dispatch a leaf): translate the ticket into the SDLC run's entry artifact, set the leaf `sdlc:in-progress`, and let the run proceed in _its own_ (memory) substrate — the map does not follow it into the inner loop. If the leaf is still fuzzy (a `research`/`grilling` ticket), it is **not** a buildable leaf yet; resolve it as a decision first — a leaf only dispatches to a build once it is decided and specified.
+
+**Up** (a run returns): read the `sdlc:*` status the run wrote and apply the table above. Only `sdlc:done` closes the leaf; the AFK/HITL returns feed straight back into this skill's own machinery (a sub-map, or a `grilling` ticket) — no new mechanism.
+
+Right-sizing needs no predictor: a leaf that was too big **announces itself** as `sdlc:needs-recharter` when the SDLC run's Planning can't produce a well-formed plan. The map reacts (graduate to sub-map); it does not try to guess size up front.

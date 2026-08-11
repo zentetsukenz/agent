@@ -336,6 +336,69 @@ instruction).
 
 ---
 
+### Altitude
+
+The scale at which planning and coordination happen. loom distinguishes two. The **micro**
+altitude is a single [SDLC](../../workflows/sdlc/index.md) run — one shaped change flowing
+Planning → Implementation → Verification, coordinating in harness memory. The **macro** altitude
+is project management *above* one run — a [Resident agent](#resident-agent) charting many efforts
+as nested [wayfinder](../../SKILLS/planning/wayfinder/SKILL.md) maps and dispatching their leaves
+*into* SDLC runs. The two altitudes may use different [Substrates](#substrate) (macro on a
+[Networked substrate](#substrate), micro in memory) and are joined by an [Altitude seam](#altitude-seam).
+
+**See**: `mem:adr/adr-018-macro-project-management`, [Substrate](#substrate), [Altitude seam](#altitude-seam),
+[Resident agent](#resident-agent)
+
+---
+
+### Substrate
+
+Where a [Ledger](#ledger)'s bytes actually land — chosen per project (and, per
+[ADR-018](../adr/adr-018-macro-project-management.md), per [Altitude](#altitude)) at
+[setup](#setup-contract), never hardcoded by the protocol. Three classes: **harness memory**
+(survives across conversations, fast — but not git-committed, so it does not distribute across
+agents on different servers); a **committed repo folder** (harness-neutral, reviewable — but adds
+state files to the code tree); and a **networked/external store** (a tracker/board or other shared
+service — distributes across agents *and* stays out of the code tree, the fit for the macro
+altitude). The `persist` [capability](#capability) resolver picks the concrete tool/path.
+
+**See**: `mem:patterns/seam-artifact-protocol`, `mem:adr/adr-018-macro-project-management`, [Ledger](#ledger), [Altitude](#altitude)
+
+---
+
+### Altitude seam
+
+The boundary between the macro and micro [Altitudes](#altitude), and the **translator** that
+crosses it. A [Resident agent](#resident-agent) performs two translations, reusing the existing
+[Seam Artifact Protocol](../patterns/seam-artifact-protocol.md) PRODUCE/DISCOVER contract across
+the boundary: **down** — a macro tracker ticket plus its linked artifacts becomes a
+`shaping/<milestone>/` [Seam artifact](#seam-artifact) in the SDLC run's memory [Ledger](#ledger),
+which Planning's DISCOVER gate already expects; **up** — the run's verified-change artifact becomes
+a tracker update (close the ticket, attach the PR/commit link, advance the frontier). The seam is
+expressed as a **two-vocabulary label protocol**: `wayfinder:*` labels flow *down* (what the board
+hands into a run) and `sdlc:*` statuses flow *up* (what a run reports back).
+
+**See**: `mem:adr/adr-018-macro-project-management`, [Altitude](#altitude), [Resident agent](#resident-agent),
+[Seam artifact](#seam-artifact)
+
+---
+
+### Resident agent
+
+A memory-bearing agent that runs the macro [Altitude](#altitude) as a **reactive worker** over a
+[Networked substrate](#substrate) (e.g. watching a tracker/board, potentially unattended). The
+**board is the single source of truth**: the agent's private memory holds only non-load-bearing
+continuity — persona, user preferences, learned skills, conversation continuity — and **never**
+project state, so a fresh instance on another server reconstructs the project from the board alone.
+Its routing is **mechanical** (a ticket's label + status fully determines the dispatch target), which
+is what keeps it restart-safe and the board authoritative. The agent *is* loom-agnostic prose; the
+concrete 24/7 daemon that runs it (e.g. Hermes) is an [Adapter](#adapter) concern, not part of the
+protocol.
+
+**See**: `mem:adr/adr-018-macro-project-management`, [Altitude seam](#altitude-seam), [Substrate](#substrate)
+
+---
+
 ### Orchestrator
 
 An agent [Role](#role) that runs the Implementation loop: it gauges each task's size and

@@ -11,6 +11,6 @@ description: Skills for decomposing a shaped solution into risk-ordered, dispatc
 | [to-spec](to-spec/SKILL.md) | Turn the current conversation into a spec (a.k.a. PRD) — no interview, just synthesis |
 | [to-tickets](to-tickets/SKILL.md) | Break a plan, spec, or conversation into tracer-bullet tickets with blocking edges |
 | [triage](triage/SKILL.md) | Triage bugs and feature requests |
-| [wayfinder](wayfinder/SKILL.md) | Chart huge, multi-session work as a shared map of decision tickets on the issue tracker, and resolve them one at a time |
+| [wayfinder](wayfinder/SKILL.md) | Chart huge, multi-session work as a shared map of decision tickets on the issue tracker, and resolve them one at a time. Opt-in **macro mode** nests maps and dispatches buildable leaves down into SDLC runs across the altitude seam ([ADR-018](../../wiki/adr/adr-018-macro-project-management.md)) |
 
 > Solution-shaping skills (`domain-model`, `design-an-interface`, `codebase-design`) moved to the [design](../design/index.md) bucket. Planning references them cross-bucket when a task needs the domain model or an interface design.

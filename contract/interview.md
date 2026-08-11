@@ -176,6 +176,40 @@ written into whichever home wins the precedence above, and referenced by the gat
 per task. On `update`, re-measure the ratchet floor and reconcile it upward if the project's
 current level improved (the floor only climbs).
 
+## 4f. Macro project-management (optional)
+
+Optional, **off by default** ([ADR-018](../wiki/adr/adr-018-macro-project-management.md)). Enables
+macro-scale project management *above* single SDLC runs — [wayfinder](../SKILLS/planning/wayfinder/SKILL.md)'s
+opt-in [macro mode](../SKILLS/planning/wayfinder/SKILL.md#macro-mode-dispatching-into-sdlc-runs):
+charting effort as nested maps and dispatching buildable leaves *down* into SDLC runs across the
+[altitude seam](../wiki/glossary/index.md#altitude-seam). Ask once; skip the rest of this section
+if the project only ever runs one SDLC effort at a time.
+
+This **extends §4d** — macro state lives on its own substrate at the macro
+[altitude](../wiki/glossary/index.md#altitude), distinct from the micro (memory) ledger §4d
+configured. Resolving the chosen tool's concrete operations reuses the [`capability→tool`
+port](PORTS.md) discipline ("discover/confirm, don't guess") — there is **no new port**.
+
+| Question | Recommended default | Signal to deviate |
+|---|---|---|
+| Run macro project-management for this project? | No (opt-in) | Effort spans many SDLC runs / more than one agent session can hold — a product, a migration, a roadmap |
+| Which **substrate** is the macro **single source of truth**? | A **networked store** — a tracker/board (e.g. GitHub Issues+Projects) so many agents (and a possibly-unattended [resident agent](../wiki/glossary/index.md#resident-agent)) see the same state | Solo/offline effort with no distribution need → a committed folder or a local-markdown tracker is allowed, but it won't distribute across servers |
+| Does the chosen tool **fit** loom's macro protocol? | Gauge and confirm before writing: it must express **map-as-index**, **linked (not embedded) artifacts**, and the **two label vocabularies** (`wayfinder:*` down, `sdlc:*` up) | Tool can't express native blocking/labels → fall back to the [Issue Tracker](../wiki/environments/issue-tracker.md) body conventions, and warn the frontier won't render natively |
+| **Provision** the two label vocabularies on the tracker? | Yes — create `wayfinder:{research,prototype,grilling,task}` and `sdlc:{in-progress,done,needs-recharter,needs-clarification}` labels | Tracker uses a different label scheme the project already runs — map onto it and record the mapping |
+
+The interview writes the macro source of truth, the fit assessment, and the label scheme into the
+**macro section** of the [communication protocol document](../wiki/patterns/seam-artifact-protocol.md#the-macro-section-and-the-one-source-of-truth-invariant)
+(§4d's document, extended), guarded by the **one-source-of-truth invariant**: exactly one
+registered tracker for macro state; a second, unregistered one (a stray `TODO.md`, an off-board
+list) is a violation whatever substrate was chosen. Choosing the substrate — and convincing loom it
+works — is the user's responsibility; loom's job is to gauge the fit and record it.
+
+> The **resident daemon** that runs macro mode unattended (watching the board 24/7, e.g. a
+> Hermes-style agent) is a **harness [adapter](../wiki/glossary/index.md#adapter) concern**, not a
+> generic setup question ([ADR-018](../wiki/adr/adr-018-macro-project-management.md), keeping
+> [ADR-005](../wiki/adr/adr-005-harness-agnostic-setup.md)'s harness-agnostic stance). This section
+> configures the *protocol*; a human, a cron job, or a daemon may each run it.
+
 ## Project-context / instruction file
 
 Not really a question — a filesystem check: the project's always-on context file (build/test

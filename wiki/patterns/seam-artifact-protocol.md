@@ -1,8 +1,8 @@
 ---
 type: Pattern
 title: Seam Artifact Protocol
-description: A single deep contract for handing context across stage seams — a producing agent writes a namespaced, manifest-indexed seam artifact to a ledger, and the receiving agent discovers and loads it. Consolidates handoff, session-bootstrap, and dispatch-context behind one interface.
-tags: [handoff, seam, artifact, ledger, multi-agent, communication, sdlc, persist, loom]
+description: A single deep contract for handing context across stage seams — a producing agent writes a namespaced, manifest-indexed seam artifact to a ledger, and the receiving agent discovers and loads it. Consolidates handoff, session-bootstrap, and dispatch-context behind one interface. Its substrate is per-project and per-altitude (memory, committed folder, or networked store), and its communication protocol document names the single source of truth.
+tags: [handoff, seam, artifact, ledger, multi-agent, communication, sdlc, persist, altitude, substrate, macro, loom]
 timestamp: 2026-07-30T00:00:00Z
 ---
 
@@ -140,6 +140,29 @@ participate in handoff **must reference it** rather than re-deriving the convent
 concretizes it in the harness's native "always-available, on-demand" form (for Mirai, a
 description-triggered [file instruction](../environments/mirai.md#2-file-instructions)).
 
+### The macro section and the one-source-of-truth invariant
+
+When a project runs macro project-management ([ADR-018](../adr/adr-018-macro-project-management.md)),
+the communication protocol document grows an **altitude-aware macro section** naming the **single
+source of truth** for macro state — the chosen [networked substrate](../glossary/index.md#substrate)
+(default: a tracker/board; user-selectable at setup) and how loom's protocol maps onto it: the
+[wayfinder](../../SKILLS/planning/wayfinder/SKILL.md) map lives as an index there, artifacts are
+**linked, not embedded** (the same no-re-embed discipline as a seam artifact), and the two-vocabulary
+label protocol (`wayfinder:*` down, `sdlc:*` up) crosses the [altitude seam](../glossary/index.md#altitude-seam).
+
+This is guarded by a **substrate-agnostic invariant**:
+
+> There is exactly **one** registered source of truth for project state, named in this document.
+> Creating a **second, unregistered** tracker — a stray `TODO.md`, an off-board issue list, a
+> local task file — is a protocol **violation**, whatever substrate was chosen.
+
+The rule binds the *number* of trackers, not the *choice* of substrate: pick a board, and a local
+task file is drift; pick a local folder, and an off-board issue is drift. Every participating agent
+references this document, which is how such drift is caught rather than silently accreting. The
+substrate itself is the user's choice at `init`/`update`; the setup agent's job is to **gauge the
+fit** — confirm the chosen tool can express map-as-index, linked artifacts, and the two label
+vocabularies — and convincing loom it works is the user's responsibility.
+
 ## Substrate is an adapter choice
 
 The protocol names an abstract ledger; the **substrate** — where bytes actually land — is chosen
@@ -147,13 +170,29 @@ per project at setup and is changeable later, because the trade-off is real and 
 
 | Substrate | Trade-off |
 |---|---|
-| **Harness memory** (e.g. Mirai repo memory `/memories/repo/loom/…`) | Survives across conversations, fast agent discovery — but not git-committed, so invisible to teammates and PRs. |
-| **Committed repo folder** (e.g. `.loom/handoffs/…`) | Harness-neutral, reviewable in PRs, diffable — but adds files to the tree. |
-| **Both** | Durable committed artifacts + a lightweight manifest pointer in memory for fast discovery. |
+| **Harness memory** (e.g. Mirai repo memory `/memories/repo/loom/…`) | Survives across conversations, fast agent discovery — but not git-committed, so invisible to teammates and PRs, and **does not distribute across agents on different servers**. |
+| **Committed repo folder** (e.g. `.loom/handoffs/…`) | Harness-neutral, reviewable in PRs, diffable — but adds state files to the code tree. |
+| **Networked / external store** (a tracker/board or shared service, e.g. GitHub Issues+Projects) | Distributes across agents *and* stays out of the code tree — the fit for the macro [altitude](../glossary/index.md#altitude). Adds an external dependency and its own access/auth. |
+| **Both** (memory + committed folder) | Durable committed artifacts + a lightweight manifest pointer in memory for fast discovery. |
 
 The choice is made in the [setup interview](../../adapters/mirai/references/interview.md) and can
 be revised by re-running the guided `update`. The [`persist`](role-scoped-capabilities.md)
 capability resolver decides the concrete tool/path; the protocol never hardcodes it.
+
+### Substrate is also altitude-scoped
+
+Per [ADR-018](../adr/adr-018-macro-project-management.md), the substrate choice generalizes from
+*per-project* to *per-[altitude](../glossary/index.md#altitude)*: a project may run two ledgers on
+different substrates at once. The **macro** altitude (project management above a single SDLC run)
+uses a **networked store** so many agents — and a [resident agent](../glossary/index.md#resident-agent)
+possibly running unattended — see the same state; the **micro** altitude (planner → orchestrator
+inside one SDLC run) uses **harness memory** so the fast inner loop stays local and cheap. The two
+never touch directly: only the [altitude seam](../glossary/index.md#altitude-seam) translator
+crosses between them, re-using this same PRODUCE/DISCOVER contract across the boundary (a macro
+tracker ticket ⇄ a micro `shaping/<milestone>/` seam artifact). The networked store was added as a
+third substrate class precisely because neither existing option fits macro: memory does not
+distribute, and a committed folder would pollute the code tree with state that — unlike an ADR —
+fails the [deletion test](deep-modules.md) for the repo (it is not code-load-bearing).
 
 ## Why this is a deep module
 
@@ -169,6 +208,8 @@ has to bounce between modules to answer "where is the handoff?"
 
 - [ADR-011](../adr/adr-011-seam-artifact-protocol.md) — the decision record for this protocol.
 - [ADR-015](../adr/adr-015-communication-line-refinement.md) — refines this into three named lanes; renames the PRODUCE adapter to `stage-handoff`.
+- [ADR-018](../adr/adr-018-macro-project-management.md) — adds the networked substrate class, altitude-scoped substrate, and the macro section + one-source-of-truth invariant this protocol carries.
+- [wayfinder](../../SKILLS/planning/wayfinder/SKILL.md) — the macro-altitude map whose source of truth this document names.
 - [Deep Modules](deep-modules.md) — the depth principle this consolidation applies.
 - [Role-Scoped Capabilities](role-scoped-capabilities.md) — `persist` is the capability that resolves the substrate.
 - [stage-handoff](../../SKILLS/preservation/stage-handoff/SKILL.md) — the PRODUCE adapter (writes a seam artifact).
