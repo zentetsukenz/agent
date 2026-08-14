@@ -170,8 +170,8 @@ per project at setup and is changeable later, because the trade-off is real and 
 
 | Substrate | Trade-off |
 |---|---|
-| **Harness memory** (e.g. Mirai repo memory `/memories/repo/loom/…`) | Survives across conversations, fast agent discovery — but not git-committed, so invisible to teammates and PRs, and **does not distribute across agents on different servers**. |
-| **Committed repo folder** (e.g. `.loom/handoffs/…`) | Harness-neutral, reviewable in PRs, diffable — but adds state files to the code tree. |
+| **Harness memory** (e.g. Mirai repo memory `/memories/repo/loom/…`) | Survives across conversations, fast agent discovery — but not git-committed, so invisible to teammates and PRs, **does not distribute across agents on different servers**, and **cannot cross a harness boundary** (intra-harness only). |
+| **On-disk repo folder** (e.g. `.loom/handoffs/…`) | Harness-neutral, and the only substrate that works **across two harness processes** (e.g. a resident macro agent + its dispatched SDLC harness). **Gitignored by default** — the ledger is ephemeral coordination, not version-controlled ([ADR-014](../adr/adr-014-loom-opencode-setup.md) Option A); a project may opt to commit it for reviewable diffs, at the cost of state files in the code tree. |
 | **Networked / external store** (a tracker/board or shared service, e.g. GitHub Issues+Projects) | Distributes across agents *and* stays out of the code tree — the fit for the macro [altitude](../glossary/index.md#altitude). Adds an external dependency and its own access/auth. |
 | **Both** (memory + committed folder) | Durable committed artifacts + a lightweight manifest pointer in memory for fast discovery. |
 
@@ -185,14 +185,18 @@ Per [ADR-018](../adr/adr-018-macro-project-management.md), the substrate choice 
 *per-project* to *per-[altitude](../glossary/index.md#altitude)*: a project may run two ledgers on
 different substrates at once. The **macro** altitude (project management above a single SDLC run)
 uses a **networked store** so many agents — and a [resident agent](../glossary/index.md#resident-agent)
-possibly running unattended — see the same state; the **micro** altitude (planner → orchestrator
-inside one SDLC run) uses **harness memory** so the fast inner loop stays local and cheap. The two
-never touch directly: only the [altitude seam](../glossary/index.md#altitude-seam) translator
-crosses between them, re-using this same PRODUCE/DISCOVER contract across the boundary (a macro
-tracker ticket ⇄ a micro `shaping/<milestone>/` seam artifact). The networked store was added as a
-third substrate class precisely because neither existing option fits macro: memory does not
-distribute, and a committed folder would pollute the code tree with state that — unlike an ADR —
-fails the [deletion test](deep-modules.md) for the repo (it is not code-load-bearing).
+possibly running unattended — see the same state. The **micro** altitude (planner → orchestrator
+inside one SDLC run) uses **harness memory** when the run executes in the *same* harness as the
+macro agent, but a **gitignored on-disk folder** when the macro and micro altitudes run in
+*different* harness processes — the common case, since a [resident](harness-archetypes.md) macro
+agent dispatches into a separate per-invocation SDLC harness, and memory cannot cross that boundary
+([ADR-019](../adr/adr-019-loom-hermes-setup.md)). The two altitudes never touch directly: only the
+[altitude seam](../glossary/index.md#altitude-seam) translator crosses between them, re-using this
+same PRODUCE/DISCOVER contract across the boundary (a macro tracker ticket ⇄ a micro
+`shaping/<milestone>/` seam artifact). The networked store was added as a third substrate class
+precisely because neither existing option fits macro: memory does not distribute, and a committed
+folder would pollute the code tree with state that — unlike an ADR — fails the
+[deletion test](deep-modules.md) for the repo (it is not code-load-bearing).
 
 ## Why this is a deep module
 

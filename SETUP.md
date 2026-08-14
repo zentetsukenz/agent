@@ -37,6 +37,7 @@ format and maps loom's generic content onto it.
 | --- | --- | --- |
 | **Mirai** (VS Code) | [`adapters/mirai/setup.md`](adapters/mirai/setup.md) | [wiki/environments/mirai.md](wiki/environments/mirai.md), [adapters/mirai/MAPPING.md](adapters/mirai/MAPPING.md), [adapters/mirai/STAGES.md](adapters/mirai/STAGES.md) |
 | **OpenCode** (terminal) | [`adapters/opencode/setup.md`](adapters/opencode/setup.md) | [wiki/environments/opencode.md](wiki/environments/opencode.md), [adapters/opencode/MAPPING.md](adapters/opencode/MAPPING.md), [adapters/opencode/STAGES.md](adapters/opencode/STAGES.md), [adapters/opencode/references/omo.md](adapters/opencode/references/omo.md) |
+| **Hermes** (Nous Research, resident) | [`adapters/hermes/setup.md`](adapters/hermes/setup.md) | [wiki/environments/hermes.md](wiki/environments/hermes.md), [adapters/hermes/MAPPING.md](adapters/hermes/MAPPING.md), [adapters/hermes/STAGES.md](adapters/hermes/STAGES.md), [adapters/hermes/references/macro-pm.md](adapters/hermes/references/macro-pm.md) |
 
 ## Step 1 — Get loom's files in front of you
 

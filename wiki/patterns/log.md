@@ -29,6 +29,13 @@ description: Chronological log of patterns changes
   and re-checked at every [quality gate](../../workflows/sdlc/implementation.md#quality-gates)'s
   Verify step on a ratchet (no-regression) floor so quality can never silently drop between
   gates. Gives the ADR-016 gate a standing floor. Grounds ADR-017.
+- 2026-08-13 — Added **Harness Archetypes** — a descriptive taxonomy of the harness classes loom
+  adapters target, on two axes: *who holds the workflow loop* (per-invocation vs resident) and
+  *headless-dispatchable* (can another agent invoke it non-interactively). Classifies Mirai
+  (per-invocation, not a target), OpenCode (per-invocation, a valid micro dispatch target), and
+  Hermes (resident; invocation inverts). Gives ADR-012's invocation-surface derivation a home and
+  explains why the resident archetype inverts it (a port answer, not a rule rewrite). Grounds
+  ADR-019; serves ADR-018's cross-harness dispatch.
 - 2026-08-12 — Extended **Seam Artifact Protocol** for the macro altitude (ADR-018): added a
   third **substrate class** (networked/external store) alongside memory and committed folder,
   because neither existing option fits macro PM (memory doesn't distribute; a committed folder

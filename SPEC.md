@@ -240,3 +240,44 @@ must not be forced into it.
 See `wiki/environments/opencode.md` for the full frontmatter/config reference these checks
 enforce a subset of, and `adapters/opencode/setup.md` for the adapter setup instruction that
 generates conformant `.opencode/` content.
+
+---
+
+## Hermes delivery conformance
+
+The **Hermes** harness (Nous Research; `hermes-agent.nousresearch.com`) is loom's third concrete
+adapter — another implementation of the setup contract above, and the **first resident-archetype**
+adapter (see `wiki/patterns/harness-archetypes.md`). It compiles the **reactive**
+`workflows/macro-pm/` lifecycle: a **thin-macro** adapter that renders only a resident
+project-management agent and dispatches SDLC runs **down** into a separate per-invocation harness
+(see `wiki/adr/adr-019-loom-hermes-setup.md`, and `wiki/adr/adr-018-macro-project-management.md`
+which the adapter's `references/macro-pm.md` wires; the adapter references — never restates — the
+shared core of `wiki/adr/adr-013-shared-adapter-contract-core.md`). Hermes is
+**profile-home-centric**: a named agent is a profile (`config.yaml` + `SOUL.md`), delivered as a
+git-committable **profile distribution** plus the project's `AGENTS.md`. When loom-authored Hermes
+content is committed to a project (or to loom's own `agent/.hermes/`), `scripts/validate.sh`
+additionally checks:
+
+- `skills/<name>/SKILL.md` — required `name` (kebab-case, ≤64 chars, **must equal the folder
+  name** — the agentskills.io/Hermes requirement) and required `description` (non-empty, ≤1024
+  chars).
+- Each profile's `config.yaml` — must parse as valid YAML.
+- Each profile's `SOUL.md` — required non-empty body.
+
+The Hermes adapter additionally supplies its four port answers as prose (capability → toolset
+grant, with the load-bearing **withhold** = grant the `file` toolset but disable `write_file` +
+`patch` at the tool level; `archetype→model` as the resident profile's `model.default` + a
+`model.fallback_providers:` array; the seam obligation as **two altitude-scoped substrates** — a
+networked tracker over MCP for the macro board, and a **shared, on-disk, gitignored** directory for
+the micro SDLC ledger, which **cannot** be Hermes `memory` because the dispatched SDLC run executes
+in a separate harness process and memory does not cross a harness boundary; the `primitive→file`
+manifest rendering the macro skills to `SKILL.md` and the **single resident agent** to a profile —
+loom's SDLC stage agents and utilities are **not** rendered by Hermes but by the dispatch-target
+harness) and references — never restates — the generic `contract/` content, per the Setup contract
+conformance rules above. **The macro-PM resident lifecycle is the whole point of this adapter**;
+running a single terminating SDLC effort belongs on a per-invocation harness (Mirai/OpenCode), not
+Hermes.
+
+See `wiki/environments/hermes.md` for the full config reference these checks enforce a subset of,
+and `adapters/hermes/setup.md` for the adapter setup instruction that generates conformant Hermes
+content.

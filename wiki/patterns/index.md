@@ -11,6 +11,7 @@ Reusable design patterns and best practices for agent framework development.
 | Pattern | Summary |
 |---------|---------|
 | [Deep Modules](deep-modules.md) | Design interfaces that hide complexity |
+| [Harness Archetypes](harness-archetypes.md) | A descriptive taxonomy of harness classes — per-invocation vs resident, and headless-dispatchable or not — so each adapter's invocation-surface and dispatch-target answers follow from its archetype |
 | [Role-Scoped Capabilities](role-scoped-capabilities.md) | A role is a scoped capability set plus an invocation surface; enforce it by withholding — capabilities and entry points — not prose |
 | [Seam Artifact Protocol](seam-artifact-protocol.md) | One deep contract for handing context across stage seams — namespaced ledger + manifest; produce@exit, discover@entry |
 | [Quality Baseline](quality-baseline.md) | A per-project four-aspect quality floor (lint, code-quality, security, coverage) chosen at setup from keyless-first tools and re-checked at every quality gate so quality can't silently drop |

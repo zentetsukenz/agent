@@ -2,6 +2,31 @@
 
 All notable changes to this framework are documented here.
 
+## [Unreleased] — 2026-08-14
+
+### Added
+
+- **Macro-PM as a first-class reactive-lifecycle workflow** — `workflows/macro-pm/index.md`, the orchestration seed for macro-scale project management. Where SDLC is a **terminating** lifecycle (a straight pipeline that ends), macro-PM is a **reactive** lifecycle: a resident agent **recursively walks a growing tree** of wayfinder decision tickets across a whole **forest** of efforts on one source of truth, dispatching buildable leaves down into SDLC runs and looping forever. `workflows/index.md` broadened to two lifecycle **kinds** (terminating | reactive).
+- **Harness archetypes** — `wiki/patterns/harness-archetypes.md`: the descriptive taxonomy separating **per-invocation** harnesses (Mirai, OpenCode — compile the terminating SDLC) from **resident** harnesses (Hermes — compiles the reactive macro-PM), with a second axis of headless-dispatchability.
+- **Hermes adapter** — loom's third harness adapter (`adapters/hermes/`), for the Nous Research Hermes agent, and its **first resident-archetype** adapter. It is **thin-macro**: it renders exactly one profile — the resident `wayfinder-macro` agent — that compiles the macro-PM lifecycle and **dispatches SDLC runs down into a separate per-invocation harness** (the *micro dispatch target*). It renders **no** SDLC stage or utility agents. Implements the shared setup contract (`contract/`), references — never restates — the core (`wiki/adr/adr-013-shared-adapter-contract-core.md`), and binds the macro-PM protocol (`wiki/adr/adr-018-macro-project-management.md`) rather than changing it.
+  - `adapters/hermes/setup.md` — the thin-macro adapter entrypoint (renders the resident agent; dispatches SDLC out via prose, never a hardcoded command)
+  - `adapters/hermes/MAPPING.md` — the four port answers: macro skills→`SKILL.md`, the single resident agent→a **profile**, `archetype→model` as `model.default` + `fallback_providers[]`, `capability→tool` with the **withhold** = grant `file` but disable `write_file`+`patch`, and the **two altitude-scoped substrates** (a networked tracker over MCP for the macro board; a **shared, on-disk, gitignored** directory for the micro ledger — never Hermes memory). §2–§3 record the *absence* of SDLC stage/utility profiles.
+  - `adapters/hermes/STAGES.md` — a stub documenting that Hermes renders no stage/utility roster (it lives in the dispatch target)
+  - `adapters/hermes/references/{capabilities,write-format,verify,interview,macro-pm}.md` — the resident-agent port detail; `macro-pm.md` is the genuinely-new part (resident daemon = profile + `gateway` + `cron`, the altitude-seam translator, the *micro dispatch target*, §4f label provisioning, one-source-of-truth enforcement, memory = continuity only)
+  - `adapters/hermes/assets/templates/*` — profile `config.yaml`/`SOUL.md` (retargeted to the resident agent), `AGENTS.md`, and handoff protocol templates
+  - `wiki/environments/hermes.md` — the authoritative Hermes primitive reference (profiles, toolsets, memory, cron/gateway, kanban, MCP)
+  - `wiki/adr/adr-019-loom-hermes-setup.md` — the setup approach (resident thin-macro, prose-only dispatch, shared-on-disk gitignored ledger; folds the ADR-018 amendment)
+
+### Changed
+
+- `SETUP.md` — Hermes added to the harness table (Step 0)
+- `SPEC.md` — new **Hermes delivery conformance** section (reconciled to the thin-macro shape)
+- `scripts/validate.sh` — `validate_hermes_config` (skill `name`==folder + non-empty description, profile `config.yaml` YAML validity, non-empty `SOUL.md`) + counter/summary
+- `wiki/environments/index.md` — Hermes environment listed
+- `wiki/adr/adr-018-macro-project-management.md` — amendment banner: macro-PM is a peer **reactive-lifecycle workflow**, not a peer phase-pipeline (folded into ADR-019)
+- `wiki/adr/adr-014-loom-opencode-setup.md` — **Option A** amendment: the micro ledger is **gitignored by default** (ephemeral coordination, not version-controlled)
+- `wiki/patterns/seam-artifact-protocol.md` — substrate table + altitude-scoped section: on-disk ledger is gitignored-by-default and is the only substrate that crosses a harness boundary (memory cannot)
+
 ## [Unreleased] — 2026-08-03
 
 ### Added

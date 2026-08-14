@@ -12,6 +12,7 @@ skills_validated=0
 wiki_validated=0
 mirai_validated=0
 opencode_validated=0
+hermes_validated=0
 links_checked=0
 
 report_error() {
@@ -399,6 +400,100 @@ validate_opencode_config() {
   done
 }
 
+validate_hermes_skill() {
+  local file="$1"
+  local expected_name
+  local name
+  local description
+  local status
+
+  printf 'validating .hermes skill: %s\n' "$file"
+
+  expected_name="${file%/SKILL.md}"
+  expected_name="${expected_name##*/}"
+
+  set +e
+  frontmatter_value "$file" "name"
+  status=$?
+  set -e
+  if ((status != 0)); then
+    report_error "$file" "$(frontmatter_error "$status" "name")"
+  else
+    name="$(strip_yaml_scalar "$FRONTMATTER_VALUE")"
+    if [[ -z "$name" ]]; then
+      report_error "$file" "frontmatter name is empty"
+    elif ((${#name} > 64)); then
+      report_error "$file" "frontmatter name exceeds 64 chars (${#name})"
+    elif [[ ! "$name" =~ ^[a-z0-9]+(-[a-z0-9]+)*$ ]]; then
+      report_error "$file" "frontmatter name must be kebab-case with no leading/trailing hyphen: $name"
+    elif [[ "$name" != "$expected_name" ]]; then
+      report_error "$file" "frontmatter name '$name' must match folder name '$expected_name' (Hermes requirement)"
+    fi
+  fi
+
+  set +e
+  frontmatter_value "$file" "description"
+  status=$?
+  set -e
+  if ((status != 0)); then
+    report_error "$file" "$(frontmatter_error "$status" "description")"
+  else
+    description="$(strip_yaml_scalar "$FRONTMATTER_VALUE")"
+    if [[ -z "$description" ]]; then
+      report_error "$file" "frontmatter description is empty"
+    elif ((${#description} > 1024)); then
+      report_error "$file" "frontmatter description exceeds 1024 chars (${#description})"
+    fi
+  fi
+
+  ((hermes_validated += 1))
+}
+
+validate_hermes_soul() {
+  local file="$1"
+
+  printf 'validating .hermes SOUL: %s\n' "$file"
+
+  if [[ ! -s "$file" ]]; then
+    report_error "$file" "SOUL.md is empty (a profile persona must be non-empty)"
+  fi
+
+  ((hermes_validated += 1))
+}
+
+validate_hermes_config() {
+  local root="agent/.hermes"
+  local file
+  local profile_dir
+
+  [[ -d "$root" ]] || return 0
+
+  # Skills may live globally or per-profile; validate both shapes.
+  for file in "$root"/skills/*/SKILL.md "$root"/profiles/*/skills/*/SKILL.md; do
+    [[ -f "$file" ]] && validate_hermes_skill "$file"
+  done
+
+  # Each profile carries a config.yaml (valid YAML) + a non-empty SOUL.md.
+  for profile_dir in "$root"/profiles/*; do
+    [[ -d "$profile_dir" ]] || continue
+
+    file="$profile_dir/config.yaml"
+    if [[ -f "$file" ]]; then
+      printf 'validating .hermes config: %s\n' "$file"
+      if ! python3 -c "import sys,yaml; yaml.safe_load(open(sys.argv[1]))" "$file" >/dev/null 2>&1; then
+        if command -v python3 >/dev/null 2>&1 && python3 -c "import yaml" >/dev/null 2>&1; then
+          report_error "$file" "hermes profile config.yaml is not valid YAML"
+        fi
+        # If PyYAML is unavailable, skip the parse gracefully (do not fail the run).
+      fi
+      ((hermes_validated += 1))
+    fi
+
+    file="$profile_dir/SOUL.md"
+    [[ -f "$file" ]] && validate_hermes_soul "$file"
+  done
+}
+
 collect_markdown_files() {
   local root="$1"
   local dir
@@ -544,6 +639,7 @@ done < <(collect_markdown_files "agent/wiki")
 
 validate_mirai_config
 validate_opencode_config
+validate_hermes_config
 
 for link_root in agent/skills agent/workflows agent/wiki agent/agents agent/commands agent/adapters agent/contract; do
   while IFS= read -r markdown_file; do
@@ -552,10 +648,10 @@ for link_root in agent/skills agent/workflows agent/wiki agent/agents agent/comm
 done
 
 if ((failures > 0)); then
-  printf 'validation failed: %d violation(s); skills: %d validated, wiki: %d validated, .mirai: %d validated, .opencode: %d validated, links: %d checked\n' \
-    "$failures" "$skills_validated" "$wiki_validated" "$mirai_validated" "$opencode_validated" "$links_checked" >&2
+  printf 'validation failed: %d violation(s); skills: %d validated, wiki: %d validated, .mirai: %d validated, .opencode: %d validated, .hermes: %d validated, links: %d checked\n' \
+    "$failures" "$skills_validated" "$wiki_validated" "$mirai_validated" "$opencode_validated" "$hermes_validated" "$links_checked" >&2
   exit 1
 fi
 
-printf 'skills: %d validated, wiki: %d validated, .mirai: %d validated, .opencode: %d validated, links: %d checked, all OK\n' \
-  "$skills_validated" "$wiki_validated" "$mirai_validated" "$opencode_validated" "$links_checked"
+printf 'skills: %d validated, wiki: %d validated, .mirai: %d validated, .opencode: %d validated, .hermes: %d validated, links: %d checked, all OK\n' \
+  "$skills_validated" "$wiki_validated" "$mirai_validated" "$opencode_validated" "$hermes_validated" "$links_checked"

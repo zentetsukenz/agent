@@ -8,6 +8,15 @@ tags: [project-management, macro, wayfinder, sdlc, seam, altitude, substrate, tr
 
 # ADR-018: Macro Project-Management as a Recursive Wayfinding Layer over SDLC
 
+> **Amended by [ADR-019](adr-019-loom-hermes-setup.md) (2026-08-14).** This ADR's decision #1 says
+> macro-PM is "**not** a peer workflow." That held under the *old, narrow* definition of workflow (an
+> ordered, terminating phase-pipeline). `workflows/` now recognizes **two lifecycle kinds** —
+> terminating and reactive — so macro-PM **is** a peer *workflow*: the **reactive-lifecycle** member,
+> living at [`workflows/macro-pm/`](../../workflows/macro-pm/index.md). It is still **not** a peer
+> *phase-pipeline*, and every other decision below (recursive wayfinding, dispatch into SDLC runs, the
+> resident agent, altitude-scoped substrate, the two-vocabulary seam) stands unchanged. Read "not a
+> peer workflow" below as "not a peer *phase-pipeline*."
+
 ## Context
 
 The [SDLC workflow](../../workflows/sdlc/index.md) is a **single-effort, terminating

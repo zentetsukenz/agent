@@ -8,6 +8,17 @@ tags: [opencode, omo, setup, adapter, agent, skill, model-matching, permissions,
 
 # ADR-014: loom Setup Approach for the OpenCode Harness
 
+> **Amendment (2026-08-14, via [ADR-019](adr-019-loom-hermes-setup.md), "Option A").** This ADR
+> originally made the OpenCode micro ledger a **committed** `.loom/handoffs/` folder ("repo-visible,
+> versioned with the code"). ADR-019 revises that **default to gitignored**: the micro ledger is
+> **ephemeral coordination**, which is never version-controlled — durable knowledge belongs in the
+> wiki/ADRs instead. This is load-bearing when OpenCode is the **dispatch target** of a resident
+> Hermes macro agent (the ledger is then a *shared, on-disk, gitignored* substrate both harnesses
+> read), and it is the better default even for standalone OpenCode. The folder *location* and the
+> glob-scoped-edit wiring below are unchanged; only the commit-vs-gitignore default flips. A project
+> that explicitly wants reviewable handoff diffs may still opt to commit it. See the
+> [seam-artifact protocol substrate section](../patterns/seam-artifact-protocol.md#substrate-is-also-altitude-scoped).
+
 ## Context
 
 loom ships content-only and installs into a project through a harness-agnostic entrypoint
@@ -118,8 +129,9 @@ adds only the render bindings above.
 - The `permission: deny` withhold and the `mode`-based invocation surface give OpenCode a clean,
   native rendering of loom's capability + surface facets — arguably cleaner than Mirai's
   omit-the-alias + two-flag-pair model.
-- The committed-folder ledger makes handoffs **repo-visible** (a reviewable diff) but means the
-  ledger is versioned with the code — acceptable, and it sidesteps the missing memory tool.
+- The on-disk-folder ledger sidesteps the missing memory tool. Per the amendment above it is
+  **gitignored by default** (ephemeral coordination, not version-controlled); a project may opt to
+  commit it for reviewable handoff diffs.
 - OMO support is available for teams that want central tiering, without imposing it — but the two
   render targets mean the `archetype→model` port has a branch the interview must resolve.
 - The adapter must stay in sync with OpenCode's model as it evolves;

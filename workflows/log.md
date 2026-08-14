@@ -6,6 +6,20 @@ description: Chronological record of significant changes to workflows
 
 # Workflows Log
 
+## 2026-08-14
+
+- Broadened `workflows/` from "lifecycles" to **two lifecycle kinds** — **terminating** (an
+  ordered phase pipeline, rendered by a per-invocation harness; SDLC) and **reactive** (a
+  continuous tick loop over a source of truth, rendered by a resident harness; macro-PM). Both
+  remain single-lifecycle prose seeds; they differ in shape, not kind.
+- Added the [macro-pm](macro-pm/index.md) workflow — the reactive lifecycle *above* SDLC. A
+  resident agent charts many efforts as nested [wayfinder](../SKILLS/planning/wayfinder/SKILL.md)
+  maps on a single source of truth and dispatches buildable leaves down into SDLC runs via the
+  [altitude seam](../wiki/glossary/index.md#altitude-seam), looping forever. Gathers the previously
+  scattered macro-PM prose (tick loop, reactive state machine, two-vocabulary seam, mechanical
+  routing, cross-cutting invariants) into one seed the resident (Hermes) adapter compiles.
+  References wayfinder macro mode and ADR-018 rather than duplicating them. Grounds ADR-019.
+
 ## 2026-07-16
 
 - Added a **Design phase** (`design/` bucket) between Discovery and Planning — the SDLC
