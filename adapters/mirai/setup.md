@@ -55,7 +55,7 @@ Everything Mirai-specific is one of the four [port obligations](../../contract/P
 |---|---|
 | **`capability→tool`** | [references/capabilities.md](references/capabilities.md) + [MAPPING.md §6](MAPPING.md#6-capability--mirai-tool-mapping) — capability → Mirai tool alias / discovered tool name / MCP glob; withhold = omit the tool. |
 | **`archetype→model`** | [MAPPING.md §5](MAPPING.md#5-model-archetype-render-target) — inline `model:` (string or fallback array) per generated file. |
-| **`seam-obligation→wiring`** | [MAPPING.md §7](MAPPING.md#7-communication-protocol-document--miraiinstructions) + [STAGES.md](STAGES.md) — `handoffs:` object-array in frontmatter; `persist` to repo memory and/or a committed `.loom/handoffs/` folder. |
+| **`seam-obligation→wiring`** | [MAPPING.md §7](MAPPING.md#7-communication-protocol-document--miraiinstructions) + [STAGES.md](STAGES.md) — `handoffs:` object-array in frontmatter; `persist` to repo memory and/or a `.loom/handoffs/` on-disk folder (**gitignored by default**, [ADR-014](../../wiki/adr/adr-014-loom-opencode-setup.md) Option A). Mirai is a GUI-only, non-dispatch-target [archetype](../../wiki/patterns/harness-archetypes.md), so memory remains a valid substrate. |
 | **`primitive→file` manifest** | The [harness manifest](#harness-manifest) below + [MAPPING.md §1–3](MAPPING.md#1-skill-primitive--miraiskills), [STAGES.md](STAGES.md), and the [templates](assets/templates/role.agent.md.template); format-checks in [references/verify.md](references/verify.md). |
 
 ## Procedure
@@ -124,5 +124,7 @@ Mirai's answers to the `primitive→file` manifest ([port 4](../../contract/PORT
 - [ADR-013](../../wiki/adr/adr-013-shared-adapter-contract-core.md) — the shared-core decision (reference, never restate).
 - [ADR-004](../../wiki/adr/adr-004-loom-mirai-setup.md) — the Mirai adapter decision.
 - [MAPPING.md](MAPPING.md), [STAGES.md](STAGES.md) — Mirai's concrete port answers.
+- [harness-archetypes](../../wiki/patterns/harness-archetypes.md) — Mirai is the per-invocation, **GUI-only, non-dispatch-target** archetype (why memory is a valid ledger substrate here).
+- [ADR-014](../../wiki/adr/adr-014-loom-opencode-setup.md) — Option A: the on-disk ledger is gitignored by default (the substrate default this adapter now follows).
 - [wiki/environments/mirai.md](../../wiki/environments/mirai.md) — Mirai primitive reference.
 - [SETUP.md](../../SETUP.md) — the harness-agnostic entrypoint that routes here.

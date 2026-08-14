@@ -136,11 +136,13 @@ two stage seams) is **generic**
 | Generic obligation | Mirai wiring |
 |---|---|
 | Communication protocol document | `.mirai/instructions/handoff.instructions.md` — description-triggered (**no** `applyTo`) so it loads on demand, not every request. |
-| [Ledger](../../wiki/glossary/index.md#ledger) substrate → `persist` target | Mirai repo memory (`/memories/repo/loom/…`) and/or a committed `.loom/handoffs/` folder (chosen in [interview 4d](references/interview.md)). |
+| [Ledger](../../wiki/glossary/index.md#ledger) substrate → `persist` target | Mirai repo memory (`/memories/repo/loom/…`) and/or a `.loom/handoffs/` on-disk folder (chosen in [interview 4d](references/interview.md)). The on-disk folder is **gitignored by default** — ephemeral coordination, not version-controlled ([ADR-014](../../wiki/adr/adr-014-loom-opencode-setup.md) Option A; durable knowledge → wiki/ADRs); a project may opt to commit it for reviewable diffs. Note Mirai is a **GUI-only, non-dispatch-target** [harness archetype](../../wiki/patterns/harness-archetypes.md): its SDLC runs are human-driven and not dispatched into by a resident macro agent, so memory is a valid substrate here (a shared on-disk folder is only *mandatory* when the run is dispatched cross-harness). |
 | Ledger manifest | `<ledger-root>/index.md` — seeded empty at setup; producers register rows. |
 | PRODUCE / DISCOVER handoff | `handoffs:` frontmatter (an **array of objects** — `label`, `agent`, `prompt`, optional `send`; **never** a bare array) between stage agents + `persist` in their `tools:` + a body reference to the instruction. See [STAGES.md](STAGES.md#the-communication-protocol-document-cross-stage). |
 
-The protocol document is **always generated**; only its substrate/namespace are user choices.
+The protocol document is **always generated**; only its substrate/namespace are user choices. When
+the on-disk folder is chosen (default gitignored), seed a `.gitignore` entry for the ledger
+artifacts unless the user opts to commit them.
 Template: [assets/templates/handoff.instructions.md.template](assets/templates/handoff.instructions.md.template).
 
 ## Related

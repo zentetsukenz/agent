@@ -20,7 +20,7 @@
 | `web` | `webfetch`, `websearch` | permission | stable |
 | `tasks` | `todowrite` (gates todowrite/todoread) | permission | stable |
 | `search` | `grep`, `glob`, `list` | permission | the file/text search family |
-| `persist` | **GAP** — committed `.loom/handoffs/` folder | no native tool | scoped `edit` glob (below) |
+| `persist` | **GAP** — on-disk `.loom/handoffs/` folder (gitignored by default) | no native tool | scoped `edit` glob (below) |
 | `interview` | `question` | permission | **native** — OpenCode has a first-class `question` tool; grant `allow` |
 | `docs-lookup` | MCP wildcard (e.g. `context7_*`) | permission | **opt-in**; built-in `scout` covers keyless research |
 
@@ -43,9 +43,13 @@ prompt the human can wave through. **`tools:` is deprecated — always use `perm
 ## `persist` — the memory GAP (scoped edit) {#persist-scoped-edit}
 
 OpenCode has **no harness memory tool**. loom persists the [ledger](../../../wiki/patterns/seam-artifact-protocol.md)
-to a **committed `.loom/handoffs/` folder** ([MAPPING.md §7](../MAPPING.md#7-communication-protocol-document--loomhandoffs)).
-A PRODUCE/DISCOVER role therefore needs to *write files* — but only the ledger, never general
-code. Express this with a **glob-scoped `edit` permission**:
+to an **on-disk `.loom/handoffs/` folder** ([MAPPING.md §7](../MAPPING.md#7-communication-protocol-document--loomhandoffs)),
+**gitignored by default** ([ADR-014](../../../wiki/adr/adr-014-loom-opencode-setup.md) Option A — ephemeral
+coordination, not version-controlled; a project may opt to commit it). This on-disk folder is also
+the shared substrate when OpenCode is dispatched into by a resident macro agent
+([harness-archetypes](../../../wiki/patterns/harness-archetypes.md)). A PRODUCE/DISCOVER role
+therefore needs to *write files* — but only the ledger, never general code. Express this with a
+**glob-scoped `edit` permission**:
 
 ```yaml
 permission:

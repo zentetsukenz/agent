@@ -129,7 +129,7 @@ The capability vocabulary + the "discover, don't guess" discipline are **generic
 | `web` | `webfetch`, `websearch` | permission | stable |
 | `tasks` | `todowrite` | permission | gates `todowrite`/`todoread` |
 | `search` | `grep`, `glob`, `list` | permission | file/text search family |
-| `persist` | **GAP** — committed `.loom/handoffs/` folder | no native tool | no harness memory tool (§7) |
+| `persist` | **GAP** — on-disk `.loom/handoffs/` folder (gitignored by default) | no native tool | no harness memory tool (§7) |
 | `interview` | `question` | permission | **native** — OpenCode has a `question` tool; no discovery needed |
 | `docs-lookup` | MCP wildcard (e.g. `context7_*`) | permission | **opt-in** ([ADR-007](../../wiki/adr/adr-007-docs-lookup-capability.md)); built-in `scout` covers keyless dependency research |
 
@@ -146,17 +146,19 @@ two stage seams) is **generic**
 ([contract/primitives.md](../../contract/primitives.md#the-communication-protocol-document-cross-stage),
 [ADR-011](../../wiki/adr/adr-011-seam-artifact-protocol.md)). OpenCode's answer to the
 [`seam-obligation→wiring` port](../../contract/PORTS.md#port-3--seam-obligationwiring) — OpenCode
-has **neither a `handoffs:` primitive nor a memory tool**, so both resolve to a committed folder:
+has **neither a `handoffs:` primitive nor a memory tool**, so both resolve to an on-disk folder
+(gitignored by default):
 
 | Generic obligation | OpenCode wiring |
 |---|---|
-| Communication protocol document | `.loom/handoffs/protocol.md` — a committed Markdown file, pointed at from `opencode.json`'s `instructions:` array (so it merges into always-on context) and referenced from `AGENTS.md`. |
-| [Ledger](../../wiki/glossary/index.md#ledger) substrate → `persist` target | A committed **`.loom/handoffs/`** folder (repo-visible, survives sessions) — OpenCode has no harness memory tool, so the folder *is* the persistence. |
+| Communication protocol document | `.loom/handoffs/protocol.md` — a **committed** Markdown file, pointed at from `opencode.json`'s `instructions:` array (so it merges into always-on context) and referenced from `AGENTS.md`. (The protocol *document* is committed loom config; the *ledger* it describes is gitignored — see the next row.) |
+| [Ledger](../../wiki/glossary/index.md#ledger) substrate → `persist` target | A **`.loom/handoffs/`** on-disk folder — OpenCode has no harness memory tool, so the folder *is* the persistence. **Gitignored by default**: the ledger is ephemeral coordination, not version-controlled ([ADR-014](../../wiki/adr/adr-014-loom-opencode-setup.md) Option A; durable knowledge → wiki/ADRs). A project may opt to **commit** it for reviewable handoff diffs. This on-disk substrate is also what lets OpenCode serve as a **micro dispatch target** for a resident macro agent (a [dispatch-target harness](../../wiki/patterns/harness-archetypes.md) — the folder is the shared ground both harnesses read, since memory cannot cross a harness boundary). |
 | Ledger manifest | `.loom/handoffs/index.md` — seeded empty at setup; producers register rows. |
 | PRODUCE / DISCOVER handoff | No native transition. The producing primary agent writes the seam artifact + manifest row at its exit gate; the human then `Tab`-selects the next stage's primary agent, whose body instructs it to **DISCOVER** the ledger at its entry gate. Every agent carries no `edit`-free `persist` tool (there is none) — instead the ledger is plain files, so PRODUCE/DISCOVER roles need `read` + `edit` **scoped to `.loom/handoffs/`** (via a `permission: { edit: { "*": deny, ".loom/handoffs/**": allow } }` glob) so they can write the ledger without gaining general code-edit. See [STAGES.md §protocol](STAGES.md#the-communication-protocol-document-cross-stage). |
 
-The protocol document is **always generated**; only its root/namespace are user choices.
-Template: [assets/templates/handoff.md.template](assets/templates/handoff.md.template).
+The protocol document is **always generated**; only its root/namespace (and the commit-vs-gitignore
+opt-in) are user choices — the gitignored default should also seed a `.gitignore` entry for the
+ledger root. Template: [assets/templates/handoff.md.template](assets/templates/handoff.md.template).
 
 ## Related
 

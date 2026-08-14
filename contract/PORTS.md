@@ -72,8 +72,13 @@ stage agent hands off to the receiving one, and where the ledger substrate physi
   **`persist` substrate** the ledger writes to.
 
 *Examples:* Mirai wires the transition via a `handoffs:` object-array in agent frontmatter
-and persists to repo memory and/or a committed folder; OpenCode has no `handoffs:` primitive
-(renders as a committed-folder pointer, since it has no memory tool).
+and persists to repo memory and/or a gitignored on-disk folder; OpenCode has no `handoffs:`
+primitive (renders as a gitignored on-disk-folder pointer, since it has no memory tool). The
+on-disk ledger is **gitignored by default** — ephemeral coordination, not version-controlled
+([ADR-014](../wiki/adr/adr-014-loom-opencode-setup.md) Option A). Which substrate an adapter can
+even offer follows from its [harness archetype](../wiki/patterns/harness-archetypes.md): a resident
+harness that dispatches SDLC runs into a *different* harness **must** use a shared on-disk folder
+(memory cannot cross a harness boundary), while a per-invocation harness may also offer memory.
 
 ## Port 4 — the `primitive→file` manifest
 

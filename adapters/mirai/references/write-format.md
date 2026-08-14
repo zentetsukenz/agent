@@ -120,8 +120,8 @@ it follows deterministically from *what kind of role* this is:
 
 | Placeholder | Source |
 |---|---|
-| `{{LEDGER_SUBSTRATE}}` | Handoff interview table 4d — `memory`, `committed folder`, or `both` |
-| `{{LEDGER_ROOT}}` | Handoff interview table 4d — e.g. `.loom/handoffs/` and/or `/memories/repo/loom/handoffs/` |
+| `{{LEDGER_SUBSTRATE}}` | Handoff interview table 4d — `memory`, `on-disk folder (gitignored)`, or `both` (on-disk gitignored by default; `committed` only if the user opted into reviewable diffs) |
+| `{{LEDGER_ROOT}}` | Handoff interview table 4d — e.g. `.loom/handoffs/` (gitignored) and/or `/memories/repo/loom/handoffs/` |
 | `{{SHAPING_ARTIFACTS}}` | Handoff interview table 4d — Shaping seam docs (default `findings.md`, `domain-model.md` or link, `design-decisions.md`) |
 | `{{DELIVERY_ARTIFACTS}}` | Handoff interview table 4d — Delivery seam docs (default `verified-change.md`) |
 | `{{CLOSING_ARTIFACTS}}` | Handoff interview table 4d — Closing seam docs (default `knowledge.md`) |
@@ -144,8 +144,13 @@ written to `.mirai/instructions/handoff.instructions.md` — the project's
   [wiki/environments/mirai.md](../../../wiki/environments/mirai.md#2-file-instructions)).
 - Seed the ledger **manifest** at the chosen `<ledger-root>/index.md` with the table header only
   (no rows) so producers have somewhere to register.
+- When the substrate includes an **on-disk folder**, it is **gitignored by default** (ephemeral
+  coordination, not version-controlled — [ADR-014](../../../wiki/adr/adr-014-loom-opencode-setup.md)
+  Option A). Seed a `.gitignore` entry for the ledger artifacts (keeping the protocol instruction
+  tracked, ignoring the per-milestone artifact dirs), unless the user opted to commit them for
+  reviewable diffs.
 - On `update`, if the user changes the substrate/root, **migrate** existing artifacts to the new
-  location and rewrite the manifest paths; if migration is unsafe (e.g. memory → committed with
+  location and rewrite the manifest paths; if migration is unsafe (e.g. memory → on-disk with
   secrets), surface the artifacts and ask rather than moving silently.
 - The stage agents reference this document rather than restating the convention — patch their
   bodies (inside the markers) to point at it, don't duplicate the protocol into each agent.

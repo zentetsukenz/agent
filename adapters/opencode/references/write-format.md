@@ -57,7 +57,7 @@ blank.
 
 There is **no `{{ROLE_HANDOFFS}}` placeholder** — OpenCode has no `handoffs:` primitive. The
 transition between stages is the human `Tab`-selecting the next primary agent; that agent's
-`{{ROLE_HANDOFF_NOTE}}` instructs it to DISCOVER the committed ledger at its entry gate.
+`{{ROLE_HANDOFF_NOTE}}` instructs it to DISCOVER the on-disk ledger at its entry gate.
 
 #### `{{ROLE_MODE}}` — derive from the role kind {#role-invocation-surface}
 
@@ -110,7 +110,8 @@ ledger-write glob every PRODUCE/DISCOVER role uses.
 
 | Placeholder | Source |
 |---|---|
-| `{{LEDGER_ROOT}}` | Handoff interview table 4d — the committed ledger root (default `.loom/handoffs/`) |
+| `{{LEDGER_SUBSTRATE}}` | Handoff interview table 4d — default `on-disk folder (gitignored)`; `committed folder` only if the user opted into reviewable diffs |
+| `{{LEDGER_ROOT}}` | Handoff interview table 4d — the ledger root (default `.loom/handoffs/`, gitignored) |
 | `{{SHAPING_ARTIFACTS}}` | Handoff interview table 4d — Shaping seam docs (default `findings.md`, `domain-model.md` or link, `design-decisions.md`) |
 | `{{DELIVERY_ARTIFACTS}}` | Handoff interview table 4d — Delivery seam docs (default `verified-change.md`) |
 | `{{CLOSING_ARTIFACTS}}` | Handoff interview table 4d — Closing seam docs (default `knowledge.md`) |
@@ -138,7 +139,13 @@ The [handoff.md.template](../assets/templates/handoff.md.template) is written to
   ```
 
   Add the entry idempotently (don't duplicate it on `update`); preserve any other entries the
-  user already listed. Also reference the protocol from `AGENTS.md`'s loom section.
+  user already listed. Also reference the protocol from `AGENTS.md`'s loom section. **The protocol
+  document `protocol.md` is committed; the ledger it points at is not** (next bullet).
+- The ledger is **gitignored by default** — ephemeral coordination, not version-controlled
+  ([ADR-014](../../../wiki/adr/adr-014-loom-opencode-setup.md) Option A). Seed a `.gitignore` entry
+  for the ledger root's *artifacts* (e.g. `.loom/handoffs/*/` — keep `protocol.md` and `index.md`
+  tracked, ignore the per-milestone artifact dirs), unless the user opted to commit the ledger for
+  reviewable handoff diffs. Add the entry idempotently.
 - Seed the ledger **manifest** at `.loom/handoffs/index.md` with the table header only (no rows)
   so producers have somewhere to register.
 - On `update`, if the user changes the ledger root, **migrate** existing artifacts to the new

@@ -61,10 +61,14 @@
       `deliver.md` / `close.md` — not a stale `agent: build` on the Shaping command.
 - [ ] No command re-embeds a deep agent's full workflow prose (it references skills to invoke).
 
-## Handoff wiring (OpenCode committed ledger)
+## Handoff wiring (OpenCode on-disk ledger)
 
 - [ ] `.loom/handoffs/protocol.md` exists and `.loom/handoffs/index.md` (the manifest) was seeded
       with the table header.
+- [ ] The ledger is **gitignored by default** — a `.gitignore` entry ignores the per-milestone
+      artifact dirs (keeping `protocol.md` + `index.md` tracked), **unless** the user opted to
+      commit the ledger for reviewable diffs ([ADR-014](../../../wiki/adr/adr-014-loom-opencode-setup.md)
+      Option A). The protocol *document* is always committed; the *ledger artifacts* are not.
 - [ ] `opencode.json`'s `instructions:` array contains `.loom/handoffs/protocol.md` (added
       idempotently, other entries preserved) and `AGENTS.md` references the protocol.
 - [ ] The stage agents' bodies instruct PRODUCE at exit / DISCOVER at entry against the ledger —

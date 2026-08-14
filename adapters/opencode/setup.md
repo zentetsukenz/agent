@@ -55,9 +55,9 @@ Everything OpenCode-specific is one of the four [port obligations](../../contrac
 
 | Port | OpenCode answer |
 |---|---|
-| **`capability→tool`** | [references/capabilities.md](references/capabilities.md) + [MAPPING.md §6](MAPPING.md#6-capability--opencode-tool-mapping) — capability → OpenCode `permission:` key; withhold = `permission: { <key>: deny }`. `interview` resolves to the native `question` tool; `persist` is a GAP (committed folder). |
+| **`capability→tool`** | [references/capabilities.md](references/capabilities.md) + [MAPPING.md §6](MAPPING.md#6-capability--opencode-tool-mapping) — capability → OpenCode `permission:` key; withhold = `permission: { <key>: deny }`. `interview` resolves to the native `question` tool; `persist` is a GAP (on-disk folder, gitignored by default). |
 | **`archetype→model`** | [MAPPING.md §5](MAPPING.md#5-model-archetype-render-target) — inline `model: provider/model-id` per agent by default; **opt-in** central `omo.json` when OMO is chosen ([references/omo.md](references/omo.md)). |
-| **`seam-obligation→wiring`** | [MAPPING.md §7](MAPPING.md#7-communication-protocol-document--loomhandoffs) + [STAGES.md](STAGES.md) — no `handoffs:` primitive → committed `.loom/handoffs/` ledger + a pointer in `opencode.json`'s `instructions:`; the human `Tab`-selects the next primary agent, which DISCOVERs the ledger. |
+| **`seam-obligation→wiring`** | [MAPPING.md §7](MAPPING.md#7-communication-protocol-document--loomhandoffs) + [STAGES.md](STAGES.md) — no `handoffs:` primitive → an on-disk `.loom/handoffs/` ledger (**gitignored by default**, [ADR-014](../../wiki/adr/adr-014-loom-opencode-setup.md) Option A) + a committed `protocol.md` pointed at from `opencode.json`'s `instructions:`; the human `Tab`-selects the next primary agent, which DISCOVERs the ledger. Same folder doubles as the shared substrate when OpenCode is a resident agent's [micro dispatch target](../../wiki/patterns/harness-archetypes.md). |
 | **`primitive→file` manifest** | The [harness manifest](#harness-manifest) below + [MAPPING.md §1–3](MAPPING.md#1-skill-primitive--opencodeskills), [STAGES.md](STAGES.md), and the [templates](assets/templates/role.agent.md.template); format-checks in [references/verify.md](references/verify.md). |
 
 ## Procedure
@@ -118,8 +118,10 @@ OpenCode's answers to the `primitive→file` manifest ([port 4](../../contract/P
 
 - A `.opencode/` tree: `agents/` (primary stage agents + subagent utilities), `commands/`
   (quick stage combos), `skills/<slug>/`, plus root `AGENTS.md`.
-- A committed `.loom/handoffs/` ledger with a seeded manifest at `.loom/handoffs/index.md`, and
-  an `instructions:` pointer in `opencode.json` to the protocol file.
+- A `.loom/handoffs/` ledger (**gitignored by default** — a `.gitignore` entry ignores the
+  per-milestone artifact dirs; opt-in commit for reviewable diffs) with a committed `protocol.md`
+  - a seeded manifest at `.loom/handoffs/index.md`, and an `instructions:` pointer in
+  `opencode.json` to the protocol file.
 - Optionally (if OMO opted in) an `omo.json` at the project root or `.omo/`.
 - A short report of created vs. patched paths.
 
@@ -128,8 +130,10 @@ OpenCode's answers to the `primitive→file` manifest ([port 4](../../contract/P
 - [contract/index.md](../../contract/index.md) — the generic setup contract this adapter implements.
 - [contract/PORTS.md](../../contract/PORTS.md) — the four obligations; this adapter answers all four.
 - [ADR-013](../../wiki/adr/adr-013-shared-adapter-contract-core.md) — the shared-core decision (reference, never restate).
-- [ADR-014](../../wiki/adr/adr-014-loom-opencode-setup.md) — the OpenCode adapter decision.
+- [ADR-014](../../wiki/adr/adr-014-loom-opencode-setup.md) — the OpenCode adapter decision (Option A: on-disk ledger gitignored by default).
 - [MAPPING.md](MAPPING.md), [STAGES.md](STAGES.md) — OpenCode's concrete port answers.
+- [harness-archetypes](../../wiki/patterns/harness-archetypes.md) — OpenCode is the per-invocation, **headless-dispatchable** archetype: a valid **micro dispatch target** for a resident macro agent (why the ledger must be shared on-disk).
+- [ADR-019](../../wiki/adr/adr-019-loom-hermes-setup.md) — the resident (Hermes) adapter that dispatches SDLC runs into a per-invocation harness like this one.
 - [references/omo.md](references/omo.md) — the opt-in OMO model-tiering layer.
 - [wiki/environments/opencode.md](../../wiki/environments/opencode.md) — OpenCode primitive reference.
 - [adapters/mirai/setup.md](../mirai/setup.md) — the first adapter implementing this contract (the shape this one mirrors).

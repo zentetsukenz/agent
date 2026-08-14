@@ -67,6 +67,10 @@
 
 - [ ] `.mirai/instructions/handoff.instructions.md` exists, has a non-empty `description`, and
       **no** `applyTo` (description-triggered, not always-on).
+- [ ] If the ledger substrate includes an **on-disk folder**, it is **gitignored by default** — a
+      `.gitignore` entry ignores the per-milestone artifact dirs, **unless** the user opted to
+      commit them for reviewable diffs ([ADR-014](../../../wiki/adr/adr-014-loom-opencode-setup.md)
+      Option A). (A memory-only substrate has nothing to gitignore.)
 - [ ] Stage agents' `handoffs:` point at the next stage's agent (`shaping → planner`,
       `orchestrator → closing`), written as an **array of objects** — each entry has `label`,
       `agent`, and `prompt` (optional `send`), **never** a bare array of agent-name strings. (A

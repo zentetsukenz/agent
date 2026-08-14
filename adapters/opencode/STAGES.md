@@ -39,7 +39,7 @@ OpenCode render bindings:
   [write-format.md](references/write-format.md#delivery-split-migration-deliverymd--dispatchers)).
 - **No native `handoffs:` transition** — OpenCode has no such primitive. The transition is the
   human selecting the next primary agent (`Tab`); the incoming agent's body instructs it to
-  DISCOVER the committed ledger (see [§protocol](#the-communication-protocol-document-cross-stage)).
+  DISCOVER the on-disk ledger (see [§protocol](#the-communication-protocol-document-cross-stage)).
 - **Quick stances** (the portable no-jump-to-conclusions backstop) are generic — take them from
   [contract/primitives.md](../../contract/primitives.md#per-stage-skill-rosters--capability-sets--workflow-prose-sourcing).
 
@@ -80,18 +80,24 @@ in [MAPPING.md §7](MAPPING.md#7-communication-protocol-document--loomhandoffs))
 - The protocol document is a **committed file** at `.loom/handoffs/protocol.md`, pointed at from
   `opencode.json`'s `instructions:` array (so it merges into always-on context) and referenced
   from `AGENTS.md`. OpenCode has **no description-triggered instruction** primitive, so this
-  replaces Mirai's on-demand `.instructions.md`.
+  replaces Mirai's on-demand `.instructions.md`. (The protocol *document* is committed loom config;
+  the *ledger* it points at is **gitignored by default** — ephemeral coordination, not
+  version-controlled, per [ADR-014](../../wiki/adr/adr-014-loom-opencode-setup.md) Option A; a
+  project may opt to commit the ledger for reviewable diffs.)
 - **PRODUCE roles** (`shaping`, `orchestrator`, `closing` at exit) and **DISCOVER roles**
   (`planner`, `closing` at entry) reference the protocol document in their body. Because OpenCode
-  has **no memory tool**, `persist` is the committed folder: these roles need `edit` **scoped to
+  has **no memory tool**, `persist` is the on-disk folder: these roles need `edit` **scoped to
   `.loom/handoffs/`** so they can write the ledger without gaining general code-edit — use a
   glob permission `permission: { edit: { "*": deny, ".loom/handoffs/**": allow } }` (see
-  [write-format.md](references/write-format.md#persist-scoped-edit)).
+  [write-format.md](references/write-format.md#persist-scoped-edit)). This same on-disk folder is
+  the shared ground when OpenCode is the **micro dispatch target** of a resident macro agent (a
+  [dispatch-target harness](../../wiki/patterns/harness-archetypes.md)): the dispatching harness and
+  this SDLC run read the one folder, because memory cannot cross a harness boundary.
 - **No native `handoffs:` frontmatter** — the transition between stages is the human selecting
   the next primary agent (`Tab`), which reads the ledger. loom does not fabricate an automatic
   transition; the ledger + the incoming agent's DISCOVER instruction *are* the wiring.
 - The skills `preservation/stage-handoff` (PRODUCE) and `discovery/session-bootstrap` (DISCOVER) are
-  the thin adapters that implement the read/write against the committed folder.
+  the thin adapters that implement the read/write against the on-disk folder.
 
 Mandatory at the **two stage seams** only (Shaping → Delivery, Delivery → Closing); within-stage
 dispatch stays ephemeral via `planning/dispatch-context` (its organized, unregistered `working/` lane).
