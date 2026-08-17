@@ -3,11 +3,9 @@ name: domain-model
 description: Build and sharpen a project's domain model — pin down the ubiquitous language, challenge fuzzy terms against concrete scenarios, and record architectural decisions. Use when the user wants to define or refine domain terminology, capture a decision as an ADR, or when another skill needs to maintain the domain model. NOT a grilling interview (use grill-with-docs for that) — this is the active discipline of changing the model, not stress-testing a plan.
 ---
 
-> **Path flexibility:** Resolves glossary and ADR paths in priority order:
->
-> 1. `loom.toml` `paths.glossary` / `paths.adr` (when the loom adapter ships)
-> 2. Framework default: `wiki/glossary/index.md` and `wiki/adr/`
-> 3. Legacy fallback: `CONTEXT.md` and `docs/adr/`
+> **Path flexibility:** Resolve the glossary and ADR locations per the
+> [Domain Docs](../../../wiki/environments/domain-docs.md) environment doc
+> (`loom.toml#paths.*` → `wiki/glossary/index.md` + `wiki/adr/` → `CONTEXT.md` + `docs/adr/`).
 
 # Domain Model
 
@@ -23,35 +21,9 @@ the interview and calls back into this discipline to capture terms and decisions
 
 ## File structure
 
-Most repos have a single context:
-
-```
-/
-├── CONTEXT.md
-├── docs/
-│   └── adr/
-│       ├── 0001-event-sourced-orders.md
-│       └── 0002-postgres-for-write-model.md
-└── src/
-```
-
-If a `CONTEXT-MAP.md` exists at the root, the repo has multiple contexts. The map points to where each one lives:
-
-```
-/
-├── CONTEXT-MAP.md
-├── docs/
-│   └── adr/                          ← system-wide decisions
-├── src/
-│   ├── ordering/
-│   │   ├── CONTEXT.md
-│   │   └── docs/adr/                 ← context-specific decisions
-│   └── billing/
-│       ├── CONTEXT.md
-│       └── docs/adr/
-```
-
-Create files lazily — only when you have something to write. If no `CONTEXT.md` exists, create one when the first term is resolved. If no `docs/adr/` exists, create it when the first ADR is needed.
+Single- vs. multi-context layout (`CONTEXT.md` vs. `CONTEXT-MAP.md`) and lazy file creation
+are described once in [Domain Docs](../../../wiki/environments/domain-docs.md#file-structure).
+Create files lazily — only when you have something to write.
 
 ## During the session
 

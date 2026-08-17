@@ -2,6 +2,27 @@
 
 All notable changes to this framework are documented here.
 
+## [Unreleased] — 2026-08-17
+
+### Changed
+
+- **Glossary — system-scoped QA vocabulary** — added **Standing regression suite** and **`qa:regression-failed` (regression origin)**, and rewrote **Verification Culture** to carry the iron law (was the pre-loom "verify before done" phrasing). Registered in `wiki/glossary/log.md`.
+- **System-scoped QA protocol wiring** (completes ADR-020's deferred follow-up) — wove the QA feedback loop into the macro altitude. `SKILLS/planning/wayfinder/SKILL.md` macro mode gains a **coverage-in-the-destination** subsection (user-facing efforts' destinations require passing e2e guards; conditional on the behavioral-artifact test; no new gate) and **a third origin** subsection (`qa:regression-failed` — a CI-posted event, neither `wayfinder:*` down nor `sdlc:*` up, handled AFK by **seeding a fresh terminating root map** whose destination is "restore green"; seed-not-chart). `workflows/macro-pm/index.md` gains a **System-scoped QA** section and lists the third origin in the two-vocabulary gist. **Label decision recorded in ADR-020:** a dedicated `qa:regression-failed` label (not a reused `wayfinder:grilling`), because the event is a distinct origin whose job is to authorize the AFK map-seed.
+- **QA skills slimmed + re-wired** (part of the system-scoped QA rework, ADR-020) — `SKILLS/verification/verification-before-completion/SKILL.md` slimmed from a ~400-line kitchen-sink to the evidence-gathering **procedure** only (delegates the iron law to the `verification-culture` principle, gap-analysis to `derive-e2e-coverage`, and resolves concrete commands from the project's quality baseline instead of hardcoded `npm`/`pnpm`/`fish`). `visual-verification` kept and cross-linked as the executor for `visual`-dimension scenarios. Re-wired `SKILLS/verification/index.md`, `workflows/sdlc/verification.md`, and `contract/primitives.md` (skill roster). Skill count holds at 37; `scripts/validate.sh` passes.
+- **Shaping deepening — de-duplicate the grilling discipline and path resolution.** Two shallow copies were collapsed across the Discovery↔Design seam (link, don't embed), mirroring the upstream `mattpocock/skills` split of `grill-with-docs` into a composer over `grilling` + `domain-modeling`:
+  - `SKILLS/discovery/grill-with-docs/SKILL.md` — rewritten. Adopts the **round/frontier decision-tree walk** (map the plan as a design tree; ask the whole *frontier* — decisions whose prerequisites are settled — in numbered rounds with recommended answers; recompute each round; facts are the agent's job via sub-agents, never blocking the round) replacing the old "ask one question at a time" rule; standardises the `❓ Q# … ➡️ recommended` format; cross-links the same **frontier** notion `planning/wayfinder` uses. Its capture discipline now **references** `design/domain-model` instead of re-embedding the full Challenge/Sharpen/Cross-ref/Update/ADR block.
+  - `wiki/environments/domain-docs.md` — **new** canonical environment page owning glossary/ADR **path resolution** and single/multi-context **file structure**, extracted from the three duplicated preambles (mirrors the Issue Tracker environment pattern).
+  - `SKILLS/design/domain-model/SKILL.md` and `SKILLS/design/improve-codebase-architecture/SKILL.md` — their copy-pasted "Path flexibility" and file-structure blocks replaced with a one-line pointer to Domain Docs.
+  - `wiki/environments/index.md`, `wiki/environments/log.md` — Domain Docs registered.
+
+- **System-scoped QA rework** — lifts QA from a change-scoped afterthought to a system-scoped concern over macro-PM, with **no new workflow**. Implements `wiki/adr/adr-020-system-scoped-qa.md`.
+  - **New skill** `SKILLS/verification/derive-e2e-coverage/SKILL.md` — the one genuinely-new judgment: given a shipped feature's **user-perspective success criteria** (read from closed `sdlc:done` leaves), decide **which e2e scenarios must guard it**, emitting scenario specs (schema harvested from the retired qa-witness) as **buildable leaves**. Coverage is folded into the effort map's **destination** (no new gate primitive); **conditional** on the behavioral-artifact test; authored 1:1 per feature but accreting into one standing regression suite whose operation is a macro-PM/CI concern.
+  - **Verification iron law promoted to a principle** — `wiki/principles/verification-culture.md` rewritten to carry the iron law ("no completion claim without fresh verification evidence"), gate function, evidence-over-assertion, and rationalization table, **harness-agnostic** (names *evidence*, never `npm`). Peer to commit-often/architecture-first (precedent ADR-016).
+
+### Removed
+
+- **`SKILLS/verification/qa-witness-protocol/`** — pre-loom debris (`team_create`/`team_send_message`, Prometheus/Sisyphus, `.sisyphus/` vocabulary that never existed in loom). Its durable scenario schema was harvested into `derive-e2e-coverage` before deletion; e2e execution now lives in CI.
+
 ## [Unreleased] — 2026-08-14
 
 ### Added

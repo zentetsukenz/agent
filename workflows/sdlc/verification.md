@@ -46,10 +46,15 @@ the stage seam):
 
 ## 3. Recommended skills
 
-1. [verification-before-completion](../../SKILLS/verification/verification-before-completion/SKILL.md) — the completion gate: fresh evidence before any success claim.
-2. [qa-witness-protocol](../../SKILLS/verification/qa-witness-protocol/SKILL.md) — evidence-based behavioral confirmation.
-3. [visual-verification](../../SKILLS/verification/visual-verification/SKILL.md) — for UI surfaces.
-4. [frontend-runtime-debugging](../../SKILLS/implementation/frontend-runtime-debugging/SKILL.md) — for runtime/frontend surfaces.
+1. [verification-before-completion](../../SKILLS/verification/verification-before-completion/SKILL.md) — the completion procedure: fresh evidence before any success claim (operationalizes the [verification-culture](../../wiki/principles/verification-culture.md) iron law).
+2. [visual-verification](../../SKILLS/verification/visual-verification/SKILL.md) — for UI surfaces.
+3. [frontend-runtime-debugging](../../SKILLS/implementation/frontend-runtime-debugging/SKILL.md) — for runtime/frontend surfaces.
+
+For a **user-facing** delivery, coverage is not confirmed *once* here and discarded — it is
+crystallized into durable guards: [derive-e2e-coverage](../../SKILLS/verification/derive-e2e-coverage/SKILL.md)
+turns this delivery's user-perspective success criteria into e2e scenarios that accrete into the
+project's standing regression suite (a system-scoped concern operated at the
+[macro-PM](../macro-pm/index.md) altitude, distinct from this phase's per-change confirmation).
 
 ## 4. Agent-effort policy
 

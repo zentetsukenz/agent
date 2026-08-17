@@ -35,3 +35,10 @@ description: Chronological log of glossary changes
   and the resident agent is the memory-bearing reactive worker that runs the macro altitude
   over a networked source of truth (board = single source of truth; the daemon is an adapter
   concern).
+- 2026-08-17 — Added **Standing regression suite** and **`qa:regression-failed` (regression
+  origin)**, and rewrote **Verification Culture** to carry the **iron law** — the vocabulary for
+  system-scoped QA (ADR-020): the standing suite is the system-scoped e2e asset that accretes 1:1
+  from user-facing efforts and runs in CI; `qa:regression-failed` is the CI-posted *third origin*
+  (neither `wayfinder:*` down nor `sdlc:*` up) handled AFK by seeding a fresh terminating
+  "restore-green" map; and Verification Culture is now the iron-law principle (evidence before any
+  claim, harness-agnostic), the procedural skill being its operationalization.

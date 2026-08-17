@@ -167,8 +167,9 @@ Continue with clean context
 - [DIMENSIONS.md](DIMENSIONS.md) — what to check: the full verification-dimension taxonomy.
 - [CAPTURE.md](CAPTURE.md) — the capability contract any capture mechanism must satisfy, plus deterministic-capture recipe and instruction examples.
 - [MODES.md](MODES.md) — exploratory vs. baseline-regression vs. spec-conformance, with report shapes.
-- [wiki/patterns/browser-capture.md](../../../wiki/patterns/browser-capture.md) — the shared browser-drive substrate (reach app, choose tool, isolate) this skill specializes with a *pixels* lens; the runtime-debug skill specializes it with a *runtime* lens.
+- [wiki/patterns/browser-capture.md](../../../wiki/patterns/browser-capture.md) — the shared browser-drive substrate (reach app, choose tool, isolate) this skill specializes with a _pixels_ lens; the runtime-debug skill specializes it with a _runtime_ lens.
 - [agents/visual-qa.md](../../../agents/visual-qa.md) — reference agent implementing the capture contract.
 - [agents/frontend.md](../../../agents/frontend.md) — the domain-specialized utility that dispatches this skill's capture to `visual-qa`.
 - [verification-before-completion](../verification-before-completion/SKILL.md) — full verification checklist (Phase 6 dispatches here).
+- [derive-e2e-coverage](../derive-e2e-coverage/SKILL.md) — derives e2e scenarios; the `visual`-dimension scenarios it emits delegate their pixel-level assertion here.
 - [frontend-runtime-debugging](../../implementation/frontend-runtime-debugging/SKILL.md) — debug frontend runtime _failures_ (console/network/rendering/state), not visual polish.

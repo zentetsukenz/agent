@@ -1,168 +1,98 @@
 ---
 type: Principle
 title: Verification Culture
-description: Verify before claiming done
-tags: [quality, discipline, verification]
-timestamp: 2026-01-07T00:00:00Z
+description: Evidence before claims, always — no completion, success, or positive work-state claim is allowed without fresh verification evidence gathered in the same turn it is claimed
+tags: [quality, discipline, verification, evidence, iron-law, sdlc]
+timestamp: 2026-08-17T00:00:00Z
 ---
 
 # Verification Culture
 
-Claiming work is complete without verification is dishonesty, not efficiency.
+A cross-cutting principle of the [SDLC workflow](../../workflows/sdlc/index.md), peer to
+[commit-often](commit-often.md) and [architecture-first](architecture-first.md). It governs the
+single most important honesty constraint on any agent: **you may not claim work is done until you
+have proven it — with fresh evidence, in the same turn you claim it.**
 
-## Core Principle
+Claiming completion without verification is not efficiency, it is dishonesty. It is also the
+failure mode most likely to defeat an autonomous agent: a model that *narrates* success it has not
+*demonstrated* silently ships broken work. This principle is the standing law that forbids it.
 
-**"I added the code" is not done. "I ran it and saw expected output" is done.**
+## The Iron Law
 
-Verification is not optional. It's the difference between "I think it works" and "I know it works."
+> **No completion, success, or positive work-state claim without fresh verification evidence.**
 
-## Levels of Verification
+If you have not run the verifying observation *in the turn you are making the claim*, you cannot
+make the claim. This binds not just the word "done" but every paraphrase, synonym, and implication
+of success — *"that should work now"*, *"looks good"*, *"fixed"*, an expression of satisfaction,
+or moving on to the next task as if this one were complete. **Violating the letter of the rule is
+violating its spirit.**
 
-### Level 1: Syntax & Type Checking
+The law is deliberately harness-agnostic: it names *evidence*, never a specific tool or command.
+*What* command proves a claim is a project/harness concern (resolved through the project's
+[quality baseline](../patterns/quality-baseline.md) and its own scripts); *that* evidence is
+mandatory is the universal law.
 
-**What**: Code compiles, no type errors, linter passes.
+## The Gate Function
 
-**How**:
-```bash
-lsp_diagnostics(filePath: "src/")
-npm run lint
-npm run type-check
-```
+Every agent, before making any status or satisfaction claim, runs this — mechanically:
 
-**Gate**: Zero errors. Warnings are OK if intentional.
+1. **Identify** — what observation would prove this claim? (a command, a test, a rendered screen,
+   a query result).
+2. **Produce it fresh** — run it now, in full; do not reuse a stale prior run or extrapolate from a
+   partial one.
+3. **Read it honestly** — full output, exit state, failure count; adversarially, not hopefully.
+4. **Judge** — does the evidence actually confirm the claim? If no → state the *actual* state with
+   evidence. If yes → make the claim *with* the evidence attached.
 
-### Level 2: Unit Tests
+Skipping any step is claiming without proof — the thing this principle forbids.
 
-**What**: Individual functions behave correctly.
+## Evidence over assertion
 
-**How**:
-```bash
-npm test -- --testPathPattern="auth.test.ts"
-```
+The distinction the whole principle turns on:
 
-**Gate**: All tests pass. New code has tests.
+| Assertion (forbidden alone) | Evidence (required) |
+|---|---|
+| "I added the code" | "I ran it and saw `<expected output>`" |
+| "Tests should pass" | "`<test command>` → 0 failures, this turn" |
+| "The bug is fixed" | "The original failing case now passes; here is the run" |
+| "An agent reported success" | "The diff/artifact shows the change, independently checked" |
+| "Requirements met" | "Each success criterion checked line-by-line against evidence" |
 
-### Level 3: Integration Tests
+A passing check is a *minimum*, not proof of correctness: criteria are the floor, and evidence is
+rated by confidence (proven vs. circumstantial), with anything unproven flagged even when it
+appears to pass.
 
-**What**: Components work together correctly.
+## Where it is enforced
 
-**How**:
-```bash
-npm run test:integration
-```
+Verification is **shift-left**: the obligation is not deferred to one late phase, it accrues from
+the first.
 
-**Gate**: All tests pass. Happy path + error paths.
+| Phase | Enforcement |
+|---|---|
+| [Discovery](../../workflows/sdlc/discovery.md) | Authors **testable success criteria** — the evidence targets a later claim will be checked against. The law starts here. |
+| [Implementation](../../workflows/sdlc/implementation.md) | Each quality gate's **Verify** step produces fresh evidence before the slice may be reviewed and committed ([commit-often](commit-often.md)). |
+| [Verification](../../workflows/sdlc/verification.md) | The exit gate admits **no "done" claim without proof**; the whole delivery is confirmed against the Discovery criteria via evidence, not assertion. |
 
-### Level 4: Manual Verification
+The *procedural how-to* of gathering that evidence — the checklist of what to run, boundary
+probing, failure forensics, the evidence-handoff shape — lives in the
+[verification-before-completion](../../SKILLS/verification/verification-before-completion/SKILL.md)
+skill. This principle is the *law*; that skill is the *procedure*.
 
-**What**: You actually use the feature.
+## Common rationalizations (all rejected)
 
-**How**:
-- Start dev server
-- Perform the action
-- See expected output
-- Check database/logs
-- Try error cases
+| Excuse | Reality |
+|---|---|
+| "Should work now" | Run the verification. |
+| "I'm confident" | Confidence is not evidence. |
+| "Just this once" | No exceptions — the exception *is* the failure. |
+| "The linter passed" | One aspect green ≠ the claim proven. |
+| "The agent said success" | Verify independently; a report is an assertion. |
+| "Different words, so the rule doesn't apply" | Spirit over letter; paraphrase is still a claim. |
 
-**Gate**: Works as described. No surprises.
+## Related
 
-### Level 5: Regression Testing
-
-**What**: You didn't break anything else.
-
-**How**:
-```bash
-npm test  # Full suite
-npm run build  # Full build
-```
-
-**Gate**: All tests pass. Build succeeds.
-
----
-
-## Verification Checklist
-
-Before marking work "done":
-
-- [ ] Code compiles / no type errors
-- [ ] Linter passes
-- [ ] Unit tests pass
-- [ ] Integration tests pass
-- [ ] Manual verification done (you used it)
-- [ ] Full test suite passes
-- [ ] Build succeeds
-- [ ] No console.log or debug code left
-- [ ] Error cases tested
-- [ ] Documentation updated
-
----
-
-## Common Shortcuts (Don't Take Them)
-
-| Shortcut | Why It Fails |
-|----------|-------------|
-| "Tests pass locally" | Different environment, different result |
-| "I reviewed the code" | Code review ≠ verification |
-| "It compiled" | Compiles ≠ works |
-| "I tested the happy path" | Error cases matter more |
-| "I'll test it later" | Later never comes |
-
----
-
-## Verification Patterns
-
-### Pattern: Test-Driven Development
-
-1. Write test (red)
-2. Write code (green)
-3. Refactor (refactor)
-4. Verify full suite passes
-
-### Pattern: Manual Verification Script
-
-```bash
-#!/bin/bash
-set -e
-
-echo "1. Type check..."
-npm run type-check
-
-echo "2. Lint..."
-npm run lint
-
-echo "3. Unit tests..."
-npm test
-
-echo "4. Integration tests..."
-npm run test:integration
-
-echo "5. Build..."
-npm run build
-
-echo "✓ All verifications passed"
-```
-
-### Pattern: Staged Rollout
-
-1. Verify locally
-2. Verify in staging
-3. Verify in production (canary)
-4. Full rollout
-
----
-
-## When Verification Fails
-
-If verification catches a bug:
-
-1. **Don't hide it** — Report it
-2. **Don't skip it** — Fix it
-3. **Don't blame the test** — The test is right; the code is wrong
-4. **Add a test** — Prevent regression
-
----
-
-## See Also
-
-- `mem:rpi` — Research → Plan → Implement workflow
-- `mem:wisdom` — "Verify before claiming done"
+- [verification-before-completion](../../SKILLS/verification/verification-before-completion/SKILL.md) — the procedural skill that operationalizes this law (how to gather evidence, forensics, handoff).
+- [commit-often](commit-often.md) — the sibling gate; a commit clears the Verify step this principle governs.
+- [architecture-first](architecture-first.md) — the sibling cross-cutting SDLC principle.
+- [quality-baseline](../patterns/quality-baseline.md) — the per-project floor whose checks supply much of the evidence.
+- [wisdom](wisdom.md) — "Verify before claiming done".

@@ -181,6 +181,9 @@ gisted here:
   `done` · `needs-recharter` (AFK — graduate the leaf to a sub-map) · `needs-clarification` (HITL —
   fold back into a `wayfinder:grilling` ticket). Labels route by *target*; the *cause* lives in the
   linked artifact.
+- **`qa:regression-failed` is a *third origin*** — not down, not up. Posted by CI when the standing
+  regression suite goes red (no leaf produced it), it is handled AFK by **seeding a fresh terminating
+  root map** ("restore green"). See [System-scoped QA](#system-scoped-qa--a-third-origin-closing-the-quality-loop).
 
 ## Mechanical routing
 
@@ -209,6 +212,33 @@ The resident agent is the **translator** across the seam, reusing the
 it is **gitignored** (ephemeral coordination is never version-controlled — durable knowledge goes to
 the wiki). Harness memory cannot carry the baton across a harness boundary. See the
 [seam-artifact protocol](../../wiki/patterns/seam-artifact-protocol.md#substrate-is-also-altitude-scoped).
+
+## System-scoped QA — a third origin, closing the quality loop
+
+Per [ADR-020](../../wiki/adr/adr-020-system-scoped-qa.md), system-scoped QA is not a separate
+workflow — it is woven into this loop through **two reuses and one new origin**, all charting-side:
+
+- **Coverage folds into the destination.** A **user-facing** effort's map destination is *"built
+  **and** its user journeys guarded by passing e2e checks in the standing suite"* — so the ordinary
+  "no tickets remain" completion enforces coverage with **no new gate**. The
+  [derive-e2e-coverage](../../SKILLS/verification/derive-e2e-coverage/SKILL.md) judgment reads the
+  effort's closed (`sdlc:done`) leaves' user-perspective criteria and graduates **e2e-authoring
+  leaves** that build the scenarios and add them to the suite. Conditional on the behavioral-artifact
+  test — surfaceless efforts owe nothing. See
+  [wayfinder: coverage in the destination](../../SKILLS/planning/wayfinder/SKILL.md#coverage-in-the-destination-user-facing-efforts).
+- **CI runs the suite; the resident agent triggers and reacts.** The standing suite executes in
+  **CI** at deterministic points (staging deploy, pre-production gate), never in the tick loop —
+  preserving the altitude boundary (macro *routes*, micro/CI *executes*). The resident agent may
+  *trigger* an on-demand run, but never runs tests itself.
+- **A regression is a third origin.** When the suite goes red, CI posts a **`qa:regression-failed`**
+  ticket (evidence linked). This is neither a `wayfinder:*` down-dispatch nor an `sdlc:*` up-return —
+  no leaf produced it. The loop handles it **mechanically and AFK**: **seed a fresh terminating root
+  map** (destination *"restore check `<X>` to green"*, first ticket a `wayfinder:grilling` triage),
+  then close the trigger ticket. **Seed, not chart** — the destination is mechanical and the judgment
+  is deferred into the seeded map's triage, the same AFK map-creation the loop performs for
+  `sdlc:needs-recharter`, applied to a net-new root. A regression is thus its **own** effort in the
+  forest; it never reopens the closed effort map that shipped the feature. See
+  [wayfinder: a third origin](../../SKILLS/planning/wayfinder/SKILL.md#a-third-origin-a-regression-seeds-a-fresh-map-not-down-not-up).
 
 ## Cross-cutting invariants
 

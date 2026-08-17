@@ -115,7 +115,7 @@ Skill roster:
   `implementation/frontend-runtime-debugging`, `implementation/resolving-merge-conflicts`,
   `implementation/architect-review`, `implementation/server-operations`
 - `verification/verification-before-completion`, `verification/visual-verification`,
-  `verification/qa-witness-protocol`
+  `verification/derive-e2e-coverage`
 
 **Seam — PRODUCE (Delivery → Closing):** at the Verification exit gate the Orchestrator
 writes the Delivery seam artifact (`verified-change` — what shipped + the Verifier's

@@ -21,8 +21,8 @@ before running any command below. Substitute the placeholders accordingly:
 | `<FRONTEND_PORT>` | Frontend/dev-server port          | `vite.config`, `next.config`, `.env`     |
 | `<HEALTH_PATH>`   | Backend health endpoint (if any)  | Backend routes / docs                    |
 
-If the project provides a coordinates file (e.g. `.qa-witness.env`), source it instead of
-guessing: `set -a; source .qa-witness.env; set +a`.
+If the project already publishes its coordinates in an env file (e.g. `.env`, `.env.local`),
+source it instead of guessing: `set -a; source <coordinates-file>; set +a`.
 
 **⚠️ Never accept fallback ports** — if a dev server (e.g. Vite) falls back to another port
 because the configured one is occupied, kill the occupant and restart on the intended port.

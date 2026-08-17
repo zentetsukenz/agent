@@ -438,9 +438,13 @@ Design philosophy that treats context as a first-class resource. Minimize what e
 
 ### Verification Culture
 
-Principle that work is not done until verified. "I added the code" is not done; "I ran it and saw expected output" is done.
+The principle carrying the **iron law**: *no completion, success, or positive work-state claim
+without fresh verification evidence, gathered in the same turn it is claimed.* It binds not just
+"done" but every paraphrase or implication of success. Harness-agnostic — it names *evidence*, never
+a specific command; the [verification-before-completion](../../SKILLS/verification/verification-before-completion/SKILL.md)
+skill is the *procedure* that operationalizes it.
 
-**See**: `mem:principles/verification-culture`
+**See**: [principles/verification-culture](../principles/verification-culture.md), [ADR-020](../adr/adr-020-system-scoped-qa.md)
 
 ---
 
@@ -466,6 +470,36 @@ own tool and floor; an aspect with no keyless tool for the stack is recorded as 
 reason.
 
 **See**: [patterns/quality-baseline](../patterns/quality-baseline.md)
+
+---
+
+### Standing regression suite
+
+The **system-scoped** end-to-end test asset a project accumulates over time — distinct from the
+per-change [Verification](../../workflows/sdlc/verification.md) that confirms one delivery once.
+Each user-facing effort contributes 1:1 the e2e scenarios that guard *its* user journeys (authored
+via [derive-e2e-coverage](../../SKILLS/verification/derive-e2e-coverage/SKILL.md)), and the suite
+**accretes** them into one body re-run against the whole product. It executes in **CI** at
+deterministic points (staging deploy, pre-production), never in the macro tick loop; a
+[resident agent](#resident-agent) may *trigger* a run but never runs it. Its long-term operation —
+running, and reacting to failures — is a [macro-PM](../../workflows/macro-pm/index.md) concern.
+
+**See**: [ADR-020](../adr/adr-020-system-scoped-qa.md), [derive-e2e-coverage](../../SKILLS/verification/derive-e2e-coverage/SKILL.md), [macro-pm workflow](../../workflows/macro-pm/index.md)
+
+---
+
+### `qa:regression-failed` (regression origin)
+
+A board label marking a **third origin** in the [macro-PM](../../workflows/macro-pm/index.md) loop,
+distinct from the [two-vocabulary seam](#altitude-seam): it is neither a `wayfinder:*` ticket
+dispatched *down* nor an `sdlc:*` status reported *up* — no leaf produced it. CI posts it (with the
+failing run's evidence linked) when the [standing regression suite](#standing-regression-suite) goes
+red. The resident agent handles it **mechanically and AFK** by *seeding* — not charting — a fresh
+**terminating** root [wayfinder](../../SKILLS/planning/wayfinder/SKILL.md) map whose destination is
+*"restore the failing check to green"*, then closing the trigger ticket. The regression is thus its
+own effort in the forest; it never reopens the closed effort map that shipped the feature.
+
+**See**: [ADR-020](../adr/adr-020-system-scoped-qa.md), [wayfinder: a third origin](../../SKILLS/planning/wayfinder/SKILL.md#a-third-origin-a-regression-seeds-a-fresh-map-not-down-not-up)
 
 ---
 

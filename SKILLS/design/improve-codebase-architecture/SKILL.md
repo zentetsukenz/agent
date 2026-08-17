@@ -3,15 +3,10 @@ name: improve-codebase-architecture
 description: "Find deepening opportunities in a codebase, informed by the domain language in CONTEXT.md and the decisions in docs/adr/. Use when the user wants to improve architecture, find refactoring opportunities, consolidate tightly-coupled modules, or make a codebase more testable and AI-navigable."
 ---
 
-## Path flexibility
-
-Before reading domain docs or ADRs, resolve project paths in this order:
-
-- If `loom.toml` exists, honor its configured wiki, glossary, and ADR paths.
-- Otherwise, read ADRs from `wiki/adr/` when present; fall back to `docs/adr/`.
-- Read glossary/domain language from `wiki/glossary/index.md` when present; fall back to `CONTEXT.md`.
-
-Use the resolved paths consistently for the rest of the architecture review.
+> **Path flexibility:** Before reading domain docs or ADRs, resolve their locations per the
+> [Domain Docs](../../../wiki/environments/domain-docs.md) environment doc
+> (`loom.toml#paths.*` → `wiki/glossary/index.md` + `wiki/adr/` → `CONTEXT.md` + `docs/adr/`).
+> Use the resolved paths consistently for the rest of the architecture review.
 
 # Improve Codebase Architecture
 

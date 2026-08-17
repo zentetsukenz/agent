@@ -144,6 +144,16 @@ Everything above is wayfinding at the **macro [altitude](../../../wiki/glossary/
 
 Macro mode is **opt-in per effort**, enabled from the map's **Notes** (e.g. `mode: macro`). It requires the project's [communication protocol document](../../../wiki/patterns/seam-artifact-protocol.md#the-macro-section-and-the-one-source-of-truth-invariant) to name the macro **source of truth** (this tracker) — the map obeys the **one-source-of-truth invariant**: do not open a second, unregistered tracker (a local `TODO.md`, an off-board list) for state that belongs on the map.
 
+### Coverage in the destination (user-facing efforts)
+
+For an effort that ships a **user-perceivable surface** (a rendered UI, an HTTP/API endpoint, a CLI, or a consumed artifact), the map's **destination is not reached when the feature is merely built** — it is reached when the feature is built **and its user journeys are guarded by passing end-to-end checks in the project's standing regression suite**. Fold that clause into the destination text when charting such a map (per [ADR-020](../../../wiki/adr/adr-020-system-scoped-qa.md)):
+
+> Destination: `<feature> shipped` **and** its user journeys guarded by passing e2e checks in the standing suite.
+
+This needs **no new completion gate**. wayfinder's ordinary rule — the way is clear only when _no tickets remain_ — already enforces it: the [derive-e2e-coverage](../../verification/derive-e2e-coverage/SKILL.md) judgment reads the effort's closed (`sdlc:done`) leaves' user-perspective success criteria and graduates **e2e-authoring tickets** (buildable leaves that build the scenarios and add them to the suite). Until those leaves are charted, dispatched, and closed, the frontier is non-empty and the map cannot complete.
+
+The obligation is **conditional**: apply the [behavioral-artifact test](../../verification/derive-e2e-coverage/SKILL.md#when-to-use-this-skill). A **surfaceless** effort (an internal refactor, a config change, a doc-only edit) ships no user-perceivable behavior and owes **no** e2e clause in its destination — do not manufacture coverage busywork for it.
+
 ### Nesting: a ticket that is itself a map
 
 Vision → Milestone → Epic is **recursion, not new levels**: a ticket may graduate into its own **sub-map** (a child `wayfinder:map`) when resolving it turns out to need more than one session of its own charting. The parent ticket links its sub-map; the sub-map's destination is that ticket's question. This is the ordinary [fog-of-war](#fog-of-war) graduation — a patch of fog becoming _a map_ instead of _a ticket_ — so nothing new is needed to chart deep work: an Epic is a map, its Milestone a parent map, and so on up. Keep nesting shallow: only split into a sub-map when a single map can't hold the effort, never to mirror an org chart.
@@ -179,3 +189,15 @@ A macro session **routes by label + status, never by its own judgment** — this
 **Up** (a run returns): read the `sdlc:*` status the run wrote and apply the table above. Only `sdlc:done` closes the leaf; the AFK/HITL returns feed straight back into this skill's own machinery (a sub-map, or a `grilling` ticket) — no new mechanism.
 
 Right-sizing needs no predictor: a leaf that was too big **announces itself** as `sdlc:needs-recharter` when the SDLC run's Planning can't produce a well-formed plan. The map reacts (graduate to sub-map); it does not try to guess size up front.
+
+### A third origin: a regression seeds a fresh map (not down, not up)
+
+The standing regression suite (built by the [coverage clause](#coverage-in-the-destination-user-facing-efforts) above) runs in **CI** at deterministic points — a staging deploy, a pre-production gate — never in the macro session itself. When it goes **red**, CI posts one ticket to the board marked **`qa:regression-failed`** with the failing run's evidence linked. This is a **third origin**, distinct from the two-vocabulary seam: it is neither a `wayfinder:*` leaf the map dispatched **down** nor an `sdlc:*` status a dispatched run reported **up** — no leaf produced it, so it rides neither vocabulary.
+
+The macro session handles it **mechanically**, and — like [`sdlc:needs-recharter`](#the-two-vocabulary-seam) — **AFK**:
+
+| Inbound origin         | Kind | What the map does (mechanically)                                                                                                                                                                                                                                                                                                                         |
+| ---------------------- | ---- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `qa:regression-failed` | AFK  | **Seed a fresh root map** (a net-new `wayfinder:map`) whose destination is _"restore failing check `<X>` to green"_, link the CI evidence, and open its first frontier ticket as a `wayfinder:grilling` **triage** ("real regression, flake, or intended change?"). Then close the `qa:regression-failed` ticket — its job was only to trigger the seed. |
+
+**Seed, not chart.** Charting exercises judgment (naming a destination, mapping a frontier — a HITL act forbidden in the mechanical loop). Seeding is allowed here because the destination is **mechanically determined** ("restore green") and the judgment is **deferred into the seeded map's first triage ticket**, not exercised now. This is the same AFK map-creation the loop already performs for `sdlc:needs-recharter` — applied to a **net-new root** rather than an existing leaf. Once seeded, the new map is an ordinary terminating effort: it is walked, its fix dispatched as a buildable leaf, and it **closes** when the check is green again. A regression therefore never reopens the long-closed effort map that shipped the feature — it is its **own** effort in the forest.
