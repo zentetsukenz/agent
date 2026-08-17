@@ -8,6 +8,16 @@ tags: [opencode, omo, setup, adapter, agent, skill, model-matching, permissions,
 
 # ADR-014: loom Setup Approach for the OpenCode Harness
 
+> **Amendment (2026-08-17, via [ADR-021](adr-021-shaping-research-orchestrator.md)): OMO layer
+> dropped.** This ADR originally offered an **opt-in OMO (oh-my-openagent) model-tiering layer** as
+> a second `archetype→model` render target (a central `omo.json`). That layer is **removed**: loom
+> already expresses per-role model tiering directly via the inline `model:` field on each generated
+> agent/command, so OMO added a second way to do the same thing (an extra dependency, a divergent
+> config file, and a `docs-lookup`-style opt-in branch) with no capability the inline fields lack.
+> The `archetype→model` port answer is now **inline `model:` only**. `adapters/opencode/references/omo.md`
+> is deleted; the OMO opt-in interview question, the write-format OMO section, and the verify OMO
+> branch are removed. The title's "with an opt-in OMO model-tiering layer" is superseded.
+
 > **Amendment (2026-08-14, via [ADR-019](adr-019-loom-hermes-setup.md), "Option A").** This ADR
 > originally made the OpenCode micro ledger a **committed** `.loom/handoffs/` folder ("repo-visible,
 > versioned with the code"). ADR-019 revises that **default to gitignored**: the micro ledger is
@@ -64,7 +74,7 @@ of it ([ADR-013](adr-013-shared-adapter-contract-core.md)). The four
 | Port | OpenCode answer |
 |---|---|
 | `capability→tool` | Generic capability → OpenCode **`permission:` key**; **withhold = `permission: { <key>: deny }`** (OpenCode grants by default and gates via permissions — the inverse of Mirai's omit-the-alias). `interview` resolves **natively** to the `question` tool; `persist` is a GAP (committed folder + scoped-edit glob). |
-| `archetype→model` | **Two render targets:** inline `model: provider/model-id` per agent by default, **or** a central `omo.json` when the opt-in OMO layer is chosen. |
+| `archetype→model` | Inline `model: provider/model-id` per agent/command — per-role tiering expressed directly (the OMO alternative was dropped, see the 2026-08-17 amendment). |
 | `seam-obligation→wiring` | No `handoffs:` primitive and no memory tool → a **committed `.loom/handoffs/` folder** as the ledger, a `.loom/handoffs/protocol.md` pointed at from `opencode.json`'s `instructions:`, and a human `Tab`-selected primary-agent transition that DISCOVERs the ledger. |
 | `primitive→file` manifest | skills → `.opencode/skills/<slug>/SKILL.md`; stage agents → `.opencode/agents/*.md` (`mode: primary`); utilities → `.opencode/agents/*.md` (`mode: subagent`); quick combos → `.opencode/commands/*.md`; base agents `plan`/`build`; format-checks in `references/verify.md`. |
 
@@ -86,16 +96,18 @@ but the same load-bearing invariant ([ADR-006](adr-006-capability-based-roles.md
   `instructions:` array, and the stage transition is the human `Tab`-selecting the next primary
   agent, which DISCOVERs the ledger at its entry gate.
 
-### OMO is an opt-in layer, not the default
+### Model tiering is inline, per agent
 
-OMO tiering renders to a central `omo.json` (`models` + `categories` + `agents`) **only if the
-interview opts in** — mapping loom's three archetypes onto OMO's tiers and **overlaying** OMO's
-builtins rather than redefining loom's roster. A bare-OpenCode project keeps inline `model:`
-fields and writes no OMO config. This mirrors how `docs-lookup` is an opt-in capability in Mirai
-([ADR-007](adr-007-docs-lookup-capability.md)), honoring
-[keyless-by-default](../principles/keyless-by-default.md)
-([ADR-010](adr-010-keyless-by-default-recommendations.md)): the built-in `scout` subagent also
-covers dependency-source research without any MCP/API-key setup.
+> **Superseded (2026-08-17, [ADR-021](adr-021-shaping-research-orchestrator.md)).** This section
+> originally offered OMO as an opt-in second render target. It is removed — see the amendment
+> banner at the top. The record below is retained for history.
+
+loom renders the `archetype→model` port as an **inline `model: provider/model-id` field on each
+generated agent/command**. Because every role carries its own archetype-matched model, per-role
+tiering is already expressed directly — loom needs no external model-tiering overlay, and there is
+one way to set a model, not two. (The dropped OMO alternative rendered a central `omo.json`
+mapping loom's archetypes onto OMO's tiers; it added a dependency and a divergent config for no
+capability the inline field lacks.)
 
 ### Everything else is inherited from the core, unchanged
 
@@ -155,5 +167,5 @@ adds only the render bindings above.
 - [wiki/environments/opencode.md](../environments/opencode.md) — the OpenCode customization reference.
 - [adapters/opencode/setup.md](../../adapters/opencode/setup.md) — the adapter setup instruction.
 - [adapters/opencode/MAPPING.md](../../adapters/opencode/MAPPING.md),
-  [adapters/opencode/STAGES.md](../../adapters/opencode/STAGES.md),
-  [adapters/opencode/references/omo.md](../../adapters/opencode/references/omo.md) — the concrete port answers.
+  [adapters/opencode/STAGES.md](../../adapters/opencode/STAGES.md) — the concrete port answers.
+- [ADR-021](adr-021-shaping-research-orchestrator.md) — drops the opt-in OMO layer (amends this ADR); Shaping becomes a read-only research orchestrator.

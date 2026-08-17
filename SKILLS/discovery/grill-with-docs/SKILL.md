@@ -43,9 +43,10 @@ _later_ round, not this one.
 
 **Finding facts is your job, never the user's.** When a frontier question needs a fact from
 the environment (filesystem, code, tools, docs), dispatch a sub-agent to find it — don't ask
-the user for anything you could look up yourself. Don't block on it: a running exploration is
-an unsettled prerequisite, so only the questions downstream of it wait for the sub-agent to
-report; ask the rest of the frontier now.
+the user for anything you could look up yourself. The sub-agent returns **distilled evidence,
+not its raw reading context**, so the interview stays lean while a cheaper explorer does the
+legwork. Don't block on it: a running exploration is an unsettled prerequisite, so only the
+questions downstream of it wait for the sub-agent to report; ask the rest of the frontier now.
 
 The session is done when the **frontier is empty** — every branch of the design tree visited,
 nothing left silently assumed. Don't act on the plan until the user confirms you have reached

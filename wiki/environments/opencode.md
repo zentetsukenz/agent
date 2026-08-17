@@ -2,7 +2,7 @@
 type: Environment
 title: OpenCode (Terminal Agent Harness)
 description: OpenCode's customization primitives — exact frontmatter, config format, file locations, and official doc links — as the authoritative reference for loom's OpenCode adapter setup instruction
-tags: [opencode, terminal, harness, customization, adapter, setup, omo]
+tags: [opencode, terminal, harness, customization, adapter, setup]
 timestamp: 2026-07-31T00:00:00Z
 ---
 
@@ -18,8 +18,7 @@ bespoke `.opencode/` configuration for a project, so that instruction doesn't ha
 re-derive OpenCode's model from scratch every run.
 
 Source of truth: the official docs at `https://opencode.ai/docs/<page>` (`agents`,
-`commands`, `skills`, `rules`, `permissions`, `config`, `mcp`). The optional **OMO** layer
-(oh-my-openagent) is documented in [adapters/opencode/references/omo.md](../../adapters/opencode/references/omo.md).
+`commands`, `skills`, `rules`, `permissions`, `config`, `mcp`).
 
 ## The primitives loom renders into
 
@@ -190,15 +189,13 @@ MCP servers are an external **tool source**, gated by the `permission:` wildcard
 ([ADR-010](../adr/adr-010-keyless-by-default-recommendations.md)); the built-in `scout`
 subagent covers dependency-source research without any MCP setup.
 
-## OMO — the opt-in model-tiering layer
+## Model tiering — inline `model:` per agent
 
-[oh-my-openagent](https://github.com/code-yeongyu/oh-my-openagent) (OMO) is an **opt-in**
-overlay for OpenCode that centralizes model tiering ("models are developers") in an `omo.json`
-config. loom's OpenCode adapter offers it as an opt-in layer — a bare-OpenCode project is
-**never forced into OMO**. When opted in, loom renders the
-[`archetype→model` port](../../contract/PORTS.md#port-2--archetypemodel) to `omo.json` instead
-of inline `model:` fields. Full schema and the archetype→OMO mapping:
-[adapters/opencode/references/omo.md](../../adapters/opencode/references/omo.md).
+loom renders the [`archetype→model` port](../../contract/PORTS.md#port-2--archetypemodel) as an
+inline `model:` field (in `provider/model-id` format) on each generated agent/command. Because
+every role carries its own archetype-matched model, per-role tiering is already expressed
+directly — loom needs no external model-tiering overlay
+([ADR-014](../adr/adr-014-loom-opencode-setup.md)).
 
 ## Cross-tool compatibility note
 
@@ -232,8 +229,6 @@ and the adapter should extend rather than duplicate it. Agents and commands only
   stage groupings, role capability sets, and their command+agent pairs.
 - [adapters/opencode/references/capabilities.md](../../adapters/opencode/references/capabilities.md)
   — generic capability → OpenCode permission mapping and docs-lookup/MCP wiring.
-- [adapters/opencode/references/omo.md](../../adapters/opencode/references/omo.md) — the opt-in
-  OMO `omo.json` schema and the archetype → OMO-config rendering.
 - [adapters/opencode/setup.md](../../adapters/opencode/setup.md) — the adapter setup instruction
   that reads this page to generate a project's `.opencode/` configuration.
 - [wiki/adr/adr-014-loom-opencode-setup.md](../adr/adr-014-loom-opencode-setup.md) — the ADR

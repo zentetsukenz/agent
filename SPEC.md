@@ -230,12 +230,12 @@ contains loom-authored content, `scripts/validate.sh` additionally checks:
 - `opencode.json` (if present) — must parse as valid JSON.
 
 The OpenCode adapter additionally supplies its four port answers as prose (capability →
-`permission:` key with `deny` as the withhold; `archetype→model` as inline `model:` or an
-opt-in `omo.json`; the seam obligation as a committed `.loom/handoffs/` ledger, since OpenCode
+`permission:` key with `deny` as the withhold; `archetype→model` as an inline `model:` field per
+agent/command; the seam obligation as a committed `.loom/handoffs/` ledger, since OpenCode
 has no memory tool or `handoffs:` primitive; the `primitive→file` manifest for skills/agents/commands)
 and references — never restates — the generic `contract/` content, per the Setup contract
-conformance rules above. **The OMO model-tiering layer is opt-in** — a bare-OpenCode project
-must not be forced into it.
+conformance rules above. Per-role tiering is expressed directly by each agent's inline `model:`,
+so loom renders no external model-tiering overlay ([ADR-014](wiki/adr/adr-014-loom-opencode-setup.md)).
 
 See `wiki/environments/opencode.md` for the full frontmatter/config reference these checks
 enforce a subset of, and `adapters/opencode/setup.md` for the adapter setup instruction that

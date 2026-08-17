@@ -37,6 +37,11 @@ OpenCode render bindings:
   ([ADR-008](../../wiki/adr/adr-008-delivery-dispatchers.md)); the single `deliver.md` command
   serves the low-ceremony quick path. The old single `delivery.md` is retired (migration:
   [write-format.md](references/write-format.md#delivery-split-migration-deliverymd--dispatchers)).
+- **Shaping is a `primary` (front-door) agent *and* a read-only Dispatcher** ([ADR-021](../../wiki/adr/adr-021-shaping-research-orchestrator.md)):
+  its generic capability set holds `delegate` (no `edit`), so it renders with `permission: { task: allow }`
+  and dispatches recon/research to the `explore` utility and spikes to `quick`/`deep`. The two
+  role facets are orthogonal — `mode: primary` is how a human *enters* it; `delegate` is whether it
+  *dispatches out*. It is the one stage agent that is both.
 - **No native `handoffs:` transition** — OpenCode has no such primitive. The transition is the
   human selecting the next primary agent (`Tab`); the incoming agent's body instructs it to
   DISCOVER the on-disk ledger (see [§protocol](#the-communication-protocol-document-cross-stage)).
@@ -54,10 +59,15 @@ via `@mention`/delegation but the `Tab` cycle hides it. A human never `Tab`-sele
 Resolve each capability set to OpenCode `permission:` keys via
 [references/capabilities.md](references/capabilities.md).
 
-- **Built-in reuse:** OpenCode ships `explore` (read-only recon), `scout` (external-docs
-  research), and `general` (full-access) subagents. loom's `explore` utility MAY reuse the
-  built-in rather than emitting a duplicate (interview decides). `scout` gives keyless
-  dependency-source research, so the optional `docs-lookup` (MCP) capability stays off by default.
+- **Built-in reuse — but pin the model.** OpenCode ships `explore` (read-only recon), `scout`
+  (external-docs research), and `general` (full-access) subagents. loom **always emits a thin
+  `.opencode/agents/explore.md`** carrying the **Utility** archetype `model:` — even though it
+  reuses the built-in's read-only recon behavior. This is load-bearing for cost: the bare
+  built-in `explore` runs on OpenCode's *default* model, so relying on it silently forfeits
+  cheap-tier dispatch — the whole point of routing recon to a Utility agent
+  ([ADR-021](../../wiki/adr/adr-021-shaping-research-orchestrator.md)). The emitted agent is
+  `read`+`search` only (`mode: subagent`). `scout` gives keyless dependency-source research, so
+  the optional `docs-lookup` (MCP) capability stays off by default.
 - **Verifier** — `.opencode/agents/verifier.md`, an extended-thinking / long-context model named
   by the user at setup, `permission: { edit: deny }`. A *utility*, not a Delivery stage agent
   (two dispatchers reuse it).

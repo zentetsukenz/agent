@@ -82,9 +82,16 @@ role withholds `edit` (it produces a plan, not code) while the executor's role g
 A [Role](#role) that holds the `delegate` [Capability](#capability): it routes work to other
 agents rather than doing it itself. Dispatchers typically **withhold `edit`**, which forces
 them to delegate instead of quietly doing the work in-place. The [Orchestrator](#orchestrator)
-is the canonical dispatcher; a future plan-reviewer that dispatches verification is another.
+is the canonical dispatcher; **Shaping** is a second, *read-only* one — it dispatches recon and
+research to the `explore` utility and spikes to `quick`/`deep` while staying `edit`-free
+([ADR-021](../adr/adr-021-shaping-research-orchestrator.md)).
 
-**See**: [Orchestrator](#orchestrator), `mem:patterns/role-scoped-capabilities`
+Being a Dispatcher is orthogonal to the [invocation surface](#invocation-surface): a Dispatcher
+may be `dispatched` itself (the Orchestrator) or a `front-door` (Shaping — a human enters it, and
+it dispatches out). `delegate` governs *dispatching out*; the invocation surface governs *being
+entered*.
+
+**See**: [Orchestrator](#orchestrator), [Invocation surface](#invocation-surface), `mem:patterns/role-scoped-capabilities`
 
 ---
 

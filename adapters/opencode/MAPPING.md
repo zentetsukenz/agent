@@ -74,10 +74,12 @@ bindings: each is a plain `.opencode/agents/<name>.md` with **`mode: subagent`**
 to it but the `Tab` cycle hides it. The per-utility capability sets live in
 [STAGES.md](STAGES.md#utility-agents-cross-stage); resolve them to `permission:` keys via §6.
 
-- **`explore`/`deep`/`scout` overlap with built-ins:** OpenCode ships built-in `explore` (fast
-  read-only recon), `scout` (external-docs research), and `general` (full-access) subagents. loom
-  may **reuse** the built-in `explore` for its `explore` utility rather than emitting a duplicate
-  (interview decides — see [references/interview.md](references/interview.md)); `scout` covers
+- **`explore`/`deep`/`scout` overlap with built-ins — but always pin `explore`'s model:**
+  OpenCode ships built-in `explore` (fast read-only recon), `scout` (external-docs research), and
+  `general` (full-access) subagents. loom reuses the built-in's *behavior* but **always emits a
+  thin `.opencode/agents/explore.md`** carrying the **Utility** archetype `model:` — because the
+  bare built-in runs on OpenCode's *default* model, and relying on it silently forfeits the cheap
+  dispatch tier ([ADR-021](../../wiki/adr/adr-021-shaping-research-orchestrator.md)). `scout` covers
   keyless dependency-source research, so `docs-lookup` (MCP) stays off by default.
 - Source agents for the domain utilities: [agents/frontend.md](../../agents/frontend.md),
   [agents/visual-qa.md](../../agents/visual-qa.md).
@@ -95,23 +97,17 @@ rule files (including loom's on-demand handoff protocol pointer) are listed in `
 
 The three archetypes + working styles + role→archetype assignment are **generic**
 ([contract/primitives.md](../../contract/primitives.md#the-model-archetypes)). OpenCode's
-answer to the [`archetype→model` port](../../contract/PORTS.md#port-2--archetypemodel) has
-**two render targets** — the interview picks one:
-
-- **Default (bare OpenCode) = an inline `model:` field per generated agent/command**, written
-  in OpenCode's `provider/model-id` format (e.g. `anthropic/claude-sonnet-4-20250514`,
-  `opencode/gpt-5.1-codex`). One archetype resolves per file, like Mirai but provider-prefixed.
-- **Opt-in OMO layer = a central `omo.json`** (`models` catalog + `categories` tiers + `agents`
-  overlay). loom's three archetypes map onto OMO's "models are developers" tiers; OMO
-  **overlays** OMO's own builtins rather than redefining loom's roster. **Opt-in only** — a
-  bare-OpenCode project is never forced into OMO. Full schema + mapping:
-  [references/omo.md](references/omo.md).
+answer to the [`archetype→model` port](../../contract/PORTS.md#port-2--archetypemodel) is **an
+inline `model:` field per generated agent/command**, written in OpenCode's `provider/model-id`
+format (e.g. `anthropic/claude-sonnet-4-20250514`, `opencode/gpt-5.1-codex`). One archetype
+resolves per file, like Mirai but provider-prefixed.
 
 Exact model-name strings are project/subscription-specific: collect them in the interview
 ([contract/interview.md §3](../../contract/interview.md#3-model-matching)) and confirm against
-the user's actual OpenCode provider/model list — never hardcode a guessed string. Where inline
-`model:` is used, a fallback is not a native array (OpenCode takes a single `provider/model-id`);
-prefer the OMO layer if the user wants tier-wide fallback behavior.
+the user's actual OpenCode provider/model list — never hardcode a guessed string. OpenCode's
+`model:` takes a single `provider/model-id` (not a native fallback array); loom's per-agent
+`model:` fields already give per-role tiering, so no external tiering layer is needed
+([ADR-014](../../wiki/adr/adr-014-loom-opencode-setup.md)).
 
 ## 6. Capability → OpenCode permission mapping
 
@@ -173,6 +169,5 @@ ledger root. Template: [assets/templates/handoff.md.template](assets/templates/h
 - [ADR-012](../../wiki/adr/adr-012-invocation-surface.md) — the invocation-surface facet → `mode` (§2, §3).
 - [wiki/environments/opencode.md](../../wiki/environments/opencode.md) — OpenCode primitive reference.
 - [references/capabilities.md](references/capabilities.md) — full capability→permission mapping and docs-lookup wiring.
-- [references/omo.md](references/omo.md) — the opt-in OMO model-tiering layer (§5).
 - [STAGES.md](STAGES.md) — stage groupings, skill rosters, capability sets, workflow-prose sourcing.
 - [setup.md](setup.md) — the OpenCode adapter setup instruction that reads this file.

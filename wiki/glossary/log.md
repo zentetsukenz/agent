@@ -42,3 +42,8 @@ description: Chronological log of glossary changes
   (neither `wayfinder:*` down nor `sdlc:*` up) handled AFK by seeding a fresh terminating
   "restore-green" map; and Verification Culture is now the iron-law principle (evidence before any
   claim, harness-agnostic), the procedural skill being its operationalization.
+- 2026-08-17 — Sharpened **Dispatcher** (ADR-021): **Shaping** is now a second, *read-only*
+  dispatcher (dispatches recon/research to `explore`, spikes to `quick`/`deep`, stays `edit`-free),
+  and being a Dispatcher is clarified as **orthogonal** to the invocation surface — `delegate`
+  governs *dispatching out*, the invocation surface governs *being entered*, so a Dispatcher can be
+  a `front-door` (Shaping) as well as `dispatched` (the Orchestrator).

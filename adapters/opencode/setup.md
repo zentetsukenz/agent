@@ -56,7 +56,7 @@ Everything OpenCode-specific is one of the four [port obligations](../../contrac
 | Port | OpenCode answer |
 |---|---|
 | **`capability→tool`** | [references/capabilities.md](references/capabilities.md) + [MAPPING.md §6](MAPPING.md#6-capability--opencode-tool-mapping) — capability → OpenCode `permission:` key; withhold = `permission: { <key>: deny }`. `interview` resolves to the native `question` tool; `persist` is a GAP (on-disk folder, gitignored by default). |
-| **`archetype→model`** | [MAPPING.md §5](MAPPING.md#5-model-archetype-render-target) — inline `model: provider/model-id` per agent by default; **opt-in** central `omo.json` when OMO is chosen ([references/omo.md](references/omo.md)). |
+| **`archetype→model`** | [MAPPING.md §5](MAPPING.md#5-model-archetype-render-target) — an inline `model: provider/model-id` field per agent/command; per-role tiering is expressed directly, so no external tiering layer. |
 | **`seam-obligation→wiring`** | [MAPPING.md §7](MAPPING.md#7-communication-protocol-document--loomhandoffs) + [STAGES.md](STAGES.md) — no `handoffs:` primitive → an on-disk `.loom/handoffs/` ledger (**gitignored by default**, [ADR-014](../../wiki/adr/adr-014-loom-opencode-setup.md) Option A) + a committed `protocol.md` pointed at from `opencode.json`'s `instructions:`; the human `Tab`-selects the next primary agent, which DISCOVERs the ledger. Same folder doubles as the shared substrate when OpenCode is a resident agent's [micro dispatch target](../../wiki/patterns/harness-archetypes.md). |
 | **`primitive→file` manifest** | The [harness manifest](#harness-manifest) below + [MAPPING.md §1–3](MAPPING.md#1-skill-primitive--opencodeskills), [STAGES.md](STAGES.md), and the [templates](assets/templates/role.agent.md.template); format-checks in [references/verify.md](references/verify.md). |
 
@@ -70,14 +70,14 @@ Run the five steps from [contract/index.md](../../contract/index.md). OpenCode s
    [MAPPING.md](MAPPING.md)/[STAGES.md](STAGES.md) now say it should contain).
 2. **Interview** — walk [contract/interview.md](../../contract/interview.md) via
    grill-with-docs, then fold in OpenCode's harness-specific resolution steps: the
-   **AGENTS.md vs `instructions:`** placement, the **`provider/model-id`** format resolution,
-   and the **OMO opt-in** decision (see [references/interview.md](references/interview.md)).
+   **AGENTS.md vs `instructions:`** placement and the **`provider/model-id`** format resolution
+   (see [references/interview.md](references/interview.md)).
 3. **Present** the full proposed `.opencode/` tree (paths only, one section at a time) with a
    one-line rationale per file.
 4. **Confirm** — wait for explicit user "go"; adjust and re-present on pushback.
 5. **Write** in OpenCode's exact format — consult [references/write-format.md](references/write-format.md)
-   (agent/command frontmatter, `permission:` withholds, template-filling, the OMO render, the
-   committed-ledger wiring) and the harness manifest below. Never invent frontmatter fields.
+   (agent/command frontmatter, `permission:` withholds, template-filling, inline `model:` per
+   agent, the committed-ledger wiring) and the harness manifest below. Never invent frontmatter fields.
 6. **Verify** — run the generic invariant-checks
    ([contract/discipline.md](../../contract/discipline.md)) **plus** OpenCode's format-checks
    ([references/verify.md](references/verify.md)).
@@ -107,8 +107,8 @@ OpenCode's answers to the `primitive→file` manifest ([port 4](../../contract/P
   [references/capabilities.md](references/capabilities.md).
 - **Templates**: [assets/templates/](assets/templates/role.agent.md.template) — fill the
   placeholders, don't restate the template inline.
-- **OMO layer is opt-in** — only rendered if the interview chose it ([references/omo.md](references/omo.md));
-  a bare-OpenCode project keeps inline `model:` fields.
+- **Model tiering is inline** — every agent/command carries its own archetype-matched `model:`
+  field; loom renders no external model-tiering overlay.
 - Authoritative OpenCode reference: [wiki/environments/opencode.md](../../wiki/environments/opencode.md).
 
 **The setup instruction itself is not copied** into a target project — this file _writes_
@@ -122,7 +122,6 @@ OpenCode's answers to the `primitive→file` manifest ([port 4](../../contract/P
   per-milestone artifact dirs; opt-in commit for reviewable diffs) with a committed `protocol.md`
   - a seeded manifest at `.loom/handoffs/index.md`, and an `instructions:` pointer in
   `opencode.json` to the protocol file.
-- Optionally (if OMO opted in) an `omo.json` at the project root or `.omo/`.
 - A short report of created vs. patched paths.
 
 ## Related
@@ -134,7 +133,6 @@ OpenCode's answers to the `primitive→file` manifest ([port 4](../../contract/P
 - [MAPPING.md](MAPPING.md), [STAGES.md](STAGES.md) — OpenCode's concrete port answers.
 - [harness-archetypes](../../wiki/patterns/harness-archetypes.md) — OpenCode is the per-invocation, **headless-dispatchable** archetype: a valid **micro dispatch target** for a resident macro agent (why the ledger must be shared on-disk).
 - [ADR-019](../../wiki/adr/adr-019-loom-hermes-setup.md) — the resident (Hermes) adapter that dispatches SDLC runs into a per-invocation harness like this one.
-- [references/omo.md](references/omo.md) — the opt-in OMO model-tiering layer.
 - [wiki/environments/opencode.md](../../wiki/environments/opencode.md) — OpenCode primitive reference.
 - [adapters/mirai/setup.md](../mirai/setup.md) — the first adapter implementing this contract (the shape this one mirrors).
 - [SETUP.md](../../SETUP.md) — the harness-agnostic entrypoint that routes here.

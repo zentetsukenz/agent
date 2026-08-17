@@ -48,7 +48,7 @@ blank.
 | `{{ROLE_DESCRIPTION}}` | One-line "Use when…" description for `@mention` discovery |
 | `{{ROLE_PHASES}}` | The SDLC phase(s) this role owns (e.g. "the Discovery and Design phases") |
 | `{{ROLE_MODE}}` | The [invocation surface](../../../wiki/glossary/index.md#invocation-surface) → `primary` (stage agent) or `subagent` (utility) — derived from role kind, **not** asked. See the [rule below](#role-invocation-surface). |
-| `{{ROLE_MODEL}}` | The archetype-matched model in `provider/model-id` format (Model Matching interview table). **Omit the whole line** if the OMO layer was opted in (models live in `omo.json`). |
+| `{{ROLE_MODEL}}` | The archetype-matched model in `provider/model-id` format (Model Matching interview table). |
 | `{{ROLE_PERMISSION}}` | The role's capability set from [STAGES.md](../STAGES.md), each generic capability resolved to its OpenCode `permission:` key via [capabilities.md](capabilities.md) — a YAML `permission:` block. Load-bearing withholds are `deny`; PRODUCE roles get the scoped-edit glob. |
 | `{{ROLE_CAPABILITY_NOTE}}` | One sentence naming the load-bearing **withheld** capability and why (e.g. "You have `edit: deny` — you dispatch work to executors rather than writing code yourself.") |
 | `{{ROLE_WORKFLOW_PROSE}}` | Concatenated body of the role's `workflows/sdlc/<phase>.md` file(s) — see [STAGES.md](../STAGES.md) |
@@ -104,7 +104,7 @@ ledger-write glob every PRODUCE/DISCOVER role uses.
 | `{{STAGE_BASE_AGENT}}` | The quick base agent from [STAGES.md](../STAGES.md): `plan` for read-only Shaping, `build` for Delivery/Closing |
 | `{{STAGE_STANCE}}` | The stage's one-line stance from [STAGES.md](../STAGES.md) (the portable no-jump-to-conclusions backstop) |
 | `{{STAGE_SKILL_LIST}}` | The stage's adopted skill roster from [STAGES.md](../STAGES.md), pruned per the Scope interview table |
-| `{{STAGE_MODEL}}` | The archetype-matched model (`provider/model-id`) from the Model Matching interview table. **Omit the line** if OMO was opted in. |
+| `{{STAGE_MODEL}}` | The archetype-matched model (`provider/model-id`) from the Model Matching interview table. |
 
 ### `handoff.md.template` placeholders
 
@@ -186,8 +186,7 @@ say they should be:
 - Agent `permission:` — must match the role's current capability set (e.g. a Shaping agent that
   still lacks `edit: deny` from an old run must have it **added**; the scoped-ledger glob must be
   present on PRODUCE/DISCOVER roles).
-- `model:` — reconcile against the current archetype mapping (or remove it if the user switched to
-  the OMO layer, which centralizes models in `omo.json`).
+- `model:` — reconcile against the current archetype mapping.
 - `mode:` — reconcile against the role's [invocation surface](#role-invocation-surface): a utility
   that still carries `mode: primary` from an older run must be flipped to `subagent`; a stage agent
   must carry `mode: primary`.
@@ -208,13 +207,6 @@ plus a utility Verifier. On `update`:
    the old single agent and the new dispatchers — that reintroduces the edit-capable Delivery
    agent the split exists to remove.
 3. Report the replacement explicitly in the step-7 done report.
-
-## OMO layer (opt-in)
-
-If the interview opted into OMO, model matching is rendered to a central `omo.json` instead of
-inline `model:` fields — **omit** `{{ROLE_MODEL}}` / `{{STAGE_MODEL}}` from every agent/command
-and write the `omo.json` per [omo.md](omo.md). A bare-OpenCode project keeps inline `model:`
-fields and writes no `omo.json`.
 
 ## Never do
 

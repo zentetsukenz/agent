@@ -77,12 +77,11 @@
 
 ## Model layer (OpenCode)
 
-- [ ] If OMO was **not** opted in: every agent/command carries an inline `model:` in
-      `provider/model-id` format, confirmed against the user's actual provider/model list; no
-      `omo.json` was written.
-- [ ] If OMO **was** opted in: an `omo.json` exists with a `models` catalog + `categories` + an
-      `agents` overlay; agents/commands carry **no** inline `model:`; the OMO layer overlays OMO
-      builtins rather than redefining loom's roster (see [omo.md](omo.md)).
+- [ ] Every agent/command carries an inline `model:` in `provider/model-id` format, confirmed
+      against the user's actual provider/model list — never a bare model name.
+- [ ] The `explore` utility is **emitted** as `.opencode/agents/explore.md` with the **Utility**
+      archetype `model:` (not left to the bare built-in's default model) — the cheap-tier dispatch
+      is load-bearing ([ADR-021](../../../wiki/adr/adr-021-shaping-research-orchestrator.md)).
 
 ## Report
 
@@ -95,5 +94,4 @@ was resolved — or, if unresolved, flagged to the user explicitly rather than s
 - [contract/discipline.md](../../../contract/discipline.md) — the generic invariant-checks to run first.
 - [write-format.md](write-format.md) — the OpenCode write mechanics these checks verify.
 - [capabilities.md](capabilities.md) — the permission withholds these checks assert.
-- [omo.md](omo.md) — the opt-in OMO layer the model checks branch on.
 - [../setup.md](../setup.md) — step 6 runs the generic checks then these format-checks.

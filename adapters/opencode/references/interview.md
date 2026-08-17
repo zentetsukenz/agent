@@ -16,20 +16,9 @@ loom collects the user's available model list in the generic Model Matching ques
 ([contract/interview.md §3](../../../contract/interview.md#3-model-matching)); OpenCode then needs
 each written in its **`provider/model-id`** format (e.g. `anthropic/claude-sonnet-4-20250514`,
 `opencode/gpt-5.1-codex`). Confirm the exact provider prefix + model id against the user's
-OpenCode provider config — never emit a bare model name (it won't resolve).
-
-## OMO opt-in (OpenCode)
-
-A resolution step unique to OpenCode: whether to render model matching to a central **`omo.json`**
-(the opt-in OMO layer) or inline `model:` fields.
-
-| Question | Recommended default | Signal to deviate |
-|---|---|---|
-| "Do you use oh-my-openagent (OMO) for model tiering, or want loom to manage it?" | **No** — inline `model:` per agent (keeps a bare-OpenCode project self-contained; no extra dependency) | User already runs OMO, or wants tier-wide model fallback/swapping from one file → render `omo.json` per [omo.md](omo.md) |
-
-**OMO is strictly opt-in** — never force a bare-OpenCode project into it. If the user opts in,
-omit inline `model:` from every agent/command and write `omo.json`; the OMO layer **overlays** OMO's
-own builtins rather than redefining loom's roster.
+OpenCode provider config — never emit a bare model name (it won't resolve). loom writes one inline
+`model:` per generated agent/command; per-role tiering is already expressed that way, so there is
+no external model-tiering layer to configure ([ADR-014](../../../wiki/adr/adr-014-loom-opencode-setup.md)).
 
 ## `interview` capability — native, no resolution needed
 
@@ -73,6 +62,5 @@ resolves as:
 
 - [contract/interview.md](../../../contract/interview.md) — the generic questions this file resolves for OpenCode.
 - [capabilities.md](capabilities.md) — the `capability→permission` mapping the resolution above feeds.
-- [omo.md](omo.md) — the OMO layer the opt-in question branches to.
 - [write-format.md](write-format.md) — how the resolved values are written into `.opencode/`.
 - [../setup.md](../setup.md) — step 2 walks the core questions, then folds in these OpenCode steps.

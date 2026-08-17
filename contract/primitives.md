@@ -55,8 +55,8 @@ adapter resolves them to harness tool names / withhold mechanisms via the
 |---|---|
 | Workflow prose source | `workflows/sdlc/discovery.md` + `workflows/sdlc/design.md`, concatenated |
 | Model archetype | Communicator |
-| Capabilities | `read`, `search`, `shell`, `persist`, `interview`, `tasks` (+ `docs-lookup` if opted). **No `edit`** — Shaping produces understanding and design, not code. |
-| Quick stance | "You are shaping, not building — produce understanding and design artifacts. Do NOT edit application code." |
+| Capabilities | `read`, `search`, `shell`, `delegate`, `persist`, `interview`, `tasks` (+ `docs-lookup` if opted). **No `edit`** — Shaping produces understanding and design, not code. |
+| Quick stance | "You are shaping, not building — produce understanding and design artifacts, and dispatch the reading to cheaper explorers. Do NOT edit application code." |
 
 Skill roster (full default; pruned per the Scope interview table in [interview.md](interview.md)):
 
@@ -65,8 +65,19 @@ Skill roster (full default; pruned per the Scope interview table in [interview.m
 - `design/domain-model`, `design/design-an-interface`, `design/codebase-design`,
   `design/improve-codebase-architecture`
 
+**Shaping is a read-only research orchestrator** ([ADR-021](../wiki/adr/adr-021-shaping-research-orchestrator.md)).
+It holds `delegate` but **not `edit`** — a *read-only Dispatcher* that routes exploration and
+research reading to the cheap [`explore`](#utility-agents-cross-stage) utility (and one-question
+fact-finding to `research`'s subagent), keeping the expensive Communicator context lean while the
+grunt reading runs on the Utility tier. This mirrors [Arbor](https://arxiv.org/abs/2606.11926)'s
+Coordinator/Executor split: a research director that *dispatches* and reads back **distilled
+evidence, not raw context**. Its `persist` is scoped to the ledger — it writes findings/design
+docs, never application code.
+
 **Spike escape hatch:** a Discovery throwaway spike that needs to write code is dispatched
-to an executor utility (`quick`/`deep`) — Shaping itself stays edit-free.
+(via `delegate`) to an executor utility (`quick`/`deep`) — Shaping itself stays edit-free. Where
+cheap prior-art signal exists, check novelty *before* dispatching a spike, so compute isn't spent
+proving something already known (architecture-first: back unknowns with evidence).
 
 **Seam — PRODUCE (Shaping → Delivery):** the Shaping agent's exit gate writes the seam
 artifact (`findings`, `domain-model` or link, `design-decisions`) to the ledger and

@@ -39,6 +39,11 @@ Mirai render bindings:
   ([ADR-008](../../wiki/adr/adr-008-delivery-dispatchers.md)); the single `deliver.prompt.md`
   serves the low-ceremony quick path. The old single `delivery.agent.md` is retired (migration:
   [write-format.md](references/write-format.md#delivery-split-migration-deliveryagentmd--dispatchers)).
+- **Shaping is a `front-door` *and* a read-only Dispatcher** ([ADR-021](../../wiki/adr/adr-021-shaping-research-orchestrator.md)):
+  its generic capability set holds `delegate` (no `edit`), so it renders with the `agent` tool
+  alias and dispatches recon/research to the `explore` utility and spikes to `quick`/`deep`. The
+  two role facets are orthogonal — invocation surface is how a human *enters* it (front-door);
+  `delegate` is whether it *dispatches out* (Dispatcher). It is the one stage agent that is both.
 - **Quick stances** (the portable no-jump-to-conclusions backstop) are generic — take them from
   [contract/primitives.md](../../contract/primitives.md#per-stage-skill-rosters--capability-sets--workflow-prose-sourcing).
 
