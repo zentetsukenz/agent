@@ -70,6 +70,17 @@ Two consequences follow, and both are load-bearing:
   artifacts must live in a directory **both** harnesses read — on disk, and **gitignored** because
   ephemeral coordination is never version-controlled (durable knowledge goes to the wiki). See the
   [seam-artifact protocol substrate section](../../../wiki/patterns/seam-artifact-protocol.md#substrate-is-also-altitude-scoped).
+- **HITL ticket outputs go to a networked artifact ref, not the on-disk micro ledger.** A macro
+  `grilling`/`prototype`/`research` ticket resolved *at the macro altitude* produces bulky content a
+  dispatched SDLC run must later reach across the harness boundary. It publishes to a networked
+  **[artifact ref](../../../wiki/glossary/index.md#artifact-ref)** — an orphan branch
+  `loom-artifacts/<map-slug>` on the git host ([ADR-022](../../../wiki/adr/adr-022-reachable-artifact-substrate.md)) —
+  and the ticket links the URL; the dispatched run's `shaping/<milestone>/` seam artifact carries that
+  URL and the run **fetches on demand**. This is the networked class's *second instrument* (beside the
+  tracker), distinct from the gitignored on-disk micro ledger above: keeping bulky content out of both
+  the working tree and the tracker is what lets the focused SDLC run stay lean. A ticket that links a
+  local-only path is a [reachability-invariant](../../../wiki/patterns/seam-artifact-protocol.md#the-macro-section-and-the-one-source-of-truth-invariant)
+  violation — the run cannot follow it.
 - **No dispatch target ⇒ macro mode has nowhere to go.** If the project has not configured a
   headless-dispatchable SDLC harness, setup must surface that as a **prerequisite** (see
   [setup.md](../setup.md#what-this-adapter-renders-and-what-it-does-not)), not silently render SDLC

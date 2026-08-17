@@ -367,9 +367,29 @@ Where a [Ledger](#ledger)'s bytes actually land — chosen per project (and, per
 agents on different servers); a **committed repo folder** (harness-neutral, reviewable — but adds
 state files to the code tree); and a **networked/external store** (a tracker/board or other shared
 service — distributes across agents *and* stays out of the code tree, the fit for the macro
-altitude). The `persist` [capability](#capability) resolver picks the concrete tool/path.
+altitude). The `persist` [capability](#capability) resolver picks the concrete tool/path. The
+networked class has **two instruments** ([ADR-022](../adr/adr-022-reachable-artifact-substrate.md)): a
+**tracker/board** for macro state, and an **[Artifact ref](#artifact-ref)** for bulky content.
 
-**See**: `mem:patterns/seam-artifact-protocol`, `mem:adr/adr-018-macro-project-management`, [Ledger](#ledger), [Altitude](#altitude)
+**See**: `mem:patterns/seam-artifact-protocol`, `mem:adr/adr-018-macro-project-management`, [Ledger](#ledger), [Altitude](#altitude), [Artifact ref](#artifact-ref)
+
+---
+
+### Artifact ref
+
+The second instrument of the networked [Substrate](#substrate) class ([ADR-022](../adr/adr-022-reachable-artifact-substrate.md)):
+a git ref on the server — an **orphan branch per effort** (`loom-artifacts/<map-slug>`, disconnected
+history so it never tangles a rebase or merge of `main`) — that holds a HITL ticket's **bulky content**
+(a `grilling` design doc, a `prototype`'s output, `research` findings), fetched by URL on demand and
+never checked into a working tree. Where the **tracker/board** holds macro *state*, the artifact ref
+holds the *content* the board's links point at, keeping the board's *"linked, not embedded"* discipline
+honest: a link resolves to a place **every participant of the altitude can reach**, never a local-only
+path (the [reachability invariant](../patterns/seam-artifact-protocol.md#the-macro-section-and-the-one-source-of-truth-invariant)).
+A resolving agent writes it via the same PRODUCE act [stage-handoff](../../SKILLS/preservation/stage-handoff/SKILL.md)
+owns; cleanup is an enumerate-by-prefix + delete-ref sweep when the effort's content reaches a durable
+home (merged code, curated wiki) or the map closes.
+
+**See**: `mem:adr/adr-022-reachable-artifact-substrate`, [Substrate](#substrate), [Seam artifact](#seam-artifact), [Ledger](#ledger)
 
 ---
 

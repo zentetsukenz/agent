@@ -163,6 +163,23 @@ substrate itself is the user's choice at `init`/`update`; the setup agent's job 
 fit** — confirm the chosen tool can express map-as-index, linked artifacts, and the two label
 vocabularies — and convincing loom it works is the user's responsibility.
 
+A second, sibling invariant guards the *reachability* of those linked artifacts
+([ADR-022](../adr/adr-022-reachable-artifact-substrate.md)):
+
+> A linked artifact's link MUST resolve to a substrate **every participant of that altitude can
+> reach**. A link to a local-only path (`.loom/…`, harness memory) is a protocol **violation** — the
+> same class of violation as a second, unregistered source of truth.
+
+*"Linked, not embedded"* forbids *copying* the artifact onto the board; this invariant forbids
+linking it into a place no other agent can follow. The canonical breach: a HITL `grilling`/`prototype`
+ticket resolves, writes its output to a local `.loom/` path, and links that path — so the SDLC run
+later dispatched from a `task` leaf pointing at that ticket (across a harness boundary) finds a dead
+end. The fix is mechanical, not a judgment call: the resolving agent **produces** the artifact to the
+networked [artifact ref](../glossary/index.md#artifact-ref) and links the URL — the same PRODUCE act
+[stage-handoff](../../SKILLS/preservation/stage-handoff/SKILL.md) owns, folded into
+[wayfinder](../../SKILLS/planning/wayfinder/SKILL.md)'s resolution step so no agent branches on ticket
+type.
+
 ## Substrate is an adapter choice
 
 The protocol names an abstract ledger; the **substrate** — where bytes actually land — is chosen
@@ -174,6 +191,15 @@ per project at setup and is changeable later, because the trade-off is real and 
 | **On-disk repo folder** (e.g. `.loom/handoffs/…`) | Harness-neutral, and the only substrate that works **across two harness processes** (e.g. a resident macro agent + its dispatched SDLC harness). **Gitignored by default** — the ledger is ephemeral coordination, not version-controlled ([ADR-014](../adr/adr-014-loom-opencode-setup.md) Option A); a project may opt to commit it for reviewable diffs, at the cost of state files in the code tree. |
 | **Networked / external store** (a tracker/board or shared service, e.g. GitHub Issues+Projects) | Distributes across agents *and* stays out of the code tree — the fit for the macro [altitude](../glossary/index.md#altitude). Adds an external dependency and its own access/auth. |
 | **Both** (memory + committed folder) | Durable committed artifacts + a lightweight manifest pointer in memory for fast discovery. |
+
+The **networked class has two instruments** ([ADR-022](../adr/adr-022-reachable-artifact-substrate.md)):
+the **tracker/board** holds macro *state* (tickets, status, the map index — small, structured), and an
+**[artifact ref](../glossary/index.md#artifact-ref)** holds bulky *content* (a HITL ticket's prototype,
+design doc, or findings) as a git ref on the server — an **orphan branch per effort**
+(`loom-artifacts/<map-slug>`, disconnected history so it never tangles a rebase/merge of `main`),
+fetched by URL on demand and never checked into a working tree. Both are networked and out-of-tree;
+the artifact ref exists because the tracker is the wrong shape for multi-file bulky content, and the
+on-disk-folder class would drag that content through every clone.
 
 The choice is made in the [setup interview](../../adapters/mirai/references/interview.md) and can
 be revised by re-running the guided `update`. The [`persist`](role-scoped-capabilities.md)
@@ -213,6 +239,7 @@ has to bounce between modules to answer "where is the handoff?"
 - [ADR-011](../adr/adr-011-seam-artifact-protocol.md) — the decision record for this protocol.
 - [ADR-015](../adr/adr-015-communication-line-refinement.md) — refines this into three named lanes; renames the PRODUCE adapter to `stage-handoff`.
 - [ADR-018](../adr/adr-018-macro-project-management.md) — adds the networked substrate class, altitude-scoped substrate, and the macro section + one-source-of-truth invariant this protocol carries.
+- [ADR-022](../adr/adr-022-reachable-artifact-substrate.md) — the networked class's second instrument (the artifact ref) and the reachability invariant, so HITL ticket outputs are reachable across the altitude seam.
 - [wayfinder](../../SKILLS/planning/wayfinder/SKILL.md) — the macro-altitude map whose source of truth this document names.
 - [Deep Modules](deep-modules.md) — the depth principle this consolidation applies.
 - [Role-Scoped Capabilities](role-scoped-capabilities.md) — `persist` is the capability that resolves the substrate.

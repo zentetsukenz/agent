@@ -44,3 +44,13 @@ description: Chronological log of patterns changes
   contract); and grew the **communication protocol document** with an altitude-aware macro
   section naming the single source of truth plus a **substrate-agnostic one-source-of-truth
   invariant** (a second unregistered tracker is the violation, not the substrate choice).
+- 2026-08-17 — Extended **Seam Artifact Protocol** again (ADR-022): the networked substrate class
+  now has **two instruments** — the **tracker/board** (macro state) and an **artifact ref** (bulky
+  HITL content: a `grilling` design doc, a `prototype`'s output, `research` findings) as an orphan
+  branch `loom-artifacts/<map-slug>` on the git host, fetched by URL on demand and never in a
+  working tree. Added a **reachability invariant** beside one-source-of-truth: *a linked artifact's
+  link MUST resolve to a substrate every participant of that altitude can reach; a local-only link
+  (`.loom/…`, memory) is a violation* — closing the dropped-baton seam where a HITL ticket's output
+  was linked from a place a dispatched cross-harness run couldn't follow. Publishing is a uniform
+  PRODUCE sub-step in wayfinder's resolution (reusing `stage-handoff` by reference; no new skill, no
+  new port). Grounds ADR-022.
