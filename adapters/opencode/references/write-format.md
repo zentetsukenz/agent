@@ -110,8 +110,8 @@ ledger-write glob every PRODUCE/DISCOVER role uses.
 
 | Placeholder | Source |
 |---|---|
-| `{{LEDGER_SUBSTRATE}}` | Handoff interview table 4d — default `on-disk folder (gitignored)`; `committed folder` only if the user opted into reviewable diffs |
-| `{{LEDGER_ROOT}}` | Handoff interview table 4d — the ledger root (default `.loom/handoffs/`, gitignored) |
+| `{{LEDGER_SUBSTRATE}}` | Handoff interview table 4d — always `on-disk folder (local-only, blanket-gitignored)` for OpenCode (no memory tool) |
+| `{{LEDGER_ROOT}}` | Handoff interview table 4d — the ledger root (default `.loom/handoffs/`, under the blanket `.loom/**` ignore) |
 | `{{SHAPING_ARTIFACTS}}` | Handoff interview table 4d — Shaping seam docs (default `findings.md`, `domain-model.md` or link, `design-decisions.md`) |
 | `{{DELIVERY_ARTIFACTS}}` | Handoff interview table 4d — Delivery seam docs (default `verified-change.md`) |
 | `{{CLOSING_ARTIFACTS}}` | Handoff interview table 4d — Closing seam docs (default `knowledge.md`) |
@@ -130,7 +130,7 @@ The [handoff.md.template](../assets/templates/handoff.md.template) is written to
 ([ADR-011](../../../wiki/adr/adr-011-seam-artifact-protocol.md)). Rules:
 
 - OpenCode has **no description-triggered instruction** primitive, so the protocol lives as a
-  **committed file** and is wired into always-on context by adding its path to `opencode.json`'s
+  **local file** and is wired into always-on context by adding its path to `opencode.json`'s
   `instructions:` array:
 
   ```jsonc
@@ -139,15 +139,18 @@ The [handoff.md.template](../assets/templates/handoff.md.template) is written to
   ```
 
   Add the entry idempotently (don't duplicate it on `update`); preserve any other entries the
-  user already listed. Also reference the protocol from `AGENTS.md`'s loom section. **The protocol
-  document `protocol.md` is committed; the ledger it points at is not** (next bullet).
-- The ledger is **gitignored by default** — ephemeral coordination, not version-controlled
-  ([ADR-014](../../../wiki/adr/adr-014-loom-opencode-setup.md) Option A). Seed a `.gitignore` entry
-  for the ledger root's *artifacts* (e.g. `.loom/handoffs/*/` — keep `protocol.md` and `index.md`
-  tracked, ignore the per-milestone artifact dirs), unless the user opted to commit the ledger for
-  reviewable handoff diffs. Add the entry idempotently.
+  user already listed. Also reference the protocol from `AGENTS.md`'s loom section. The protocol
+  document is generated and referenced locally — it is **not committed** (it lives under the
+  blanket `.loom/**` ignore, next bullet).
+- `.loom` is a **local-only** context-passing substrate ([ADR-014](../../../wiki/adr/adr-014-loom-opencode-setup.md)).
+  Seed a **blanket** `.gitignore` entry for `.loom/**` — the protocol document, the manifest, and
+  the per-milestone artifact dirs are all ignored; **no `.loom` path is committed or tracked**. Add
+  the entry idempotently. On `update`, **preserve** an existing blanket `.loom` ignore — never
+  replace it with selective rules that would track `protocol.md`/`index.md`. Durable/reviewable
+  Macro-PM artifacts use the reachable orphan-ref substrate
+  ([ADR-022](../../../wiki/adr/adr-022-reachable-artifact-substrate.md)), not a Git-visible `.loom`.
 - Seed the ledger **manifest** at `.loom/handoffs/index.md` with the table header only (no rows)
-  so producers have somewhere to register.
+  so producers have somewhere to register (local-only, under the blanket ignore).
 - On `update`, if the user changes the ledger root, **migrate** existing artifacts to the new
   location, rewrite the manifest paths, and update the `instructions:` pointer + the scoped-edit
   globs in every PRODUCE/DISCOVER agent.

@@ -170,8 +170,11 @@ OpenCode has **no `handoffs:` primitive** and **no harness memory tool**. loom r
 [seam-artifact protocol](../patterns/seam-artifact-protocol.md) obligation
 ([ADR-011](../adr/adr-011-seam-artifact-protocol.md)) around both gaps:
 
-- **`persist` substrate** → a **committed `.loom/handoffs/` folder** (repo-visible, survives
-  sessions), with a manifest at `.loom/handoffs/index.md`.
+- **`persist` substrate** → a **local-only, blanket-gitignored `.loom/handoffs/` folder** (a local
+  context-passing substrate under `.loom/**`; **no `.loom` path is committed or tracked** —
+  [ADR-014](../adr/adr-014-loom-opencode-setup.md); durable/reviewable artifacts use the reachable
+  orphan-ref substrate, [ADR-022](../adr/adr-022-reachable-artifact-substrate.md)), with a manifest
+  at `.loom/handoffs/index.md`.
 - **Handoff transition** → the producing primary agent writes the seam artifact + manifest row
   at its exit gate; the human then selects the next primary agent (`Tab`), which **discovers**
   the ledger at its entry gate. A pointer to the protocol file is added to `opencode.json`'s

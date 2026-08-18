@@ -188,9 +188,9 @@ per project at setup and is changeable later, because the trade-off is real and 
 | Substrate | Trade-off |
 |---|---|
 | **Harness memory** (e.g. Mirai repo memory `/memories/repo/loom/…`) | Survives across conversations, fast agent discovery — but not git-committed, so invisible to teammates and PRs, **does not distribute across agents on different servers**, and **cannot cross a harness boundary** (intra-harness only). |
-| **On-disk repo folder** (e.g. `.loom/handoffs/…`) | Harness-neutral, and the only substrate that works **across two harness processes** (e.g. a resident macro agent + its dispatched SDLC harness). **Gitignored by default** — the ledger is ephemeral coordination, not version-controlled ([ADR-014](../adr/adr-014-loom-opencode-setup.md) Option A); a project may opt to commit it for reviewable diffs, at the cost of state files in the code tree. |
+| **On-disk repo folder** (e.g. `.loom/handoffs/…`) | Harness-neutral, and the only substrate that works **across two harness processes** (e.g. a resident macro agent + its dispatched SDLC harness). **Local-only, blanket-gitignored** (`.loom/**`) — the ledger is ephemeral coordination, a local context-passing substrate, not version-controlled ([ADR-014](../adr/adr-014-loom-opencode-setup.md)); no `.loom` path is committed or tracked. Durable/reviewable artifacts belong on the networked orphan-ref substrate ([ADR-022](../adr/adr-022-reachable-artifact-substrate.md)), not a Git-visible `.loom`. |
 | **Networked / external store** (a tracker/board or shared service, e.g. GitHub Issues+Projects) | Distributes across agents *and* stays out of the code tree — the fit for the macro [altitude](../glossary/index.md#altitude). Adds an external dependency and its own access/auth. |
-| **Both** (memory + committed folder) | Durable committed artifacts + a lightweight manifest pointer in memory for fast discovery. |
+| **Both** (memory + on-disk folder) | A local on-disk ledger + a lightweight manifest pointer in memory for fast discovery (both local — durable knowledge still belongs in the wiki/ADRs or the networked orphan-ref substrate). |
 
 The **networked class has two instruments** ([ADR-022](../adr/adr-022-reachable-artifact-substrate.md)):
 the **tracker/board** holds macro *state* (tickets, status, the map index — small, structured), and an

@@ -65,12 +65,15 @@
 
 - [ ] `.loom/handoffs/protocol.md` exists and `.loom/handoffs/index.md` (the manifest) was seeded
       with the table header.
-- [ ] The ledger is **gitignored by default** — a `.gitignore` entry ignores the per-milestone
-      artifact dirs (keeping `protocol.md` + `index.md` tracked), **unless** the user opted to
-      commit the ledger for reviewable diffs ([ADR-014](../../../wiki/adr/adr-014-loom-opencode-setup.md)
-      Option A). The protocol *document* is always committed; the *ledger artifacts* are not.
+- [ ] `.loom` is **local-only** — a `.gitignore` entry blanket-ignores `.loom/**` (protocol
+      document, manifest, and per-milestone artifacts all included). **No `.loom` path is required
+      to be tracked or committed** ([ADR-014](../../../wiki/adr/adr-014-loom-opencode-setup.md)). On
+      `update`, an existing blanket `.loom` ignore is **preserved** — never replaced with selective
+      rules. Durable/reviewable Macro-PM artifacts use the reachable orphan-ref substrate
+      ([ADR-022](../../../wiki/adr/adr-022-reachable-artifact-substrate.md)), not a Git-visible `.loom`.
 - [ ] `opencode.json`'s `instructions:` array contains `.loom/handoffs/protocol.md` (added
-      idempotently, other entries preserved) and `AGENTS.md` references the protocol.
+      idempotently, other entries preserved) and `AGENTS.md` references the protocol. The protocol
+      document is generated and referenced locally — it need not be committed for this wiring to work.
 - [ ] The stage agents' bodies instruct PRODUCE at exit / DISCOVER at entry against the ledger —
       there is **no** `handoffs:` frontmatter (OpenCode has no such primitive); the transition is
       the human `Tab`-selecting the next primary agent.

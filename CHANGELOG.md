@@ -2,9 +2,14 @@
 
 All notable changes to this framework are documented here.
 
-## [Unreleased] — 2026-08-17
+## [Unreleased] — 2026-08-18
 
-### Changed
+### Fixed
+
+- **OpenCode's `.loom` seam is now local-only and blanket-gitignored** — fixes issue [#11](https://github.com/zentetsukenz/agent/issues/11). The 2026-08-14 amendment to `wiki/adr/adr-014-loom-opencode-setup.md` had flipped the *ledger artifacts* to gitignored but kept the **protocol document** (`.loom/handoffs/protocol.md`) and **manifest** (`.loom/handoffs/index.md`) committed/tracked via a *selective* ignore (`.loom/handoffs/*/`), so updating a project that blanket-ignored `.loom` proposed replacing the blanket rule with selective ones.
+  - **`.loom` is now a purely local context-passing substrate**: setup seeds a **blanket `.loom/**` ignore** (protocol document, manifest, and per-milestone artifacts all included), **no `.loom` path is ever required to be tracked or committed**, and `update` mode **preserves** an existing blanket `.loom` ignore rather than proposing selective rules. The protocol document is still generated locally and pointed at from `opencode.json`'s `instructions:`; it is simply not committed.
+  - **Removed the opt-in to commit the ledger for reviewable diffs** — durable/reviewable Macro-PM artifacts use the reachable orphan-ref substrate (`wiki/adr/adr-022-reachable-artifact-substrate.md`) instead of making `.loom` Git-visible.
+  - Aligned the rule across `SPEC.md`, `adapters/opencode/{setup.md,MAPPING.md,STAGES.md,references/verify.md,references/write-format.md,assets/templates/handoff.md.template}`, the generic `contract/interview.md` (§4d), and `wiki/adr/adr-014-loom-opencode-setup.md` (new 2026-08-18 amendment). Local PRODUCE/DISCOVER handoffs are unchanged (the ledger is still on-disk files); only the commit-vs-gitignore rule flips to blanket-local.
 
 - **Reachable artifact substrate for HITL ticket outputs** — implements `wiki/adr/adr-022-reachable-artifact-substrate.md`. Closes a dropped-baton seam at the macro altitude where a HITL ticket's output was linked from a place a dispatched cross-harness SDLC run couldn't reach:
   - **Diagnosis:** three sibling wayfinder ticket types persisted output three ways — `research` → a reachable branch, `grilling` → a local-only `.loom/`/memory path (dead-end link), `prototype` → nowhere formal. The human workaround (push to a temp branch) was the missing protocol, hand-rolled.

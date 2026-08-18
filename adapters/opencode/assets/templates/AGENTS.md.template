@@ -14,9 +14,10 @@ tiers:
 - Utility subagents: `.opencode/agents/*.md` with `mode: subagent` (dispatched via `@mention`).
 - Granular skills live at `.opencode/skills/<slug>/SKILL.md`.
 - **Handoffs:** context crosses stage seams through the on-disk ledger at
-  `.loom/handoffs/` (**gitignored by default** — ephemeral coordination, not version-controlled) —
-  see `.loom/handoffs/protocol.md` (a committed file, also listed in `opencode.json`'s
-  `instructions:`). Produce a seam artifact at a stage exit; discover it at the next stage's entry.
+  `.loom/handoffs/` (**local-only, blanket-gitignored** under `.loom/**` — a local context-passing
+  substrate, not version-controlled) — see `.loom/handoffs/protocol.md` (a local file, also listed
+  in `opencode.json`'s `instructions:`). Produce a seam artifact at a stage exit; discover it at
+  the next stage's entry.
 
 See `wiki/adr/adr-014-loom-opencode-setup.md` in the loom repo for why this is shaped this
 way, if this project vendors loom's wiki; otherwise this section is self-contained.

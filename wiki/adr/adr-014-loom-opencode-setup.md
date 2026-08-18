@@ -8,6 +8,21 @@ tags: [opencode, omo, setup, adapter, agent, skill, model-matching, permissions,
 
 # ADR-014: loom Setup Approach for the OpenCode Harness
 
+> **Amendment (2026-08-18, issue [#11](https://github.com/zentetsukenz/agent/issues/11)): `.loom`
+> is a local-only, blanket-gitignored seam.** The 2026-08-14 amendment (below) flipped the *ledger
+> artifacts* to gitignored but kept the **protocol document** (`.loom/handoffs/protocol.md`) and
+> **manifest** (`.loom/handoffs/index.md`) committed/tracked via a *selective* ignore
+> (`.loom/handoffs/*/`). That selective rule is now **dropped**. `.loom` is a purely local
+> context-passing substrate: setup seeds a **blanket `.loom/**` ignore** (protocol document,
+> manifest, and per-milestone artifacts all included), **no `.loom` path is ever required to be
+> tracked or committed**, and `update` mode **preserves** an existing blanket `.loom` ignore rather
+> than proposing selective rules. The protocol document is still generated locally and pointed at
+> from `opencode.json`'s `instructions:`; it simply is not committed. The **opt-in to commit the
+> ledger for reviewable diffs is removed** — durable/reviewable Macro-PM artifacts use the
+> reachable orphan-ref substrate ([ADR-022](adr-022-reachable-artifact-substrate.md)) instead of
+> making `.loom` Git-visible. This supersedes the "committed `.loom/handoffs/` folder" /
+> "committed `protocol.md`" wording throughout the Decision below.
+
 > **Amendment (2026-08-17, via [ADR-021](adr-021-shaping-research-orchestrator.md)): OMO layer
 > dropped.** This ADR originally offered an **opt-in OMO (oh-my-openagent) model-tiering layer** as
 > a second `archetype→model` render target (a central `omo.json`). That layer is **removed**: loom
@@ -25,8 +40,10 @@ tags: [opencode, omo, setup, adapter, agent, skill, model-matching, permissions,
 > wiki/ADRs instead. This is load-bearing when OpenCode is the **dispatch target** of a resident
 > Hermes macro agent (the ledger is then a *shared, on-disk, gitignored* substrate both harnesses
 > read), and it is the better default even for standalone OpenCode. The folder *location* and the
-> glob-scoped-edit wiring below are unchanged; only the commit-vs-gitignore default flips. A project
-> that explicitly wants reviewable handoff diffs may still opt to commit it. See the
+> glob-scoped-edit wiring below are unchanged; only the commit-vs-gitignore default flips. ~~A project
+> that explicitly wants reviewable handoff diffs may still opt to commit it.~~ **(The commit opt-in
+> and the selective-ignore that kept `protocol.md`/`index.md` tracked are removed by the 2026-08-18
+> amendment above — `.loom` is now blanket-gitignored with no opt-in.)** See the
 > [seam-artifact protocol substrate section](../patterns/seam-artifact-protocol.md#substrate-is-also-altitude-scoped).
 
 ## Context
@@ -73,9 +90,9 @@ of it ([ADR-013](adr-013-shared-adapter-contract-core.md)). The four
 
 | Port | OpenCode answer |
 |---|---|
-| `capability→tool` | Generic capability → OpenCode **`permission:` key**; **withhold = `permission: { <key>: deny }`** (OpenCode grants by default and gates via permissions — the inverse of Mirai's omit-the-alias). `interview` resolves **natively** to the `question` tool; `persist` is a GAP (committed folder + scoped-edit glob). |
+| `capability→tool` | Generic capability → OpenCode **`permission:` key**; **withhold = `permission: { <key>: deny }`** (OpenCode grants by default and gates via permissions — the inverse of Mirai's omit-the-alias). `interview` resolves **natively** to the `question` tool; `persist` is a GAP (local-only, blanket-gitignored folder + scoped-edit glob). |
 | `archetype→model` | Inline `model: provider/model-id` per agent/command — per-role tiering expressed directly (the OMO alternative was dropped, see the 2026-08-17 amendment). |
-| `seam-obligation→wiring` | No `handoffs:` primitive and no memory tool → a **committed `.loom/handoffs/` folder** as the ledger, a `.loom/handoffs/protocol.md` pointed at from `opencode.json`'s `instructions:`, and a human `Tab`-selected primary-agent transition that DISCOVERs the ledger. |
+| `seam-obligation→wiring` | No `handoffs:` primitive and no memory tool → a **local-only, blanket-gitignored `.loom/handoffs/` folder** as the ledger, a `.loom/handoffs/protocol.md` pointed at from `opencode.json`'s `instructions:` (generated locally, not committed), and a human `Tab`-selected primary-agent transition that DISCOVERs the ledger. See the 2026-08-18 amendment. |
 | `primitive→file` manifest | skills → `.opencode/skills/<slug>/SKILL.md`; stage agents → `.opencode/agents/*.md` (`mode: primary`); utilities → `.opencode/agents/*.md` (`mode: subagent`); quick combos → `.opencode/commands/*.md`; base agents `plan`/`build`; format-checks in `references/verify.md`. |
 
 ### Withholding is `permission: deny`, not omission
@@ -87,14 +104,14 @@ but the same load-bearing invariant ([ADR-006](adr-006-capability-based-roles.md
 
 ### The two GAPs render around OpenCode's missing primitives
 
-- **No memory tool** → `persist` is a **committed `.loom/handoffs/` folder**. PRODUCE/DISCOVER
-  roles get a **glob-scoped `edit` permission** (`edit: { "*": deny, ".loom/handoffs/**": allow }`)
-  so they can write the ledger without gaining general code-edit — preserving the no-code-edit
-  withhold.
+- **No memory tool** → `persist` is a **local-only, blanket-gitignored `.loom/handoffs/` folder**
+  (see the 2026-08-18 amendment). PRODUCE/DISCOVER roles get a **glob-scoped `edit` permission**
+  (`edit: { "*": deny, ".loom/handoffs/**": allow }`) so they can write the ledger without gaining
+  general code-edit — preserving the no-code-edit withhold.
 - **No `handoffs:` primitive and no description-triggered instructions** → the protocol lives as a
-  committed `.loom/handoffs/protocol.md` wired into always-on context via `opencode.json`'s
-  `instructions:` array, and the stage transition is the human `Tab`-selecting the next primary
-  agent, which DISCOVERs the ledger at its entry gate.
+  local `.loom/handoffs/protocol.md` (generated, not committed) wired into always-on context via
+  `opencode.json`'s `instructions:` array, and the stage transition is the human `Tab`-selecting
+  the next primary agent, which DISCOVERs the ledger at its entry gate.
 
 ### Model tiering is inline, per agent
 
@@ -128,9 +145,9 @@ adds only the render bindings above.
 - **Fabricate an automatic stage transition** (e.g. a hook that switches agents). OpenCode has no
   such primitive; simulating one would be brittle and surprising. Rejected — the ledger plus the
   incoming agent's DISCOVER instruction *are* the wiring; the human drives the `Tab` switch.
-- **Render the protocol as a skill instead of a committed file.** A skill is on-demand but not
-  guaranteed-loaded; the handoff protocol must be always-on context. Rejected in favor of the
-  `instructions:` array pointer (OpenCode's always-on mechanism), which the committed file backs.
+- **Render the protocol as a skill instead of an `instructions:` file.** A skill is on-demand but
+  not guaranteed-loaded; the handoff protocol must be always-on context. Rejected in favor of the
+  `instructions:` array pointer (OpenCode's always-on mechanism), which the local protocol file backs.
 - **Use the deprecated `tools:` field for capability control.** Rejected — `permission:` is the
   supported, finer-grained mechanism and the only one that expresses the scoped-ledger-edit glob.
 
@@ -141,9 +158,11 @@ adds only the render bindings above.
 - The `permission: deny` withhold and the `mode`-based invocation surface give OpenCode a clean,
   native rendering of loom's capability + surface facets — arguably cleaner than Mirai's
   omit-the-alias + two-flag-pair model.
-- The on-disk-folder ledger sidesteps the missing memory tool. Per the amendment above it is
-  **gitignored by default** (ephemeral coordination, not version-controlled); a project may opt to
-  commit it for reviewable handoff diffs.
+- The on-disk-folder ledger sidesteps the missing memory tool. Per the 2026-08-18 amendment above,
+  `.loom` is **local-only and blanket-gitignored** (`.loom/**` — protocol document, manifest, and
+  artifacts all included); no `.loom` path is committed, and there is no opt-in to commit it.
+  Reviewable handoff/Macro-PM artifacts use the reachable orphan-ref substrate
+  ([ADR-022](adr-022-reachable-artifact-substrate.md)).
 - OMO support is available for teams that want central tiering, without imposing it — but the two
   render targets mean the `archetype→model` port has a branch the interview must resolve.
 - The adapter must stay in sync with OpenCode's model as it evolves;
@@ -161,7 +180,8 @@ adds only the render bindings above.
 - [ADR-007](adr-007-docs-lookup-capability.md), [ADR-010](adr-010-keyless-by-default-recommendations.md)
   — the opt-in / keyless-by-default discipline OMO and docs-lookup follow.
 - [ADR-008](adr-008-delivery-dispatchers.md) — the Delivery dispatcher split the stage bindings honor.
-- [ADR-011](adr-011-seam-artifact-protocol.md) — the seam-artifact protocol the committed ledger wires.
+- [ADR-011](adr-011-seam-artifact-protocol.md) — the seam-artifact protocol the local-only ledger wires.
+- [ADR-022](adr-022-reachable-artifact-substrate.md) — the reachable orphan-ref substrate for durable/reviewable artifacts (why `.loom` need not be Git-visible).
 - [ADR-012](adr-012-invocation-surface.md) — the invocation surface → `mode: primary|subagent`.
 - [ADR-001](adr-001-adapter-pattern.md) — the adapter pattern this second adapter validates.
 - [wiki/environments/opencode.md](../environments/opencode.md) — the OpenCode customization reference.

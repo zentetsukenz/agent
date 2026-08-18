@@ -87,13 +87,14 @@ lives, the namespace, each stage's seam artifacts, and which role PRODUCEs vs DI
 [`seam-obligation→wiring` port](../../contract/PORTS.md#port-3--seam-obligationwiring), detailed
 in [MAPPING.md §7](MAPPING.md#7-communication-protocol-document--loomhandoffs)):
 
-- The protocol document is a **committed file** at `.loom/handoffs/protocol.md`, pointed at from
+- The protocol document is a **local file** at `.loom/handoffs/protocol.md`, pointed at from
   `opencode.json`'s `instructions:` array (so it merges into always-on context) and referenced
   from `AGENTS.md`. OpenCode has **no description-triggered instruction** primitive, so this
-  replaces Mirai's on-demand `.instructions.md`. (The protocol *document* is committed loom config;
-  the *ledger* it points at is **gitignored by default** — ephemeral coordination, not
-  version-controlled, per [ADR-014](../../wiki/adr/adr-014-loom-opencode-setup.md) Option A; a
-  project may opt to commit the ledger for reviewable diffs.)
+  replaces Mirai's on-demand `.instructions.md`. (`.loom` is a **local-only** context-passing
+  substrate — the protocol document, the manifest, and the ledger artifacts are all
+  blanket-gitignored under `.loom/**`, per [ADR-014](../../wiki/adr/adr-014-loom-opencode-setup.md);
+  durable/reviewable Macro-PM artifacts use the reachable orphan-ref substrate,
+  [ADR-022](../../wiki/adr/adr-022-reachable-artifact-substrate.md), not a Git-visible `.loom`.)
 - **PRODUCE roles** (`shaping`, `orchestrator`, `closing` at exit) and **DISCOVER roles**
   (`planner`, `closing` at entry) reference the protocol document in their body. Because OpenCode
   has **no memory tool**, `persist` is the on-disk folder: these roles need `edit` **scoped to

@@ -231,8 +231,9 @@ contains loom-authored content, `scripts/validate.sh` additionally checks:
 
 The OpenCode adapter additionally supplies its four port answers as prose (capability →
 `permission:` key with `deny` as the withhold; `archetype→model` as an inline `model:` field per
-agent/command; the seam obligation as a committed `.loom/handoffs/` ledger, since OpenCode
-has no memory tool or `handoffs:` primitive; the `primitive→file` manifest for skills/agents/commands)
+agent/command; the seam obligation as a **local-only, blanket-gitignored** `.loom/handoffs/` ledger
+— protocol document, manifest, and artifacts all under `.loom/**`, never committed or tracked —
+since OpenCode has no memory tool or `handoffs:` primitive; the `primitive→file` manifest for skills/agents/commands)
 and references — never restates — the generic `contract/` content, per the Setup contract
 conformance rules above. Per-role tiering is expressed directly by each agent's inline `model:`,
 so loom renders no external model-tiering overlay ([ADR-014](wiki/adr/adr-014-loom-opencode-setup.md)).
