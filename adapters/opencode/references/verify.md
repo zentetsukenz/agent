@@ -85,6 +85,9 @@
 - [ ] The `explore` utility is **emitted** as `.opencode/agents/explore.md` with the **Utility**
       archetype `model:` (not left to the bare built-in's default model) — the cheap-tier dispatch
       is load-bearing ([ADR-021](../../../wiki/adr/adr-021-shaping-research-orchestrator.md)).
+- [ ] The emitted `explore` renders `permission: { edit: deny, bash: allow }` — read-only recon
+      keeps `shell` (for `gh`/`git` reads + project read commands) while the withheld `edit` holds
+      the read-only line ([ADR-023](../../../wiki/adr/adr-023-explore-read-only-shell.md)).
 
 ## Report
 

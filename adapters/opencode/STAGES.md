@@ -66,8 +66,10 @@ Resolve each capability set to OpenCode `permission:` keys via
   built-in `explore` runs on OpenCode's *default* model, so relying on it silently forfeits
   cheap-tier dispatch — the whole point of routing recon to a Utility agent
   ([ADR-021](../../wiki/adr/adr-021-shaping-research-orchestrator.md)). The emitted agent is
-  `read`+`search` only (`mode: subagent`). `scout` gives keyless dependency-source research, so
-  the optional `docs-lookup` (MCP) capability stays off by default.
+  `read`+`search`+`shell` (`mode: subagent`) — it renders `permission: { edit: deny, bash: allow }`
+  so recon can run `gh`/`git` reads and project read commands, while the withheld `edit` keeps it
+  read-only ([ADR-023](../../wiki/adr/adr-023-explore-read-only-shell.md)). `scout` gives keyless
+  dependency-source research, so the optional `docs-lookup` (MCP) capability stays off by default.
 - **Verifier** — `.opencode/agents/verifier.md`, an extended-thinking / long-context model named
   by the user at setup, `permission: { edit: deny }`. A *utility*, not a Delivery stage agent
   (two dispatchers reuse it).

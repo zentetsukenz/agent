@@ -164,7 +164,7 @@ generated per the Utility Agents interview table ([interview.md](interview.md)).
 
 | Utility | Purpose | Archetype | Capabilities |
 |---|---|---|---|
-| `explore` | Read-only recon and Q&A | Utility | `read`, `search` |
+| `explore` | Read-only recon and Q&A | Utility | `read`, `search`, `shell` — **no `edit`, no `delegate`** (read-only: understands, doesn't mutate; `shell` is for read-only recon — `gh`/`git` reads, project read commands) ([ADR-023](../wiki/adr/adr-023-explore-read-only-shell.md)) |
 | `quick` | Fast mechanical edits (executor) | Utility | `read`, `edit`, `search`, `shell`, `tasks` |
 | `deep` | Hard problems (executor) | Deep Specialist | `read`, `edit`, `search`, `shell`, `delegate`, `persist`, `tasks` (+ `docs-lookup` if opted) |
 | `verifier` | Verify an artifact against its acceptance criteria; return evidence | Deep Specialist (extended-thinking) | `read`, `search`, `shell`, `persist` — **no `edit`** (verifies, doesn't fix) |
