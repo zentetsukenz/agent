@@ -66,11 +66,18 @@ project's standing regression suite (a system-scoped concern operated at the
 
 This phase **closes the loop** opened in Discovery. It verifies against:
 
-- the success criteria authored in [Discovery](discovery.md), and
-- each task's per-task acceptance criteria from [Planning](planning.md).
+- the success criteria authored in [Discovery](discovery.md),
+- each task's per-task acceptance criteria from [Planning](planning.md), and
+- the acceptance criteria of any **ticket the delivered change closes** (a PR that "closes
+  #N") — a **spec-fidelity** check that reports each criterion as matches / deviates /
+  not-addressed ([ADR-024](../../wiki/adr/adr-024-spec-fidelity-verification.md)).
 
-It does **not** invent new criteria. This is a whole-system confirmation, distinct from
-the per-unit TDD that already happened during Implementation.
+It does **not** invent new criteria — a closing ticket's acceptance criteria are an existing
+criteria source, not a new one, so spec-fidelity stays inside the shift-left contract. A spec
+**deviation** is reported as evidence for the routing dispatcher/human to judge, **not** an
+automatic failure (a change can be pragmatically correct while departing from the literal
+spec). This is a whole-system confirmation, distinct from the per-unit TDD that already
+happened during Implementation.
 
 This phase's exit is the **final quality gate** in the plan's
 [review-gate cadence](planning.md#review-gate-cadence): where the per-slice gates during
@@ -83,8 +90,10 @@ face one large unreviewed drop.
 
 ## 6. Artifacts
 
-- A verification report: evidence plus pass/fail against each criterion.
-- Defects routed back to [Implementation](implementation.md).
+- A verification report: evidence plus pass/fail against each criterion, including a
+  **spec-fidelity** section (matches / deviates / not-addressed) when the change closes a ticket.
+- Defects routed back to [Implementation](implementation.md); flagged spec deviations routed to
+  the dispatcher/human to judge intent, not auto-failed.
 
 ## Related
 
@@ -93,4 +102,5 @@ face one large unreviewed drop.
 - [Preservation](preservation.md) — begins once verification passes.
 - [commit-often](../../wiki/principles/commit-often.md) — the principle that makes this a final gate over pre-reviewed commits, not one big drop.
 - [quality-baseline](../../wiki/patterns/quality-baseline.md) — the four-aspect floor this final gate runs across the whole delivery.
+- [ADR-024](../../wiki/adr/adr-024-spec-fidelity-verification.md) — the spec-fidelity evidence category (surface-the-delta, not auto-fail) this phase reports.
 </content>

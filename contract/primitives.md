@@ -167,12 +167,16 @@ generated per the Utility Agents interview table ([interview.md](interview.md)).
 | `explore` | Read-only recon and Q&A | Utility | `read`, `search`, `shell` — **no `edit`, no `delegate`** (read-only: understands, doesn't mutate; `shell` is for read-only recon — `gh`/`git` reads, project read commands) ([ADR-023](../wiki/adr/adr-023-explore-read-only-shell.md)) |
 | `quick` | Fast mechanical edits (executor) | Utility | `read`, `edit`, `search`, `shell`, `tasks` |
 | `deep` | Hard problems (executor) | Deep Specialist | `read`, `edit`, `search`, `shell`, `delegate`, `persist`, `tasks` (+ `docs-lookup` if opted) |
-| `verifier` | Verify an artifact against its acceptance criteria; return evidence | Deep Specialist (extended-thinking) | `read`, `search`, `shell`, `persist` — **no `edit`** (verifies, doesn't fix) |
+| `verifier` | Verify an artifact against its acceptance criteria (correctness **and** spec fidelity — when it closes a ticket, matches/deviates/not-addressed against that ticket's criteria); return evidence | Deep Specialist (extended-thinking) | `read`, `search`, `shell`, `persist` — **no `edit`** (verifies, doesn't fix) |
 | `writing` | Prose (commit messages, PRs, docs) | Communicator | `read`, `edit` (docs), `search` — **DEFERRED for now** |
 
 The **Verifier** ([ADR-008](../wiki/adr/adr-008-delivery-dispatchers.md)) is a utility, not
 a Delivery stage agent, so multiple dispatchers can reuse it (Orchestrator → verify a
-change; future plan-reviewer → verify a plan).
+change; future plan-reviewer → verify a plan). Its evidence spans correctness **and spec
+fidelity** ([ADR-024](../wiki/adr/adr-024-spec-fidelity-verification.md)): when the artifact
+closes a ticket, a spec-deviation is one more **structured-evidence category** it returns for
+the dispatcher to route on — never an auto-failure the Verifier decides on its own (it has no
+`edit`; it verifies, the dispatcher judges).
 
 ### Domain-specialized utilities
 

@@ -2,7 +2,15 @@
 
 All notable changes to this framework are documented here.
 
-## [Unreleased] — 2026-08-18
+## [Unreleased] — 2026-08-19
+
+### Added
+
+- **Verification now checks spec fidelity, not just correctness** — fixes issue [#14](https://github.com/zentetsukenz/agent/issues/14), implements `wiki/adr/adr-024-spec-fidelity-verification.md`. The verifier checked correctness (does the code work, is it well-written, security gaps) but not **spec fidelity** — whether a PR that "closes #X" matches #X's acceptance criteria — so spec-vs-implementation deltas slipped the gate and surfaced only as manual follow-ups (evidence: affiliate-project #34's spec regex `^[a-z0-9_-]{1,64}$` vs PR #59's `^[A-Za-z0-9_-]+$` — a missing `{1,64}` length cap **and** an uppercase class that was pragmatically correct for UUID `tenant_id`s but an un-reconciled deviation for a week).
+  - **`SKILLS/verification/verification-before-completion/SKILL.md`** — phase 4 ("Success criteria — adversarial") gains a **spec-fidelity** dimension: when the artifact under review closes a ticket, resolve that ticket's acceptance criteria via the `wiki/environments/issue-tracker.md` env doc (which supplies the fetch mechanism — `gh issue view`, a `.scratch/` file read, etc., keeping the skill **tracker-agnostic**) and report each criterion as **matches / deviates / not-addressed**. A deviation is **evidence to hand back, not an auto-failure** — a change can be pragmatically correct while departing from the literal spec, so the dispatcher/human judges intent. Related-links gain the Issue Tracker env doc.
+  - **`contract/primitives.md`** — the Verifier utility's purpose names spec fidelity as one more **structured-evidence category** it returns for the dispatcher to route on (never an auto-failure it decides alone — it has no `edit`); per-adapter `STAGES.md` inherits it from the generic contract, so no adapter agent prompt is edited.
+  - **`workflows/sdlc/verification.md`** — §5 records a closing ticket's acceptance criteria as an **existing** criteria source (so spec fidelity does *not* violate "does not invent new criteria"); §6 adds a spec-fidelity section to the verification report with deviations routed, not auto-failed.
+  - **No new agent, primitive, or port** — the Verifier's evidence set widens by one category and the existing ADR-008 report/route contract carries it. Rejected: auto-fail on deviation (literalism rejects correct code); agent-prompt-only (loom has no source `agents/verifier.md`; would fragment across 3 adapters); shared-skill-only with hardcoded `gh` (bakes a tracker into a harness-agnostic skill). Registered in `wiki/adr/{index,log}.md`, CHANGELOG, root `log.md`.
 
 ### Fixed
 

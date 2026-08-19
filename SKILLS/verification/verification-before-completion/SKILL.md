@@ -43,7 +43,14 @@ later phases.
    (it must fail without the fix), not just a single pass.
 4. **Success criteria (adversarial)** — treat the work as guilty until proven innocent. Re-read the
    plan/criteria, check each line-by-line, and attack: what input or state breaks this? Stated
-   criteria are the _minimum_, not the maximum.
+   criteria are the _minimum_, not the maximum. **Spec fidelity**: when the artifact under review
+   claims to close a spec or ticket, that ticket's acceptance criteria are a criteria source too —
+   resolve it through the [Issue Tracker](../../../wiki/environments/issue-tracker.md) environment
+   doc (which supplies the fetch mechanism — `gh issue view`, a `.scratch/` file read, etc.), then
+   report each criterion as **matches / deviates / not-addressed**. A deviation is _evidence to
+   hand back_, not an automatic failure: a change can be pragmatically correct while departing from
+   the literal spec, so surface the delta and let the dispatcher (or human) judge whether it was
+   intended — auto-failing would reject correct code for literalism.
 5. **Manual + boundary** — exercise the happy path, the error paths, loading/empty states, and the
    edges: empty (`""`,`[]`,`{}`,null), max length, negative, zero, overflow, and special chars
    (`<script>`, quotes, newlines, unicode/emoji).
@@ -115,3 +122,4 @@ off to the human with what was tried and why each failed.
 - [frontend-runtime-debugging](../../implementation/frontend-runtime-debugging/SKILL.md) — runtime symptom diagnosis for phase 7.
 - [derive-e2e-coverage](../derive-e2e-coverage/SKILL.md) — turns discovered coverage gaps into durable e2e guards (the former "gap analysis" step, now its own judgment).
 - [server-operations](../../implementation/server-operations/SKILL.md) — bring servers up before functional/manual phases.
+- [Issue Tracker](../../../wiki/environments/issue-tracker.md) — resolves the tracker and the fetch mechanism the phase-4 spec-fidelity check uses to read a closing ticket's acceptance criteria (keeps this skill tracker-agnostic).
