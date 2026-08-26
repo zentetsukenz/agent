@@ -68,14 +68,22 @@ map is a file with one **child** file per ticket.
 When a project's `docs/agents/issue-tracker.md` names GitHub, GitLab, or another tracker with real issue objects,
 prefer its **native** primitives over the file conventions above:
 
-- The map is a single issue labelled `wayfinder:map`; tickets are its child issues.
+- The map is a single issue labelled `wayfinder:map`; tickets are its tickets (linked by a
+  `Map: #<map>` body line, or an optional shallow sub-issue link — see the depth caveat below).
 - Ticket type is a `wayfinder:<type>` label (`wayfinder:research`, `wayfinder:prototype`, `wayfinder:grilling`,
   `wayfinder:task`).
 - **Claim** = assign the ticket to the driving session's user/bot identity.
 - **Blocking** uses the tracker's native issue-dependency relationship (e.g. GitHub's "blocked by") so the frontier
   renders visually in the tracker's own UI. Only fall back to a body convention (a `Blocked by:` line) if the
   tracker has no native blocking relationship.
-- **Frontier** = the open, unblocked, unassigned child issues of the map.
+- **Frontier** = the open, unblocked, unassigned tickets of the map.
+
+> **GitHub specifics (verified 2026-08-25).** GitHub now ships **native [issue dependencies](https://docs.github.com/en/issues/tracking-your-work-with-issues/using-issues/creating-issue-dependencies)**,
+> first-class in `gh`: wire with `gh issue edit <n> --add-blocked-by <m>`, read with `gh issue view <n> --json
+> blockedBy,blocking` (structured JSON — no body-line parsing). **These dependency edges are the graph** and have
+> **no depth limit**, so nested sub-maps are expressed as edges. GitHub **sub-issues** are capped at **7 levels of
+> nesting** — too shallow to carry a deep wayfinder tree — so treat them as optional at-a-glance grouping only, never
+> the dependency structure.
 
 ## Related
 

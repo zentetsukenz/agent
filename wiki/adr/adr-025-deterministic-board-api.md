@@ -3,7 +3,7 @@ type: ADR
 title: The macro tick mutates the board through a deterministic board-API distributable, not model-reasoned prose — so a small model can tick reliably, and prose-first is preserved by holding only the CLI contract as pseudo-code
 status: Proposed
 timestamp: 2026-08-19T00:00:00Z
-tags: [macro-pm, wayfinder, board, tracker, determinism, distributable, mechanics, pseudo-code, prose-first, github-projects, mcp, altitude, loom]
+tags: [macro-pm, wayfinder, board, tracker, determinism, distributable, mechanics, pseudo-code, prose-first, github-issues, issue-dependencies, mermaid, mcp, altitude, loom]
 ---
 
 # ADR-025: A Deterministic Board API for the Macro Tick
@@ -21,7 +21,8 @@ tags: [macro-pm, wayfinder, board, tracker, determinism, distributable, mechanic
 macro-PM's [tick loop](../../workflows/macro-pm/index.md#the-tick-loop) is *specified* as mechanical
 and restart-safe: routing is a pure `label + status → action` lookup, each tick a fresh stateless
 session that reconstructs its picture from the board ([ADR-018](adr-018-macro-project-management.md)
-# 5). In practice, three frictions surfaced running it against a real board:
+
+# 5). In practice, three frictions surfaced running it against a real board
 
 - **Board drift.** The tick did not reliably write `sdlc:*` status back, so the board fell out of
   sync with reality — the human had to hand-run a "fix the board" script.
@@ -54,12 +55,12 @@ distributable the harness installs — which the tick prose calls at fixed steps
 only the CLI *contract* (in illustrative pseudo-code); the *executable* lives outside the seed.**
 
 1. **A board-API distributable, not seed content.** Board mechanics ship as repo-tooling + a small
-   installable (initially a thin wrapper over `gh` for GitHub Projects v2), living alongside
-   `scripts/`, independently testable, versioned. It is **not** copied verbatim into every harness
-   like skill `scripts/` — the *adapter* installs/points to it at setup (the same discipline as the
-   [`capability→tool` port](../../contract/PORTS.md)). **Start small** (GitHub only); additional
-   backends (Linear, Notion) sit behind the same verb contract and are added only when a second
-   tracker actually arrives (YAGNI).
+   installable (initially a thin wrapper over `gh` for **plain GitHub Issues** — see the graph
+   model below), living alongside `scripts/`, independently testable, versioned. It is **not**
+   copied verbatim into every harness like skill `scripts/` — the *adapter* installs/points to it
+   at setup (the same discipline as the [`capability→tool` port](../../contract/PORTS.md)). **Start
+   small** (GitHub Issues only); additional backends (Linear, Notion) sit behind the same verb
+   contract and are added only when a second tracker actually arrives (YAGNI).
 
 2. **A tiny, stable verb contract** — the part the seed pseudo-codes and the part tests pin:
 
@@ -95,6 +96,23 @@ only the CLI *contract* (in illustrative pseudo-code); the *executable* lives ou
    SDLC harness" without embedding a dispatcher. Executable code stays in the distributable, off the
    seed. No new normative layer between prose and adapter.
 
+6. **The board is plain GitHub Issues, not a Projects v2 board — the graph is native issue
+   dependencies, and `board tree` renders it.** GitHub Issues express the full wayfinder graph with
+   no Projects board. The dependency DAG uses **native [issue dependencies](https://docs.github.com/en/issues/tracking-your-work-with-issues/using-issues/creating-issue-dependencies)**
+   — `blockedBy`/`blocking`, first-class in `gh` (`gh issue edit --add-blocked-by`, `gh issue view
+   --json blockedBy,blocking`) — which are **structured JSON (no body-line parsing)** and have **no
+   depth limit**. This **supersedes the earlier `Blocked by: #n` body-line convention**: when this
+   ADR was first drafted (2026-08-19) GitHub shipped no dependency API, but the feature landed and
+   testing (2026-08-25) also exposed that **sub-issue nesting is capped at 7 levels** — too shallow
+   to carry a deep wayfinder tree (nested sub-maps). So **sub-issues are demoted to optional shallow
+   grouping**, and **all depth + blocking live in dependency edges**. A "solid dependency-graph
+   renderer" removes any need for a Projects board, so `board tree` is a first-class verb, not a
+   nicety. It emits **two keyless outputs**: an **indented Unicode tree** for terminal inspection,
+   and a **Mermaid `graph TD`** block that GitHub renders natively when posted to an issue/README —
+   chosen over Graphviz (`dot`)/`graph-easy`/`mmdc` because those carry a system-package, Perl, or
+   Node+Chromium install the Mermaid-emit path avoids (keyless, low-install, per
+   [ADR-010](adr-010-keyless-by-default-recommendations.md)).
+
 ## Consequences
 
 - **Determinism becomes executable, not aspirational.** ADR-018 #5's restart-safety is now backed by
@@ -114,7 +132,11 @@ only the CLI *contract* (in illustrative pseudo-code); the *executable* lives ou
 ## Alternatives considered
 
 - **Reuse an off-the-shelf unified tracker library.** Rejected — research found none maintained that
-  covers GitHub Projects v2 alongside Linear/Notion.
+  covers GitHub (Issues or Projects v2) alongside Linear/Notion.
+- **Drive a GitHub Projects v2 board instead of plain Issues.** Rejected — native sub-issues +
+  `Blocked by:` lines + a `board tree` renderer express the whole graph on plain Issues; a Projects
+  board adds a second surface (single-select status fields, project item IDs) to keep in sync for no
+  gain here.
 - **Use an MCP server (e.g. GitHub's official) as the mutation core.** Rejected — MCP tools are
   LLM-tool-shaped (freeform intent), re-introducing the very model-reasoned drift this ADR removes.
   Kept as an optional consumption layer instead.
