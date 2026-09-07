@@ -78,6 +78,12 @@ probing, failure forensics, the evidence-handoff shape — lives in the
 [verification-before-completion](../../SKILLS/verification/verification-before-completion/SKILL.md)
 skill. This principle is the *law*; that skill is the *procedure*.
 
+Two [Verification exit-gate](../../workflows/sdlc/verification.md) bullets — *"Success criteria
+are demonstrably met via evidence, not assertion"* and *"No 'done' claim exists without
+proof"* — were retired from `GATE.md`'s typeable criteria: neither has a checkable shape, both
+are restatements of the Iron Law above, not independent gate criteria. This principle is their
+home; the table row above already carries their content.
+
 ## Common rationalizations (all rejected)
 
 | Excuse | Reality |

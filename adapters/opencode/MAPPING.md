@@ -9,7 +9,8 @@
 > [wiki/environments/opencode.md](../../wiki/environments/opencode.md) for OpenCode's primitives,
 > and [STAGES.md](STAGES.md) for the per-stage rosters/capability-sets these bindings feed.
 
-The four ports (all defined generically in [contract/PORTS.md](../../contract/PORTS.md)):
+The four **declarative** ports (defined generically in [contract/PORTS.md](../../contract/PORTS.md);
+Port 5 `mechanism→install` is answered in [setup.md](setup.md)):
 
 | Port | Section |
 |---|---|
@@ -131,8 +132,8 @@ The capability vocabulary + the "discover, don't guess" discipline are **generic
 
 **Withhold mechanism (OpenCode):** a role *denied* a capability sets its permission key to
 **`deny`** in the agent's `permission:` frontmatter (e.g. a Shaping agent gets
-`permission: { edit: deny }`). The withheld capability is load-bearing — a role with `edit: deny`
-cannot write code. This differs from Mirai (which omits the tool alias); OpenCode grants tools by
+`permission: { edit: deny }`) — the [load-bearing](../../contract/primitives.md#per-stage-skill-rosters--capability-sets--workflow-prose-sourcing)
+withhold. This differs from Mirai (which omits the tool alias); OpenCode grants tools by
 default and gates them via `permission:`. `tools:` is deprecated — always use `permission:`.
 
 ## 7. Communication protocol document → `.loom/handoffs/`
@@ -160,7 +161,7 @@ ignore rather than replacing it with selective rules. Template:
 
 ## Related
 
-- [contract/PORTS.md](../../contract/PORTS.md) — the four obligations this file answers for OpenCode.
+- [contract/PORTS.md](../../contract/PORTS.md) — the four declarative obligations this file answers for OpenCode (Port 5 `mechanism→install` is answered in [setup.md](setup.md)).
 - [contract/primitives.md](../../contract/primitives.md) — the generic primitives/rosters/archetypes referenced above.
 - [ADR-013](../../wiki/adr/adr-013-shared-adapter-contract-core.md) — the shared-core split (reference, never restate).
 - [ADR-014](../../wiki/adr/adr-014-loom-opencode-setup.md) — the OpenCode adapter decision this mapping implements.

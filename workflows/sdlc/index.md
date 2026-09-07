@@ -116,12 +116,13 @@ Four concerns are woven into *every* phase, not deferred to a single late phase:
 ## The Orchestrator role
 
 The workflow names one agent role explicitly: the **Orchestrator**. It runs the
-Implementation loop, gauges each task's size, and **dispatches to the correct
-implementation-agent class** (high / mid / low intelligence) to maximize the chance of a
-successful implementation. It does not rely on a small agent self-assessing its own
-capability ("you don't know what you don't know"). The Orchestrator also enforces the
-architecture-prerequisite gate — it will not dispatch a code task whose prerequisite
-architecture or constitution change has not yet landed.
+Implementation loop, gauges each task's size — invoking the `loom size score` mechanism
+for the arithmetic, per [task-sizing](../../SKILLS/planning/task-sizing/SKILL.md)'s
+judgment — and **dispatches to the correct implementation-agent class** (high / mid / low
+intelligence) to maximize the chance of a successful implementation. It does not rely on a
+small agent self-assessing its own capability ("you don't know what you don't know"). The
+Orchestrator also enforces the architecture-prerequisite gate — it will not dispatch a code
+task whose prerequisite architecture or constitution change has not yet landed.
 
 ## Operational DNA
 

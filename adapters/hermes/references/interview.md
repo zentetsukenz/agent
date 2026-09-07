@@ -36,7 +36,7 @@ folding into the generic handoff question (core interview 4d). For the thin-macr
 
 | Question | Resolution | Why no choice |
 |---|---|---|
-| "Where do within-run (Shaping→Delivery→Closing) handoffs live?" | A **shared, on-disk, gitignored** directory both the resident harness and the [micro dispatch target](macro-pm.md#the-micro-dispatch-target) can read | The SDLC run executes in a **separate** per-invocation harness; Hermes `memory` is intra-harness and cannot cross the boundary. Gitignored because ephemeral coordination is never version-controlled — see [ADR-014](../../../wiki/adr/adr-014-loom-opencode-setup.md) (Option A) and the [seam-artifact protocol](../../../wiki/patterns/seam-artifact-protocol.md#substrate-is-also-altitude-scoped) |
+| "Where do within-run (Shaping→Delivery→Closing) handoffs live?" | A **shared, on-disk, gitignored** directory both the resident harness and the [micro dispatch target](macro-pm.md#the-micro-dispatch-target--a-separate-per-invocation-harness) can read | The SDLC run executes in a **separate** per-invocation harness; Hermes `memory` is intra-harness and cannot cross the boundary. Gitignored because ephemeral coordination is never version-controlled — see [ADR-014](../../../wiki/adr/adr-014-loom-opencode-setup.md) (Option A) and the [seam-artifact protocol](../../../wiki/patterns/seam-artifact-protocol.md#substrate-is-also-altitude-scoped) |
 
 The only thing to resolve is the **path** of that shared directory (a project convention), which is
 recorded in the protocol document alongside the named dispatch target. The **macro** substrate (the

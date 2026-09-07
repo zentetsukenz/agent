@@ -1,8 +1,8 @@
-# The four port obligations
+# The five port obligations
 
 > Part of the shared adapter-contract core — see [index.md](index.md). This is the
-> **contract an adapter implements**: the four things every adapter MUST supply. The core
-> [PROVIDES](primitives.md) the generic content; an adapter MUST SUPPLY the four **ports**
+> **contract an adapter implements**: the five things every adapter MUST supply. The core
+> [PROVIDES](primitives.md) the generic content; an adapter MUST SUPPLY the five **ports**
 > below and **references — never restates** — the generic content
 > ([ADR-013](../wiki/adr/adr-013-shared-adapter-contract-core.md)).
 >
@@ -13,16 +13,26 @@
 > doc layout — an adapter answers each port however it likes, so the seam stays cheap to
 > redraw. (A port answer MAY *point at* an optional starter template, but the template lives
 > in the adapter and only the obligation is mandated.)
+>
+> **One narrow, committed exception:** `GATE.md` at the repo root (a per-project file of typed
+> exit criteria) is a deliberate, committed departure from "no schema/no machine-parseable
+> contract", authorized by [ADR-026](../wiki/adr/adr-026-gate-mechanism-layer-model.md) and
+> confined to the **Gate layer** only. It is not a reversal of the ports above — they stay
+> prose tables an agent reads; only the Gate's typed criteria are machine-parseable.
 
-## Why four
+## Why five
 
 Three of the ports are the **render-binding ports** — they attach to primitives 4, 5, 6
 (capability, instruction, model-archetype) discovered in seam ticket
 [#4](https://github.com/zentetsukenz/agent/issues/4). The same seam shape (generic
 vocabulary/obligation + per-adapter render-binding) recurring three times is what proved the
 interface is **real**. The fourth port covers the remaining "render to disk" concern for
-primitives 1–3. Kept deliberately minimal — if "four" turns out wrong, one prose contract is
-edited, not an unwound template system.
+primitives 1–3. The fifth ([ADR-027](../wiki/adr/adr-027-mechanism-install-port.md)) answers a
+placement concern the first four never owned — getting the Mechanism layer's installed
+executable onto disk and callable, not rendering a declarative primitive to a file. The count
+stays deliberately minimal, not fixed: this amendment from four to five *is* the sanctioned
+path — one prose contract is edited, not an unwound template system — and the same path stays
+open if a sixth concern is ever proven real.
 
 ## Port 1 — `capability→tool`
 
@@ -102,9 +112,39 @@ because it answers one concern: rendering to disk. It must state:
 to `.mirai/agents/*.agent.md`, prompts to `.mirai/prompts/*.prompt.md`, and the instruction
 to a description-triggered `.mirai/instructions/*.instructions.md`.
 
+## Port 5 — `mechanism→install`
+
+**Obligation:** resolve loom's shared **Mechanism-layer distributable** (the single
+installable that exposes the namespaced verbs — `loom board add`, `loom size score`,
+`loom check gates`) to the harness's **placement-and-invocation primitive** — *"how does the
+distributable get onto disk for a project set up under this harness, and how does a workflow
+step or agent invoke it."* The distributable's existence, its verb surface, and its CLI
+contract are the core's; the **placement-and-invocation primitive** is the adapter's. The
+port answer MUST state:
+
+- **Where the distributable lives** for a project under this harness — a repo-local tree, a
+  harness profile/plugin location, or another install root the harness already owns.
+- **How it becomes invocable** — the concrete path/alias/`PATH` entry (or harness-native
+  equivalent) by which `loom <verb>` resolves to the installed script, discovered/confirmed
+  against the harness rather than guessed (same discipline as tool-name and model-name
+  strings in Ports 1–2).
+- **What "installed" means for this harness** — the setup step that performs the placement
+  and the created-vs-patched path it reports, so the gate's Verify step can confirm the
+  distributable is present and callable.
+
+This port states the obligation, not the implementation: it does not prescribe a package
+manager, an install command, a directory layout, or an invocation syntax — only that the
+adapter answers the three questions above in whatever prose table/checklist fits its harness.
+See [ADR-027](../wiki/adr/adr-027-mechanism-install-port.md) for why placement is a genuinely
+new port rather than a stretch of Port 4 or a fold into project-context, and for the
+distinction from [ADR-017](../wiki/adr/adr-017-quality-baseline.md)'s still-standing deferral
+of blocking enforcement hooks (placement is prior to, and does not add, enforcement).
+
+*Examples:* left to the per-adapter answers this port obligates — not written here.
+
 ## Conformance
 
-An adapter conforms when it (a) supplies all four ports above, (b) **references** the generic
+An adapter conforms when it (a) supplies all five ports above, (b) **references** the generic
 content in the core rather than restating it, and (c) is registered in
 [SETUP.md](../SETUP.md)'s harness table. This is the checkable rule in
 [SPEC.md](../SPEC.md)'s "Setup contract conformance".
@@ -116,3 +156,4 @@ content in the core rather than restating it, and (c) is registered in
 - [discipline.md](discipline.md) — the generic invariant-checks port 4's format-checks complement.
 - [ADR-013](../wiki/adr/adr-013-shared-adapter-contract-core.md) — prose-obligations-over-templates, reference-over-copy.
 - [ADR-002](../wiki/adr/adr-002-workflow-as-adapter-seed.md) — the prose-first stance (no schema/DSL).
+- [ADR-027](../wiki/adr/adr-027-mechanism-install-port.md) — the decision that added Port 5.

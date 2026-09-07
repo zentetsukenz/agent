@@ -70,10 +70,40 @@ if any. Use [release-notes](../../commands/release-notes.md).
 
 ## Feedback loop (completes the cycle)
 
-Preservation feeds learnings **back into the framework itself**: when a repeated pattern
-emerges, propose a new skill via
-[skill-creator](../../SKILLS/meta/skill-creator/SKILL.md), and record hard-to-reverse
-decisions as ADRs. This is what makes the SDLC workflow a *loop* rather than a line.
+Preservation feeds learnings back into the framework — but *where* depends on which kind of
+slop the lesson is, per the routing rule in [Ratchet Routing](../../wiki/patterns/ratchet.md)
+([ADR-026](../../wiki/adr/adr-026-gate-mechanism-layer-model.md)):
+
+- **[Judgment slop](../../wiki/glossary/index.md#judgment-slop)** (a tradeoff evaluated
+  badly) → propose a new skill via
+  [skill-creator](../../SKILLS/meta/skill-creator/SKILL.md), or record a hard-to-reverse
+  decision as an ADR. This is the **existing** path and stays unchanged — judgment is
+  irreducible, so prose remains its correct destination.
+- **[Form slop](../../wiki/glossary/index.md#form-slop)** (paperwork left undone) → a new
+  [`GATE.md`](../../GATE.md) criterion, typed `artifact` and naming its evidence-producer per
+  that file's five-column schema — not an ADR or a skill.
+- **[Recall slop](../../wiki/glossary/index.md#recall-slop)** (a known environment fact
+  forgotten) → a Mechanism installed via
+  [Port 5](../../contract/PORTS.md#port-5--mechanisminstall), following the pattern
+  `SKILLS/planning/task-sizing/scripts/size-score.sh` set. Ratchet on the **first**
+  occurrence, not the second — a forgotten environment fact will always recur, so waiting for
+  a repeat only guarantees a second failure with the fix already known.
+
+**The rule behind the routing:** if a lesson could recur while every existing gate stays
+green, prose is the wrong destination. This is what makes the SDLC workflow a *loop* rather
+than a line.
+
+### Closing's propose-and-dispatch edge
+
+The Form and Recall destinations above (a `GATE.md` criterion, a Mechanism) require `edit`
+capability — but Closing holds none, the same withhold that keeps
+[Discovery's spike](discovery.md) a disposable probe rather than a build step. So Closing
+does not build them itself: it PROPOSES. It assembles a dispatch payload — per
+[dispatch-context](../../SKILLS/planning/dispatch-context/SKILL.md)'s conventions — naming the
+exact `GATE.md` row or Port 5 Mechanism the lesson warrants and the evidence behind it, and
+hands that payload to `quick` or `deep` to actually build. The built artifact returns to
+Closing for curation into the wiki. See
+[Ratchet Routing](../../wiki/patterns/ratchet.md) for why this handoff exists.
 
 ## 6. Artifacts
 

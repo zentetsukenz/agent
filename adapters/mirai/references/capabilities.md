@@ -52,12 +52,10 @@ of a role's grant; where a role lists `read, search` in STAGES.md, write both al
 
 ## docs-lookup (optional, opt-in)
 
-`docs-lookup` is the generic "query up-to-date external documentation" capability
-([ADR-007](../../../wiki/adr/adr-007-docs-lookup-capability.md)). It is **off by default**;
-wire it only if the interview (§4b) says yes. This is the canonical instance of the
-[keyless-by-default](../../../wiki/principles/keyless-by-default.md) principle
-([ADR-010](../../../wiki/adr/adr-010-keyless-by-default-recommendations.md)): any capability
-that resolves to an API-key/account tool follows the same opt-in, degrade-gracefully rule.
+`docs-lookup`'s definition and off-by-default rule are [ADR-007](../../../wiki/adr/adr-007-docs-lookup-capability.md)'s
+([keyless-by-default](../../../wiki/principles/keyless-by-default.md),
+[ADR-010](../../../wiki/adr/adr-010-keyless-by-default-recommendations.md)); wire it only if
+the interview (§4b) says yes. This is the Mirai binding:
 
 - **Wiring into an agent:** add the MCP server glob to the agent's `tools:` array, e.g.
   `"context7/*"` (or whichever server the user runs). Confirm the exact server name against

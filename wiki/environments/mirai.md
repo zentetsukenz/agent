@@ -130,8 +130,9 @@ and optional 'send'."*
 **loom mapping**: this is where loom's **per-role agents** go — each carrying its
 DEEP-workflow system prompt (from `workflows/sdlc/<phase>.md`), a preset model, and a
 **role-scoped capability set** written into `tools:`
-([ADR-006](../adr/adr-006-capability-based-roles.md)). The withheld capabilities are
-load-bearing: a role with no `edit` cannot write code. Shaping is one agent; **Delivery is
+([ADR-006](../adr/adr-006-capability-based-roles.md); the withhold is
+[load-bearing](../../contract/primitives.md#per-stage-skill-rosters--capability-sets--workflow-prose-sourcing)).
+Shaping is one agent; **Delivery is
 two dispatcher agents** — `planner` and `orchestrator`, neither holding `edit`
 ([ADR-008](../adr/adr-008-delivery-dispatchers.md)); Closing is one agent. loom's **utility
 agents** (explore, quick, deep, **verifier**, writing, frontend, visual-qa) are also plain

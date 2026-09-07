@@ -54,3 +54,9 @@ description: Chronological log of patterns changes
   was linked from a place a dispatched cross-harness run couldn't follow. Publishing is a uniform
   PRODUCE sub-step in wayfinder's resolution (reusing `stage-handoff` by reference; no new skill, no
   new port). Grounds ADR-022.
+- 2026-09-06 — Added **Ratchet Routing** — routes a Preservation lesson by slop kind: judgment
+  to prose (ADR/wiki/skill-creator, unchanged), form to a new `GATE.md` `artifact` criterion,
+  recall to a Mechanism installed via Port 5, ratcheted on **first** occurrence because a
+  forgotten environment fact will always recur. Generalizes the **Quality Baseline** ratchet
+  from a quality metric to any forgotten fact, and fixes Preservation's feedback loop so no
+  learning path terminates in Markdown. Grounds ADR-026.

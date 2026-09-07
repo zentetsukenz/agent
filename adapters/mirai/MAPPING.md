@@ -9,7 +9,8 @@
 > [wiki/environments/mirai.md](../../wiki/environments/mirai.md) for Mirai's primitives, and
 > [STAGES.md](STAGES.md) for the per-stage rosters/capability-sets these bindings feed.
 
-The four ports (all defined generically in [contract/PORTS.md](../../contract/PORTS.md)):
+The four **declarative** ports (defined generically in [contract/PORTS.md](../../contract/PORTS.md);
+Port 5 `mechanism→install` is answered in [setup.md](setup.md)):
 
 | Port | Section |
 |---|---|
@@ -120,8 +121,8 @@ The capability vocabulary + the "discover, don't guess" discipline are **generic
 | `docs-lookup` | MCP `<server>/*` (e.g. `context7/*`) | MCP server | **opt-in** ([ADR-007](../../wiki/adr/adr-007-docs-lookup-capability.md)); server config lives outside the agent file |
 
 **Withhold mechanism (Mirai):** a role *denied* a capability simply **omits** the tool from
-its `tools:` array. The withheld capability is load-bearing — a role with no `edit` cannot
-write code. The adapter **tolerates deviation** — where a mapped name is harness-/version-
+its `tools:` array (the [load-bearing](../../contract/primitives.md#per-stage-skill-rosters--capability-sets--workflow-prose-sourcing)
+withhold). The adapter **tolerates deviation** — where a mapped name is harness-/version-
 specific (`persist`, `interview`, `docs-lookup`), discover or confirm it against the user's
 actual tool list rather than hardcoding.
 
@@ -148,7 +149,7 @@ Template: [assets/templates/handoff.instructions.md.template](assets/templates/h
 
 ## Related
 
-- [contract/PORTS.md](../../contract/PORTS.md) — the four obligations this file answers for Mirai.
+- [contract/PORTS.md](../../contract/PORTS.md) — the four declarative obligations this file answers for Mirai (Port 5 `mechanism→install` is answered in [setup.md](setup.md)).
 - [contract/primitives.md](../../contract/primitives.md) — the generic primitives/rosters/archetypes referenced above.
 - [ADR-013](../../wiki/adr/adr-013-shared-adapter-contract-core.md) — the shared-core split (reference, never restate).
 - [ADR-004](../../wiki/adr/adr-004-loom-mirai-setup.md) — the base setup approach this mapping implements.

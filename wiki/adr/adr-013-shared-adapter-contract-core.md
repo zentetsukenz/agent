@@ -89,8 +89,9 @@ model-archetype primitives); port 4 covers the remaining "render to disk" concer
 specific format-checks in the adapter.
 
 Each port's **shape is a prose table an agent reads** (prose-first,
-[ADR-002](adr-002-workflow-as-adapter-seed.md) — no schema, no DSL). The core names the
-obligation; the adapter answers with whatever table/checklist fits.
+[ADR-002](adr-002-workflow-as-adapter-seed.md) — no schema, no DSL; [ADR-026](adr-026-gate-mechanism-layer-model.md)
+carves one narrow Gate-file exception elsewhere, not here — the port shape is unaffected).
+The core names the obligation; the adapter answers with whatever table/checklist fits.
 
 ### Consumption = reference, never copy
 
@@ -108,7 +109,8 @@ A **new top-level `contract/` directory** with its own `index.md`:
 - **Not under `adapters/`** — the core is what every adapter *implements*, not itself an
   adapter (and an `adapters/_contract/` leading-underscore hack is a smell).
 - **Not folded into `workflows/`** — that owns the SDLC phase prose
-  ([ADR-002](adr-002-workflow-as-adapter-seed.md)), a different concern.
+  ([ADR-002](adr-002-workflow-as-adapter-seed.md), see [ADR-026](adr-026-gate-mechanism-layer-model.md)
+  for the supersession), a different concern.
 - `SETUP.md` stays the harness-agnostic front door and gains a Step-2 pointer into
   `contract/`; the harness table is unchanged.
 
@@ -143,7 +145,7 @@ The domain-model ADR test holds on all three counts:
 | **Design A — core ships `{{PLACEHOLDER}}` template pack, adapter fills holes** | Rejected — templates are harness layout; the core would leak harness assumptions upward, violating the SPEC's no-leak rule. |
 | **Core under `adapters/_contract/`** | Rejected — the core is implemented *by* adapters, not itself an adapter; the leading-underscore folder is a smell. |
 | **Fold the core into `workflows/`** | Rejected — `workflows/` owns SDLC phase prose (ADR-002), an orthogonal concern. |
-| **A machine-parseable manifest/schema for the ports** | Rejected — contradicts ADR-002's prose-first stance; ports are prose tables an agent reads. |
+| **A machine-parseable manifest/schema for the ports** | Rejected — contradicts ADR-002's prose-first stance; ports are prose tables an agent reads. (Depends on the sentence [ADR-026](adr-026-gate-mechanism-layer-model.md) narrowly reverses — this specific rejection, not adr-013's adapter-seam decision, is what's in question; flagged, not re-litigated here.) |
 | **Prescribe a fixed per-adapter file layout for the four obligations** | Rejected — over-specifies; the contract states obligations, not structure, so the seam stays cheap to redraw. |
 | **Design B — prose contract of four named port-obligations in top-level `contract/`, referenced not restated** | **Chosen.** |
 
@@ -168,7 +170,9 @@ The domain-model ADR test holds on all three counts:
 
 - [ADR-005](adr-005-harness-agnostic-setup.md) — the harness-agnostic entrypoint and setup
   contract this ADR extends by defining the contract's shared body.
-- [ADR-002](adr-002-workflow-as-adapter-seed.md) — the prose-first principle the port shape honors.
+- [ADR-002](adr-002-workflow-as-adapter-seed.md) — the prose-first principle the port shape honors
+  (now partly superseded, see [ADR-026](adr-026-gate-mechanism-layer-model.md) — this ADR's
+  adapter seam itself is unaffected, and was independently re-confirmed sound).
 - [ADR-004](adr-004-loom-mirai-setup.md) — the Mirai adapter, first implementer, refactored to
   reference the core in the foundation-build ticket.
 - [ADR-011](adr-011-seam-artifact-protocol.md) — the PRODUCE/DISCOVER seam obligation the

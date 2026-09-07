@@ -50,7 +50,10 @@ An **Orchestrator**-class agent runs the whole Implementation loop. Because a sm
 cannot reliably self-assess its own limits ("you don't know what you don't know"), the
 Orchestrator — not the executing agent — owns task routing:
 
-- **Gauge** each task's true size against the plan's sizing.
+- **Gauge** each task's true size against the plan's sizing — the judgment call (which
+  dimension value applies) is [task-sizing](../../SKILLS/planning/task-sizing/SKILL.md)'s;
+  the sum/threshold/budget arithmetic is delegated to the `loom size score` mechanism
+  ([Port 5](../../contract/PORTS.md#port-5--mechanisminstall)) rather than restated here.
 - **Dispatch** each task to the correct implementation-agent class (high / mid / low
   intelligence) to maximize the chance of success. A big task must never land on a small
   coding agent — the failure mode is the agent quietly ruining the surrounding code.

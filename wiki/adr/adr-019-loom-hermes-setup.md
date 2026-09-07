@@ -57,8 +57,10 @@ Crucially, **loom holds only prose** for that dispatch — it does **not** hardc
 (`opencode --agent=planner …`). The concrete micro harness and its headless CLI invocation are a
 **per-project setup choice**; the seed and adapter express dispatch generically ("dispatch the
 buildable leaf to the project's configured micro-dispatchable SDLC harness via its headless CLI").
-This keeps loom content-only ([ADR-002](adr-002-workflow-as-adapter-seed.md)) and each adapter a deep
-module — Hermes owns "resident + macro"; OpenCode owns "execute an SDLC run" — evolvable separately.
+This keeps loom content-only ([ADR-002](adr-002-workflow-as-adapter-seed.md), content-only itself
+unaffected by [ADR-026](adr-026-gate-mechanism-layer-model.md)'s narrow Gate-file exception) and
+each adapter a deep module — Hermes owns "resident + macro"; OpenCode owns "execute an SDLC run" —
+evolvable separately.
 
 ### Invocation inverts — a port answer, not an ADR-012 rewrite
 
@@ -116,7 +118,7 @@ only the "where it is organized" framing evolves: it lands as `workflows/macro-p
 | Option | Verdict |
 |---|---|
 | **Self-contained SDLC in Hermes** (first attempt; renders own stage roster, internal `delegate_task`) | Rejected — compiles the wrong seed; couples Hermes to the whole SDLC; two adapters re-implement SDLC. |
-| **Hardcode the micro dispatch command** (`opencode --agent=…`) | Rejected — violates content-only ([ADR-002](adr-002-workflow-as-adapter-seed.md)); the micro harness is a setup choice. |
+| **Hardcode the micro dispatch command** (`opencode --agent=…`) | Rejected — violates content-only ([ADR-002](adr-002-workflow-as-adapter-seed.md), unaffected by [ADR-026](adr-026-gate-mechanism-layer-model.md)); the micro harness is a setup choice. |
 | **Micro ledger in Hermes memory** | Rejected — memory is private to one harness; cross-harness dispatch needs shared on-disk ground. |
 | **Local kanban as the macro board** | Rejected as default — single-host, doesn't distribute across servers (the property macro mode requires); offered only if the user accepts the limitation. |
 | **New top-level `planes/` for macro-PM** | Rejected — macro-PM is a lifecycle (a reactive one); it belongs beside SDLC under `workflows/`, keeping "seeds adapters compile" one deep module. |

@@ -139,7 +139,7 @@ wires):
   linked artifacts into a `shaping/<milestone>/` [seam artifact](../../../wiki/glossary/index.md#seam-artifact)
   written into the SDLC run's **micro** ledger — a **shared, on-disk, gitignored** substrate
   ([capabilities.md](capabilities.md#persist--the-native-memory-tool-macro-continuity-only)), which
-  Planning's DISCOVER gate already expects. Under [model (a)](#the-micro-dispatch-target)
+  Planning's DISCOVER gate already expects. Under [model (a)](#the-micro-dispatch-target--a-separate-per-invocation-harness)
   the SDLC run executes in a **separate per-invocation harness** (e.g. OpenCode CLI), so the ledger
   **cannot** be Hermes's own memory — memory does not cross a harness boundary; both harnesses must
   read the same on-disk files. Set the leaf `sdlc:in-progress` on the tracker and `delegate_task`

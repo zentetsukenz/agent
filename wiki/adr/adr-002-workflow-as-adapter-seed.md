@@ -1,12 +1,14 @@
 ---
 type: ADR
 title: Workflows are prose-first adapter seeds
-status: Accepted
+status: Superseded by ADR-026
 timestamp: 2026-07-14T00:00:00Z
 tags: [workflow, adapter, prose-first, sdlc, loom]
 ---
 
 # ADR-002: Workflows Are Prose-First Adapter Seeds
+
+> **Superseded by [ADR-026](adr-026-gate-mechanism-layer-model.md)** — see there for what changed and what did not.
 
 ## Context
 

@@ -7,17 +7,15 @@
 > **once** in the shared [`contract/`](../../contract/index.md) core — this file
 > **references** it and never restates it
 > ([ADR-013](../../wiki/adr/adr-013-shared-adapter-contract-core.md)). This adapter supplies
-> only OpenCode's **four port answers** (see [MAPPING.md](MAPPING.md), [STAGES.md](STAGES.md),
+> only OpenCode's **five port answers** (see [MAPPING.md](MAPPING.md), [STAGES.md](STAGES.md),
 > [references/](references/write-format.md)) plus the harness manifest below. See
 > [ADR-005](../../wiki/adr/adr-005-harness-agnostic-setup.md) (harness-agnostic contract) and
 > [ADR-014](../../wiki/adr/adr-014-loom-opencode-setup.md) (why this adapter is shaped the way
 > it is).
 >
-> **Read remotely — do not clone loom.** An agent runs this by _reading_ these instructions
-> plus the `contract/` core and the OpenCode references, either from a local loom checkout or
-> straight from the canonical repo (e.g. `curl` the raw files — both the adapter files **and**
-> the `contract/` files). There is **no command to invoke**; reading and following this file
-> (in `init` or `update` mode) is the whole mechanism.
+> **Read remotely — do not clone loom** ([SETUP.md Step 1](../../SETUP.md#step-1--get-looms-files-in-front-of-you)):
+> fetch the adapter files **and** the `contract/` core the same way. No command to invoke;
+> reading and following this file (in `init` or `update` mode) is the whole mechanism.
 
 ## Trigger
 
@@ -49,16 +47,17 @@ whose `name` matches a loom `SKILLS/<bucket>/<slug>/`, or a `.opencode/agents/*.
 loom provenance marker) — if so, this is an `update`; otherwise `init`. Drift detection: see
 [contract/index.md](../../contract/index.md).
 
-## OpenCode's four port answers (the adapter's job)
+## OpenCode's five port answers (the adapter's job)
 
-Everything OpenCode-specific is one of the four [port obligations](../../contract/PORTS.md):
+Everything OpenCode-specific is one of the five [port obligations](../../contract/PORTS.md):
 
 | Port | OpenCode answer |
 |---|---|
-| **`capability→tool`** | [references/capabilities.md](references/capabilities.md) + [MAPPING.md §6](MAPPING.md#6-capability--opencode-tool-mapping) — capability → OpenCode `permission:` key; withhold = `permission: { <key>: deny }`. `interview` resolves to the native `question` tool; `persist` is a GAP (on-disk folder, local-only and blanket-gitignored). |
+| **`capability→tool`** | [references/capabilities.md](references/capabilities.md) + [MAPPING.md §6](MAPPING.md#6-capability--opencode-permission-mapping) — capability → OpenCode `permission:` key; withhold = `permission: { <key>: deny }`. `interview` resolves to the native `question` tool; `persist` is a GAP (on-disk folder, local-only and blanket-gitignored). |
 | **`archetype→model`** | [MAPPING.md §5](MAPPING.md#5-model-archetype-render-target) — an inline `model: provider/model-id` field per agent/command; per-role tiering is expressed directly, so no external tiering layer. |
 | **`seam-obligation→wiring`** | [MAPPING.md §7](MAPPING.md#7-communication-protocol-document--loomhandoffs) + [STAGES.md](STAGES.md) — no `handoffs:` primitive → an on-disk `.loom/handoffs/` ledger (**local-only, blanket-gitignored** under `.loom/**`, [ADR-014](../../wiki/adr/adr-014-loom-opencode-setup.md)) + a local `protocol.md` pointed at from `opencode.json`'s `instructions:`; the human `Tab`-selects the next primary agent, which DISCOVERs the ledger. Same folder doubles as the shared substrate when OpenCode is a resident agent's [micro dispatch target](../../wiki/patterns/harness-archetypes.md). |
 | **`primitive→file` manifest** | The [harness manifest](#harness-manifest) below + [MAPPING.md §1–3](MAPPING.md#1-skill-primitive--opencodeskills), [STAGES.md](STAGES.md), and the [templates](assets/templates/role.agent.md.template); format-checks in [references/verify.md](references/verify.md). |
+| **`mechanism→install`** | A repo-local tree, mirroring the `.loom/handoffs/` placement already used for the ledger: the Mechanism-layer distributable lands at `.opencode/mechanisms/loom` (executable, no extension). Invoked by that direct repo-relative path — `.opencode/mechanisms/loom size score` — since OpenCode has no PATH/alias primitive either; a workflow step or agent shells out to it directly. Two callers share this one installed path: Planning's task-sizing and the Orchestrator's agent-selection rubric ([implementation.md](../../workflows/sdlc/implementation.md#the-orchestrator)). See [Port 5](../../contract/PORTS.md#port-5--mechanisminstall) for the obligation; step 6 below performs the placement. |
 
 ## Procedure
 
@@ -78,10 +77,14 @@ Run the five steps from [contract/index.md](../../contract/index.md). OpenCode s
 5. **Write** in OpenCode's exact format — consult [references/write-format.md](references/write-format.md)
    (agent/command frontmatter, `permission:` withholds, template-filling, inline `model:` per
    agent, the committed-ledger wiring) and the harness manifest below. Never invent frontmatter fields.
-6. **Verify** — run the generic invariant-checks
+6. **Install the Mechanism-layer distributable** — place it at `.opencode/mechanisms/loom`
+   (create the directory if absent; `chmod +x`) per the [`mechanism→install`](#opencodes-five-port-answers-the-adapters-job)
+   answer above. On `update`, patch the existing file in place rather than duplicating it.
+7. **Verify** — run the generic invariant-checks
    ([contract/discipline.md](../../contract/discipline.md)) **plus** OpenCode's format-checks
-   ([references/verify.md](references/verify.md)).
-7. **Done** — report created vs. patched paths and flag anything deferred.
+   ([references/verify.md](references/verify.md)), confirming `.opencode/mechanisms/loom` exists and is executable.
+8. **Done** — report created vs. patched paths (including `.opencode/mechanisms/loom`) and flag
+   anything deferred.
 
 ## Harness manifest
 
@@ -117,18 +120,20 @@ OpenCode's answers to the `primitive→file` manifest ([port 4](../../contract/P
 ## Output
 
 - A `.opencode/` tree: `agents/` (primary stage agents + subagent utilities), `commands/`
-  (quick stage combos), `skills/<slug>/`, plus root `AGENTS.md`.
+  (quick stage combos), `skills/<slug>/`, `mechanisms/loom` (the installed distributable), plus
+  root `AGENTS.md`.
 - A `.loom/handoffs/` ledger (**local-only, blanket-gitignored** — a `.gitignore` entry ignores
   all of `.loom/**`: the protocol document, the manifest, and the per-milestone artifact dirs; on
   `update` an existing blanket `.loom` ignore is preserved, never replaced with selective rules)
   with a local `protocol.md`, a seeded manifest at `.loom/handoffs/index.md`, and an `instructions:`
   pointer in `opencode.json` to the protocol file.
-- A short report of created vs. patched paths.
+- A short report of created vs. patched paths, including whether `.opencode/mechanisms/loom`
+  was created or patched.
 
 ## Related
 
 - [contract/index.md](../../contract/index.md) — the generic setup contract this adapter implements.
-- [contract/PORTS.md](../../contract/PORTS.md) — the four obligations; this adapter answers all four.
+- [contract/PORTS.md](../../contract/PORTS.md) — the five obligations; this adapter answers all five.
 - [ADR-013](../../wiki/adr/adr-013-shared-adapter-contract-core.md) — the shared-core decision (reference, never restate).
 - [ADR-014](../../wiki/adr/adr-014-loom-opencode-setup.md) — the OpenCode adapter decision (`.loom` is a local-only, blanket-gitignored seam).
 - [MAPPING.md](MAPPING.md), [STAGES.md](STAGES.md) — OpenCode's concrete port answers.

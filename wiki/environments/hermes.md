@@ -95,7 +95,7 @@ toolset) and injected into the system prompt at session start; FTS5 session sear
 thin-macro adapter it holds the resident agent's **own relational continuity only** (persona,
 preferences, skills) — never project state (that lives on the networked board) and never the micro
 ledger (that is a shared on-disk directory the dispatched SDLC harness also reads, since memory
-cannot cross a harness boundary — [macro-pm.md](../../adapters/hermes/references/macro-pm.md#the-micro-dispatch-target)).
+cannot cross a harness boundary — [macro-pm.md](../../adapters/hermes/references/macro-pm.md#the-micro-dispatch-target--a-separate-per-invocation-harness)).
 
 ## Context files {#context-files}
 

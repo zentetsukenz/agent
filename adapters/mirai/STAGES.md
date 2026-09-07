@@ -9,9 +9,9 @@
 > pairs, and the **`handoffs:`** wiring. Feeds [setup.md](setup.md) step 5 (Write) and
 > [MAPPING.md §2–3](MAPPING.md#2-stage-agent--stage-prompt-primitives--mirai-files).
 >
-> Read the generic per-role rosters, capabilities, and workflow-prose sources from
-> [contract/primitives.md](../../contract/primitives.md#per-stage-skill-rosters--capability-sets--workflow-prose-sourcing).
-> The **withheld** capabilities are load-bearing (a role with no `edit` cannot write code);
+> Read the generic per-role rosters, capabilities, load-bearing-withhold rule, and
+> workflow-prose sources from
+> [contract/primitives.md](../../contract/primitives.md#per-stage-skill-rosters--capability-sets--workflow-prose-sourcing);
 > capabilities resolve to Mirai tool names via [references/capabilities.md](references/capabilities.md).
 > **`docs-lookup`** is wired only if the project opted in (interview 4b).
 >
@@ -103,7 +103,7 @@ relative links resolve — see [MAPPING.md §1](MAPPING.md#1-skill-primitive--mi
 ## Related
 
 - [contract/primitives.md](../../contract/primitives.md) — the generic rosters/capabilities/prose/protocol this file binds to Mirai.
-- [contract/PORTS.md](../../contract/PORTS.md) — the four obligations; this file supplies the manifest + seam-wiring bindings.
+- [contract/PORTS.md](../../contract/PORTS.md) — the four declarative obligations (Port 5 `mechanism→install` is answered in [setup.md](setup.md)); this file supplies the manifest + seam-wiring bindings.
 - [MAPPING.md](MAPPING.md) — the sibling port answers (skills copy, model target, capability→tool, protocol doc).
 - [ADR-013](../../wiki/adr/adr-013-shared-adapter-contract-core.md) — the shared-core split (reference, never restate).
 - [ADR-004](../../wiki/adr/adr-004-loom-mirai-setup.md) — the base setup approach.

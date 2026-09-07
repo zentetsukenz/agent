@@ -101,6 +101,15 @@ format-checks (frontmatter parses, native `name==folder` rules, etc.) on top.
 - [ ] Loom changed **no** application code, CI, or runtime config to record the baseline — a
       *new* committed config file appears only if the user explicitly confirmed it.
 
+### Mechanism distributable placement ([ADR-026](../wiki/adr/adr-026-gate-mechanism-layer-model.md), [ADR-027](../wiki/adr/adr-027-mechanism-install-port.md))
+
+- [ ] If the project uses a Mechanism-layer distributable, its placement was answered via the
+      [`mechanism→install` port](PORTS.md) — not improvised inside `setup.md`.
+- [ ] The distributable's invocable path/alias/`PATH` entry was discovered/confirmed against
+      the harness, not guessed (same discipline as tool-name and model-name strings).
+- [ ] The setup step that performed placement reports created-vs-patched, so this Verify step
+      can confirm the distributable is present and callable.
+
 ### Structure
 
 - [ ] Every skill referenced by a stage prompt/agent body actually exists in the generated

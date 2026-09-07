@@ -67,7 +67,9 @@ implementing this contract**, not "the setup."
   content — the same leakage in a second place. Reading `SETUP.md` remotely is enough.
 - **A machine-parseable adapter manifest** instead of a prose contract. Rejected:
   contradicts [ADR-002](adr-002-workflow-as-adapter-seed.md)'s prose-first stance; the
-  contract is interpreted by an agent, not executed by a schema.
+  contract is interpreted by an agent, not executed by a schema. (This leans on the
+  no-machine-parseable-contract sentence [ADR-026](adr-026-gate-mechanism-layer-model.md)
+  narrowly reverses — see there before treating this rejection as settled.)
 
 ## Consequences
 
@@ -83,7 +85,8 @@ implementing this contract**, not "the setup."
 ## Related
 
 - [ADR-001](adr-001-adapter-pattern.md) — the adapter layer this contract operationalizes.
-- [ADR-002](adr-002-workflow-as-adapter-seed.md) — prose-first principle the contract honors.
+- [ADR-002](adr-002-workflow-as-adapter-seed.md) — prose-first principle the contract honors
+  (now partly superseded, see [ADR-026](adr-026-gate-mechanism-layer-model.md)).
 - [ADR-004](adr-004-loom-mirai-setup.md) — the Mirai adapter: first implementation of this contract.
 - [SETUP.md](../../SETUP.md) — the entrypoint this ADR describes.
 - Glossary: [Harness, Adapter, Setup contract](../glossary/index.md).

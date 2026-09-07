@@ -10,7 +10,9 @@ tags: [macro-pm, wayfinder, board, tracker, determinism, distributable, mechanic
 
 > Extends [ADR-018](adr-018-macro-project-management.md) (macro-PM as a mechanical, restart-safe
 > router over a single source of truth) and honours the **prose-first principle**
-> ([ADR-001](adr-001-adapter-pattern.md), [ADR-002](adr-002-workflow-as-adapter-seed.md)). It adds
+> ([ADR-001](adr-001-adapter-pattern.md), [ADR-002](adr-002-workflow-as-adapter-seed.md) —
+> prose-first-for-judgment is preserved, not superseded, by [ADR-026](adr-026-gate-mechanism-layer-model.md),
+> which this ADR's own "seed holds the contract, distributable holds the code" split anticipated). It adds
 > **no new seed layer and no new port** — it names *where executable board mechanics live* (a
 > distributable the harness installs) and *how the seed refers to them* (as a CLI contract in
 > illustrative pseudo-code). The macro-PM protocol vocabularies, dispatch table, recursion, and
@@ -144,8 +146,9 @@ only the CLI *contract* (in illustrative pseudo-code); the *executable* lives ou
   (only cron/gateway); the tick prose is the only available schedule. Determinism comes from moving
   mutation into the tool, not from enforcing a call around it.
 - **Embed executable mechanics directly in the prose seed.** Rejected — breaks prose-first
-  ([ADR-002](adr-002-workflow-as-adapter-seed.md)); the seed holds the *contract*, the distributable
-  holds the *code*.
+  ([ADR-002](adr-002-workflow-as-adapter-seed.md), the seed/distributable split
+  [ADR-026](adr-026-gate-mechanism-layer-model.md) explicitly keeps); the seed holds the
+  *contract*, the distributable holds the *code*.
 - **A new normative "reference implementation" layer between prose and adapter.** Rejected as
   over-engineering — the deletion test says it moves complexity rather than concentrating it; skill
   `scripts/` + adapter-installed distributable already carry executables.
@@ -153,7 +156,7 @@ only the CLI *contract* (in illustrative pseudo-code); the *executable* lives ou
 ## Related
 
 - [ADR-018](adr-018-macro-project-management.md) — the macro-PM protocol whose mechanical/restart-safe router this makes executable (unchanged).
-- [ADR-001](adr-001-adapter-pattern.md) / [ADR-002](adr-002-workflow-as-adapter-seed.md) — the prose-first principle this preserves (contract in prose, code in the distributable).
+- [ADR-001](adr-001-adapter-pattern.md) / [ADR-002](adr-002-workflow-as-adapter-seed.md) — the prose-first principle this preserves (contract in prose, code in the distributable; the split [ADR-026](adr-026-gate-mechanism-layer-model.md) builds on, not reverses).
 - [ADR-010](adr-010-keyless-by-default-recommendations.md) — keyless-first; the `gh`-backed board API needs no API key.
 - [workflows/macro-pm/index.md](../../workflows/macro-pm/index.md#the-tick-loop) — the tick loop this ADR gives an executable board API and a named Heal→…→Reconcile shape.
 - [SKILLS/planning/wayfinder/SKILL.md](../../SKILLS/planning/wayfinder/SKILL.md#the-two-vocabulary-seam) — macro mode's dispatch table the board verbs execute.

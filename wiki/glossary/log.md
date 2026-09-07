@@ -47,3 +47,9 @@ description: Chronological log of glossary changes
   and being a Dispatcher is clarified as **orthogonal** to the invocation surface — `delegate`
   governs *dispatching out*, the invocation surface governs *being entered*, so a Dispatcher can be
   a `front-door` (Shaping) as well as `dispatched` (the Orchestrator).
+- 2026-09-04 — Added **Form slop**, **Recall slop**, **Judgment slop**, **Gate**, **Evidence
+  producer**, **Criterion type**, **Mechanism**, **Graduation**, **Ratchet**, and
+  **Re-executing reality** — the vocabulary for the Core/Gate/Mechanism layer model
+  (ADR-026): three layers, each owning one kind of slop, each enforced by a mechanism suited
+  to what it owns (reasoning + a different actor for judgment slop; exit codes + withheld
+  capabilities for form slop; re-executing reality for recall slop).

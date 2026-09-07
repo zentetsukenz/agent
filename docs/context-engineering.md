@@ -46,7 +46,7 @@ Persist information outside the context window for later retrieval.
 | **Files** | Persistent documents | KNOWLEDGE.md, STANDARDS.md |
 | **Memories** | Cross-session learnings | Patterns discovered |
 
-**Skill**: [checkpoint.md](../SKILLS/checkpoint.md)
+**Skill**: [checkpoint.md](../SKILLS/preservation/checkpoint/SKILL.md)
 
 ---
 
@@ -66,7 +66,7 @@ Retrieve relevant information when needed.
 - **Procedural** — Instructions to steer behavior (SKILLS/)
 - **Semantic** — Facts for task-relevant context (KNOWLEDGE.md)
 
-**Skill**: [session-bootstrap.md](../SKILLS/session-bootstrap.md)
+**Skill**: [session-bootstrap.md](../SKILLS/discovery/session-bootstrap/SKILL.md)
 
 ---
 
@@ -91,7 +91,7 @@ Reduce context size while preserving essential information.
 **Key Finding** (JetBrains Research):
 > "Observation masking outperforms LLM summarization in overall efficiency and reliability."
 
-**Skill**: [checkpoint.md](../SKILLS/checkpoint.md) (COMPRESS happens during checkpoint)
+**Skill**: [checkpoint.md](../SKILLS/preservation/checkpoint/SKILL.md) (COMPRESS happens during checkpoint)
 
 ---
 
@@ -124,7 +124,7 @@ TheEngineer continues (main context clean)
 
 **Trade-off**: Multi-agent can use up to 15× more tokens than single-agent, but prevents context overflow and degradation.
 
-**Skill**: [dispatch-context.md](../SKILLS/dispatch-context.md)
+**Skill**: [dispatch-context.md](../SKILLS/planning/dispatch-context/SKILL.md)
 
 ---
 
@@ -215,11 +215,11 @@ Context engineering is a continuous cycle:
 
 ### Skills (How-To)
 
-- [SKILLS/checkpoint.md](../SKILLS/checkpoint.md) — How to perform checkpoints
-- [SKILLS/session-bootstrap.md](../SKILLS/session-bootstrap.md) — How to start fresh sessions
-- [SKILLS/dispatch-context.md](../SKILLS/dispatch-context.md) — How to delegate with clean context
-- [SKILLS/task-sizing.md](../SKILLS/task-sizing.md) — How to assess task context cost
+- [SKILLS/checkpoint.md](../SKILLS/preservation/checkpoint/SKILL.md) — How to perform checkpoints
+- [SKILLS/session-bootstrap.md](../SKILLS/discovery/session-bootstrap/SKILL.md) — How to start fresh sessions
+- [SKILLS/dispatch-context.md](../SKILLS/planning/dispatch-context/SKILL.md) — How to delegate with clean context
+- [task-sizing](../SKILLS/planning/task-sizing/SKILL.md) — How to assess task context cost
 
 ### Source of Truth
 
-- [FRAMEWORK-DESIGN.md](../FRAMEWORK-DESIGN.md) — Full framework specification
+- [framework-design.md](framework-design.md) — Full framework specification

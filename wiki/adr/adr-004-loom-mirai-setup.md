@@ -80,9 +80,10 @@ concrete table.
 
 No routing/dispatch orchestrator is generated. Steering is emergent from system prompts
 (`AGENTS.md` + each `.agent.md` body) and composable skills — consistent with
-[ADR-002](adr-002-workflow-as-adapter-seed.md)'s prose-first stance: the workflow is
-policy an interpreting agent (here, the setup skill) compiles into a concrete harness at
-setup time, not a schema loom bakes in.
+[ADR-002](adr-002-workflow-as-adapter-seed.md)'s prose-first stance (preserved by
+[ADR-026](adr-026-gate-mechanism-layer-model.md) for judgment; only form/recall left prose):
+the workflow is policy an interpreting agent (here, the setup skill) compiles into a
+concrete harness at setup time, not a schema loom bakes in.
 
 ### Setup flow (final)
 
@@ -102,8 +103,9 @@ duplicates already-written config.
   triggers. Rejected in favor of the interview-driven tailoring above.
 - **A dispatch/routing orchestrator agent.** Matches some multi-agent frameworks (e.g.
   OMO's Atlas), but reintroduces a structured contract loom's prose-first philosophy
-  (ADR-002) deliberately avoids, and adds a single point of failure. Rejected — steering
-  stays emergent from prompts.
+  (ADR-002, still binding for skills/agents per [ADR-026](adr-026-gate-mechanism-layer-model.md)'s
+  narrow Gate-only exception) deliberately avoids, and adds a single point of failure.
+  Rejected — steering stays emergent from prompts.
 - **Separate "bundle" skills wrapping combos of granular skills.** Redundant with
   `.mirai/prompts/*.prompt.md`, which already IS a combo (skills + model) at no extra
   layer. Rejected.
@@ -137,7 +139,8 @@ duplicates already-written config.
 - [ADR-001](adr-001-adapter-pattern.md) — the general adapter layer this setup approach
   precedes and informs.
 - [ADR-002](adr-002-workflow-as-adapter-seed.md) — prose-first principle this setup flow
-  honors (no baked-in schema; the workflow is interpreted at setup time).
+  honors (no baked-in schema; the workflow is interpreted at setup time; now partly
+  superseded, see [ADR-026](adr-026-gate-mechanism-layer-model.md)).
 - [wiki/environments/mirai.md](../environments/mirai.md) — the Mirai customization
   reference the setup skill consults.
 - [adapters/mirai/MAPPING.md](../../adapters/mirai/MAPPING.md) — concrete SKILLS→`.mirai/skills`

@@ -15,17 +15,15 @@
 > interview questions, provenance/idempotency, invariant-checks) lives **once** in the shared
 > [`contract/`](../../contract/index.md) core — this file **references** it and never restates it
 > ([ADR-013](../../wiki/adr/adr-013-shared-adapter-contract-core.md)). This adapter supplies only
-> Hermes's **four port answers** (see [MAPPING.md](MAPPING.md), [STAGES.md](STAGES.md),
+> Hermes's **five port answers** (see [MAPPING.md](MAPPING.md), [STAGES.md](STAGES.md),
 > [references/](references/write-format.md)) plus the macro-PM binding
 > ([references/macro-pm.md](references/macro-pm.md)). See
 > [ADR-005](../../wiki/adr/adr-005-harness-agnostic-setup.md) (harness-agnostic contract) and
 > [ADR-001](../../wiki/adr/adr-001-adapter-pattern.md) (a new harness = a new adapter).
 >
-> **Read remotely — do not clone loom.** An agent runs this by *reading* these instructions plus
-> the `contract/` core and the Hermes references, either from a local loom checkout or straight
-> from the canonical repo (e.g. `curl` the raw files — both the adapter files **and** the
-> `contract/` files). There is **no command to invoke**; reading and following this file (in
-> `init` or `update` mode) is the whole mechanism.
+> **Read remotely — do not clone loom** ([SETUP.md Step 1](../../SETUP.md#step-1--get-looms-files-in-front-of-you)):
+> fetch the adapter files **and** the `contract/` core the same way. No command to invoke;
+> reading and following this file (in `init` or `update` mode) is the whole mechanism.
 
 ## What this adapter renders (and what it does not)
 
@@ -44,7 +42,7 @@ It does **NOT** render loom's SDLC stage agents (Shaping / Planner / Orchestrato
 `quick` / `deep` / `frontend` / `visual-qa`). Under the resident archetype those are **dispatched
 down into a separate per-invocation harness**, not rendered here. If the project has no such
 harness configured, macro mode has nowhere to dispatch — see
-[dispatch target](references/macro-pm.md#the-micro-dispatch-target) — and the setup surfaces that
+[dispatch target](references/macro-pm.md#the-micro-dispatch-target--a-separate-per-invocation-harness) — and the setup surfaces that
 as a prerequisite.
 
 ## Trigger
@@ -78,9 +76,9 @@ resident profile already exists (a `wayfinder-macro` profile `SOUL.md` carrying 
 marker) — if so, this is an `update`; otherwise `init`. Drift detection: see
 [contract/index.md](../../contract/index.md).
 
-## Hermes's four port answers (the adapter's job)
+## Hermes's five port answers (the adapter's job)
 
-Everything Hermes-specific is one of the four [port obligations](../../contract/PORTS.md):
+Everything Hermes-specific is one of the five [port obligations](../../contract/PORTS.md):
 
 | Port | Hermes answer |
 |---|---|
@@ -88,6 +86,7 @@ Everything Hermes-specific is one of the four [port obligations](../../contract/
 | **`archetype→model`** | [MAPPING.md §5](MAPPING.md#5-model-archetype-render-target) — the resident agent's `model.default` + a `model.fallback_providers:` array (the fallback-array discipline is native). |
 | **`seam-obligation→wiring`** | [references/macro-pm.md](references/macro-pm.md) — the **macro** board is the chosen networked tracker over MCP; the **micro** ledger is a **shared, on-disk, gitignored** substrate the *dispatched* harness also reads (Hermes memory cannot cross a harness boundary — [ADR-019](../../wiki/adr/adr-019-loom-hermes-setup.md)). The resident daemon (`gateway` + `cron`) is the altitude-seam translator/router. |
 | **`primitive→file` manifest** | The [harness manifest](#harness-manifest) below + [MAPPING.md](MAPPING.md); format-checks in [references/verify.md](references/verify.md). |
+| **`mechanism→install`** | **Profile distribution, not a repo-local tree** — the only one of the three adapters that differs in kind, because Hermes owns a profile/plugin location rather than a project-local dir ([harness-archetypes](../../wiki/patterns/harness-archetypes.md)). The Mechanism-layer distributable ships **inside the `wayfinder-macro` profile**, at `<profile>/mechanisms/loom` (executable, no extension) — the same distribution vehicle already carrying `config.yaml`/`SOUL.md`/`skills/` (see [Delivery shape](references/write-format.md#delivery-shape)). It becomes invocable once `hermes profile install` lands the profile at `~/.hermes/profiles/wayfinder-macro/`: the resident agent's `SOUL.md` tick-loop prose calls it by that installed path, e.g. `~/.hermes/profiles/wayfinder-macro/mechanisms/loom size score` — Hermes has no PATH/alias primitive for a profile-local script, so the router prose names the resolved profile-home path directly (discovered from `hermes profile install`'s own report, never guessed). "Installed" means: the distribution repo commits `mechanisms/loom`, `hermes profile install` places the whole profile (mechanism included) on disk, and step 6 below reports the profile-relative path as created vs. patched so Verify can confirm the file exists and is executable at the installed location. Two callers share this one installed path: Planning's task-sizing and the Orchestrator's agent-selection rubric ([implementation.md](../../workflows/sdlc/implementation.md#the-orchestrator)). See [Port 5](../../contract/PORTS.md#port-5--mechanisminstall) for the obligation; step 6 performs the placement. |
 
 ## Procedure
 
@@ -108,10 +107,19 @@ Run the five steps from [contract/index.md](../../contract/index.md). Hermes spe
 4. **Confirm** — wait for explicit user "go"; adjust and re-present on pushback.
 5. **Write** in Hermes's exact format — consult [references/write-format.md](references/write-format.md)
    and [references/macro-pm.md](references/macro-pm.md). Never invent config fields.
-6. **Verify** — run the generic invariant-checks ([contract/discipline.md](../../contract/discipline.md))
-   **plus** Hermes's format-checks ([references/verify.md](references/verify.md)).
-7. **Done** — report created vs. patched paths, which tracker labels were provisioned, and the
-   named micro dispatch target.
+6. **Install the Mechanism-layer distributable** — place it at `mechanisms/loom` inside the
+   `wayfinder-macro` profile directory in the distribution repo (create the directory if absent;
+   `chmod +x`) per the [`mechanism→install`](#hermess-five-port-answers-the-adapters-job) answer
+   above. This commits *inside the profile distribution*, not the target project's working tree —
+   it reaches disk only once the user runs `hermes profile install` and Hermes materializes the
+   profile at `~/.hermes/profiles/wayfinder-macro/`. On `update`, patch the existing file in the
+   distribution repo rather than duplicating it.
+7. **Verify** — run the generic invariant-checks ([contract/discipline.md](../../contract/discipline.md))
+   **plus** Hermes's format-checks ([references/verify.md](references/verify.md)), confirming
+   `mechanisms/loom` exists and is executable in the distribution repo (and, once installed, at the
+   reported profile-home path).
+8. **Done** — report created vs. patched paths (including `mechanisms/loom`), which tracker labels
+   were provisioned, and the named micro dispatch target.
 
 ## Harness manifest
 
@@ -137,6 +145,10 @@ Hermes's answers to the `primitive→file` manifest ([port 4](../../contract/POR
 - **Delivery shape**: a **profile distribution** (a git repo the user installs with
   `hermes profile install`) plus the project's `AGENTS.md` — see
   [references/write-format.md](references/write-format.md#delivery-shape).
+- **Mechanism-layer distributable** (port 5, not a declarative primitive — see the
+  [port-answer table](#hermess-five-port-answers-the-adapters-job) above): `<profile>/mechanisms/loom`,
+  committed inside the profile distribution and materialized at
+  `~/.hermes/profiles/wayfinder-macro/mechanisms/loom` by `hermes profile install`.
 - Authoritative Hermes reference: [wiki/environments/hermes.md](../../wiki/environments/hermes.md).
 
 **The setup instruction itself is not copied** into a target project — this file *writes* the
@@ -145,7 +157,8 @@ resident profile; it is not content that ships inside it.
 ## Output
 
 - A loom **profile distribution** (git repo): the **`wayfinder-macro` resident profile**
-  (`config.yaml` + `SOUL.md` + the macro-PM / wayfinder skills) with a `gateway` + `cron` job.
+  (`config.yaml` + `SOUL.md` + the macro-PM / wayfinder skills + `mechanisms/loom`, the installed
+  Mechanism-layer distributable) with a `gateway` + `cron` job.
 - A project-root `AGENTS.md` with a loom-owned section pointing at the committed
   `.loom/handoffs/protocol.md` (whose macro section names the source of truth), and the **gitignored**
   micro-ledger location the dispatched harness shares.
@@ -159,7 +172,7 @@ resident profile; it is not content that ships inside it.
 - [ADR-019](../../wiki/adr/adr-019-loom-hermes-setup.md) — why this adapter is thin-macro and dispatches out.
 - [ADR-018](../../wiki/adr/adr-018-macro-project-management.md) — the macro-PM decision.
 - [harness-archetypes](../../wiki/patterns/harness-archetypes.md) — the resident vs per-invocation taxonomy.
-- [contract/index.md](../../contract/index.md), [contract/PORTS.md](../../contract/PORTS.md) — the generic contract + four obligations.
+- [contract/index.md](../../contract/index.md), [contract/PORTS.md](../../contract/PORTS.md) — the generic contract + five obligations.
 - [MAPPING.md](MAPPING.md), [STAGES.md](STAGES.md), [references/macro-pm.md](references/macro-pm.md) — Hermes's concrete port answers + the resident-daemon binding.
 - [wiki/environments/hermes.md](../../wiki/environments/hermes.md) — Hermes primitive reference.
 - [adapters/opencode/setup.md](../opencode/setup.md) — a per-invocation adapter (a valid micro dispatch target).

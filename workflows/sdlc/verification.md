@@ -21,13 +21,11 @@ Confirm that the **whole** delivered change satisfies the success criteria defin
 
 **Exit gate**
 
-- Success criteria are demonstrably met via **evidence, not assertion**.
-- [verification-before-completion](../../SKILLS/verification/verification-before-completion/SKILL.md) is satisfied.
+- [verification-before-completion](../../SKILLS/verification/verification-before-completion/SKILL.md) is satisfied — this already carries the [verification-culture](../../wiki/principles/verification-culture.md) iron law that success is demonstrated via evidence, not assertion, and no "done" claim exists without proof.
 - The project's [quality baseline](../../wiki/patterns/quality-baseline.md) — the full
   lint/code-quality/security/coverage floor — passes across the **whole** delivered change
   (not just per-slice deltas), so the shipped result is proven top-to-bottom
   ([ADR-017](../../wiki/adr/adr-017-quality-baseline.md)).
-- No "done" claim exists without proof.
 - **The Delivery seam artifact is produced and registered** — this is the
   Delivery → Closing handoff (see below).
 

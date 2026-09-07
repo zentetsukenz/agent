@@ -9,9 +9,9 @@
 > the **committed-ledger** wiring. Feeds [setup.md](setup.md) step 5 (Write) and
 > [MAPPING.md §2–3](MAPPING.md#2-stage-agent--stage-command-primitives--opencode-files).
 >
-> Read the generic per-role rosters, capabilities, and workflow-prose sources from
-> [contract/primitives.md](../../contract/primitives.md#per-stage-skill-rosters--capability-sets--workflow-prose-sourcing).
-> The **withheld** capabilities are load-bearing (a role with `edit: deny` cannot write code);
+> Read the generic per-role rosters, capabilities, load-bearing-withhold rule, and
+> workflow-prose sources from
+> [contract/primitives.md](../../contract/primitives.md#per-stage-skill-rosters--capability-sets--workflow-prose-sourcing);
 > capabilities resolve to OpenCode `permission:` keys via [references/capabilities.md](references/capabilities.md).
 > **`docs-lookup`** is wired only if the project opted in (interview 4b).
 >
@@ -102,7 +102,7 @@ in [MAPPING.md §7](MAPPING.md#7-communication-protocol-document--loomhandoffs))
   has **no memory tool**, `persist` is the on-disk folder: these roles need `edit` **scoped to
   `.loom/handoffs/`** so they can write the ledger without gaining general code-edit — use a
   glob permission `permission: { edit: { "*": deny, ".loom/handoffs/**": allow } }` (see
-  [write-format.md](references/write-format.md#persist-scoped-edit)). This same on-disk folder is
+  [capabilities.md](references/capabilities.md#persist-scoped-edit)). This same on-disk folder is
   the shared ground when OpenCode is the **micro dispatch target** of a resident macro agent (a
   [dispatch-target harness](../../wiki/patterns/harness-archetypes.md)): the dispatching harness and
   this SDLC run read the one folder, because memory cannot cross a harness boundary.
@@ -126,7 +126,7 @@ relative links resolve — see [MAPPING.md §1](MAPPING.md#1-skill-primitive--op
 ## Related
 
 - [contract/primitives.md](../../contract/primitives.md) — the generic rosters/capabilities/prose/protocol this file binds to OpenCode.
-- [contract/PORTS.md](../../contract/PORTS.md) — the four obligations; this file supplies the manifest + seam-wiring bindings.
+- [contract/PORTS.md](../../contract/PORTS.md) — the four declarative obligations (Port 5 `mechanism→install` is answered in [setup.md](setup.md)); this file supplies the manifest + seam-wiring bindings.
 - [MAPPING.md](MAPPING.md) — the sibling port answers (skills copy, model target, capability→permission, protocol doc).
 - [ADR-013](../../wiki/adr/adr-013-shared-adapter-contract-core.md) — the shared-core split (reference, never restate).
 - [ADR-014](../../wiki/adr/adr-014-loom-opencode-setup.md) — the base setup approach.

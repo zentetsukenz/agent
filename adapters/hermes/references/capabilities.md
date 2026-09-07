@@ -16,7 +16,7 @@
 | `edit` | `write_file`, `patch` | `file` | grant `file`; **withhold = disable `write_file` + `patch` at the tool level** (below) |
 | `search` | `search_files` | `file` | shares the `file` toolset with read/edit |
 | `shell` | `terminal`, `process` | `terminal` | stable |
-| `delegate` | `delegate_task` | `delegation` | dispatch a buildable leaf **down** into the [micro dispatch target](macro-pm.md#the-micro-dispatch-target) (a separate per-invocation harness), and spawn the `research` subagent |
+| `delegate` | `delegate_task` | `delegation` | dispatch a buildable leaf **down** into the [micro dispatch target](macro-pm.md#the-micro-dispatch-target--a-separate-per-invocation-harness) (a separate per-invocation harness), and spawn the `research` subagent |
 | `web` | `web_search`, `web_extract` | `web` | stable |
 | `tasks` | `todo` | `todo` | stable |
 | `persist` | `memory` | `memory` | **native** — the resident agent's **own relational continuity only**, never project state and never the micro ledger (below) |
@@ -82,7 +82,7 @@ the board where it belongs — do not enlarge memory to hold more state.
 per-invocation harness**, a *different process* Hermes memory cannot reach (memory is intra-harness,
 per-profile, and not distributed across servers). The micro ledger is therefore a **shared, on-disk,
 gitignored** substrate both harnesses read — see
-[macro-pm.md](macro-pm.md#the-micro-dispatch-target) and
+[macro-pm.md](macro-pm.md#the-micro-dispatch-target--a-separate-per-invocation-harness) and
 [MAPPING.md §7](../MAPPING.md#7-communication-protocol-document--the-two-altitude-ledgers). Grant the
 `memory` toolset **only** on the resident macro profile, and only for its own continuity.
 
@@ -103,10 +103,9 @@ disabling only `write_file`/`patch`) covers `read` + `search` together.
 
 ## docs-lookup (optional, opt-in)
 
-`docs-lookup` is the generic "query up-to-date external documentation" capability
-([ADR-007](../../../wiki/adr/adr-007-docs-lookup-capability.md)). It is **off by default**
+`docs-lookup`'s definition and off-by-default rule are [ADR-007](../../../wiki/adr/adr-007-docs-lookup-capability.md)'s
 ([keyless-by-default](../../../wiki/principles/keyless-by-default.md),
-[ADR-010](../../../wiki/adr/adr-010-keyless-by-default-recommendations.md)):
+[ADR-010](../../../wiki/adr/adr-010-keyless-by-default-recommendations.md)); this is the Hermes binding:
 
 - **Hermes has a keyless `web` toolset** (`web_search` + `web_extract`) that covers most
   dependency/docs research without any MCP setup — prefer it for the common case (grant `web`).

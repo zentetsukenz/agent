@@ -81,7 +81,7 @@ System prompt body (Markdown) — loom writes the role's deep workflow here.
   research). Hidden system agents: `compaction`, `title`, `summary`.
 - **loom mapping**: loom's **stage agents** are `mode: primary` (`front-door`); loom's
   **utility roster** are `mode: subagent` (`dispatched`). The generic-capability → `permission:`
-  mapping is in [MAPPING.md §6](../../adapters/opencode/MAPPING.md#6-capability--opencode-tool-mapping)
+  mapping is in [MAPPING.md §6](../../adapters/opencode/MAPPING.md#6-capability--opencode-permission-mapping)
   and [references/capabilities.md](../../adapters/opencode/references/capabilities.md).
 
 ### Invocation surface → `mode`
@@ -159,9 +159,9 @@ description: '<what + when, 1–1024 chars>'
 - Keys are matched as **wildcard patterns** against tool names, so the same syntax gates
   built-ins, custom tools, and MCP tools (`"mymcp_*": "deny"`).
 - **loom withhold mechanism**: a role *denied* a capability sets that permission key to
-  `"deny"` (e.g. a Shaping/Planner/Orchestrator/Verifier agent gets `permission: { edit: deny }`).
-  The withheld capability is load-bearing — a role with `edit: deny` cannot write code. This is
-  OpenCode's answer to the [`capability→tool` port](../../contract/PORTS.md#port-1--capabilitytool);
+  `"deny"` (e.g. a Shaping/Planner/Orchestrator/Verifier agent gets `permission: { edit: deny }`) —
+  the [load-bearing](../../contract/primitives.md#per-stage-skill-rosters--capability-sets--workflow-prose-sourcing)
+  withhold. This is OpenCode's answer to the [`capability→tool` port](../../contract/PORTS.md#port-1--capabilitytool);
   full mapping in [references/capabilities.md](../../adapters/opencode/references/capabilities.md).
 
 ## The communication-protocol document (GAP)

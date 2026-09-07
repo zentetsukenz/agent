@@ -20,7 +20,7 @@ Templates referenced below live at
 > **Thin-macro scope** ([ADR-019](../../../wiki/adr/adr-019-loom-hermes-setup.md)): this adapter
 > writes exactly **one** profile — the resident `wayfinder-macro` agent — plus `AGENTS.md` and the
 > protocol document. It writes **no** SDLC stage/utility profiles and no quick-tier stage skill
-> (those are rendered by the [dispatch-target harness](macro-pm.md#the-micro-dispatch-target)), so
+> (those are rendered by the [dispatch-target harness](macro-pm.md#the-micro-dispatch-target--a-separate-per-invocation-harness)), so
 > there is no `stage.skill` template.
 
 ## Delivery shape — a profile distribution {#delivery-shape}
@@ -135,7 +135,7 @@ degradation) and grant a read-only research path via `web`/`memory`; flag this t
 ## Micro-ledger substrate {#micro-ledger-substrate}
 
 Always a **shared, on-disk, gitignored** directory — **not** a user choice under the thin-macro
-adapter. Because the SDLC run executes in a *separate* [dispatch-target harness](macro-pm.md#the-micro-dispatch-target),
+adapter. Because the SDLC run executes in a *separate* [dispatch-target harness](macro-pm.md#the-micro-dispatch-target--a-separate-per-invocation-harness),
 Hermes `memory` (intra-harness) cannot carry the baton; only on-disk files both harnesses read can.
 It is gitignored because ephemeral coordination is never version-controlled
 ([ADR-014](../../../wiki/adr/adr-014-loom-opencode-setup.md) Option A). The resident agent's own
@@ -153,10 +153,26 @@ Under the thin-macro adapter there is one profile and its surface is fixed
 | **Resident macro** — `wayfinder-macro` | `front-door` (+ resident) | a profile with a `gateway` (human HITL channel) + a `cron` job (the tick loop) — see [macro-pm.md](macro-pm.md) |
 
 No SDLC stage or utility profiles are rendered here — they belong to the
-[dispatch-target harness](macro-pm.md#the-micro-dispatch-target). On `update`, reconcile any
+[dispatch-target harness](macro-pm.md#the-micro-dispatch-target--a-separate-per-invocation-harness). On `update`, reconcile any
 **leftover (b)-shaped profiles** from an older run: an earlier version of this adapter rendered a
 full SDLC roster (`shaping`/`planner`/`orchestrator`/`closing`/`verifier`/…) into the distribution —
 those must be **removed**, leaving only the resident `wayfinder-macro` profile.
+
+## Skill copy rules
+
+When copying a loom `SKILLS/<bucket>/<slug>/SKILL.md` into `<profile>/skills/<slug>/SKILL.md`:
+
+- Preserve `name` exactly (must equal `<slug>`, the Hermes/agentskills.io requirement); keep
+  `SKILL.md` filename verbatim.
+- Preserve any extra frontmatter (`argument-hint`, `user-invocable`, `disable-model-invocation`)
+  verbatim — **Hermes ignores unknown fields**, so the copy is lossless and stays valid on
+  Mirai/OpenCode too.
+- Copy `references/`, `scripts/`, `assets/` subdirectories verbatim, one level deep.
+- If the interview tailored the `description` (e.g. to mention the project's actual test
+  command), edit only the `description` field — never the body's procedure — and note the
+  tailoring in the step-7 report.
+- `setup.md` itself is never copied — it *writes* the profile/skills, it is not content that
+  ships inside them.
 
 ## Related
 

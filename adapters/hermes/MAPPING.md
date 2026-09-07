@@ -11,9 +11,10 @@
 > **resident** adapter that renders exactly **one** profile — the `wayfinder-macro` resident agent —
 > and dispatches SDLC runs **down** into a separate per-invocation harness. It renders **no** SDLC
 > stage or utility profiles; §2–§3 below record that absence (the roster lives in the
-> [dispatch target](references/macro-pm.md#the-micro-dispatch-target), see [STAGES.md](STAGES.md)).
+> [dispatch target](references/macro-pm.md#the-micro-dispatch-target--a-separate-per-invocation-harness), see [STAGES.md](STAGES.md)).
 
-The four ports (all defined generically in [contract/PORTS.md](../../contract/PORTS.md)):
+The four **declarative** ports (defined generically in [contract/PORTS.md](../../contract/PORTS.md);
+Port 5 `mechanism→install` is answered in [setup.md](setup.md)):
 
 | Port | Section |
 |---|---|
@@ -66,7 +67,7 @@ but under the resident thin-macro archetype **Hermes renders none of them**. The
 (Shaping / Planner / Orchestrator / Verifier and the quick/deep tiers) are the **terminating**
 lifecycle, compiled by a **per-invocation** harness ([harness-archetypes](../../wiki/patterns/harness-archetypes.md)).
 Hermes dispatches a buildable leaf **down** into that separate harness (the
-[micro dispatch target](references/macro-pm.md#the-micro-dispatch-target)); it does not host the
+[micro dispatch target](references/macro-pm.md#the-micro-dispatch-target--a-separate-per-invocation-harness)); it does not host the
 stages itself. See [STAGES.md](STAGES.md) for the full rationale of this absence, and the
 [OpenCode adapter](../opencode/setup.md) for an example harness that *does* render them.
 
@@ -131,7 +132,7 @@ The capability vocabulary + the "discover, don't guess" discipline are **generic
 | `edit` | `write_file`, `patch` | `file` | stable — **the withheld one for read-only roles** |
 | `search` | `search_files` | `file` | ripgrep-backed; shares the `file` toolset with `read`/`edit` |
 | `shell` | `terminal`, `process` | `terminal` | stable |
-| `delegate` | `delegate_task` | `delegation` | dispatch a buildable leaf **down** into the [micro dispatch target](references/macro-pm.md#the-micro-dispatch-target); spawn the `research` subagent |
+| `delegate` | `delegate_task` | `delegation` | dispatch a buildable leaf **down** into the [micro dispatch target](references/macro-pm.md#the-micro-dispatch-target--a-separate-per-invocation-harness); spawn the `research` subagent |
 | `web` | `web_search`, `web_extract` | `web` | stable |
 | `tasks` | `todo` | `todo` | stable |
 | `persist` | `memory` | `memory` | **native** — the resident agent's own relational continuity **only** (never project state, never the micro ledger — §7). |
@@ -149,8 +150,8 @@ scoped by **two levers together**:
    out even if its toolset is enabled. This is how a read-only role keeps `read_file`/`search_files`
    but loses `write_file`/`patch`: grant `file`, **disable `write_file` and `patch`**.
 
-The withheld capability is load-bearing — a role that cannot call `write_file`/`patch` cannot write
-code, and that is the point ([ADR-006](../../wiki/adr/adr-006-capability-based-roles.md)). The exact
+The withhold is [load-bearing](../../contract/primitives.md#per-stage-skill-rosters--capability-sets--workflow-prose-sourcing)
+([ADR-006](../../wiki/adr/adr-006-capability-based-roles.md)). The exact
 config key for the per-tool disable is **discovered/confirmed at setup** against the user's Hermes
 version (same discipline as model-name strings) — see
 [references/capabilities.md §withhold](references/capabilities.md#the-withhold-mechanism). `agent.disabled_toolsets`
@@ -169,7 +170,7 @@ and Hermes answers each altitude differently:
 |---|---|
 | Communication protocol document | Committed `.loom/handoffs/protocol.md`, referenced from the loom-owned section of `AGENTS.md` (Hermes has **no description-triggered instruction** primitive — the GAP is the same as OpenCode; always-on `AGENTS.md` context is the mechanism). Its **macro section** names the source of truth and the named micro dispatch target. |
 | **Macro** board (the resident lifecycle) → networked substrate | The chosen **networked tracker** (default: GitHub Issues+Projects; also Notion/Linear) reached over Hermes **MCP** (`mcp-<tracker>` toolset). Distributes across servers/agents ([ADR-018](../../wiki/adr/adr-018-macro-project-management.md)), and its native labels carry the `wayfinder:*`/`sdlc:*` vocabularies. Full binding: [references/macro-pm.md](references/macro-pm.md). |
-| **Micro** [ledger](../../wiki/glossary/index.md#ledger) (SDLC inner loop) → cross-harness substrate | A **shared, on-disk, gitignored** directory (e.g. `.loom/handoffs/`). It **cannot** be Hermes `memory`: the SDLC run executes in a *separate* [dispatch-target harness](references/macro-pm.md#the-micro-dispatch-target), and memory is intra-harness — only on-disk files cross the boundary. Gitignored because ephemeral coordination is never version-controlled ([ADR-014](../../wiki/adr/adr-014-loom-opencode-setup.md) Option A; durable knowledge → wiki). Hermes `memory` holds the resident agent's continuity only, never this ledger. |
+| **Micro** [ledger](../../wiki/glossary/index.md#ledger) (SDLC inner loop) → cross-harness substrate | A **shared, on-disk, gitignored** directory (e.g. `.loom/handoffs/`). It **cannot** be Hermes `memory`: the SDLC run executes in a *separate* [dispatch-target harness](references/macro-pm.md#the-micro-dispatch-target--a-separate-per-invocation-harness), and memory is intra-harness — only on-disk files cross the boundary. Gitignored because ephemeral coordination is never version-controlled ([ADR-014](../../wiki/adr/adr-014-loom-opencode-setup.md) Option A; durable knowledge → wiki). Hermes `memory` holds the resident agent's continuity only, never this ledger. |
 | Ledger manifest | `<ledger-root>/index.md` in the shared on-disk directory — seeded empty at setup; the dispatched harness's producers register rows. |
 | PRODUCE / DISCOVER handoff | The resident agent translates a leaf ticket into a `shaping/` seam artifact in the shared ledger (PRODUCE at the seam), then dispatches the run; the dispatch-target harness DISCOVERs it at its entry gate and, at exit, PRODUCEs `delivery/<milestone>/verified-change`, which the resident agent reads to update the board. The crossing is the [altitude seam](../../wiki/glossary/index.md#altitude-seam) — see [references/macro-pm.md](references/macro-pm.md#the-altitude-seam--the-translator). |
 
@@ -183,7 +184,7 @@ and [references/macro-pm.md](references/macro-pm.md). Template:
 
 ## Related
 
-- [contract/PORTS.md](../../contract/PORTS.md) — the four obligations this file answers for Hermes.
+- [contract/PORTS.md](../../contract/PORTS.md) — the four declarative obligations this file answers for Hermes (Port 5 `mechanism→install` is answered in [setup.md](setup.md)).
 - [contract/primitives.md](../../contract/primitives.md) — the generic primitives/rosters/archetypes referenced above.
 - [ADR-013](../../wiki/adr/adr-013-shared-adapter-contract-core.md) — the shared-core split (reference, never restate).
 - [ADR-019](../../wiki/adr/adr-019-loom-hermes-setup.md) — the resident thin-macro shape (why §2–§3 render nothing).

@@ -57,7 +57,7 @@ Both first-time setup (`init`) and later refreshes (`update`) run **through this
 its adapter** — there is no slash command to invoke and nothing to clone; an agent just
 reads these instructions (locally or remotely) and follows them. Follow the adapter
 entrypoint exactly. Every adapter implements the same **setup contract**, whose generic body
-and the four port obligations an adapter must supply live in the shared
+and the five port obligations an adapter must supply live in the shared
 [`contract/`](contract/index.md) core (read [`contract/index.md`](contract/index.md) for the
 full body and [`contract/PORTS.md`](contract/PORTS.md) for the obligations). The five steps:
 

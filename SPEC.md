@@ -169,14 +169,15 @@ Every adapter MUST conform to the following:
   universal safety rules, and the contract itself stay harness-agnostic; per-harness config
   formats, paths, and frontmatter live under `adapters/<harness>/` and the adapter's setup
   entrypoint. Harness detail MUST NOT leak into `SETUP.md` or other shared documents.
-- **Supplies the four port obligations and references — never restates — the shared core.**
+- **Supplies the five port obligations and references — never restates — the shared core.**
   The generic contract body (five steps, `init`/`update`, the six primitives with their skill
   rosters/capability sets/model archetypes, the interview questions, and the invariant-checks)
   lives once in `contract/` (`wiki/adr/adr-013-shared-adapter-contract-core.md`). An adapter
-  MUST supply the four port obligations enumerated in `contract/PORTS.md` (the three
-  render-binding ports — `capability→tool`, `archetype→model`, `seam-obligation→wiring` — plus
-  the `primitive→file` manifest) and reference the generic content in `contract/` rather than
-  restating any of it.
+  MUST supply the five port obligations enumerated in `contract/PORTS.md` (the three
+  render-binding ports — `capability→tool`, `archetype→model`, `seam-obligation→wiring` —
+  plus the `primitive→file` manifest, plus `mechanism→install`
+  ([ADR-027](wiki/adr/adr-027-mechanism-install-port.md))) and reference the generic content
+  in `contract/` rather than restating any of it.
 - **Honors the universal safety rules**: never overwrite/delete existing files (edit only
   loom-owned, provenance-marked sections); change no application code, CI, or runtime
   config; confirm the proposed tree before writing; ask for the model list rather than
@@ -229,14 +230,16 @@ contains loom-authored content, `scripts/validate.sh` additionally checks:
 - `.opencode/commands/*.md` — required non-empty `description`.
 - `opencode.json` (if present) — must parse as valid JSON.
 
-The OpenCode adapter additionally supplies its four port answers as prose (capability →
+The OpenCode adapter additionally supplies its five port answers as prose (capability →
 `permission:` key with `deny` as the withhold; `archetype→model` as an inline `model:` field per
 agent/command; the seam obligation as a **local-only, blanket-gitignored** `.loom/handoffs/` ledger
 — protocol document, manifest, and artifacts all under `.loom/**`, never committed or tracked —
-since OpenCode has no memory tool or `handoffs:` primitive; the `primitive→file` manifest for skills/agents/commands)
-and references — never restates — the generic `contract/` content, per the Setup contract
-conformance rules above. Per-role tiering is expressed directly by each agent's inline `model:`,
-so loom renders no external model-tiering overlay ([ADR-014](wiki/adr/adr-014-loom-opencode-setup.md)).
+since OpenCode has no memory tool or `handoffs:` primitive; the `primitive→file` manifest for
+skills/agents/commands; `mechanism→install` as the Mechanism-layer distributable landing at
+`.opencode/mechanisms/loom`, per its `setup.md`) and references — never restates — the generic
+`contract/` content, per the Setup contract conformance rules above. Per-role tiering is expressed
+directly by each agent's inline `model:`, so loom renders no external model-tiering overlay
+([ADR-014](wiki/adr/adr-014-loom-opencode-setup.md)).
 
 See `wiki/environments/opencode.md` for the full frontmatter/config reference these checks
 enforce a subset of, and `adapters/opencode/setup.md` for the adapter setup instruction that
@@ -265,7 +268,7 @@ additionally checks:
 - Each profile's `config.yaml` — must parse as valid YAML.
 - Each profile's `SOUL.md` — required non-empty body.
 
-The Hermes adapter additionally supplies its four port answers as prose (capability → toolset
+The Hermes adapter additionally supplies its five port answers as prose (capability → toolset
 grant, with the load-bearing **withhold** = grant the `file` toolset but disable `write_file` +
 `patch` at the tool level; `archetype→model` as the resident profile's `model.default` + a
 `model.fallback_providers:` array; the seam obligation as **two altitude-scoped substrates** — a
@@ -274,10 +277,11 @@ the micro SDLC ledger, which **cannot** be Hermes `memory` because the dispatche
 in a separate harness process and memory does not cross a harness boundary; the `primitive→file`
 manifest rendering the macro skills to `SKILL.md` and the **single resident agent** to a profile —
 loom's SDLC stage agents and utilities are **not** rendered by Hermes but by the dispatch-target
-harness) and references — never restates — the generic `contract/` content, per the Setup contract
-conformance rules above. **The macro-PM resident lifecycle is the whole point of this adapter**;
-running a single terminating SDLC effort belongs on a per-invocation harness (Mirai/OpenCode), not
-Hermes.
+harness; `mechanism→install` as the Mechanism-layer distributable shipped inside the
+`wayfinder-macro` profile at `<profile>/mechanisms/loom`, per its `setup.md`) and references —
+never restates — the generic `contract/` content, per the Setup contract conformance rules above.
+**The macro-PM resident lifecycle is the whole point of this adapter**; running a single
+terminating SDLC effort belongs on a per-invocation harness (Mirai/OpenCode), not Hermes.
 
 See `wiki/environments/hermes.md` for the full config reference these checks enforce a subset of,
 and `adapters/hermes/setup.md` for the adapter setup instruction that generates conformant Hermes

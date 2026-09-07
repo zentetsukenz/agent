@@ -11,7 +11,7 @@ loom is content-only. It ships no fixed config to copy. Instead every adapter ru
 universal **setup contract** — *explore → interview → present & confirm → generate →
 verify* — rendering loom's generic content into the target harness's native format. This
 directory holds the **generic** half of that contract, written once. An adapter
-**references** it and supplies only the four **port obligations** in [PORTS.md](PORTS.md);
+**references** it and supplies only the five **port obligations** in [PORTS.md](PORTS.md);
 it **MUST NOT restate** generic content it could link to
 ([ADR-013](../wiki/adr/adr-013-shared-adapter-contract-core.md) — reference, never copy).
 
@@ -23,7 +23,7 @@ it **MUST NOT restate** generic content it could link to
 | [primitives.md](primitives.md) | The six loom primitives + their generic content: stage groupings, skill rosters, capability-set-per-role, model archetypes |
 | [interview.md](interview.md) | The generic, harness-agnostic interview questions |
 | [discipline.md](discipline.md) | Provenance/idempotency discipline + the generic invariant-checks every adapter's verify step inherits |
-| [PORTS.md](PORTS.md) | The **four named port obligations** an adapter MUST supply |
+| [PORTS.md](PORTS.md) | The **five named port obligations** an adapter MUST supply |
 
 ## The setup contract (five steps)
 
@@ -85,7 +85,7 @@ Harness-agnostic; doubly so for a live/production project. Every adapter honors 
 
 - [ADR-013](../wiki/adr/adr-013-shared-adapter-contract-core.md) — the decision this core records.
 - [ADR-005](../wiki/adr/adr-005-harness-agnostic-setup.md) — the harness-agnostic entrypoint and setup contract this core gives a body to.
-- [ADR-002](../wiki/adr/adr-002-workflow-as-adapter-seed.md) — the prose-first stance the ports honor (no schema/DSL).
+- [ADR-002](../wiki/adr/adr-002-workflow-as-adapter-seed.md) — the prose-first stance the ports honor (no schema/DSL, save the one Gate-layer exception in [PORTS.md](PORTS.md)).
 - [SETUP.md](../SETUP.md) — the front door that routes to an adapter and points here for the generic body.
-- [SPEC.md](../SPEC.md) — Setup contract conformance, including the four-port + reference-not-restate rule.
+- [SPEC.md](../SPEC.md) — Setup contract conformance, including the five-port + reference-not-restate rule.
 - [adapters/mirai/](../adapters/mirai/setup.md) — the first adapter to implement this contract.

@@ -171,8 +171,12 @@ generated per the Utility Agents interview table ([interview.md](interview.md)).
 | `writing` | Prose (commit messages, PRs, docs) | Communicator | `read`, `edit` (docs), `search` — **DEFERRED for now** |
 
 The **Verifier** ([ADR-008](../wiki/adr/adr-008-delivery-dispatchers.md)) is a utility, not
-a Delivery stage agent, so multiple dispatchers can reuse it (Orchestrator → verify a
-change; future plan-reviewer → verify a plan). Its evidence spans correctness **and spec
+a Delivery stage agent, so **any Dispatcher can reuse it** (Orchestrator → verify a change;
+Shaping → verify a design artifact against its Gate criterion, [ADR-028](../wiki/adr/adr-028-verifier-reachable-from-shaping.md);
+future plan-reviewer → verify a plan). This is why 11 of the 12 Shaping-side `judgment` Gate
+rows can name `verifier` as producer: Shaping holds `delegate` and dispatches it just as the
+Orchestrator does, preserving producer ≠ judge (the Verifier gathers evidence; the dispatching
+Shaping agent makes the call). Its evidence spans correctness **and spec
 fidelity** ([ADR-024](../wiki/adr/adr-024-spec-fidelity-verification.md)): when the artifact
 closes a ticket, a spec-deviation is one more **structured-evidence category** it returns for
 the dispatcher to route on — never an auto-failure the Verifier decides on its own (it has no

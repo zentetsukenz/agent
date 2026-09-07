@@ -63,6 +63,7 @@ Adopt **Architecture-First & Research-Backed** as a cross-cutting principle (see
 ## Related
 
 - [architecture-first](../principles/architecture-first.md) — the principle this records.
-- [ADR-002](adr-002-workflow-as-adapter-seed.md) — the workflow that enforces this.
+- [ADR-002](adr-002-workflow-as-adapter-seed.md) — the workflow that enforces this (now partly
+  superseded, see [ADR-026](adr-026-gate-mechanism-layer-model.md)).
 - [rpi](../principles/rpi.md) — the research-before-implementation discipline it extends.
 </content>

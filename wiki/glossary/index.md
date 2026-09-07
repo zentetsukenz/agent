@@ -585,6 +585,110 @@ A module with a small interface and deep implementation. Hides complexity from c
 
 ---
 
+### Form slop
+
+An agent leaves required paperwork undone — an artifact left unwritten, a field missing, a
+gate left unrun, a board left stale. Caught by the [Gate](#gate): an `artifact` or
+`executable` criterion fails instead of being self-attested.
+
+**See**: [ADR-026](../adr/adr-026-gate-mechanism-layer-model.md)
+
+---
+
+### Recall slop
+
+An agent reasons correctly but forgets a known environment fact or precondition — the tell is
+that the system already knew the answer. Fully mechanizable, unlike judgment slop; caught by a
+[Mechanism](#mechanism) rather than more prose, and ratcheted on first occurrence because a
+forgotten fact will always recur.
+
+**See**: [ADR-026](../adr/adr-026-gate-mechanism-layer-model.md)
+
+---
+
+### Judgment slop
+
+An agent evaluates a tradeoff badly. Irreducible — no amount of additional prose prevents it.
+Answered structurally by producer ≠ judge (the actor that reviews is not the actor that did the
+work), never by more prose.
+
+**See**: [ADR-026](../adr/adr-026-gate-mechanism-layer-model.md), [principles/verification-culture](../principles/verification-culture.md)
+
+---
+
+### Gate
+
+An ordered set of typed criteria, committed per project, where every criterion names its
+[evidence producer](#evidence-producer) or is marked judgment and escalated to a different
+actor. Distinguished from *exit criteria*, which assert an outcome with nothing able to refute
+it — a Gate fails loudly at a known exit code instead of passing silently.
+
+**See**: [ADR-026](../adr/adr-026-gate-mechanism-layer-model.md), [patterns/quality-baseline](../patterns/quality-baseline.md)
+
+---
+
+### Evidence producer
+
+The command or distinct actor that grounds a [Gate](#gate) criterion. A criterion without one
+is self-attestation — the agent that did the work declaring it acceptable, which is exactly
+what a Gate exists to rule out.
+
+**See**: [ADR-026](../adr/adr-026-gate-mechanism-layer-model.md), [SKILLS/verification/verification-before-completion](../../SKILLS/verification/verification-before-completion/SKILL.md)
+
+---
+
+### Criterion type
+
+One of `artifact` | `executable` | `judgment` — the tag on a [Gate](#gate) criterion that
+determines who checks it and whether it may be bypassed. A bypassed criterion is logged on the
+tracker, never silently.
+
+**See**: [ADR-026](../adr/adr-026-gate-mechanism-layer-model.md)
+
+---
+
+### Mechanism
+
+A script that removes a class of failure by [re-executing reality](#re-executing-reality)
+rather than describing it. Only trustworthy once observed failing (`verified-failing`) — a
+mechanism nobody has watched catch a real failure is unproven.
+
+**See**: [ADR-026](../adr/adr-026-gate-mechanism-layer-model.md)
+
+---
+
+### Graduation
+
+A [Mechanism](#mechanism)'s promotion path: skill-local → shared distributable (once a second
+caller needs it) → structural withhold, where the check disappears because the failure it
+guarded against becomes impossible (e.g. a role with no `edit` capability cannot commit a bad
+edit). The end state of graduation is *fewer* mechanisms, not more.
+
+**See**: [ADR-026](../adr/adr-026-gate-mechanism-layer-model.md)
+
+---
+
+### Ratchet
+
+The loop that converts a recall failure into a [Mechanism](#mechanism) on its first
+occurrence, so a lesson stops enlarging the prose an agent must recall. Named for the
+no-regression floor pattern in [quality baseline](#quality-baseline), generalized here to any
+forgotten environment fact.
+
+**See**: [ADR-026](../adr/adr-026-gate-mechanism-layer-model.md), [patterns/quality-baseline](../patterns/quality-baseline.md)
+
+---
+
+### Re-executing reality
+
+The property separating a trustworthy executable check from a decorative one: the check runs
+the real toolchain and reads its actual result, rather than reading a description of what the
+result should be. What a [Mechanism](#mechanism) does to catch [recall slop](#recall-slop).
+
+**See**: [ADR-026](../adr/adr-026-gate-mechanism-layer-model.md)
+
+---
+
 ## See Also
 
 - `mem:principles/wisdom` — Core principles

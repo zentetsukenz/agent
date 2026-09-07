@@ -740,28 +740,7 @@ Dispatch payload with: context, task, success criteria, return format
 
 #### task-sizing.md
 
-```markdown
-# Task Sizing
-
-## Trigger
-Before starting any task, assess context cost.
-
-## Heuristics
-| Size | Context Cost | Indicators | Action |
-|------|--------------|------------|--------|
-| Small | ~1-5% | Single file, quick fix, clarification | Do directly |
-| Medium | ~5-20% | Few files, moderate logic, some research | Consider dispatch |
-| Large | >20% | Many files, complex logic, deep research | Must dispatch |
-
-## Questions to Ask
-1. How many files will I need to read?
-2. How much code will I generate?
-3. Will I need to run many commands?
-4. Is this exploratory or well-defined?
-
-## Output
-Decision: Do directly OR Dispatch to [subagent]
-```
+See [task-sizing](../SKILLS/planning/task-sizing/SKILL.md).
 
 #### verification.md
 

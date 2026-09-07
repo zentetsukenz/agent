@@ -79,10 +79,9 @@ loom folds "search files/text" into a role's read-family grant. OpenCode splits 
 
 ## docs-lookup (optional, opt-in)
 
-`docs-lookup` is the generic "query up-to-date external documentation" capability
-([ADR-007](../../../wiki/adr/adr-007-docs-lookup-capability.md)). It is **off by default**
+`docs-lookup`'s definition and off-by-default rule are [ADR-007](../../../wiki/adr/adr-007-docs-lookup-capability.md)'s
 ([keyless-by-default](../../../wiki/principles/keyless-by-default.md),
-[ADR-010](../../../wiki/adr/adr-010-keyless-by-default-recommendations.md)):
+[ADR-010](../../../wiki/adr/adr-010-keyless-by-default-recommendations.md)); this is the OpenCode binding:
 
 - **OpenCode ships `scout`** — a built-in read-only subagent for external-docs / dependency
   research that needs **no MCP setup or API key**. Prefer it for the common case; a role that
@@ -98,7 +97,7 @@ loom folds "search files/text" into a role's read-family grant. OpenCode splits 
 ## Related
 
 - [wiki/environments/opencode.md](../../../wiki/environments/opencode.md) — authoritative OpenCode tool/permission model.
-- [MAPPING.md §6](../MAPPING.md#6-capability--opencode-tool-mapping) — the same table in the mapping doc.
+- [MAPPING.md §6](../MAPPING.md#6-capability--opencode-permission-mapping) — the same table in the mapping doc.
 - [STAGES.md](../STAGES.md) — each role's generic capability set.
 - [interview.md](interview.md) — §docs-lookup and model-format resolution.
 - [ADR-006](../../../wiki/adr/adr-006-capability-based-roles.md), [ADR-007](../../../wiki/adr/adr-007-docs-lookup-capability.md), [ADR-010](../../../wiki/adr/adr-010-keyless-by-default-recommendations.md).
