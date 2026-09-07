@@ -1,12 +1,22 @@
 ---
 type: ADR
 title: Adapter pattern for framework consumption
-status: Proposed
+status: Superseded by ADR-005 and ADR-013
 timestamp: 2026-07-07T00:00:00Z
 tags: [adapter, cli, plugin, loom, v2]
 ---
 
 # ADR-001: Adapter Pattern for Framework Consumption
+
+> **Superseded by [ADR-005](adr-005-harness-agnostic-setup.md) and
+> [ADR-013](adr-013-shared-adapter-contract-core.md).** This ADR explored a tooling-first
+> design space (a Rust CLI or TypeScript plugin, `loom.toml`/`loom.lock.toml`, a sync/render
+> pipeline) that was never built. What shipped instead — three adapters
+> (`adapters/{mirai,opencode,hermes}/`) implementing a **prose contract** an agent reads at
+> setup time, with zero binaries, lockfiles, or config schemas — answers the same "how does
+> the framework get into the tool" question with a different, simpler design. Kept below as
+> the historical record of the design space that was considered and superseded, not as a
+> live spec — do not implement the CLI/plugin/`loom.toml` machinery described here.
 
 ## Context
 
@@ -32,7 +42,7 @@ The framework currently requires manual setup: clone the repo, copy files, confi
 **Sync**: On startup, plugin checks `loom.lock.toml` against upstream hashes. If mismatch, pulls fresh content from `~/.loom/config.toml` upstream path.
 
 **Strengths**:
-- Matches OMO idiom (OpenCode-native, TypeScript)
+- Matches the OpenCode-native, TypeScript-plugin idiom
 - Auto-sync at startup (zero manual refresh)
 - Tight integration with OpenCode's skill/command registration
 - Single distribution channel (npm)
@@ -93,7 +103,7 @@ The framework currently requires manual setup: clone the repo, copy files, confi
 | **Auto-sync at startup** | Yes (plugin hook) | No (manual `loom sync`) | Yes (plugin calls CLI) |
 | **Standalone operation** | No (requires OpenCode) | Yes (CLI works offline) | Yes (CLI works offline) |
 | **Runtime features** | Limited (plugin API surface) | Extensible (renderer architecture) | Extensible (renderer architecture) |
-| **Matches OMO idiom** | Yes (TypeScript, plugin-native) | No (Rust, unfamiliar to OMO team) | Partial (hybrid, requires both) |
+| **Matches OpenCode-plugin idiom** | Yes (TypeScript, plugin-native) | No (Rust, unfamiliar to the team) | Partial (hybrid, requires both) |
 
 ## Loom Product Identity Spec
 

@@ -13,7 +13,8 @@ wiki/         — OKF v0.1 knowledge base (progressive-disclosure)
 agents/       — Agent definition files (identity + wired skills)
 commands/     — Slash command wrappers
 docs/         — Framework meta-documentation
-adapters/     — Placeholder for v2 adapter layer
+contract/     — Shared adapter-contract core (generic setup body + 5 port obligations)
+adapters/     — Per-harness adapters: mirai/, opencode/, hermes/ (each answers contract/'s ports)
 scripts/      — Validation utilities
 ```
 

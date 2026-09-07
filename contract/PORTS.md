@@ -67,7 +67,8 @@ archetype becomes a concrete model in this harness.
   in.
 
 *Examples:* Mirai writes an inline `model:` (string or fallback array) per agent file;
-OpenCode/OMO writes a central `omo.json` `models` catalog + `categories`/`agents` entry.
+OpenCode writes an inline `model:` per agent/command file (an earlier opt-in central
+model-tiering layer was dropped — [ADR-021](../wiki/adr/adr-021-shaping-research-orchestrator.md)).
 
 ## Port 3 — `seam-obligation→wiring`
 

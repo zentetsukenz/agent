@@ -101,7 +101,9 @@ Split until each sub-task scores ≤ 8. Prefer splits that maximize parallelism.
 
 ## Meta-Level Exception
 
-Work on agent infrastructure (`<project-root>/.omo/skills/`, `<project-root>/.omo/plans/`, ADRs, conventions) → bias **direct** regardless of score. This is orchestrator's core responsibility. Still size for awareness but override dispatch recommendation.
+Work on agent infrastructure (harness-native skill/agent config, ADRs, conventions) → bias
+**direct** regardless of score. This is orchestrator's core responsibility. Still size for
+awareness but override dispatch recommendation.
 
 ## Example
 

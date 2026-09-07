@@ -84,7 +84,7 @@ Write a dated output folder and never overwrite a previous run.
 Default path:
 
 ```text
-.omo/research-recommended/<topic-slug>-<YYYY-MM-DD>/
+.scratch/research-recommended/<topic-slug>-<YYYY-MM-DD>/
 ```
 
 Use a user-specified folder instead when provided. For re-runs on the same day, choose a new non-overwriting folder name such as `-2`, `-3`, or a more specific slug.

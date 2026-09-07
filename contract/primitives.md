@@ -213,9 +213,9 @@ the [`primitive→file` manifest port](PORTS.md).
 
 ## The model archetypes
 
-Borrowed from OMO's "models are developers" framing (assign a model matching an agent's
-*working style*). Three archetypes, identical across every harness — only the **render
-target** differs (see the [`archetype→model` port](PORTS.md)):
+Borrowed from a sibling agent-framework project's "models are developers" framing (assign a
+model matching an agent's *working style*). Three archetypes, identical across every harness —
+only the **render target** differs (see the [`archetype→model` port](PORTS.md)):
 
 | Archetype | Working style | Assigned to |
 |---|---|---|

@@ -1,7 +1,12 @@
 # Skill Specification
 
-> **Type**: Knowledge (specification)  
+> **Type**: Knowledge (specification) — **historical, pre-loom draft**
 > **Purpose**: How to create and structure skill files
+> **Superseded by**: [SPEC.md](../SPEC.md) for the binding location and frontmatter
+> (`SKILLS/<bucket>/<slug>/SKILL.md`, agentskills.io conformant — not the flat
+> `SKILLS/[skill-name].md` shown below). Kept for its still-useful authoring heuristics
+> (description-triggers-body-instructs, examples-over-instructions); do not follow its
+> file-location examples literally.
 
 ---
 

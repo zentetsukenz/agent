@@ -5,15 +5,16 @@ skills, knowledge, and orchestration that an agent adapts to whatever harness yo
 The SDLC workflow (discovery → design → planning → implementation → verification →
 preservation) ships first; loom is built to carry any workflow you want.
 
-*loom is early: the SDLC workflow and the Mirai adapter ship today; more workflows and
-harness adapters are planned.*
+*loom is early: the SDLC workflow ships today, with three harness adapters — Mirai,
+OpenCode, and Hermes; more workflows and harness adapters are planned.*
 
 ## How it works
 
 - **Content** — portable Markdown: lifecycle-bucketed skills, workflow orchestration
   seeds, and an OKF knowledge wiki.
 - **Adapters** — loom is harness-agnostic; a per-harness adapter renders its content for
-  a specific tool. **Mirai** is the first supported adapter, with more planned.
+  a specific tool against the shared [`contract/`](contract/index.md) core. **Mirai**,
+  **OpenCode**, and **Hermes** are supported today, with more planned.
 - **Agent-run setup** — point an agent at `SETUP.md`; it interviews you about your
   project, then generates harness-native config tailored to what it learns. It doesn't
   copy static files.

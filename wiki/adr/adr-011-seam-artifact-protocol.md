@@ -17,8 +17,8 @@ artifacts — it never *located* them. Three separate, shallow modules moved con
 own mechanism and no shared contract:
 
 - `handoff` (now [stage-handoff](../../SKILLS/preservation/stage-handoff/SKILL.md), renamed in
-  [ADR-015](adr-015-communication-line-refinement.md)) wrote to a flat, un-namespaced
-  `.omo/handoffs/` directory (a stale path from an earlier harness), triggered by *context
+  [ADR-015](adr-015-communication-line-refinement.md)) wrote to a flat, un-namespaced handoff
+  directory (a stale path inherited from an earlier, pre-loom harness), triggered by *context
   pressure* rather than by a seam;
 - [session-bootstrap](../../SKILLS/discovery/session-bootstrap/SKILL.md) read a single
   `CHECKPOINT.md`;
@@ -72,7 +72,7 @@ contract that the three shallow movers become thin adapters over:
 ## Consequences
 
 - `handoff` becomes the **PRODUCE** adapter (writes to the ledger namespace, registers in the
-  manifest; the stale `.omo/` path is retired). `session-bootstrap` becomes the **DISCOVER**
+  manifest; the stale pre-loom path is retired). `session-bootstrap` becomes the **DISCOVER**
   adapter (reads the manifest, loads the latest seam artifact). `dispatch-context` references the
   protocol for within-stage ISOLATE dispatch. Each keeps its distinct *strategy* (COMPRESS /
   SELECT / ISOLATE) but shares one *location and naming contract*.

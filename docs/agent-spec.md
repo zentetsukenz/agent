@@ -1,7 +1,12 @@
 # Agent Specification
 
-> **Type**: Knowledge (specification)  
+> **Type**: Knowledge (specification) — **historical, pre-loom draft**
 > **Purpose**: How to create and structure agent files
+> **Superseded by**: [SPEC.md](../SPEC.md) for the binding file layout (`agents/<name>.md`,
+> not `.github/agents/[name].agent.md`) and [wiki/patterns/role-scoped-capabilities.md](../wiki/patterns/role-scoped-capabilities.md)
+> for the identity/capability model actually in use. Kept for its still-useful design
+> heuristics (identity-first design, size guidelines); do not follow its file-location or
+> frontmatter examples literally.
 
 ---
 

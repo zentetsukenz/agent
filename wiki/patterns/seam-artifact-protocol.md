@@ -21,7 +21,8 @@ boundary — "a milestone with design docs", "a shipped verified change", "durab
 but historically that artifact was *named yet never located*. Three separate, shallow modules
 moved context, each with its own mechanism and no shared contract:
 
-- `preservation/handoff` wrote to a flat, un-namespaced `.omo/handoffs/` directory,
+- `preservation/handoff` wrote to a flat, un-namespaced handoff directory (a stale path
+  inherited from an earlier, pre-loom harness),
 - `discovery/session-bootstrap` read a single `CHECKPOINT.md`,
 - `planning/dispatch-context` engineered an in-memory subagent payload.
 

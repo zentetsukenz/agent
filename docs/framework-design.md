@@ -1,9 +1,15 @@
 # Agent Collaboration Framework
 
-> **Status**: Design Phase  
-> **Version**: 0.4.0  
-> **Last Updated**: December 30, 2025  
+> **Status**: Design Phase — **historical, pre-loom draft (v0.4.0, Dec 2025)**
 > **Philosophy**: Context Engineering is the #1 job
+> **Superseded by**: loom's actual SDLC ([workflows/sdlc/index.md](../workflows/sdlc/index.md),
+> six phases, not the three-phase RPI below) and role-scoped capabilities
+> ([wiki/patterns/role-scoped-capabilities.md](../wiki/patterns/role-scoped-capabilities.md),
+> not a single "TheEngineer" orchestrator). The "60% barrier" framing and the
+> WRITE/SELECT/COMPRESS/ISOLATE strategies below are still cited by
+> [wiki/adr/adr-018-macro-project-management.md](../wiki/adr/adr-018-macro-project-management.md)
+> and duplicated more concisely in [docs/context-engineering.md](context-engineering.md) and
+> [wiki/principles/context-first.md](../wiki/principles/context-first.md) — prefer those.
 
 ---
 

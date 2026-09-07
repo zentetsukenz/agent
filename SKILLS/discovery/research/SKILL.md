@@ -15,7 +15,7 @@ Do not use this skill for comparative research, option scoring, or shortlist bui
 2. **Primary sources only.** The subagent's job is to investigate against **primary sources** — official docs, source code, specs, first-party APIs — not a secondary write-up of them. Follow every claim back to the source that owns it.
 3. **Return distilled evidence, not raw context.** The subagent reads widely but reports back only the cited answer — the reading itself never enters the calling session's context. This is the point of dispatching: the expensive orchestrator stays lean while a cheap explorer does the reading (the [Arbor](https://arxiv.org/abs/2606.11926) Coordinator/Executor discipline — an Executor returns evidence, not its scratch context).
 4. **Write the findings.** One Markdown file, every claim cited with a source (path, URL, or doc section).
-5. **Save it where the repo already keeps such notes.** Match the existing convention if one exists (e.g. a `.omo/research/` or `.scratch/` directory already in use). If there is none, default to `.omo/research/<topic-slug>-<YYYY-MM-DD>.md` and say where you put it.
+5. **Save it where the repo already keeps such notes.** Match the existing convention if one exists (e.g. a `.scratch/` or `docs/research/` directory already in use). If there is none, default to `.scratch/research/<topic-slug>-<YYYY-MM-DD>.md` and say where you put it.
 
 ## When invoked as a wayfinder research ticket
 

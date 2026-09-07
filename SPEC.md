@@ -132,26 +132,23 @@ so validators can identify it.
 
 ## Extension points — adapter contract
 
-The adapter layer (deferred to v2) is responsible for loading framework content
-into a consuming tool (OpenCode, Claude Code, Cursor, Aider, etc.).
-
-See `wiki/adr/adr-001-adapter-pattern.md` for the full design, including:
-
-- Path X: TypeScript OpenCode plugin
-- Path Y: Rust CLI (`loom` binary)
-- Path Z: Hybrid
+The adapter layer loads framework content into a consuming harness. It shipped as the
+prose contract in `contract/` (see "Setup contract conformance" below) rather than the
+tooling design (`loom.toml`, a Rust/TypeScript distribution binary) originally explored in
+`wiki/adr/adr-001-adapter-pattern.md` — that ADR's design space is superseded in practice by
+`wiki/adr/adr-005-harness-agnostic-setup.md` and `wiki/adr/adr-013-shared-adapter-contract-core.md`,
+kept only as historical record of the paths considered.
 
 ### Path-flexibility preamble
 
-Three doc-informed skills include a path-flexibility preamble that resolves paths
-at runtime in priority order:
+Path-resolving skills include a preamble that resolves paths at runtime in priority order:
 
-1. `loom.toml` `paths.*` section (when adapter ships)
+1. `loom.toml` `paths.*` section (if an adapter ever ships one — none does today)
 2. Framework-relative default (e.g. `wiki/adr/`, `wiki/glossary/index.md`)
 3. Legacy fallback (e.g. `docs/adr/`, `CONTEXT.md`)
 
-This preamble appears at the top of: `grill-with-docs`, `domain-model`,
-`improve-codebase-architecture`.
+This preamble is centralized in `wiki/environments/domain-docs.md` and referenced by
+`grill-with-docs`, `domain-model`, and `improve-codebase-architecture`.
 
 ---
 

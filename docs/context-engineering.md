@@ -108,19 +108,22 @@ Prevent context explosion by separating concerns.
 **Subagent Pattern**:
 
 ```
-TheEngineer (orchestrator)
+Dispatcher (Orchestrator/Shaping)
     │
     │ dispatch: minimal context (~500 tokens)
     ↓
-Subagent (isolated context)
+Utility agent (isolated context)
     │
     │ executes (screenshots, research stay here)
     ↓
 Returns: TEXT summary (~500 tokens)
     │
     ↓
-TheEngineer continues (main context clean)
+Dispatcher continues (main context clean)
 ```
+
+See [role-scoped-capabilities](../wiki/patterns/role-scoped-capabilities.md) for loom's
+actual Dispatcher/Utility vocabulary — no single "TheEngineer" orchestrator exists.
 
 **Trade-off**: Multi-agent can use up to 15× more tokens than single-agent, but prevents context overflow and degradation.
 
@@ -222,4 +225,7 @@ Context engineering is a continuous cycle:
 
 ### Source of Truth
 
-- [framework-design.md](framework-design.md) — Full framework specification
+- [wiki/principles/context-first.md](../wiki/principles/context-first.md) — the canonical,
+  cross-linked version of these principles
+- [framework-design.md](framework-design.md) — historical, pre-loom design rationale (60%
+  barrier framing origin)

@@ -73,7 +73,7 @@ file count or doc layout — an adapter answers each however the harness needs.
    name(s) or withhold mechanism (Mirai: `execute`/`agent`/… aliases; OpenCode:
    `permission:{edit:deny}` withholds).
 2. **`archetype→model` port** — resolve each of the three model archetypes to a render
-   target (Mirai: inline `model:` per file; OpenCode/OMO: central `omo.json` entry).
+   target (Mirai: inline `model:` per file; OpenCode: inline `model:` per file).
 3. **`seam-obligation→wiring` port** — resolve the [ADR-011](adr-011-seam-artifact-protocol.md)
    PRODUCE@exit / DISCOVER@entry handoff obligation to harness wiring (Mirai: `handoffs:`
    object schema; OpenCode: committed-folder pointer, since no memory tool per

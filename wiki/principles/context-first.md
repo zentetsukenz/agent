@@ -75,11 +75,11 @@ Don't re-search what agents already searched.
 
 ```javascript
 // WRONG: After delegating explore, grep the same files
-// call_omo_agent(subagent_type="explore", ...)
+// dispatch(subagent_type="explore", ...)
 // Then immediately grep for the same thing
 
 // RIGHT: Delegate, continue non-overlapping work
-// call_omo_agent(subagent_type="explore", run_in_background=true, ...)
+// dispatch(subagent_type="explore", run_in_background=true, ...)
 // Work on unrelated files while they search
 // Wait for notification, then collect results
 ```

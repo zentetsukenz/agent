@@ -20,11 +20,11 @@ agent instructions, file instructions, prompts, hooks, custom agents, and skills
 
 Two prior investigations informed the design:
 
-- **oh-my-openagent (OMO)** ships an agent-executable install skill: curl-able Markdown a
-  coding agent runs directly, interviewing the user (decision tables), installing
-  prerequisites, verifying, and explaining. It also ships explicit **model matching** —
-  "models are developers," each agent assigned a model suited to its working style
-  (planner vs. deep specialist vs. cheap utility).
+- **A sibling OpenCode agent-framework project** ships an agent-executable install skill:
+  curl-able Markdown a coding agent runs directly, interviewing the user (decision tables),
+  installing prerequisites, verifying, and explaining. It also ships explicit **model
+  matching** — "models are developers," each agent assigned a model suited to its working
+  style (planner vs. deep specialist vs. cheap utility).
 - **mattpocock's `setup-matt-pocock-skills`** ships a user-invocable setup skill
   (`disable-model-invocation: true`) that explores the project, presents proposed changes
   section-by-section with a recommended default, confirms, writes, and is idempotent
@@ -67,9 +67,9 @@ an **agent** (deep workflow). Stages group the SDLC's six phases by ownership se
 
 ### Model matching
 
-Borrow OMO's role-archetype framing rather than its JSONC config format (Mirai has no
-such config; matching is expressed directly in each `.agent.md`/`.prompt.md`'s `model:`
-field, with a fallback array). Archetypes: **Communicator** (Claude-like — interviews,
+Borrow that sibling project's role-archetype framing rather than its JSONC config format
+(Mirai has no such config; matching is expressed directly in each `.agent.md`/`.prompt.md`'s
+`model:` field, with a fallback array). Archetypes: **Communicator** (Claude-like — interviews,
 planning, writing) → **Deep Specialist** (GPT-like — architecture, hard debugging) →
 **Utility** (cheap/fast — exploration, mechanical edits). The setup interview asks for the
 user's available model list (optionally auto-detected) and assigns per-agent/per-prompt
@@ -101,11 +101,11 @@ duplicates already-written config.
 - **Mechanical 1:1 copy of `SKILLS/` into `.mirai/skills/`.** Simplest, but ignores that
   most projects need only a subset of loom's SDLC skills and produces bloat/irrelevant
   triggers. Rejected in favor of the interview-driven tailoring above.
-- **A dispatch/routing orchestrator agent.** Matches some multi-agent frameworks (e.g.
-  OMO's Atlas), but reintroduces a structured contract loom's prose-first philosophy
-  (ADR-002, still binding for skills/agents per [ADR-026](adr-026-gate-mechanism-layer-model.md)'s
-  narrow Gate-only exception) deliberately avoids, and adds a single point of failure.
-  Rejected — steering stays emergent from prompts.
+- **A dispatch/routing orchestrator agent.** Matches some multi-agent frameworks (e.g. a
+  sibling project's central router agent), but reintroduces a structured contract loom's
+  prose-first philosophy (ADR-002, still binding for skills/agents per
+  [ADR-026](adr-026-gate-mechanism-layer-model.md)'s narrow Gate-only exception) deliberately
+  avoids, and adds a single point of failure. Rejected — steering stays emergent from prompts.
 - **Separate "bundle" skills wrapping combos of granular skills.** Redundant with
   `.mirai/prompts/*.prompt.md`, which already IS a combo (skills + model) at no extra
   layer. Rejected.

@@ -1,6 +1,5 @@
 .playwright-mcp
 .obsidian
-.omo
 
 # loom seam-artifact ledger — ephemeral coordination, not version-controlled (ADR-014)
 .loom/

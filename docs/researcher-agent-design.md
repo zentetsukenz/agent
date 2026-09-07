@@ -1,8 +1,13 @@
 # Researcher Agent Design
 
-> **Status**: Research Phase  
-> **Date**: December 31, 2025  
+> **Status**: Research Phase — **historical, pre-loom draft (Dec 2025)**
 > **Purpose**: Design a subagent that isolates research context and returns only relevant information
+> **Superseded by**: the `research` skill ([SKILLS/discovery/research/SKILL.md](../SKILLS/discovery/research/SKILL.md))
+> and the `explore` Utility ([wiki/adr/adr-021-shaping-research-orchestrator.md](../wiki/adr/adr-021-shaping-research-orchestrator.md),
+> [wiki/adr/adr-023-explore-read-only-shell.md](../wiki/adr/adr-023-explore-read-only-shell.md))
+> actually implement this design's isolation goal. §4.4's tool list was corrected in place by
+> [ADR-010](../wiki/adr/adr-010-keyless-by-default-recommendations.md) (capabilities, not
+> hardcoded tools) and is still cited from there — leave that section as-is.
 
 ---
 

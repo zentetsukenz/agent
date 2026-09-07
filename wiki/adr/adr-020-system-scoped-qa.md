@@ -23,7 +23,7 @@ The `verification/` bucket also carried debt that predated the loom rework:
   `.sisyphus/`. None of that vocabulary exists in loom; it was never migrated.
 - `verification-before-completion` — a ~400-line **kitchen-sink** skill merging four concerns (an
   iron-law completion gate, a manual-test checklist, a "gap analysis" step, and failure forensics),
-  stuffed with hardcoded `npm`/`pnpm`/`fish` commands and `.omo/` paths — a prose-first and
+  stuffed with hardcoded `npm`/`pnpm`/`fish` commands and stale pre-loom paths — a prose-first and
   [deep-modules](../patterns/deep-modules.md) violation.
 
 Meanwhile the [macro-PM](../../workflows/macro-pm/index.md) upgrade ([ADR-018](adr-018-macro-project-management.md),
