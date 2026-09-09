@@ -429,19 +429,20 @@ protocol.
 ### Board API
 
 The **deterministic interface to the macro source-of-truth board** — a small distributable the
-harness installs (initially a thin wrapper over `gh` for GitHub Projects v2), exposing a tiny stable
-verb set the [macro tick](#manual-tick) invokes: `board read [--frontier]`, `board tree`,
-`board apply <ticket> <transition>`, and `board heal`/`board reconcile` (see
-[Board heal / reconcile](#board-heal--reconcile)). Its purpose is to move board **mutation out of
-model reasoning** and into a tool the model merely invokes — the model *picks* a transition (the
-mechanical `label + status → action` lookup) and the API *performs* it atomically, so a small/cheap
-model ticks deterministically. It is **not** seed content copied into every harness; the framework
-holds only its CLI *contract* as illustrative pseudo-code (prose-first preserved — code lives in the
-distributable). Backends (GitHub first, Linear/Notion later) hide behind the same verbs. An
-MCP server is an optional *later consumption* layer on top of these verbs, never the mutation
-core (MCP tools are freeform-intent, the opposite of the determinism this provides).
+harness installs (initially a thin wrapper over `gh` for plain GitHub Issues + native issue
+dependencies), exposing a tiny stable verb set the [macro tick](#manual-tick) invokes, namespaced
+under `loom`: `loom board read [--frontier]`, `loom board tree`, `loom board apply <ticket>
+<transition>`, and `loom board reconcile` (see [Board reconcile](#board-reconcile)). Its purpose is
+to move board **mutation out of model reasoning** and into a tool the model merely invokes — the
+model *picks* a transition (the mechanical `label + status → action` lookup) and the API *performs*
+it atomically, so a small/cheap model ticks deterministically. It is **not** seed content copied
+into every harness; the framework holds only its CLI *contract* as illustrative pseudo-code
+(prose-first preserved — code lives in the distributable). Backends (GitHub first, Linear/Notion
+later) hide behind the same verbs. An MCP server is an optional *later consumption* layer on top of
+these verbs, never the mutation core (MCP tools are freeform-intent, the opposite of the determinism
+this provides).
 
-**See**: `mem:adr/adr-025-deterministic-board-api`, [Manual tick](#manual-tick), [Board heal / reconcile](#board-heal--reconcile), [Altitude seam](#altitude-seam), [Resident agent](#resident-agent)
+**See**: `mem:adr/adr-025-deterministic-board-api`, [Manual tick](#manual-tick), [Board reconcile](#board-reconcile), [Altitude seam](#altitude-seam), [Resident agent](#resident-agent)
 
 ---
 
@@ -452,22 +453,23 @@ A single execution of the macro-PM [tick loop](../../workflows/macro-pm/index.md
 `cron`/`gateway`. Because the tick is harness-agnostic prose over a [Board API](#board-api), the same
 loop runs unchanged whether a resident daemon fires it on an interval or a person triggers it once
 (e.g. a Mirai custom agent invoked by hand) — the clearest proof the tick is *prose + a board script*,
-not a daemon feature. The tick has one named shape: **Heal → Read → Route → Act → Integrate →
-Reconcile → Exit**. Each run is a fresh stateless session reconstructing its picture from the board.
+not a daemon feature. The tick has one named shape, bookended by the same call: **Reconcile → Read
+→ Route → Act → Integrate → Reconcile → Exit**. Each run is a fresh stateless session
+reconstructing its picture from the board.
 
 **See**: `mem:adr/adr-025-deterministic-board-api`, [Board API](#board-api), [Resident agent](#resident-agent), [Altitude seam](#altitude-seam)
 
 ---
 
-### Board heal / reconcile
+### Board reconcile
 
 The **one idempotent detect-drift → repair operation** of the [Board API](#board-api), invoked at
-both ends of a [manual tick](#manual-tick) and named by intent at each site: **`heal`** runs *before*
-the tick reads (step 0), so the tick acts on truth; **`reconcile`** runs *before* exit (final step),
-repairing drift the tick itself introduced. Same code path, two entry points — so the human's
-standalone "fix the board" run is the *same command*. Drift (e.g. an `sdlc:in-progress` leaf whose
-SDLC run already wrote its verified-change) therefore survives at most one tick, making board
-staleness structurally self-correcting instead of a manual chore.
+both ends of a [manual tick](#manual-tick): once *before* the tick reads (step 0), so the tick acts
+on truth, and again *before* exit (final step), repairing drift the tick itself introduced — the
+same command at both ends, so the human's standalone "fix the board" run is that same command.
+Drift (e.g. an `sdlc:in-progress` leaf whose SDLC run already wrote its verified-change) therefore
+survives at most one tick, making board staleness structurally self-correcting instead of a manual
+chore. It **reports every repair in its JSON output, never silent**, and supports `--dry-run`.
 
 **See**: `mem:adr/adr-025-deterministic-board-api`, [Board API](#board-api), [Manual tick](#manual-tick)
 
