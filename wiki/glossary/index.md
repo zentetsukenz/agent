@@ -475,6 +475,91 @@ chore. It **reports every repair in its JSON output, never silent**, and support
 
 ---
 
+### Board
+
+The set of issues **reachable from a `wayfinder:map` via `blocking` edges**
+([ADR-029](../adr/adr-029-single-edge-board-graph.md)) — not simply "the repo's issues". An issue
+outside that reachable set is [Unmapped](#unmapped), never a board member, regardless of its open/
+closed state. [Takeable](#takeable) and [Frontier](#frontier) are computed only over board
+members; mere presence in the repo's issue list confers nothing.
+
+**See**: `mem:adr/adr-029-single-edge-board-graph`, [Board member](#board-member), [Board API](#board-api), [Unmapped](#unmapped)
+
+---
+
+### Board member
+
+A `wayfinder:map`, or a ticket whose `blocking` chain reaches one
+([ADR-029](../adr/adr-029-single-edge-board-graph.md)). Membership is an **edge property, not a
+status** — it survives closure, so a closed ticket stays a member and keeps counting toward its
+map's completion. Replaces the `parent`/`subIssues` sub-issue nesting ADR-025 §6 used for grouping
+(no 7-level nesting cap, no BFS).
+
+**See**: `mem:adr/adr-029-single-edge-board-graph`, [Membership edge](#membership-edge), [Board](#board)
+
+---
+
+### Membership edge
+
+The edge shape `ticket → map`: a ticket `blocks` its map exactly as it would block another ticket
+([ADR-029](../adr/adr-029-single-edge-board-graph.md)), so **a map is not done until every ticket
+blocking it is**. Distinguished from an [Ordering edge](#ordering-edge) only by whether the far
+node's type is `wayfinder:map` — both are the same native GitHub dependency mechanism, read
+differently depending on the node it points at. Replaces `parent`/`subIssues` entirely.
+
+**See**: `mem:adr/adr-029-single-edge-board-graph`, [Ordering edge](#ordering-edge), [Board member](#board-member)
+
+---
+
+### Ordering edge
+
+The edge shape `ticket → ticket`: a real dependency between two non-map tickets
+([ADR-029](../adr/adr-029-single-edge-board-graph.md)), holding [Takeable](#takeable) closed until
+it resolves. Same native GitHub issue-dependency mechanism as a [Membership edge](#membership-edge)
+— the only difference is that the far node is not a `wayfinder:map`.
+
+**See**: `mem:adr/adr-029-single-edge-board-graph`, [Membership edge](#membership-edge), [Takeable](#takeable)
+
+---
+
+### Unmapped
+
+Open, and **not** a [Board member](#board-member) — an issue awaiting triage, never auto-typed into
+membership ([ADR-029](../adr/adr-029-single-edge-board-graph.md)). Surfaced only via `loom board
+read --unmapped`, kept out of the default `read` payload so an untriaged issue never silently joins
+a map's [Frontier](#frontier). `Board reconcile` never repairs this state itself — typing a ticket
+stays a human judgment call.
+
+**See**: `mem:adr/adr-029-single-edge-board-graph`, [Board](#board), [Board API](#board-api)
+
+---
+
+### Takeable
+
+The five-conjunct predicate `member ∧ type ≠ map ∧ open ∧ no open blocker ∧ unassigned`
+([ADR-029](../adr/adr-029-single-edge-board-graph.md), decision D1) — corrected from ADR-025 §8's
+three-conjunct `(open ∧ unblocked ∧ unassigned)`, which over-collected to 9 items on the live board
+including the map itself. The `member` conjunct excludes [Unmapped](#unmapped) issues; `type ≠ map`
+is kept as an explicit guard even though [Board member](#board-member)ship already makes a map
+non-takeable (a map is `blockedBy` all its tickets) — belt and braces, documenting intent.
+
+**See**: `mem:adr/adr-029-single-edge-board-graph`, [Frontier](#frontier), [Board member](#board-member), [Board API](#board-api)
+
+---
+
+### Frontier
+
+The set of every [Takeable](#takeable) issue on the board at a given moment
+([ADR-029](../adr/adr-029-single-edge-board-graph.md)) — a computed *state*, not a fixed
+membership; it is exactly as volatile as the board's edges and assignments. Exposed via `loom
+board read --frontier`. A specific snapshot (e.g. "today it's a single issue") is a transient board
+state, never part of this term's meaning — what qualifies is defined entirely by
+[Takeable](#takeable).
+
+**See**: `mem:adr/adr-029-single-edge-board-graph`, [Takeable](#takeable), [Board API](#board-api)
+
+---
+
 ### Orchestrator
 
 An agent [Role](#role) that runs the Implementation loop: it gauges each task's size and

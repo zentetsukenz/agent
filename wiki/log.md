@@ -109,3 +109,19 @@ Initial wiki structure and content created.
   provisioning of the two label vocabularies, written into the comm-protocol document's macro
   section under the one-source-of-truth invariant. The resident daemon stays an adapter
   concern (no new port; ADR-005 preserved). Grounds ADR-018.
+
+---
+
+## Single-Edge Board Graph vocabulary
+
+**2026-09-09**
+
+### Added
+
+- Glossary: **Board**, **Board member**, **Membership edge**, **Ordering edge**, **Unmapped**,
+  **Takeable**, **Frontier** — the 7 terms `domain-model.md` sharpened for the
+  `board-api-distributable` effort, each linking to
+  [ADR-029](adr/adr-029-single-edge-board-graph.md). `Takeable` now carries the corrected
+  five-conjunct predicate (`member ∧ type ≠ map ∧ open ∧ no open blocker ∧ unassigned`),
+  replacing the old three-conjunct `(open ∧ unblocked ∧ unassigned)` this ADR superseded at
+  ADR-025 §8.

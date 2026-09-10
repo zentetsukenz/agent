@@ -17,6 +17,11 @@ tags: [macro-pm, wayfinder, board, tracker, determinism, distributable, mechanic
 > distributable the harness installs) and *how the seed refers to them* (as a CLI contract in
 > illustrative pseudo-code). The macro-PM protocol vocabularies, dispatch table, recursion, and
 > returns are unchanged.
+>
+> **Partially superseded by [ADR-029](adr-029-single-edge-board-graph.md)**: §6's two-edge-kind
+> graph model (native dependency edges plus `parent`/`subIssues` grouping) and §8's `takeable`
+> predicate + the four-rule reconcile set it incorporates by reference are both replaced — `status`
+> stays `Accepted` because the supersession is narrow (see ADR-029's *What is NOT reversed*).
 
 ## Context
 
@@ -122,6 +127,10 @@ only the CLI *contract* (in illustrative pseudo-code); the *executable* lives ou
    Node+Chromium install the Mermaid-emit path avoids (keyless, low-install, per
    [ADR-010](adr-010-keyless-by-default-recommendations.md)).
 
+   > **Partially superseded by [ADR-029](adr-029-single-edge-board-graph.md):** the two-edge-kind
+   > split above (dependency edges for blocking, `parent`/`subIssues` for grouping) is replaced by
+   > a single edge kind, with membership read off the far node's type.
+
 7. **The invocation surface is `loom board …`, namespaced under a single distributable — not a
    standalone `board`.** [ADR-027](adr-027-mechanism-install-port.md) (Accepted, 2026-09-06)
    mandates a *single* Mechanism-layer distributable exposing namespaced verbs (`loom board …`,
@@ -176,6 +185,11 @@ only the CLI *contract* (in illustrative pseudo-code); the *executable* lives ou
    - **Repo/auth targeting inherits `gh`'s cwd-derived context**; `--repo owner/name` is an
      optional override for the resident/cron case where cwd is not the repo. Keyless per
      [ADR-010](adr-010-keyless-by-default-recommendations.md); zero config.
+
+   > **Partially superseded by [ADR-029](adr-029-single-edge-board-graph.md):** the `takeable`
+   > predicate `(open ∧ unblocked ∧ unassigned)` above over-collects (returns 9 items on the live
+   > board, including a map) and gains a membership conjunct; the reconcile repair set it
+   > incorporates by reference drops from four rules to three plus one migration rule.
 
 ## Consequences
 
