@@ -459,13 +459,11 @@ function planReconcileDone(board) {
 // pure/zero-I/O.
 function planReconcileLabels(existingLabelNames) {
   const existing = new Set(existingLabelNames || []);
-  return LOOM_LABEL_NAMES.filter((name) => !existing.has(name)).map(
-    (name) => ({
-      op: "ensureLabel",
-      name,
-      reason: `repo has no label definition for "${name}"`,
-    }),
-  );
+  return LOOM_LABEL_NAMES.filter((name) => !existing.has(name)).map((name) => ({
+    op: "ensureLabel",
+    name,
+    reason: `repo has no label definition for "${name}"`,
+  }));
 }
 
 // Rule 5 — parent -> blocking migration: for every ticket with a legacy

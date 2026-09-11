@@ -27,7 +27,9 @@ function buildChildIndex(board) {
 }
 
 function childrenOf(index, parentNumber) {
-  return (index.get(parentNumber) || []).slice().sort((a, b) => a.number - b.number);
+  return (index.get(parentNumber) || [])
+    .slice()
+    .sort((a, b) => a.number - b.number);
 }
 
 function formatLine(ticket, isMap) {

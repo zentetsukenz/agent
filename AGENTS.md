@@ -41,6 +41,24 @@ This checks:
 - Wiki `.md` files have `type:` in YAML frontmatter
 - All relative Markdown links resolve to existing files
 
+## Quality baseline
+
+loom itself was content-only (no application code) until the `board-api-distributable`
+milestone shipped `scripts/loom/` — loom's first executable distributable, per
+[ADR-025](wiki/adr/adr-025-deterministic-board-api.md)/[ADR-027](wiki/adr/adr-027-mechanism-install-port.md).
+Per [quality-baseline](wiki/patterns/quality-baseline.md) ([ADR-017](wiki/adr/adr-017-quality-baseline.md)),
+this repo now names a floor for the code it ships (zero dependencies, Node.js `node:test` only):
+
+| Aspect | Tool + run command | Floor |
+|---|---|---|
+| lint | `node --check scripts/loom/**/*.js` | 0 syntax errors (ratchet) |
+| code-quality | — | `none` — no complexity/duplication tool configured yet; the distributable is small (5 files) and reviewed by hand |
+| security | — | `none` — zero third-party dependencies (only Node built-ins + `gh` as an external CLI), no dependency-scan surface yet |
+| coverage | `node --test scripts/loom/` | 96/96 passing (ratchet — no regression below 96 passing) |
+
+This is a **ratchet floor**: a gate may only raise these numbers, never lower them. The rest
+of the repo (skills, wiki, workflows) stays content-only and outside this baseline's scope.
+
 ## Conventions
 
 ### Skill files (`SKILLS/<bucket>/<slug>/SKILL.md`)

@@ -86,7 +86,7 @@ test("close: issue close <n>", () => {
 });
 
 test("editBody: --body-file - and body passed via stdin, never in argv", () => {
-  const secretBody = "line one\n`backtick` and \"quote\"";
+  const secretBody = 'line one\n`backtick` and "quote"';
   const { argv, input } = buildArgv("o/r").editBody(5, secretBody);
   assert.deepEqual(argv, [
     "issue",

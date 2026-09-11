@@ -78,7 +78,8 @@ function parseArgv(argv) {
     if (arg === "--frontier") flags.frontier = true;
     else if (arg === "--unmapped") flags.unmapped = true;
     else if (arg === "--dry-run") flags.dryRun = true;
-    else if (arg.startsWith("--format=")) flags.format = arg.slice("--format=".length);
+    else if (arg.startsWith("--format="))
+      flags.format = arg.slice("--format=".length);
     else if (arg === "--repo") repo = rest[++i];
     else if (arg.startsWith("--repo=")) repo = arg.slice("--repo=".length);
     else if (arg === "--pointer") flags.pointer = rest[++i];

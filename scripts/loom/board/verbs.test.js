@@ -24,7 +24,11 @@ function withParentBlockingEdges(rawIssues) {
 // mirrors what a real gh.js client would hand back. Every write method
 // pushes `{op, args}` onto `calls` and returns a harmless string — it NEVER
 // spawns `gh`, NEVER touches the live board.
-function makeFakeGh({ rawIssues = rawBoard, whoamiLogin = "alice", existingLabelNames = [] } = {}) {
+function makeFakeGh({
+  rawIssues = rawBoard,
+  whoamiLogin = "alice",
+  existingLabelNames = [],
+} = {}) {
   const calls = [];
   function record(op) {
     return (...args) => {
@@ -63,7 +67,10 @@ test("read --frontier: narrows tickets to the takeable set", () => {
   const result = read({ frontier: true }, client);
   assert.equal(result.ok, true);
   assert.deepEqual(result.payload.frontier, [20]);
-  assert.deepEqual(result.payload.tickets.map((t) => t.number), [20]);
+  assert.deepEqual(
+    result.payload.tickets.map((t) => t.number),
+    [20],
+  );
   assert.equal(result.payload.tickets[0].takeable, true);
 });
 
@@ -71,7 +78,11 @@ test("read --unmapped: ADDS an unmapped field, default payload keys unaffected",
   const client = makeFakeGh();
   const result = read({ unmapped: true }, client);
   assert.equal(result.ok, true);
-  assert.deepEqual(Object.keys(result.payload).sort(), ["frontier", "tickets", "unmapped"]);
+  assert.deepEqual(Object.keys(result.payload).sort(), [
+    "frontier",
+    "tickets",
+    "unmapped",
+  ]);
   assert.ok(result.payload.unmapped.length > 0);
 });
 

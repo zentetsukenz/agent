@@ -120,7 +120,11 @@ function apply(opts = {}, client = gh) {
       actor,
     });
     if (result.error !== undefined) {
-      return { ok: false, error: { message: result.error }, exitCode: result.exitCode };
+      return {
+        ok: false,
+        error: { message: result.error },
+        exitCode: result.exitCode,
+      };
     }
     for (const call of result.calls) {
       CALL_HANDLERS[call.op](client, call);

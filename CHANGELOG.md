@@ -2,6 +2,19 @@
 
 All notable changes to this framework are documented here.
 
+## [Unreleased] — 2026-09-10
+
+### Added
+
+- **`macro-pm.board-reflects-reality` — a doctrine-grounded `GATE.md` criterion for the board-API distributable milestone.** loom's glossary classes "a board left stale" as **form slop**, and `wiki/patterns/ratchet.md` routes form slop to a `GATE.md` artifact criterion — so shipping `scripts/loom/`'s live migration (see the 2026-09-06 entry below) earned a standing check rather than a one-off report. New row: `macro-pm.board-reflects-reality`, typed `artifact`, producer `board reconcile --dry-run → 0 repairs`, the first macro-PM-altitude criterion in `GATE.md` (26 → 27 rows: 8 `artifact` / 18 `judgment` / 1 `executable`). No new `executable` row — precedent (`loom size score` grounding a `judgment` criterion) shows a Mechanism may ground a non-executable criterion the same way. `REGISTRY.md` gains its matching row (`loom board reconcile` → `macro-pm.board-reflects-reality`, 2 → 3 rows), recording the same live evidence as its `verified-failing` column: pre-migration `board reconcile --dry-run` reported `COUNT: 10` (10 legacy `parent` edges unreflected in `blocking`, frontier `[]`); post-migration, `COUNT: 0`, frontier `[20]`, and an independent raw-`gh` cross-check confirmed `unmigrated: 0`.
+
+- **`AGENTS.md` gains a `Quality baseline` section** — `GATE.md`'s `verification.quality-baseline-passes` criterion accepts either a recorded baseline or an explicit absent-and-justified note for a no-app-code repo; loom's "no app code" justification stopped holding the moment `scripts/loom/` shipped (see above), and no record existed yet. Per [quality-baseline](wiki/patterns/quality-baseline.md)'s single-source-of-truth precedence (no committed lint/coverage config exists for a zero-dependency `node:test`-only tree, so the project-context file is the correct fallback home), recorded: lint = `node --check scripts/loom/**/*.js` (0 syntax errors), code-quality/security = `none` (justified — 5-file distributable reviewed by hand; zero third-party dependencies), coverage = `node --test scripts/loom/` (96/96 passing), all as a **ratchet** floor. The rest of the repo (skills, wiki, workflows) stays content-only and outside this baseline's scope.
+
+### Residual (carried into Closing, not resolved by this milestone)
+
+- **A doctrine gap in `SKILLS/planning/wayfinder/SKILL.md`, exposed by ADR-029's membership model**: two of the six `apply` transitions (`graduate-recharter`, `seed-regression-map`) are pinned by tests asserting `exitCode 1` with a gap-naming message, deliberately unimplemented. Root cause: membership now requires an explicit `blocking` edge (ADR-029 D2), but the wayfinder skill's dispatch table never says to wire that edge when a transition *creates* a ticket — a ticket created this way would be `unmapped` and never reach the frontier. Needs a doctrine decision (an ADR-029 follow-up or a `wayfinder` SKILL update), not a code fix. Not resolved this milestone — flagged for Shaping/Planning to pick up.
+- **Issue #22 (e2e coverage for the `loom board` CLI journeys) remains open.** The read → tree → reconcile → migration journeys exercised during delivery (see the migration transcript at `.loom/handoffs/delivery/board-api-distributable/migration-transcript.md`) are the seed set #22 must formalise into the standing regression suite per `SKILLS/verification/derive-e2e-coverage/SKILL.md` — e2e coverage is owed, not satisfied, for loom's first shipped code.
+
 ## [Unreleased] — 2026-09-06
 
 ### Added

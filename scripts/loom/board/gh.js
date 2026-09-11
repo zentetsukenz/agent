@@ -66,10 +66,7 @@ function buildArgv(repo) {
 
     // Body via stdin (--body-file -), never as an argv element.
     editBody: (n, body) => ({
-      argv: withRepo(
-        ["issue", "edit", String(n), "--body-file", "-"],
-        repo,
-      ),
+      argv: withRepo(["issue", "edit", String(n), "--body-file", "-"], repo),
       input: body,
     }),
 
@@ -105,7 +102,10 @@ function buildArgv(repo) {
     // are missing. `--limit 200` mirrors fetchBoard's own cap; a repo with
     // more than 200 labels is out of scope for now (YAGNI).
     listLabels: () => ({
-      argv: withRepo(["label", "list", "--json", "name", "--limit", "200"], repo),
+      argv: withRepo(
+        ["label", "list", "--json", "name", "--limit", "200"],
+        repo,
+      ),
     }),
 
     // `gh api` doesn't accept -R/--repo — it resolves repo from cwd/GH_REPO.
