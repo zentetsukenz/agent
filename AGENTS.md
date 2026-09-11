@@ -51,13 +51,20 @@ this repo now names a floor for the code it ships (zero dependencies, Node.js `n
 
 | Aspect | Tool + run command | Floor |
 |---|---|---|
-| lint | `node --check scripts/loom/**/*.js` | 0 syntax errors (ratchet) |
+| lint | `find scripts/loom -name '*.js' -print0 \| xargs -0 -n1 node --check` | 0 syntax errors (ratchet) |
 | code-quality | — | `none` — no complexity/duplication tool configured yet; the distributable is small (5 files) and reviewed by hand |
 | security | — | `none` — zero third-party dependencies (only Node built-ins + `gh` as an external CLI), no dependency-scan surface yet |
-| coverage | `node --test scripts/loom/` | 96/96 passing (ratchet — no regression below 96 passing) |
+| coverage | `node --test 'scripts/loom/**/*.test.js'` | 96/96 passing (ratchet — no regression below 96 passing) |
 
 This is a **ratchet floor**: a gate may only raise these numbers, never lower them. The rest
 of the repo (skills, wiki, workflows) stays content-only and outside this baseline's scope.
+
+> Command shapes matter and are load-bearing — don't "simplify" them back:
+> `node --check` validates only its **first** argument (a bare `**/*.js` would leave every
+> file after the first unchecked), so lint runs it **once per file** via `xargs -0 -n1`; and
+> `node --test <dir>` executes an `index.js` in that dir instead of scanning for `*.test.js`,
+> so coverage passes a **quoted** glob and lets Node do the test-file discovery. Both verified
+> on Node v26.
 
 ## Conventions
 
