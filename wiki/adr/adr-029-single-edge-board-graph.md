@@ -14,8 +14,10 @@ tags: [board, wayfinder, macro-pm, issue-dependencies, supersedes-adr-025, takea
 > parenthetical plus the reconcile repair set it incorporates by reference from the issue-#19
 > resolution. It does **not** reverse ADR-025's distributable placement, four-verb contract,
 > exit-code tiers, or prose-first split — see *What is NOT reversed*. Records design decisions
-> D1–D3 from the `board-api-distributable` shaping effort's
-> [design-decisions.md](../../.loom/handoffs/shaping/board-api-distributable/design-decisions.md).
+> D1–D3 from the `board-api-distributable` shaping effort; they are stated in full under
+> [Decision](#decision) below. The effort's working `design-decisions.md` lived in the ephemeral,
+> gitignored `.loom/` ledger and is deliberately **not** linked — a permanent artifact must not
+> cite an ephemeral one.
 
 ## Context
 
