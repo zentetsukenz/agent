@@ -2,7 +2,8 @@
   "permissions": {
     "allow": [
       "Bash(python3 -c ' *)",
-      "Bash(python3 -)"
+      "Bash(python3 -)",
+      "Bash(xargs -I{} echo \"remaining 'scripts/board/' mentions in #17: {} \\(expect 1 — the historical ticket title of #19\\)\")"
     ]
   }
 }
