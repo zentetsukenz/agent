@@ -1,0 +1,10 @@
+# loom gate baseline — known, ticketed validate.sh violations.
+#
+# Rules:
+#   1. Every line here MUST cite an open issue. No issue, no baseline entry.
+#   2. Adding a line is a decision, not a convenience. It means "accepted for now",
+#      never "make the gate shut up".
+#   3. When the issue closes, delete the line. The gate then guards the fix.
+#
+# https://github.com/zentetsukenz/agent/issues/31 — ADR-029 cites a gitignored .loom/ seam artifact
+ERROR: wiki/adr/adr-029-single-edge-board-graph.md: line 18 relative link does not resolve: ../../.loom/handoffs/shaping/board-api-distributable/design-decisions.md (from wiki/adr)

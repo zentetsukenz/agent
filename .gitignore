@@ -4,3 +4,6 @@
 # loom seam-artifact ledger — ephemeral coordination, not version-controlled (ADR-014)
 .loom/
 .mirai
+
+# graphify knowledge-graph output — derived, rebuildable, never committed
+graphify-out/
