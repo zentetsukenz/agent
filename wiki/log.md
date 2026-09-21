@@ -125,3 +125,29 @@ Initial wiki structure and content created.
   five-conjunct predicate (`member ∧ type ≠ map ∧ open ∧ no open blocker ∧ unassigned`),
   replacing the old three-conjunct `(open ∧ unblocked ∧ unassigned)` this ADR superseded at
   ADR-025 §8.
+
+---
+
+## Dispatch leaves wayfinder
+
+**2026-09-21**
+
+### Added
+
+- [ADR-030](adr/adr-030-altitude-handoff-skill.md) — dispatch is not a wayfinding concern. The
+  `## Macro mode` section (**63 of 205 lines, 31%** of `SKILLS/planning/wayfinder/SKILL.md`, serving
+  a resident PM rather than a charting human) becomes **`SKILLS/planning/altitude-handoff`**, named
+  after [ADR-018](adr/adr-018-macro-project-management.md) #4's own framing — `stage-handoff`'s
+  PRODUCE/DISCOVER contract one [altitude](glossary/index.md#altitude) up. The dependency is
+  **one-way**: wayfinder ends with zero references to dispatch. Also names the new skill the spec
+  for `board apply`'s six transitions, and confirms no new adapter port is owed.
+
+### Changed
+
+- **Amends ADR-018** on three clauses only — "do not add a parallel skill", the *New macro-PM skill
+  beside wayfinder* rejection row, and "no new planning skill is created". Its model (recursive
+  wayfinding layer, mechanical router, two-vocabulary seam, altitude-scoped substrate) stands.
+  Distinct from the clause [ADR-019](adr/adr-019-loom-hermes-setup.md) amended.
+- Glossary **See** lines for **Altitude**, **Altitude seam**, **Resident agent** and
+  **`qa:regression-failed`** now cite ADR-030. Their bodies still name `wayfinder` as the home of
+  dispatch, which holds until the atomic move lands the new skill.

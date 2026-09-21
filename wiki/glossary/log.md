@@ -53,3 +53,10 @@ description: Chronological log of glossary changes
   (ADR-026): three layers, each owning one kind of slop, each enforced by a mechanism suited
   to what it owns (reasoning + a different actor for judgment slop; exit codes + withheld
   capabilities for form slop; re-executing reality for recall slop).
+- 2026-09-21 — Pointed **Altitude**, **Altitude seam**, **Resident agent** and
+  **`qa:regression-failed`** at [ADR-030](../adr/adr-030-altitude-handoff-skill.md), which moves
+  dispatch out of `wayfinder` into `SKILLS/planning/altitude-handoff`. Only the **See** lines change
+  here: each term's body still names `wayfinder` as the home of dispatch, which stays true until the
+  atomic move ([#51](https://github.com/zentetsukenz/agent/issues/51)) creates the skill — a
+  glossary body pointing at a file that does not exist yet would be a broken link, not a capture.
+  The prose rewiring lands with the move.

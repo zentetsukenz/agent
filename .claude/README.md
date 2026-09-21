@@ -15,7 +15,7 @@ adapters are. Turning it into `adapters/claude-code/` means answering the five
 | `settings.json` | Model, permission allowlist, and the two gate hooks |
 | `hooks/validate-gate.sh` | Runs `scripts/validate.sh`; blocks on **new** violations only |
 | `hooks/validate-baseline.txt` | Known, ticketed breaks. Every line cites an open issue |
-| `agents/` | `editor` · `pm` · `thoth` · `adapter-conformance` · `corpus-cartographer` |
+| `agents/` | `editor` · `explore` · `pm` · `thoth` · `adapter-conformance` · `corpus-cartographer` |
 | `commands/` | `/validate` · `/tick` · `/adr-new` |
 | `skills/` | **Symlinks** into `SKILLS/<bucket>/<slug>/` — never copies |
 

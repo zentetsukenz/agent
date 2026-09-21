@@ -353,7 +353,7 @@ as nested [wayfinder](../../SKILLS/planning/wayfinder/SKILL.md) maps and dispatc
 *into* SDLC runs. The two altitudes may use different [Substrates](#substrate) (macro on a
 [Networked substrate](#substrate), micro in memory) and are joined by an [Altitude seam](#altitude-seam).
 
-**See**: `mem:adr/adr-018-macro-project-management`, [Substrate](#substrate), [Altitude seam](#altitude-seam),
+**See**: `mem:adr/adr-018-macro-project-management`, `mem:adr/adr-030-altitude-handoff-skill`, [Substrate](#substrate), [Altitude seam](#altitude-seam),
 [Resident agent](#resident-agent)
 
 ---
@@ -405,7 +405,7 @@ a tracker update (close the ticket, attach the PR/commit link, advance the front
 expressed as a **two-vocabulary label protocol**: `wayfinder:*` labels flow *down* (what the board
 hands into a run) and `sdlc:*` statuses flow *up* (what a run reports back).
 
-**See**: `mem:adr/adr-018-macro-project-management`, [Altitude](#altitude), [Resident agent](#resident-agent),
+**See**: `mem:adr/adr-018-macro-project-management`, `mem:adr/adr-030-altitude-handoff-skill`, [Altitude](#altitude), [Resident agent](#resident-agent),
 [Seam artifact](#seam-artifact)
 
 ---
@@ -422,7 +422,7 @@ is what keeps it restart-safe and the board authoritative. The agent *is* loom-a
 concrete 24/7 daemon that runs it (e.g. Hermes) is an [Adapter](#adapter) concern, not part of the
 protocol.
 
-**See**: `mem:adr/adr-018-macro-project-management`, [Altitude seam](#altitude-seam), [Substrate](#substrate)
+**See**: `mem:adr/adr-018-macro-project-management`, `mem:adr/adr-030-altitude-handoff-skill`, [Altitude seam](#altitude-seam), [Substrate](#substrate)
 
 ---
 
@@ -660,7 +660,7 @@ red. The resident agent handles it **mechanically and AFK** by *seeding* — not
 *"restore the failing check to green"*, then closing the trigger ticket. The regression is thus its
 own effort in the forest; it never reopens the closed effort map that shipped the feature.
 
-**See**: [ADR-020](../adr/adr-020-system-scoped-qa.md), [wayfinder: a third origin](../../SKILLS/planning/wayfinder/SKILL.md#a-third-origin-a-regression-seeds-a-fresh-map-not-down-not-up)
+**See**: [ADR-020](../adr/adr-020-system-scoped-qa.md), [ADR-030](../adr/adr-030-altitude-handoff-skill.md), [wayfinder: a third origin](../../SKILLS/planning/wayfinder/SKILL.md#a-third-origin-a-regression-seeds-a-fresh-map-not-down-not-up)
 
 ---
 
