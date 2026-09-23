@@ -3,7 +3,7 @@
 
 # loom seam-artifact ledger — ephemeral coordination, not version-controlled (ADR-014)
 .loom/
-.mirai
+.claude/worktrees
 
 # graphify knowledge-graph output — the graph IS committed, deliberately.
 # This corpus is ~100% prose, so every node costs an LLM extraction pass; a cold clone cannot
