@@ -18,3 +18,8 @@ graphify-out/manifest.json
 graphify-out/cost.json
 graphify-out/.graphify_python
 graphify-out/.graphify_root
+
+# Cache internals that churn on every query or clone — the semantic extractions are the
+# part worth committing; these two are mtime/stat bookkeeping.
+graphify-out/cache/last_query_stamp
+graphify-out/cache/stat-index.json

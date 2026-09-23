@@ -77,7 +77,7 @@ All inter-framework links use **relative paths** from the `agent/` root:
 
 ```markdown
 [deep-modules](wiki/patterns/deep-modules.md)
-[context-compression](skills/meta/context-compression/SKILL.md)
+[context-compression](SKILLS/meta/context-compression/SKILL.md)
 ```
 
 Rules:
