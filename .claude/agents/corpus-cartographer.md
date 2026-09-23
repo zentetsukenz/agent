@@ -16,12 +16,23 @@ graphify path "<a>" "<b>"
 graphify explain "<concept>"
 ```
 
-Output lands in `graphify-out/` (gitignored — never commit it, never link to it from a
-version-controlled file; that is exactly the defect issue #31 records).
+Output lands in `graphify-out/`, and the graph itself is **committed** — `graph.json`,
+`GRAPH_REPORT.md`, `.graphify_labels.json` and `cache/`. A cold clone cannot rebuild it cheaply
+(this repo is ~100% prose, so every node goes through an LLM extraction pass), so the graph ships
+with the repo rather than being rebuilt per machine. `cache/` is committed with it: content-hash
+keyed, it is what makes a refresh incremental instead of a full re-extraction.
 
-Default scope is `wiki/ adapters/ contract/` — where structural defects actually show up. A full
-295-file sweep is a deliberate, expensive choice: this repo is ~100% prose, so every doc goes through
-an LLM extraction pass. Say what a wider scope will cost before running it.
+Still ignored, deliberately: `manifest.json` (churns thousands of `mtime` lines per rebuild),
+`graph.html` (a large derivative of `graph.json`), `cost.json` (local ledger), and
+`.graphify_python` / `.graphify_root` (absolute machine paths).
+
+Scope is the whole repo, so the bootstrap documents and skills are in the graph and not only the
+wiki. A rebuild is a deliberate, expensive choice — say what it will cost before running one, and
+prefer `graphify update .` so the cache does its job.
+
+Refresh after the corpus changes, not before: nothing gates the query path on staleness, and
+graphify's rebuild hook watches only *code* changes, which this repo has almost none of. A stale
+graph is silently trusted, which is worse than an absent one.
 
 ## What you are looking for
 

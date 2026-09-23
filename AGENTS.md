@@ -5,24 +5,18 @@ nothing else. Everything you might otherwise look for is one link away.
 
 ## Bootstrap — the guaranteed path
 
-Read these three, in order. They are version-controlled, always present, and always current:
+Read [VISION.md](VISION.md), then [CONSTITUTION.md](CONSTITUTION.md), then
+[CONTEXT.md](CONTEXT.md). In that order: purpose, then construction, then vocabulary. VISION.md
+routes to everything else.
 
-1. **[VISION.md](VISION.md)** — why loom exists and where it is going. Every document traces
-   back here.
-2. **[CONSTITUTION.md](CONSTITUTION.md)** — the entities, how they compose, and the rules
-   binding them. Read this before changing anything structural.
-3. **[CONTEXT.md](CONTEXT.md)** — every term loom uses. loom's vocabulary is **exact, not
-   decorative**: `harness`, `workflow`, `altitude`, `seam artifact` and the rest each mean one
-   specific thing. Using them loosely produces work that looks right and is wrong.
+loom's vocabulary is **exact, not decorative**. `harness`, `workflow`, `altitude`, `seam artifact`
+and the rest each mean one specific thing, and using them loosely produces work that looks right
+and is wrong. CONTEXT.md is the only place they are defined.
 
-Then go to what your task needs: [SPEC.md](SPEC.md) for file-level conformance,
-[SETUP.md](SETUP.md) for installing loom into a project,
-[wiki/adr/](wiki/adr/index.md) for why something is the way it is.
+## Bootstrap — the fast path
 
-## Bootstrap — the fast path, when it is available
-
-If `graphify-out/` exists, a knowledge graph of this corpus is already built and you can query
-it instead of reading your way in:
+`graphify-out/` holds a committed knowledge graph of this corpus. Query it instead of reading
+your way in:
 
 ```sh
 graphify query "<question>"          # BFS, broad context
@@ -30,37 +24,28 @@ graphify explain "<node>"            # one node and everything it connects to
 graphify path "<node-a>" "<node-b>"  # how two things relate
 ```
 
-Three conditions on trusting it, all load-bearing:
+Two conditions on trusting it:
 
-- **It is derived, not authoritative.** `graphify-out/` is rebuildable output. Where the graph
-  and the documents disagree, the documents win. Never cite a `graphify-out/` path in a
-  committed file — a permanent artifact may not depend on an ephemeral one.
-- **Check freshness first.** Nothing gates the query path on staleness, and the auto-rebuild
-  hook ignores prose changes — which is this entire corpus. Compare the graph's build commit to
-  `HEAD` before trusting it:
+- **Check freshness first.** Nothing gates the query path on staleness, and graphify's rebuild
+  hook only watches *code* changes — which this corpus has almost none of. A graph can be many
+  commits behind and will not say so:
 
   ```sh
-  git merge-base --is-ancestor "$(jq -r .built_at_commit graphify-out/graph.json)" HEAD \
-    && git diff --name-only "$(jq -r .built_at_commit graphify-out/graph.json)"..HEAD -- '*.md'
+  git diff --name-only "$(jq -r .built_at_commit graphify-out/graph.json)"..HEAD -- '*.md'
   ```
 
   Anything listed there is a change the graph has not seen. Refresh with `graphify update .`,
-  or fall back to reading.
-- **Query in loom's own words.** The matcher is case-folded substring plus IDF — no stemming,
-  no synonyms. A question phrased in general English returns nothing useful. Read
+  or fall back to reading. A full rebuild is expensive — this corpus is prose, so every node goes
+  through a language model — so refresh deliberately, not reflexively.
+- **Query in loom's own words.** The matcher is case-folded substring plus IDF — no stemming, no
+  synonyms. A question phrased in general English returns nothing useful. Read
   [CONTEXT.md](CONTEXT.md) first and query using the terms defined there.
 
-If `graphify-out/` is absent — which is the normal state of a fresh clone — do not build it to
-answer a question. A full build of this corpus costs over a million tokens because loom is
-prose, so every node goes through a language model. Use the guaranteed path above.
+Where the graph and the documents disagree, the documents win.
 
 ## Before you commit
 
 ```sh
-bash scripts/validate.sh
+bash scripts/validate.sh   # frontmatter, links, anchors, orphans — see CONSTITUTION.md#the-gate
+bash scripts/quality.sh    # the quality baseline: lint and coverage floors for scripts/loom/
 ```
-
-It checks frontmatter, link resolution, anchor existence, and orphan reachability. It blocks on
-**new** violations only. Never add a line to `.claude/hooks/validate-baseline.txt` to get
-unblocked — fix the break or file the issue. See
-[CONSTITUTION.md](CONSTITUTION.md#the-gate).

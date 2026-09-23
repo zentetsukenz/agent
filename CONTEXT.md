@@ -14,68 +14,6 @@ restating the definition ([ADR-013](wiki/adr/adr-013-shared-adapter-contract-cor
 term needs sharpening, sharpen it here; if a document needs the term, link here instead of
 paraphrasing it.
 
-## Table of Contents
-
-- [Core Concepts](#core-concepts)
-  - [Skill](#skill)
-  - [Agent](#agent)
-  - [Capability](#capability)
-  - [Role](#role)
-  - [Dispatcher](#dispatcher)
-  - [Utility (dispatched) agent](#utility-dispatched-agent)
-  - [Domain-specialized utility](#domain-specialized-utility)
-  - [Invocation surface](#invocation-surface)
-  - [Wiki](#wiki)
-  - [Harness](#harness)
-  - [Adapter](#adapter)
-  - [Setup contract](#setup-contract)
-  - [Plugin](#plugin)
-  - [ADR (Architecture Decision Record)](#adr-architecture-decision-record)
-  - [Lifecycle Bucket](#lifecycle-bucket)
-  - [Wrapper](#wrapper)
-  - [Core](#core)
-  - [Dogfood](#dogfood)
-- [Workflow Concepts](#workflow-concepts)
-  - [Workflow](#workflow)
-  - [Stage](#stage)
-  - [Seam artifact](#seam-artifact)
-  - [Ledger](#ledger)
-  - [Communication protocol document](#communication-protocol-document)
-  - [Altitude](#altitude)
-  - [Substrate](#substrate)
-  - [Artifact ref](#artifact-ref)
-  - [Altitude seam](#altitude-seam)
-  - [Resident agent](#resident-agent)
-  - [Board API](#board-api)
-  - [Manual tick](#manual-tick)
-  - [Board reconcile](#board-reconcile)
-  - [Board](#board)
-  - [Board member](#board-member)
-  - [Membership edge](#membership-edge)
-  - [Ordering edge](#ordering-edge)
-  - [Unmapped](#unmapped)
-  - [Takeable](#takeable)
-  - [Frontier](#frontier)
-  - [Orchestrator](#orchestrator)
-  - [RPI (Research → Plan → Implement)](#rpi-research--plan--implement)
-  - [Context-First](#context-first)
-  - [Verification Culture](#verification-culture)
-  - [Quality baseline](#quality-baseline)
-  - [Quality aspect](#quality-aspect)
-  - [Standing regression suite](#standing-regression-suite)
-  - [`qa:regression-failed` (regression origin)](#qaregression-failed-regression-origin)
-  - [Deep Module](#deep-module)
-  - [Form slop](#form-slop)
-  - [Recall slop](#recall-slop)
-  - [Judgment slop](#judgment-slop)
-  - [Gate](#gate)
-  - [Evidence producer](#evidence-producer)
-  - [Criterion type](#criterion-type)
-  - [Mechanism](#mechanism)
-  - [Graduation](#graduation)
-  - [Ratchet](#ratchet)
-  - [Re-executing reality](#re-executing-reality)
-
 ---
 
 ## Core Concepts
@@ -229,14 +167,13 @@ Planner hands off to it) yet is *not* subagent-invocable.
 
 ### Wiki
 
-Centralized knowledge repository. Contains principles, patterns, environments, and glossary. Reference material, not procedures.
+Centralized knowledge repository. Contains principles, patterns, and environments. Reference material, not procedures. Terminology lives in this file (`CONTEXT.md`), not in the wiki.
 
 **Structure**:
 
 - `principles/` — Core philosophy and decision-making frameworks
 - `patterns/` — Reusable design patterns and best practices
 - `environments/` — Development environment setup and tools
-- `glossary/` — Terminology and concepts
 
 ---
 
@@ -848,8 +785,3 @@ result should be. What a [Mechanism](#mechanism) does to catch [recall slop](#re
 - `mem:principles/rpi` — Research → Plan → Implement workflow
 - `mem:principles/context-first` — Context management philosophy
 - `mem:principles/verification-culture` — Verification discipline
-
-## Related
-
-- [VISION.md](VISION.md) — what loom is for.
-- [SPEC.md](SPEC.md) — the conformance rules this vocabulary is checked against.
