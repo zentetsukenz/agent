@@ -1,14 +1,80 @@
 ---
 type: Index
-title: Glossary
-description: Key terms and concepts in the agent framework
-tags: [glossary, terminology, reference]
+title: Context
+description: The definitional home — every term loom uses, and pointers to every decision it has made
+tags: [glossary, terminology, reference, context]
 timestamp: 2026-01-07T00:00:00Z
 ---
 
-# Glossary
+# Context
 
-Key terms and concepts in the agent framework.
+This is loom's single home for its vocabulary — every term the framework uses is defined here
+once, with a stable anchor, and every other document links to that anchor rather than
+restating the definition ([ADR-013](wiki/adr/adr-013-shared-adapter-contract-core.md)). If a
+term needs sharpening, sharpen it here; if a document needs the term, link here instead of
+paraphrasing it.
+
+## Table of Contents
+
+- [Core Concepts](#core-concepts)
+  - [Skill](#skill)
+  - [Agent](#agent)
+  - [Capability](#capability)
+  - [Role](#role)
+  - [Dispatcher](#dispatcher)
+  - [Utility (dispatched) agent](#utility-dispatched-agent)
+  - [Domain-specialized utility](#domain-specialized-utility)
+  - [Invocation surface](#invocation-surface)
+  - [Wiki](#wiki)
+  - [Harness](#harness)
+  - [Adapter](#adapter)
+  - [Setup contract](#setup-contract)
+  - [Plugin](#plugin)
+  - [ADR (Architecture Decision Record)](#adr-architecture-decision-record)
+  - [Lifecycle Bucket](#lifecycle-bucket)
+  - [Wrapper](#wrapper)
+  - [Core](#core)
+  - [Dogfood](#dogfood)
+- [Workflow Concepts](#workflow-concepts)
+  - [Workflow](#workflow)
+  - [Stage](#stage)
+  - [Seam artifact](#seam-artifact)
+  - [Ledger](#ledger)
+  - [Communication protocol document](#communication-protocol-document)
+  - [Altitude](#altitude)
+  - [Substrate](#substrate)
+  - [Artifact ref](#artifact-ref)
+  - [Altitude seam](#altitude-seam)
+  - [Resident agent](#resident-agent)
+  - [Board API](#board-api)
+  - [Manual tick](#manual-tick)
+  - [Board reconcile](#board-reconcile)
+  - [Board](#board)
+  - [Board member](#board-member)
+  - [Membership edge](#membership-edge)
+  - [Ordering edge](#ordering-edge)
+  - [Unmapped](#unmapped)
+  - [Takeable](#takeable)
+  - [Frontier](#frontier)
+  - [Orchestrator](#orchestrator)
+  - [RPI (Research → Plan → Implement)](#rpi-research--plan--implement)
+  - [Context-First](#context-first)
+  - [Verification Culture](#verification-culture)
+  - [Quality baseline](#quality-baseline)
+  - [Quality aspect](#quality-aspect)
+  - [Standing regression suite](#standing-regression-suite)
+  - [`qa:regression-failed` (regression origin)](#qaregression-failed-regression-origin)
+  - [Deep Module](#deep-module)
+  - [Form slop](#form-slop)
+  - [Recall slop](#recall-slop)
+  - [Judgment slop](#judgment-slop)
+  - [Gate](#gate)
+  - [Evidence producer](#evidence-producer)
+  - [Criterion type](#criterion-type)
+  - [Mechanism](#mechanism)
+  - [Graduation](#graduation)
+  - [Ratchet](#ratchet)
+  - [Re-executing reality](#re-executing-reality)
 
 ---
 
@@ -84,7 +150,7 @@ agents rather than doing it itself. Dispatchers typically **withhold `edit`**, w
 them to delegate instead of quietly doing the work in-place. The [Orchestrator](#orchestrator)
 is the canonical dispatcher; **Shaping** is a second, *read-only* one — it dispatches recon and
 research to the `explore` utility and spikes to `quick`/`deep` while staying `edit`-free
-([ADR-021](../adr/adr-021-shaping-research-orchestrator.md)).
+([ADR-021](wiki/adr/adr-021-shaping-research-orchestrator.md)).
 
 Being a Dispatcher is orthogonal to the [invocation surface](#invocation-surface): a Dispatcher
 may be `dispatched` itself (the Orchestrator) or a `front-door` (Shaping — a human enters it, and
@@ -185,7 +251,7 @@ a given harness's format.
 **Example**: Mirai reads `.mirai/agents/*.agent.md`; Claude Code reads `.claude/agents/*.md`.
 Same loom agent, two native formats — one adapter each.
 
-**See**: [wiki/environments/](../environments/index.md), `mem:adr/adr-001-adapter-pattern`
+**See**: [wiki/environments/](wiki/environments/index.md), `mem:adr/adr-001-adapter-pattern`
 
 ---
 
@@ -193,7 +259,7 @@ Same loom agent, two native formats — one adapter each.
 
 In loom, a **harness adapter**: the module that maps loom's generic content (skills,
 agents, workflow) onto a specific [Harness](#harness)'s native config format. It owns the
-harness-specific knowledge so the [SETUP.md](../../SETUP.md) entrypoint and the
+harness-specific knowledge so the [SETUP.md](SETUP.md) entrypoint and the
 [Setup contract](#setup-contract) stay harness-agnostic. Supporting a new harness = adding
 an adapter under `adapters/<harness>/`, not modifying loom's core content.
 
@@ -209,11 +275,11 @@ and exact frontmatter; nothing else in loom does.
 
 The universal, harness-agnostic flow every [Adapter](#adapter) implements to install loom
 into a project: **explore → interview → present & confirm → generate (in the harness's
-native format) → verify**. [SETUP.md](../../SETUP.md) defines the contract; each adapter
+native format) → verify**. [SETUP.md](SETUP.md) defines the contract; each adapter
 supplies the harness-specific "generate" and "verify" steps. Interview-driven, not a
 mechanical copy — the interview tailors which skills/agents/stages the project needs.
 
-**See**: [SETUP.md](../../SETUP.md), `mem:adr/adr-004-loom-mirai-setup`
+**See**: [SETUP.md](SETUP.md), `mem:adr/adr-004-loom-mirai-setup`
 
 ---
 
@@ -285,7 +351,7 @@ skills).
 Implementation → Verification → Preservation), grouped into three ownership stages
 (Shaping → Delivery → Closing).
 
-**See**: [workflows](../../workflows/index.md), `mem:adr/adr-002-workflow-as-adapter-seed`
+**See**: [workflows](workflows/index.md), `mem:adr/adr-002-workflow-as-adapter-seed`
 
 ---
 
@@ -297,7 +363,7 @@ point where ownership changes hands. The SDLC workflow has three: **Shaping** (D
 no gates of their own; they name *who* owns the work and *what* [Seam artifact](#seam-artifact)
 crosses each seam.
 
-**See**: [SDLC workflow](../../workflows/sdlc/index.md), [Seam artifact](#seam-artifact)
+**See**: [SDLC workflow](workflows/sdlc/index.md), [Seam artifact](#seam-artifact)
 
 ---
 
@@ -308,7 +374,7 @@ next. Shaping emits a milestone with design docs (findings, domain model, design
 Delivery emits a shipped, verified change with its acceptance evidence; Closing emits durable,
 curated knowledge. A seam artifact carries the *connective tissue* the next agent needs — it
 **references** PRDs, plans, ADRs, commits, and diffs by path or URL rather than re-embedding them.
-The [Seam Artifact Protocol](../patterns/seam-artifact-protocol.md) defines where it lives and how
+The [Seam Artifact Protocol](wiki/patterns/seam-artifact-protocol.md) defines where it lives and how
 it is discovered.
 
 **See**: `mem:patterns/seam-artifact-protocol`, `mem:adr/adr-011-seam-artifact-protocol`, [Ledger](#ledger)
@@ -346,10 +412,10 @@ instruction).
 ### Altitude
 
 The scale at which planning and coordination happen. loom distinguishes two. The **micro**
-altitude is a single [SDLC](../../workflows/sdlc/index.md) run — one shaped change flowing
+altitude is a single [SDLC](workflows/sdlc/index.md) run — one shaped change flowing
 Planning → Implementation → Verification, coordinating in harness memory. The **macro** altitude
 is project management *above* one run — a [Resident agent](#resident-agent) charting many efforts
-as nested [wayfinder](../../SKILLS/planning/wayfinder/SKILL.md) maps and dispatching their leaves
+as nested [wayfinder](SKILLS/planning/wayfinder/SKILL.md) maps and dispatching their leaves
 *into* SDLC runs. The two altitudes may use different [Substrates](#substrate) (macro on a
 [Networked substrate](#substrate), micro in memory) and are joined by an [Altitude seam](#altitude-seam).
 
@@ -361,14 +427,14 @@ as nested [wayfinder](../../SKILLS/planning/wayfinder/SKILL.md) maps and dispatc
 ### Substrate
 
 Where a [Ledger](#ledger)'s bytes actually land — chosen per project (and, per
-[ADR-018](../adr/adr-018-macro-project-management.md), per [Altitude](#altitude)) at
+[ADR-018](wiki/adr/adr-018-macro-project-management.md), per [Altitude](#altitude)) at
 [setup](#setup-contract), never hardcoded by the protocol. Three classes: **harness memory**
 (survives across conversations, fast — but not git-committed, so it does not distribute across
 agents on different servers); a **committed repo folder** (harness-neutral, reviewable — but adds
 state files to the code tree); and a **networked/external store** (a tracker/board or other shared
 service — distributes across agents *and* stays out of the code tree, the fit for the macro
 altitude). The `persist` [capability](#capability) resolver picks the concrete tool/path. The
-networked class has **two instruments** ([ADR-022](../adr/adr-022-reachable-artifact-substrate.md)): a
+networked class has **two instruments** ([ADR-022](wiki/adr/adr-022-reachable-artifact-substrate.md)): a
 **tracker/board** for macro state, and an **[Artifact ref](#artifact-ref)** for bulky content.
 
 **See**: `mem:patterns/seam-artifact-protocol`, `mem:adr/adr-018-macro-project-management`, [Ledger](#ledger), [Altitude](#altitude), [Artifact ref](#artifact-ref)
@@ -377,15 +443,15 @@ networked class has **two instruments** ([ADR-022](../adr/adr-022-reachable-arti
 
 ### Artifact ref
 
-The second instrument of the networked [Substrate](#substrate) class ([ADR-022](../adr/adr-022-reachable-artifact-substrate.md)):
+The second instrument of the networked [Substrate](#substrate) class ([ADR-022](wiki/adr/adr-022-reachable-artifact-substrate.md)):
 a git ref on the server — an **orphan branch per effort** (`loom-artifacts/<map-slug>`, disconnected
 history so it never tangles a rebase or merge of `main`) — that holds a HITL ticket's **bulky content**
 (a `grilling` design doc, a `prototype`'s output, `research` findings), fetched by URL on demand and
 never checked into a working tree. Where the **tracker/board** holds macro *state*, the artifact ref
 holds the *content* the board's links point at, keeping the board's *"linked, not embedded"* discipline
 honest: a link resolves to a place **every participant of the altitude can reach**, never a local-only
-path (the [reachability invariant](../patterns/seam-artifact-protocol.md#the-macro-section-and-the-one-source-of-truth-invariant)).
-A resolving agent writes it via the same PRODUCE act [stage-handoff](../../SKILLS/preservation/stage-handoff/SKILL.md)
+path (the [reachability invariant](wiki/patterns/seam-artifact-protocol.md#the-macro-section-and-the-one-source-of-truth-invariant)).
+A resolving agent writes it via the same PRODUCE act [stage-handoff](SKILLS/preservation/stage-handoff/SKILL.md)
 owns; cleanup is an enumerate-by-prefix + delete-ref sweep when the effort's content reaches a durable
 home (merged code, curated wiki) or the map closes.
 
@@ -397,7 +463,7 @@ home (merged code, curated wiki) or the map closes.
 
 The boundary between the macro and micro [Altitudes](#altitude), and the **translator** that
 crosses it. A [Resident agent](#resident-agent) performs two translations, reusing the existing
-[Seam Artifact Protocol](../patterns/seam-artifact-protocol.md) PRODUCE/DISCOVER contract across
+[Seam Artifact Protocol](wiki/patterns/seam-artifact-protocol.md) PRODUCE/DISCOVER contract across
 the boundary: **down** — a macro tracker ticket plus its linked artifacts becomes a
 `shaping/<milestone>/` [Seam artifact](#seam-artifact) in the SDLC run's memory [Ledger](#ledger),
 which Planning's DISCOVER gate already expects; **up** — the run's verified-change artifact becomes
@@ -448,7 +514,7 @@ this provides).
 
 ### Manual tick
 
-A single execution of the macro-PM [tick loop](../../workflows/macro-pm/index.md#the-tick-loop) run
+A single execution of the macro-PM [tick loop](workflows/macro-pm/index.md#the-tick-loop) run
 **on demand by a human or per-invocation harness**, rather than by a [Resident agent](#resident-agent)'s
 `cron`/`gateway`. Because the tick is harness-agnostic prose over a [Board API](#board-api), the same
 loop runs unchanged whether a resident daemon fires it on an interval or a person triggers it once
@@ -478,7 +544,7 @@ chore. It **reports every repair in its JSON output, never silent**, and support
 ### Board
 
 The set of issues **reachable from a `wayfinder:map` via `blocking` edges**
-([ADR-029](../adr/adr-029-single-edge-board-graph.md)) — not simply "the repo's issues". An issue
+([ADR-029](wiki/adr/adr-029-single-edge-board-graph.md)) — not simply "the repo's issues". An issue
 outside that reachable set is [Unmapped](#unmapped), never a board member, regardless of its open/
 closed state. [Takeable](#takeable) and [Frontier](#frontier) are computed only over board
 members; mere presence in the repo's issue list confers nothing.
@@ -490,7 +556,7 @@ members; mere presence in the repo's issue list confers nothing.
 ### Board member
 
 A `wayfinder:map`, or a ticket whose `blocking` chain reaches one
-([ADR-029](../adr/adr-029-single-edge-board-graph.md)). Membership is an **edge property, not a
+([ADR-029](wiki/adr/adr-029-single-edge-board-graph.md)). Membership is an **edge property, not a
 status** — it survives closure, so a closed ticket stays a member and keeps counting toward its
 map's completion. Replaces the `parent`/`subIssues` sub-issue nesting ADR-025 §6 used for grouping
 (no 7-level nesting cap, no BFS).
@@ -502,7 +568,7 @@ map's completion. Replaces the `parent`/`subIssues` sub-issue nesting ADR-025 §
 ### Membership edge
 
 The edge shape `ticket → map`: a ticket `blocks` its map exactly as it would block another ticket
-([ADR-029](../adr/adr-029-single-edge-board-graph.md)), so **a map is not done until every ticket
+([ADR-029](wiki/adr/adr-029-single-edge-board-graph.md)), so **a map is not done until every ticket
 blocking it is**. Distinguished from an [Ordering edge](#ordering-edge) only by whether the far
 node's type is `wayfinder:map` — both are the same native GitHub dependency mechanism, read
 differently depending on the node it points at. Replaces `parent`/`subIssues` entirely.
@@ -514,7 +580,7 @@ differently depending on the node it points at. Replaces `parent`/`subIssues` en
 ### Ordering edge
 
 The edge shape `ticket → ticket`: a real dependency between two non-map tickets
-([ADR-029](../adr/adr-029-single-edge-board-graph.md)), holding [Takeable](#takeable) closed until
+([ADR-029](wiki/adr/adr-029-single-edge-board-graph.md)), holding [Takeable](#takeable) closed until
 it resolves. Same native GitHub issue-dependency mechanism as a [Membership edge](#membership-edge)
 — the only difference is that the far node is not a `wayfinder:map`.
 
@@ -525,7 +591,7 @@ it resolves. Same native GitHub issue-dependency mechanism as a [Membership edge
 ### Unmapped
 
 Open, and **not** a [Board member](#board-member) — an issue awaiting triage, never auto-typed into
-membership ([ADR-029](../adr/adr-029-single-edge-board-graph.md)). Surfaced only via `loom board
+membership ([ADR-029](wiki/adr/adr-029-single-edge-board-graph.md)). Surfaced only via `loom board
 read --unmapped`, kept out of the default `read` payload so an untriaged issue never silently joins
 a map's [Frontier](#frontier). `Board reconcile` never repairs this state itself — typing a ticket
 stays a human judgment call.
@@ -537,7 +603,7 @@ stays a human judgment call.
 ### Takeable
 
 The five-conjunct predicate `member ∧ type ≠ map ∧ open ∧ no open blocker ∧ unassigned`
-([ADR-029](../adr/adr-029-single-edge-board-graph.md), decision D1) — corrected from ADR-025 §8's
+([ADR-029](wiki/adr/adr-029-single-edge-board-graph.md), decision D1) — corrected from ADR-025 §8's
 three-conjunct `(open ∧ unblocked ∧ unassigned)`, which over-collected to 9 items on the live board
 including the map itself. The `member` conjunct excludes [Unmapped](#unmapped) issues; `type ≠ map`
 is kept as an explicit guard even though [Board member](#board-member)ship already makes a map
@@ -550,7 +616,7 @@ non-takeable (a map is `blockedBy` all its tickets) — belt and braces, documen
 ### Frontier
 
 The set of every [Takeable](#takeable) issue on the board at a given moment
-([ADR-029](../adr/adr-029-single-edge-board-graph.md)) — a computed *state*, not a fixed
+([ADR-029](wiki/adr/adr-029-single-edge-board-graph.md)) — a computed *state*, not a fixed
 membership; it is exactly as volatile as the board's edges and assignments. Exposed via `loom
 board read --frontier`. A specific snapshot (e.g. "today it's a single issue") is a transient board
 state, never part of this term's meaning — what qualifies is defined entirely by
@@ -572,7 +638,7 @@ The Orchestrator is loom's canonical [Dispatcher](#dispatcher): its role grants 
 but **withholds `edit`**, so it must route work to [Utility (dispatched) agents](#utility-dispatched-agent)
 rather than implementing (or verifying) it itself.
 
-**See**: [SDLC Implementation phase](../../workflows/sdlc/implementation.md), [Dispatcher](#dispatcher),
+**See**: [SDLC Implementation phase](workflows/sdlc/implementation.md), [Dispatcher](#dispatcher),
 `mem:adr/adr-008-delivery-dispatchers`
 
 ---
@@ -602,23 +668,23 @@ Design philosophy that treats context as a first-class resource. Minimize what e
 The principle carrying the **iron law**: *no completion, success, or positive work-state claim
 without fresh verification evidence, gathered in the same turn it is claimed.* It binds not just
 "done" but every paraphrase or implication of success. Harness-agnostic — it names *evidence*, never
-a specific command; the [verification-before-completion](../../SKILLS/verification/verification-before-completion/SKILL.md)
+a specific command; the [verification-before-completion](SKILLS/verification/verification-before-completion/SKILL.md)
 skill is the *procedure* that operationalizes it.
 
-**See**: [principles/verification-culture](../principles/verification-culture.md), [ADR-020](../adr/adr-020-system-scoped-qa.md)
+**See**: [principles/verification-culture](wiki/principles/verification-culture.md), [ADR-020](wiki/adr/adr-020-system-scoped-qa.md)
 
 ---
 
 ### Quality baseline
 
 A per-project quality floor recorded at [setup](#setup-contract) and re-checked at every
-[quality gate](../../workflows/sdlc/implementation.md#quality-gates)'s Verify step. It names one
+[quality gate](workflows/sdlc/implementation.md#quality-gates)'s Verify step. It names one
 tool + run command + floor per [quality aspect](#quality-aspect), defaults to a **ratchet**
 (no-regression) floor, is built from **keyless-first** tools, and lives in a single source of
 truth (the project's committed tool config when present, else a loom-owned section in the
 project-context file). A metric dropping below its floor fails the gate.
 
-**See**: [patterns/quality-baseline](../patterns/quality-baseline.md), [ADR-017](../adr/adr-017-quality-baseline.md)
+**See**: [patterns/quality-baseline](wiki/patterns/quality-baseline.md), [ADR-017](wiki/adr/adr-017-quality-baseline.md)
 
 ---
 
@@ -630,37 +696,37 @@ One of the four distinct dimensions a [quality baseline](#quality-baseline) cove
 own tool and floor; an aspect with no keyless tool for the stack is recorded as `none` with a
 reason.
 
-**See**: [patterns/quality-baseline](../patterns/quality-baseline.md)
+**See**: [patterns/quality-baseline](wiki/patterns/quality-baseline.md)
 
 ---
 
 ### Standing regression suite
 
 The **system-scoped** end-to-end test asset a project accumulates over time — distinct from the
-per-change [Verification](../../workflows/sdlc/verification.md) that confirms one delivery once.
+per-change [Verification](workflows/sdlc/verification.md) that confirms one delivery once.
 Each user-facing effort contributes 1:1 the e2e scenarios that guard *its* user journeys (authored
-via [derive-e2e-coverage](../../SKILLS/verification/derive-e2e-coverage/SKILL.md)), and the suite
+via [derive-e2e-coverage](SKILLS/verification/derive-e2e-coverage/SKILL.md)), and the suite
 **accretes** them into one body re-run against the whole product. It executes in **CI** at
 deterministic points (staging deploy, pre-production), never in the macro tick loop; a
 [resident agent](#resident-agent) may *trigger* a run but never runs it. Its long-term operation —
-running, and reacting to failures — is a [macro-PM](../../workflows/macro-pm/index.md) concern.
+running, and reacting to failures — is a [macro-PM](workflows/macro-pm/index.md) concern.
 
-**See**: [ADR-020](../adr/adr-020-system-scoped-qa.md), [derive-e2e-coverage](../../SKILLS/verification/derive-e2e-coverage/SKILL.md), [macro-pm workflow](../../workflows/macro-pm/index.md)
+**See**: [ADR-020](wiki/adr/adr-020-system-scoped-qa.md), [derive-e2e-coverage](SKILLS/verification/derive-e2e-coverage/SKILL.md), [macro-pm workflow](workflows/macro-pm/index.md)
 
 ---
 
 ### `qa:regression-failed` (regression origin)
 
-A board label marking a **third origin** in the [macro-PM](../../workflows/macro-pm/index.md) loop,
+A board label marking a **third origin** in the [macro-PM](workflows/macro-pm/index.md) loop,
 distinct from the [two-vocabulary seam](#altitude-seam): it is neither a `wayfinder:*` ticket
 dispatched *down* nor an `sdlc:*` status reported *up* — no leaf produced it. CI posts it (with the
 failing run's evidence linked) when the [standing regression suite](#standing-regression-suite) goes
 red. The resident agent handles it **mechanically and AFK** by *seeding* — not charting — a fresh
-**terminating** root [wayfinder](../../SKILLS/planning/wayfinder/SKILL.md) map whose destination is
+**terminating** root [wayfinder](SKILLS/planning/wayfinder/SKILL.md) map whose destination is
 *"restore the failing check to green"*, then closing the trigger ticket. The regression is thus its
 own effort in the forest; it never reopens the closed effort map that shipped the feature.
 
-**See**: [ADR-020](../adr/adr-020-system-scoped-qa.md), [ADR-030](../adr/adr-030-altitude-handoff-skill.md), [wayfinder: a third origin](../../SKILLS/planning/wayfinder/SKILL.md#a-third-origin-a-regression-seeds-a-fresh-map-not-down-not-up)
+**See**: [ADR-020](wiki/adr/adr-020-system-scoped-qa.md), [ADR-030](wiki/adr/adr-030-altitude-handoff-skill.md), [wayfinder: a third origin](SKILLS/planning/wayfinder/SKILL.md#a-third-origin-a-regression-seeds-a-fresh-map-not-down-not-up)
 
 ---
 
@@ -678,7 +744,7 @@ An agent leaves required paperwork undone — an artifact left unwritten, a fiel
 gate left unrun, a board left stale. Caught by the [Gate](#gate): an `artifact` or
 `executable` criterion fails instead of being self-attested.
 
-**See**: [ADR-026](../adr/adr-026-gate-mechanism-layer-model.md)
+**See**: [ADR-026](wiki/adr/adr-026-gate-mechanism-layer-model.md)
 
 ---
 
@@ -689,7 +755,7 @@ that the system already knew the answer. Fully mechanizable, unlike judgment slo
 [Mechanism](#mechanism) rather than more prose, and ratcheted on first occurrence because a
 forgotten fact will always recur.
 
-**See**: [ADR-026](../adr/adr-026-gate-mechanism-layer-model.md)
+**See**: [ADR-026](wiki/adr/adr-026-gate-mechanism-layer-model.md)
 
 ---
 
@@ -699,7 +765,7 @@ An agent evaluates a tradeoff badly. Irreducible — no amount of additional pro
 Answered structurally by producer ≠ judge (the actor that reviews is not the actor that did the
 work), never by more prose.
 
-**See**: [ADR-026](../adr/adr-026-gate-mechanism-layer-model.md), [principles/verification-culture](../principles/verification-culture.md)
+**See**: [ADR-026](wiki/adr/adr-026-gate-mechanism-layer-model.md), [principles/verification-culture](wiki/principles/verification-culture.md)
 
 ---
 
@@ -710,7 +776,7 @@ An ordered set of typed criteria, committed per project, where every criterion n
 actor. Distinguished from *exit criteria*, which assert an outcome with nothing able to refute
 it — a Gate fails loudly at a known exit code instead of passing silently.
 
-**See**: [ADR-026](../adr/adr-026-gate-mechanism-layer-model.md), [patterns/quality-baseline](../patterns/quality-baseline.md)
+**See**: [ADR-026](wiki/adr/adr-026-gate-mechanism-layer-model.md), [patterns/quality-baseline](wiki/patterns/quality-baseline.md)
 
 ---
 
@@ -720,7 +786,7 @@ The command or distinct actor that grounds a [Gate](#gate) criterion. A criterio
 is self-attestation — the agent that did the work declaring it acceptable, which is exactly
 what a Gate exists to rule out.
 
-**See**: [ADR-026](../adr/adr-026-gate-mechanism-layer-model.md), [SKILLS/verification/verification-before-completion](../../SKILLS/verification/verification-before-completion/SKILL.md)
+**See**: [ADR-026](wiki/adr/adr-026-gate-mechanism-layer-model.md), [SKILLS/verification/verification-before-completion](SKILLS/verification/verification-before-completion/SKILL.md)
 
 ---
 
@@ -730,7 +796,7 @@ One of `artifact` | `executable` | `judgment` — the tag on a [Gate](#gate) cri
 determines who checks it and whether it may be bypassed. A bypassed criterion is logged on the
 tracker, never silently.
 
-**See**: [ADR-026](../adr/adr-026-gate-mechanism-layer-model.md)
+**See**: [ADR-026](wiki/adr/adr-026-gate-mechanism-layer-model.md)
 
 ---
 
@@ -740,7 +806,7 @@ A script that removes a class of failure by [re-executing reality](#re-executing
 rather than describing it. Only trustworthy once observed failing (`verified-failing`) — a
 mechanism nobody has watched catch a real failure is unproven.
 
-**See**: [ADR-026](../adr/adr-026-gate-mechanism-layer-model.md)
+**See**: [ADR-026](wiki/adr/adr-026-gate-mechanism-layer-model.md)
 
 ---
 
@@ -751,7 +817,7 @@ caller needs it) → structural withhold, where the check disappears because the
 guarded against becomes impossible (e.g. a role with no `edit` capability cannot commit a bad
 edit). The end state of graduation is *fewer* mechanisms, not more.
 
-**See**: [ADR-026](../adr/adr-026-gate-mechanism-layer-model.md)
+**See**: [ADR-026](wiki/adr/adr-026-gate-mechanism-layer-model.md)
 
 ---
 
@@ -762,7 +828,7 @@ occurrence, so a lesson stops enlarging the prose an agent must recall. Named fo
 no-regression floor pattern in [quality baseline](#quality-baseline), generalized here to any
 forgotten environment fact.
 
-**See**: [ADR-026](../adr/adr-026-gate-mechanism-layer-model.md), [patterns/quality-baseline](../patterns/quality-baseline.md)
+**See**: [ADR-026](wiki/adr/adr-026-gate-mechanism-layer-model.md), [patterns/quality-baseline](wiki/patterns/quality-baseline.md)
 
 ---
 
@@ -772,7 +838,7 @@ The property separating a trustworthy executable check from a decorative one: th
 the real toolchain and reads its actual result, rather than reading a description of what the
 result should be. What a [Mechanism](#mechanism) does to catch [recall slop](#recall-slop).
 
-**See**: [ADR-026](../adr/adr-026-gate-mechanism-layer-model.md)
+**See**: [ADR-026](wiki/adr/adr-026-gate-mechanism-layer-model.md)
 
 ---
 
@@ -782,3 +848,8 @@ result should be. What a [Mechanism](#mechanism) does to catch [recall slop](#re
 - `mem:principles/rpi` — Research → Plan → Implement workflow
 - `mem:principles/context-first` — Context management philosophy
 - `mem:principles/verification-culture` — Verification discipline
+
+## Related
+
+- [VISION.md](VISION.md) — what loom is for.
+- [SPEC.md](SPEC.md) — the conformance rules this vocabulary is checked against.

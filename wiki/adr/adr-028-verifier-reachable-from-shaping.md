@@ -36,7 +36,7 @@ The gap is narrower than "the Verifier only serves Delivery" implies. Two facts 
 
 1. **Shaping is a Dispatcher.** It holds `delegate` and is a read-only research orchestrator
    that routes work out ([ADR-021](adr-021-shaping-research-orchestrator.md); it is named as a
-   Dispatcher in the [glossary](../glossary/index.md#dispatcher)). It withholds only `edit`.
+   Dispatcher in the [glossary](../../CONTEXT.md#dispatcher)). It withholds only `edit`.
 2. **The Verifier is a cross-stage `dispatched` utility**, deliberately *not* a Delivery
    stage agent, precisely so more than one Dispatcher can hand it work — "two consumers = a
    real seam" ([ADR-008](adr-008-delivery-dispatchers.md)).

@@ -5,7 +5,7 @@ description: "Find deepening opportunities in a codebase, informed by the domain
 
 > **Path flexibility:** Before reading domain docs or ADRs, resolve their locations per the
 > [Domain Docs](../../../wiki/environments/domain-docs.md) environment doc
-> (`loom.toml#paths.*` → `wiki/glossary/index.md` + `wiki/adr/` → `CONTEXT.md` + `docs/adr/`).
+> (`loom.toml#paths.*` → `CONTEXT.md` + `wiki/adr/` → `docs/adr/`).
 > Use the resolved paths consistently for the rest of the architecture review.
 
 # Improve Codebase Architecture

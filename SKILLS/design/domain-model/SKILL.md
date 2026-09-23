@@ -5,7 +5,7 @@ description: Build and sharpen a project's domain model — pin down the ubiquit
 
 > **Path flexibility:** Resolve the glossary and ADR locations per the
 > [Domain Docs](../../../wiki/environments/domain-docs.md) environment doc
-> (`loom.toml#paths.*` → `wiki/glossary/index.md` + `wiki/adr/` → `CONTEXT.md` + `docs/adr/`).
+> (`loom.toml#paths.*` → `CONTEXT.md` + `wiki/adr/` → `docs/adr/`).
 
 # Domain Model
 

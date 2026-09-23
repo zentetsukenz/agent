@@ -32,7 +32,7 @@ distinct skill cluster — different from the generic `quick`/`deep` executors.
 ## Decision
 
 Add a **`frontend`** agent as loom's first **domain-specialized utility** — a
-[utility (dispatched) agent](../glossary/index.md#utility-dispatched-agent) scoped to a problem
+[utility (dispatched) agent](../../CONTEXT.md#utility-dispatched-agent) scoped to a problem
 domain rather than a difficulty tier — and keep pixel-looking on a separate isolation seam:
 
 1. **`frontend` is a domain-specialized utility.** It owns frontend development *and* runtime
@@ -75,7 +75,7 @@ domain rather than a difficulty tier — and keep pixel-looking on a separate is
 ## Consequences
 
 - The utility roster is no longer purely intelligence-tiered: it gains a **domain-specialized**
-  kind, named in the glossary ([Domain-specialized utility](../glossary/index.md#domain-specialized-utility)).
+  kind, named in the glossary ([Domain-specialized utility](../../CONTEXT.md#domain-specialized-utility)).
 - `frontend-runtime-debugging` finally has an agent home; frontend work stops mis-routing to
   `visual-qa`.
 - `visual-qa` is now emitted by setup (it was defined but never rostered).

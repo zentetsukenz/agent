@@ -5,7 +5,7 @@
 | discovery.open-questions-surfaced | judgment | "Open questions are surfaced, not buried — every material unknown is either resolved or explicitly flagged with a plan to resolve it." *(discovery.md:27)* | verifier | — |
 | discovery.riskiest-assumptions-probed | judgment | "Riskiest assumptions have been probed (by research or a throwaway spike)." *(discovery.md:29)* | verifier | — |
 | design.named-shape | judgment | "The solution has a named shape: the modules/seams it introduces or changes, and the interfaces at those seams, are described — not yet decomposed into tasks." *(design.md:31)* | verifier | — |
-| design.domain-model-current | artifact | "The domain model is current: new terms are in the glossary, contradictions resolved." *(design.md:33)* | new terms present in wiki/glossary/ | — |
+| design.domain-model-current | artifact | "The domain model is current: new terms are in the glossary, contradictions resolved." *(design.md:33)* | new terms present in CONTEXT.md | — |
 | design.load-bearing-adrs | judgment | "Load-bearing decisions are recorded as ADRs — decisions that are hard to reverse, surprising without context, and the result of a real trade-off." *(design.md:34)* | verifier | — |
 | design.architecture-upgrade-sequenced | judgment | "Any needed architecture upgrade is identified and sequenced first (feeds Planning's Architecture Gate) — never retrofitted after dependent code." *(design.md:36)* | verifier | — |
 | design.interfaces-validated-early | judgment | "Interfaces are designed well enough to be validated early, but no task breakdown yet." *(design.md:38)* | verifier | — |
@@ -19,7 +19,7 @@
 | implementation.acceptance-met | judgment | "Each task's acceptance criteria are met with tests passing." *(implementation.md:27)* | verifier | — |
 | implementation.no-regressions | judgment | "The change is integrated with no known regressions left unaddressed." *(implementation.md:28)* | verifier | — |
 | implementation.docs-updated | judgment | "Documentation is updated for the task." *(implementation.md:29)* | verifier | — |
-| verification.vbc-satisfied | judgment | "[verification-before-completion](../../SKILLS/verification/verification-before-completion/SKILL.md) is satisfied." *(verification.md:24)* | verifier | — |
+| verification.vbc-satisfied | judgment | "[verification-before-completion](SKILLS/verification/verification-before-completion/SKILL.md) is satisfied." *(verification.md:24)* | verifier | — |
 | verification.quality-baseline-passes | artifact | "The project's quality baseline — the full lint/code-quality/security/coverage floor — passes across the whole delivered change (not just per-slice deltas), so the shipped result is proven top-to-bottom (ADR-017)." *(verification.md:25)* | Quality Baseline record in the project-context file (AGENTS.md) — present with commands, or explicitly absent-and-justified for a no-app-code repo | — |
 | verification.seam-artifact-produced | artifact | "The Delivery seam artifact is produced and registered — this is the Delivery → Closing handoff." *(verification.md:29)* | seam artifact under .loom/handoffs/ + registered in manifest index.md | — |
 | preservation.knowledge-captured | judgment | "Durable knowledge is captured and cross-linked in the wiki." *(preservation.md:39)* | verifier | — |

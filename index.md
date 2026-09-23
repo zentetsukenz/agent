@@ -1,25 +1,24 @@
 ---
 type: Index
 title: loom agent framework
-description: Progressive-disclosure root for the loom content-only agent framework
+description: Navigation spine — every path into loom starts here and leads to the vision
 ---
+
 # loom
 
-Top-level directories:
+A prose-first framework for engineering disciplines: written practice, compiled onto whatever
+harness a project runs.
 
-- [skills/](skills/) — lifecycle-bucketed agent skills (agentskills.io conformant)
-- [workflows/](workflows/) — prose-first orchestration seeds compiled into harnesses by adapters (SDLC + others)
-- [wiki/](wiki/) — dogfooded OKF knowledge wiki
-- [agents/](agents/) — agent definitions (Thoth + others)
-- [commands/](commands/) — slash command wrappers
-- [docs/](docs/) — framework meta-documentation
-- [contract/](contract/index.md) — the shared adapter-contract core: the generic setup-contract body every adapter references and the five port obligations each must supply (see [ADR-013](wiki/adr/adr-013-shared-adapter-contract-core.md))
-- [adapters/](adapters/) — per-harness adapters answering the `contract/` core's ports: `mirai/` ([ADR-004](wiki/adr/adr-004-loom-mirai-setup.md)), `opencode/` ([ADR-014](wiki/adr/adr-014-loom-opencode-setup.md)), `hermes/` ([ADR-019](wiki/adr/adr-019-loom-hermes-setup.md))
-- [scripts/](scripts/) — validation and utility scripts
+**Start here → [VISION.md](VISION.md)** — why loom exists and where it is going.
 
-See [SPEC.md](SPEC.md) for conformance rules and [CHANGELOG.md](CHANGELOG.md) for release history.
+| Then | For |
+|---|---|
+| [CONSTITUTION.md](CONSTITUTION.md) | The entities loom is built from, how they compose, and the rules binding them |
+| [CONTEXT.md](CONTEXT.md) | Every term loom uses, and pointers to every decision it has made |
+| [SPEC.md](SPEC.md) | Conformance rules for individual files |
+| [SETUP.md](SETUP.md) | Installing loom into a project |
+| [AGENTS.md](AGENTS.md) | How an agent bootstraps context before doing work here |
+| [CHANGELOG.md](CHANGELOG.md) | Release history |
 
-To install loom into a project, start at [SETUP.md](SETUP.md) — the harness-agnostic
-entrypoint an agent reads to run the setup contract for whatever harness the project uses
-(see [ADR-005](wiki/adr/adr-005-harness-agnostic-setup.md)). Mirai, OpenCode, and Hermes are
-supported today.
+Directory layout and what each tree is for lives in
+[CONSTITUTION.md](CONSTITUTION.md#the-entities), so it is stated once.

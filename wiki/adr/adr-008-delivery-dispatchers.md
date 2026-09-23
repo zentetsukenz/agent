@@ -46,7 +46,7 @@ the **utility tier**, enforced by [capability grants](adr-006-capability-based-r
 - **Execution and verification are dispatched, not done in-stage.** The Orchestrator hands
   code tasks to existing **utility** executors (`quick`, `deep`) and verification to a new
   **Verifier** utility.
-- **Verifier** — a reusable [utility (dispatched) agent](../glossary/index.md#utility-dispatched-agent)
+- **Verifier** — a reusable [utility (dispatched) agent](../../CONTEXT.md#utility-dispatched-agent)
   running an extended-thinking model. It checks an artifact against its acceptance criteria
   and returns evidence; it does **not** hold `edit` (it verifies, it doesn't fix — defects
   route back). It is a *utility*, not a Delivery stage agent, because more than one

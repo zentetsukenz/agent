@@ -67,7 +67,7 @@ Recommended default: generate `explore` and `quick` (cheap, broadly useful) and 
 (when Delivery is adopted — the Orchestrator dispatches to it); ask explicitly before
 generating `deep` or `writing`.
 
-**Not asked — the [invocation surface](../wiki/glossary/index.md#invocation-surface) is
+**Not asked — the [invocation surface](../CONTEXT.md#invocation-surface) is
 derived, not chosen** ([ADR-012](../wiki/adr/adr-012-invocation-surface.md)). Every utility
 generated here is `dispatched`; every stage agent is `front-door`. This follows from the
 role kind, so there is no interview question for it — the adapter fills the harness's
@@ -182,18 +182,18 @@ Optional, **off by default** ([ADR-018](../wiki/adr/adr-018-macro-project-manage
 macro-scale project management *above* single SDLC runs — [wayfinder](../SKILLS/planning/wayfinder/SKILL.md)'s
 opt-in [macro mode](../SKILLS/planning/wayfinder/SKILL.md#macro-mode-dispatching-into-sdlc-runs):
 charting effort as nested maps and dispatching buildable leaves *down* into SDLC runs across the
-[altitude seam](../wiki/glossary/index.md#altitude-seam). Ask once; skip the rest of this section
+[altitude seam](../CONTEXT.md#altitude-seam). Ask once; skip the rest of this section
 if the project only ever runs one SDLC effort at a time.
 
 This **extends §4d** — macro state lives on its own substrate at the macro
-[altitude](../wiki/glossary/index.md#altitude), distinct from the micro (memory) ledger §4d
+[altitude](../CONTEXT.md#altitude), distinct from the micro (memory) ledger §4d
 configured. Resolving the chosen tool's concrete operations reuses the [`capability→tool`
 port](PORTS.md) discipline ("discover/confirm, don't guess") — there is **no new port**.
 
 | Question | Recommended default | Signal to deviate |
 |---|---|---|
 | Run macro project-management for this project? | No (opt-in) | Effort spans many SDLC runs / more than one agent session can hold — a product, a migration, a roadmap |
-| Which **substrate** is the macro **single source of truth**? | A **networked store** — a tracker/board (e.g. GitHub Issues+Projects) so many agents (and a possibly-unattended [resident agent](../wiki/glossary/index.md#resident-agent)) see the same state | Solo/offline effort with no distribution need → a committed folder or a local-markdown tracker is allowed, but it won't distribute across servers |
+| Which **substrate** is the macro **single source of truth**? | A **networked store** — a tracker/board (e.g. GitHub Issues+Projects) so many agents (and a possibly-unattended [resident agent](../CONTEXT.md#resident-agent)) see the same state | Solo/offline effort with no distribution need → a committed folder or a local-markdown tracker is allowed, but it won't distribute across servers |
 | Does the chosen tool **fit** loom's macro protocol? | Gauge and confirm before writing: it must express **map-as-index**, **linked (not embedded) artifacts**, and the **two label vocabularies** (`wayfinder:*` down, `sdlc:*` up) | Tool can't express native blocking/labels → fall back to the [Issue Tracker](../wiki/environments/issue-tracker.md) body conventions, and warn the frontier won't render natively |
 | **Provision** the two label vocabularies on the tracker? | Yes — create `wayfinder:{research,prototype,grilling,task}` and `sdlc:{in-progress,done,needs-recharter,needs-clarification}` labels | Tracker uses a different label scheme the project already runs — map onto it and record the mapping |
 
@@ -205,7 +205,7 @@ list) is a violation whatever substrate was chosen. Choosing the substrate — a
 works — is the user's responsibility; loom's job is to gauge the fit and record it.
 
 > The **resident daemon** that runs macro mode unattended (watching the board 24/7, e.g. a
-> Hermes-style agent) is a **harness [adapter](../wiki/glossary/index.md#adapter) concern**, not a
+> Hermes-style agent) is a **harness [adapter](../CONTEXT.md#adapter) concern**, not a
 > generic setup question ([ADR-018](../wiki/adr/adr-018-macro-project-management.md), keeping
 > [ADR-005](../wiki/adr/adr-005-harness-agnostic-setup.md)'s harness-agnostic stance). This section
 > configures the *protocol*; a human, a cron job, or a daemon may each run it.

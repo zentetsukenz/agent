@@ -67,7 +67,7 @@ caller, just by link instead of by section, and deep-modules would be unsatisfie
 **The name.** ADR-018 decision #4 already frames this thing as "reusing the existing
 PRODUCE/DISCOVER contract **across the altitude boundary**" — that is
 [`stage-handoff`](../../SKILLS/preservation/stage-handoff/SKILL.md)'s contract, one
-[altitude](../glossary/index.md#altitude) up. PRODUCE/DISCOVER is two-sided by construction, so
+[altitude](../../CONTEXT.md#altitude) up. PRODUCE/DISCOVER is two-sided by construction, so
 "handoff" covers the `sdlc:*` up-return without stretching. Both words are existing exact terms;
 the name coins no new vocabulary.
 
@@ -92,7 +92,7 @@ here.
 names this tracker as the macro source of truth); the two-vocabulary seam (`wayfinder:*` down,
 `sdlc:*` up); the routing table as *contract*; the **routing** half of `qa:regression-failed`; and
 both translations — a buildable leaf down into a `shaping/<milestone>/`
-[seam artifact](../glossary/index.md#seam-artifact), an `sdlc:*` status back up.
+[seam artifact](../../CONTEXT.md#seam-artifact), an `sdlc:*` status back up.
 
 **Does not carry:** the tick loop, which stays in
 [`workflows/macro-pm/`](../../workflows/macro-pm/index.md); and charting, which stays in wayfinder.
@@ -169,10 +169,10 @@ and the `SKILLS/planning/index.md` row.
   slugs.
 - `scripts/loom/board/model.js` and `scripts/loom/board/fixtures/board.json` cite the new home.
   Neither is link-checked, so both need a deliberate sweep.
-- The glossary entries for [Altitude](../glossary/index.md#altitude),
-  [Altitude seam](../glossary/index.md#altitude-seam),
-  [Resident agent](../glossary/index.md#resident-agent) and
-  [`qa:regression-failed`](../glossary/index.md#qaregression-failed-regression-origin) name
+- The glossary entries for [Altitude](../../CONTEXT.md#altitude),
+  [Altitude seam](../../CONTEXT.md#altitude-seam),
+  [Resident agent](../../CONTEXT.md#resident-agent) and
+  [`qa:regression-failed`](../../CONTEXT.md#qaregression-failed-regression-origin) name
   wayfinder as the home of dispatch and are corrected.
 - No adapter changes, no new port, no new `scripts/loom/` code.
 

@@ -89,4 +89,4 @@ implementing this contract**, not "the setup."
   (now partly superseded, see [ADR-026](adr-026-gate-mechanism-layer-model.md)).
 - [ADR-004](adr-004-loom-mirai-setup.md) — the Mirai adapter: first implementation of this contract.
 - [SETUP.md](../../SETUP.md) — the entrypoint this ADR describes.
-- Glossary: [Harness, Adapter, Setup contract](../glossary/index.md).
+- Glossary: [Harness, Adapter, Setup contract](../../CONTEXT.md).

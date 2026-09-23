@@ -158,7 +158,7 @@ row pointing at the curated wiki entries. It also **produces** within Closing vi
 ## Utility agents (cross-stage)
 
 Utility agents are the **dispatched** roster ([role-scoped-capabilities](../wiki/patterns/role-scoped-capabilities.md)):
-a [Dispatcher](../wiki/glossary/index.md#dispatcher) (the Orchestrator, or a future
+a [Dispatcher](../CONTEXT.md#dispatcher) (the Orchestrator, or a future
 plan-reviewer) hands them scoped tasks. They are independent of the three stages and
 generated per the Utility Agents interview table ([interview.md](interview.md)).
 
@@ -184,7 +184,7 @@ the dispatcher to route on — never an auto-failure the Verifier decides on its
 
 ### Domain-specialized utilities
 
-A [domain-specialized utility](../wiki/glossary/index.md#domain-specialized-utility)
+A [domain-specialized utility](../CONTEXT.md#domain-specialized-utility)
 ([ADR-009](../wiki/adr/adr-009-frontend-domain-utility.md)) is scoped to a **problem
 domain** rather than an intelligence tier, and wires that domain's skill cluster. Offered
 only when the project has that domain (the interview gates them — skip both for a

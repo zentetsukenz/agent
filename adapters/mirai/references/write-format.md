@@ -51,7 +51,7 @@ procedure — stop and ask rather than guessing or leaving it blank.
 | `{{ROLE_WORKFLOW_PROSE}}` | Concatenated body of the role's `workflows/sdlc/<phase>.md` file(s) — see [STAGES.md](../STAGES.md) |
 | `{{ROLE_SKILL_LIST}}` | The role's adopted skill roster from [STAGES.md](../STAGES.md), pruned per the Scope interview table |
 | `{{ROLE_MODEL}}` | The archetype-matched model fallback array (Model Matching interview table) — Verifier uses the extended-thinking archetype |
-| `{{ROLE_INVOCATION_SURFACE}}` | The two Mirai invocation flags for the role's [invocation surface](../../../wiki/glossary/index.md#invocation-surface) ([ADR-012](../../../wiki/adr/adr-012-invocation-surface.md)) — derived from the role kind, **not** a setup question. See the [rule below](#role-invocation-surface). |
+| `{{ROLE_INVOCATION_SURFACE}}` | The two Mirai invocation flags for the role's [invocation surface](../../../CONTEXT.md#invocation-surface) ([ADR-012](../../../wiki/adr/adr-012-invocation-surface.md)) — derived from the role kind, **not** a setup question. See the [rule below](#role-invocation-surface). |
 | `{{ROLE_HANDOFFS}}` | A `handoffs:` block for stage agents at a producing seam (`shaping → planner`, `orchestrator → closing`), written as an **array of objects** (see the schema below) — **not** a bare array of agent names. Expand to the **empty string** (omit the key entirely) for roles with no downstream stage transition. |
 | `{{ROLE_HANDOFF_NOTE}}` | The role's PRODUCE or DISCOVER instruction from [STAGES.md](../STAGES.md), pointing at `.mirai/instructions/handoff.instructions.md`; for a role at no stage seam (e.g. a utility), a one-line "within-stage dispatch is ephemeral — see `dispatch-context`" note |
 
@@ -78,7 +78,7 @@ handoffs:
 
 #### `{{ROLE_INVOCATION_SURFACE}}` — derive from the role kind {#role-invocation-surface}
 
-Fill this from the role's [invocation surface](../../../wiki/glossary/index.md#invocation-surface)
+Fill this from the role's [invocation surface](../../../CONTEXT.md#invocation-surface)
 ([ADR-012](../../../wiki/adr/adr-012-invocation-surface.md)) — it is **not** an interview question;
 it follows deterministically from *what kind of role* this is:
 

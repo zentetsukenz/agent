@@ -8,9 +8,9 @@ timestamp: 2026-07-30T00:00:00Z
 
 # Seam Artifact Protocol
 
-> **Applied vocabulary:** see the glossary for [Seam artifact](../glossary/index.md#seam-artifact),
-> [Ledger](../glossary/index.md#ledger), [Communication protocol document](../glossary/index.md#communication-protocol-document),
-> [Stage](../glossary/index.md#stage), and [Capability](../glossary/index.md#capability). This page is the
+> **Applied vocabulary:** see the glossary for [Seam artifact](../../CONTEXT.md#seam-artifact),
+> [Ledger](../../CONTEXT.md#ledger), [Communication protocol document](../../CONTEXT.md#communication-protocol-document),
+> [Stage](../../CONTEXT.md#stage), and [Capability](../../CONTEXT.md#capability). This page is the
 > conceptual reference; [ADR-011](../adr/adr-011-seam-artifact-protocol.md) records the decision to adopt it.
 
 ## The problem
@@ -52,7 +52,7 @@ The three former movers become thin adapters over this one interface.
 
 The ledger is the durable store for seam artifacts. Its **root** is resolved through the
 [`persist`](role-scoped-capabilities.md) capability, so the abstract protocol stays
-harness-agnostic and each [adapter](../glossary/index.md#adapter) points it at a concrete
+harness-agnostic and each [adapter](../../CONTEXT.md#adapter) points it at a concrete
 substrate (see [Substrate is an adapter choice](#substrate-is-an-adapter-choice)).
 
 Artifacts are addressed by **stage + milestone slug**:
@@ -145,11 +145,11 @@ description-triggered [file instruction](../environments/mirai.md#2-file-instruc
 
 When a project runs macro project-management ([ADR-018](../adr/adr-018-macro-project-management.md)),
 the communication protocol document grows an **altitude-aware macro section** naming the **single
-source of truth** for macro state — the chosen [networked substrate](../glossary/index.md#substrate)
+source of truth** for macro state — the chosen [networked substrate](../../CONTEXT.md#substrate)
 (default: a tracker/board; user-selectable at setup) and how loom's protocol maps onto it: the
 [wayfinder](../../SKILLS/planning/wayfinder/SKILL.md) map lives as an index there, artifacts are
 **linked, not embedded** (the same no-re-embed discipline as a seam artifact), and the two-vocabulary
-label protocol (`wayfinder:*` down, `sdlc:*` up) crosses the [altitude seam](../glossary/index.md#altitude-seam).
+label protocol (`wayfinder:*` down, `sdlc:*` up) crosses the [altitude seam](../../CONTEXT.md#altitude-seam).
 
 This is guarded by a **substrate-agnostic invariant**:
 
@@ -176,7 +176,7 @@ linking it into a place no other agent can follow. The canonical breach: a HITL 
 ticket resolves, writes its output to a local `.loom/` path, and links that path — so the SDLC run
 later dispatched from a `task` leaf pointing at that ticket (across a harness boundary) finds a dead
 end. The fix is mechanical, not a judgment call: the resolving agent **produces** the artifact to the
-networked [artifact ref](../glossary/index.md#artifact-ref) and links the URL — the same PRODUCE act
+networked [artifact ref](../../CONTEXT.md#artifact-ref) and links the URL — the same PRODUCE act
 [stage-handoff](../../SKILLS/preservation/stage-handoff/SKILL.md) owns, folded into
 [wayfinder](../../SKILLS/planning/wayfinder/SKILL.md)'s resolution step so no agent branches on ticket
 type.
@@ -190,12 +190,12 @@ per project at setup and is changeable later, because the trade-off is real and 
 |---|---|
 | **Harness memory** (e.g. Mirai repo memory `/memories/repo/loom/…`) | Survives across conversations, fast agent discovery — but not git-committed, so invisible to teammates and PRs, **does not distribute across agents on different servers**, and **cannot cross a harness boundary** (intra-harness only). |
 | **On-disk repo folder** (e.g. `.loom/handoffs/…`) | Harness-neutral, and the only substrate that works **across two harness processes** (e.g. a resident macro agent + its dispatched SDLC harness). **Local-only, blanket-gitignored** (`.loom/**`) — the ledger is ephemeral coordination, a local context-passing substrate, not version-controlled ([ADR-014](../adr/adr-014-loom-opencode-setup.md)); no `.loom` path is committed or tracked. Durable/reviewable artifacts belong on the networked orphan-ref substrate ([ADR-022](../adr/adr-022-reachable-artifact-substrate.md)), not a Git-visible `.loom`. |
-| **Networked / external store** (a tracker/board or shared service, e.g. GitHub Issues+Projects) | Distributes across agents *and* stays out of the code tree — the fit for the macro [altitude](../glossary/index.md#altitude). Adds an external dependency and its own access/auth. |
+| **Networked / external store** (a tracker/board or shared service, e.g. GitHub Issues+Projects) | Distributes across agents *and* stays out of the code tree — the fit for the macro [altitude](../../CONTEXT.md#altitude). Adds an external dependency and its own access/auth. |
 | **Both** (memory + on-disk folder) | A local on-disk ledger + a lightweight manifest pointer in memory for fast discovery (both local — durable knowledge still belongs in the wiki/ADRs or the networked orphan-ref substrate). |
 
 The **networked class has two instruments** ([ADR-022](../adr/adr-022-reachable-artifact-substrate.md)):
 the **tracker/board** holds macro *state* (tickets, status, the map index — small, structured), and an
-**[artifact ref](../glossary/index.md#artifact-ref)** holds bulky *content* (a HITL ticket's prototype,
+**[artifact ref](../../CONTEXT.md#artifact-ref)** holds bulky *content* (a HITL ticket's prototype,
 design doc, or findings) as a git ref on the server — an **orphan branch per effort**
 (`loom-artifacts/<map-slug>`, disconnected history so it never tangles a rebase/merge of `main`),
 fetched by URL on demand and never checked into a working tree. Both are networked and out-of-tree;
@@ -209,16 +209,16 @@ capability resolver decides the concrete tool/path; the protocol never hardcodes
 ### Substrate is also altitude-scoped
 
 Per [ADR-018](../adr/adr-018-macro-project-management.md), the substrate choice generalizes from
-*per-project* to *per-[altitude](../glossary/index.md#altitude)*: a project may run two ledgers on
+*per-project* to *per-[altitude](../../CONTEXT.md#altitude)*: a project may run two ledgers on
 different substrates at once. The **macro** altitude (project management above a single SDLC run)
-uses a **networked store** so many agents — and a [resident agent](../glossary/index.md#resident-agent)
+uses a **networked store** so many agents — and a [resident agent](../../CONTEXT.md#resident-agent)
 possibly running unattended — see the same state. The **micro** altitude (planner → orchestrator
 inside one SDLC run) uses **harness memory** when the run executes in the *same* harness as the
 macro agent, but a **gitignored on-disk folder** when the macro and micro altitudes run in
 *different* harness processes — the common case, since a [resident](harness-archetypes.md) macro
 agent dispatches into a separate per-invocation SDLC harness, and memory cannot cross that boundary
 ([ADR-019](../adr/adr-019-loom-hermes-setup.md)). The two altitudes never touch directly: only the
-[altitude seam](../glossary/index.md#altitude-seam) translator crosses between them, re-using this
+[altitude seam](../../CONTEXT.md#altitude-seam) translator crosses between them, re-using this
 same PRODUCE/DISCOVER contract across the boundary (a macro tracker ticket ⇄ a micro
 `shaping/<milestone>/` seam artifact). The networked store was added as a third substrate class
 precisely because neither existing option fits macro: memory does not distribute, and a committed

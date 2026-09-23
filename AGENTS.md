@@ -1,101 +1,66 @@
-# Agent Instructions — loom framework
+# Agent Instructions — loom
 
-## What this is
+Your job before doing work here is to **bootstrap context**. This file tells you how, and
+nothing else. Everything you might otherwise look for is one link away.
 
-loom is a **content-only** agent framework. No runtime, no build step—just Markdown files organized into skills, wiki pages, agent definitions, commands, and docs. Everything lives under this repo root.
+## Bootstrap — the guaranteed path
 
-## Project structure
+Read these three, in order. They are version-controlled, always present, and always current:
 
+1. **[VISION.md](VISION.md)** — why loom exists and where it is going. Every document traces
+   back here.
+2. **[CONSTITUTION.md](CONSTITUTION.md)** — the entities, how they compose, and the rules
+   binding them. Read this before changing anything structural.
+3. **[CONTEXT.md](CONTEXT.md)** — every term loom uses. loom's vocabulary is **exact, not
+   decorative**: `harness`, `workflow`, `altitude`, `seam artifact` and the rest each mean one
+   specific thing. Using them loosely produces work that looks right and is wrong.
+
+Then go to what your task needs: [SPEC.md](SPEC.md) for file-level conformance,
+[SETUP.md](SETUP.md) for installing loom into a project,
+[wiki/adr/](wiki/adr/index.md) for why something is the way it is.
+
+## Bootstrap — the fast path, when it is available
+
+If `graphify-out/` exists, a knowledge graph of this corpus is already built and you can query
+it instead of reading your way in:
+
+```sh
+graphify query "<question>"          # BFS, broad context
+graphify explain "<node>"            # one node and everything it connects to
+graphify path "<node-a>" "<node-b>"  # how two things relate
 ```
-skills/       — Reusable agent skills, bucketed by lifecycle phase
-workflows/    — Prose-first orchestration seeds (SDLC + others) compiled by adapters
-wiki/         — OKF v0.1 knowledge base (progressive-disclosure)
-agents/       — Agent definition files (identity + wired skills)
-commands/     — Slash command wrappers
-docs/         — Framework meta-documentation
-contract/     — Shared adapter-contract core (generic setup body + 5 port obligations)
-adapters/     — Per-harness adapters: mirai/, opencode/, hermes/ (each answers contract/'s ports)
-scripts/      — Validation utilities
-```
 
-## Key files
+Three conditions on trusting it, all load-bearing:
 
-| File | Purpose |
-|------|---------|
-| [SPEC.md](SPEC.md) | Conformance rules — read this before creating any file |
-| [index.md](index.md) | Progressive-disclosure root |
-| [scripts/validate.sh](scripts/validate.sh) | Validates frontmatter and links |
-| [docs/wisdom.md](docs/wisdom.md) | Core principles guiding all agents |
+- **It is derived, not authoritative.** `graphify-out/` is rebuildable output. Where the graph
+  and the documents disagree, the documents win. Never cite a `graphify-out/` path in a
+  committed file — a permanent artifact may not depend on an ephemeral one.
+- **Check freshness first.** Nothing gates the query path on staleness, and the auto-rebuild
+  hook ignores prose changes — which is this entire corpus. Compare the graph's build commit to
+  `HEAD` before trusting it:
 
-## Validation
+  ```sh
+  git merge-base --is-ancestor "$(jq -r .built_at_commit graphify-out/graph.json)" HEAD \
+    && git diff --name-only "$(jq -r .built_at_commit graphify-out/graph.json)"..HEAD -- '*.md'
+  ```
 
-Run before committing:
+  Anything listed there is a change the graph has not seen. Refresh with `graphify update .`,
+  or fall back to reading.
+- **Query in loom's own words.** The matcher is case-folded substring plus IDF — no stemming,
+  no synonyms. A question phrased in general English returns nothing useful. Read
+  [CONTEXT.md](CONTEXT.md) first and query using the terms defined there.
+
+If `graphify-out/` is absent — which is the normal state of a fresh clone — do not build it to
+answer a question. A full build of this corpus costs over a million tokens because loom is
+prose, so every node goes through a language model. Use the guaranteed path above.
+
+## Before you commit
 
 ```sh
 bash scripts/validate.sh
 ```
 
-This checks:
-
-- SKILL.md files have valid `name` (kebab-case, ≤64 chars) and `description` (≤1024 chars) in YAML frontmatter
-- Wiki `.md` files have `type:` in YAML frontmatter
-- All relative Markdown links resolve to existing files
-
-## Quality baseline
-
-loom itself was content-only (no application code) until the `board-api-distributable`
-milestone shipped `scripts/loom/` — loom's first executable distributable, per
-[ADR-025](wiki/adr/adr-025-deterministic-board-api.md)/[ADR-027](wiki/adr/adr-027-mechanism-install-port.md).
-Per [quality-baseline](wiki/patterns/quality-baseline.md) ([ADR-017](wiki/adr/adr-017-quality-baseline.md)),
-this repo now names a floor for the code it ships (zero dependencies, Node.js `node:test` only):
-
-| Aspect | Tool + run command | Floor |
-|---|---|---|
-| lint | `find scripts/loom -name '*.js' -print0 \| xargs -0 -n1 node --check` | 0 syntax errors (ratchet) |
-| code-quality | — | `none` — no complexity/duplication tool configured yet; the distributable is small (5 files) and reviewed by hand |
-| security | — | `none` — zero third-party dependencies (only Node built-ins + `gh` as an external CLI), no dependency-scan surface yet |
-| coverage | `node --test 'scripts/loom/**/*.test.js'` | 96/96 passing (ratchet — no regression below 96 passing) |
-
-This is a **ratchet floor**: a gate may only raise these numbers, never lower them. The rest
-of the repo (skills, wiki, workflows) stays content-only and outside this baseline's scope.
-
-> Command shapes matter and are load-bearing — don't "simplify" them back:
-> `node --check` validates only its **first** argument (a bare `**/*.js` would leave every
-> file after the first unchecked), so lint runs it **once per file** via `xargs -0 -n1`; and
-> `node --test <dir>` executes an `index.js` in that dir instead of scanning for `*.test.js`,
-> so coverage passes a **quoted** glob and lets Node do the test-file discovery. Both verified
-> on Node v26.
-
-## Conventions
-
-### Skill files (`SKILLS/<bucket>/<slug>/SKILL.md`)
-
-- **Must** open with YAML frontmatter containing `name` and `description`
-- `name`: kebab-case, lowercase, ≤64 chars, no leading/trailing hyphens
-- Lifecycle buckets: `discovery`, `design`, `planning`, `implementation`, `verification`, `preservation`, `meta`
-- Each bucket has an `index.md` cataloging its skills
-
-### Wiki files (`wiki/**/*.md`)
-
-- **Must** have YAML frontmatter with `type:` (Principle | Pattern | Environment | Term | Index | Log | ADR)
-- Progressive disclosure: `index.md` at each level summarizes children
-- Each subtree has a `log.md` for chronological changes
-
-### Cross-linking
-
-- Always use **relative paths** from repo root (e.g., `wiki/patterns/deep-modules.md`)
-- No absolute paths, no `../` escaping the repo
-- No duplicating content that exists elsewhere—link to it
-
-### Agent files (`agents/<name>.md`)
-
-- YAML frontmatter with `description`, `mode`, `model`, `permission`
-- Compose behavior by wiring skills and referencing wiki context
-
-## Common pitfalls
-
-1. **Forgetting frontmatter** — Every skill and wiki file needs it. The validator will catch this.
-2. **Broken links** — `validate.sh` checks all relative links. Add new files to the relevant `index.md`.
-3. **Duplicating content** — Link, don't embed. If knowledge exists in `wiki/` or `docs/`, reference it.
-4. **Wrong lifecycle bucket** — Check [SPEC.md](SPEC.md) bucket definitions before placing a skill.
-5. **Non-kebab-case names** — Skill `name` field must be strict kebab-case (`my-skill`, not `mySkill`).
+It checks frontmatter, link resolution, anchor existence, and orphan reachability. It blocks on
+**new** violations only. Never add a line to `.claude/hooks/validate-baseline.txt` to get
+unblocked — fix the break or file the issue. See
+[CONSTITUTION.md](CONSTITUTION.md#the-gate).

@@ -53,7 +53,7 @@ and [STAGES.md](STAGES.md). Mirai's render bindings for those primitives:
   Shaping, `agent` otherwise — **not** the deep stage agent. Read-only stages inherit Mirai's
   no-edit guarantee from `Plan` mode ([ADR-006](../../wiki/adr/adr-006-capability-based-roles.md)).
 - A **deep agent** carries the phase workflow prose + role capability set + a `front-door`
-  [invocation surface](../../wiki/glossary/index.md#invocation-surface)
+  [invocation surface](../../CONTEXT.md#invocation-surface)
   ([ADR-012](../../wiki/adr/adr-012-invocation-surface.md)): `user-invocable:true` +
   `disable-model-invocation:true`.
 - **Delivery is split** ([ADR-008](../../wiki/adr/adr-008-delivery-dispatchers.md)); the old
@@ -69,7 +69,7 @@ utilities (`frontend`/`visual-qa`) are **generic** — see
 [contract/primitives.md](../../contract/primitives.md#utility-agents-cross-stage). Mirai render
 bindings: each is a plain `.mirai/agents/*.agent.md` with a **`dispatched`** invocation surface
 (`user-invocable:false` + `disable-model-invocation:false`) so a
-[Dispatcher](../../wiki/glossary/index.md#dispatcher) can reach it but the picker hides it. The
+[Dispatcher](../../CONTEXT.md#dispatcher) can reach it but the picker hides it. The
 per-utility capability sets live in [STAGES.md](STAGES.md#utility-agents-cross-stage); resolve
 them to tool names via §6. Source agents for the domain utilities:
 [agents/frontend.md](../../agents/frontend.md), [agents/visual-qa.md](../../agents/visual-qa.md).
@@ -137,8 +137,8 @@ two stage seams) is **generic**
 | Generic obligation | Mirai wiring |
 |---|---|
 | Communication protocol document | `.mirai/instructions/handoff.instructions.md` — description-triggered (**no** `applyTo`) so it loads on demand, not every request. |
-| [Ledger](../../wiki/glossary/index.md#ledger) substrate → `persist` target | Mirai repo memory (`/memories/repo/loom/…`) and/or a `.loom/handoffs/` on-disk folder (chosen in [interview 4d](references/interview.md)). The on-disk folder is **gitignored by default** — ephemeral coordination, not version-controlled ([ADR-014](../../wiki/adr/adr-014-loom-opencode-setup.md) Option A; durable knowledge → wiki/ADRs); a project may opt to commit it for reviewable diffs. Note Mirai is a **GUI-only, non-dispatch-target** [harness archetype](../../wiki/patterns/harness-archetypes.md): its SDLC runs are human-driven and not dispatched into by a resident macro agent, so memory is a valid substrate here (a shared on-disk folder is only *mandatory* when the run is dispatched cross-harness). |
-| [Artifact ref](../../wiki/glossary/index.md#artifact-ref) → `persist` target (macro altitude) | When the project runs macro-PM, a HITL ticket's bulky output (`grilling`/`prototype`/`research`) publishes to a **networked artifact ref** — an orphan branch `loom-artifacts/<map-slug>` on the project's git host ([ADR-022](../../wiki/adr/adr-022-reachable-artifact-substrate.md)) — and the ticket links the URL. This is the **second instrument of the networked class**, distinct from the on-disk `.loom/` micro ledger: it stays out of the working tree (no rebase/merge tangle, no SDLC-session pollution) and is reachable by a dispatched run in another harness. No new port — it resolves through this same `persist` wiring. |
+| [Ledger](../../CONTEXT.md#ledger) substrate → `persist` target | Mirai repo memory (`/memories/repo/loom/…`) and/or a `.loom/handoffs/` on-disk folder (chosen in [interview 4d](references/interview.md)). The on-disk folder is **gitignored by default** — ephemeral coordination, not version-controlled ([ADR-014](../../wiki/adr/adr-014-loom-opencode-setup.md) Option A; durable knowledge → wiki/ADRs); a project may opt to commit it for reviewable diffs. Note Mirai is a **GUI-only, non-dispatch-target** [harness archetype](../../wiki/patterns/harness-archetypes.md): its SDLC runs are human-driven and not dispatched into by a resident macro agent, so memory is a valid substrate here (a shared on-disk folder is only *mandatory* when the run is dispatched cross-harness). |
+| [Artifact ref](../../CONTEXT.md#artifact-ref) → `persist` target (macro altitude) | When the project runs macro-PM, a HITL ticket's bulky output (`grilling`/`prototype`/`research`) publishes to a **networked artifact ref** — an orphan branch `loom-artifacts/<map-slug>` on the project's git host ([ADR-022](../../wiki/adr/adr-022-reachable-artifact-substrate.md)) — and the ticket links the URL. This is the **second instrument of the networked class**, distinct from the on-disk `.loom/` micro ledger: it stays out of the working tree (no rebase/merge tangle, no SDLC-session pollution) and is reachable by a dispatched run in another harness. No new port — it resolves through this same `persist` wiring. |
 | Ledger manifest | `<ledger-root>/index.md` — seeded empty at setup; producers register rows. |
 | PRODUCE / DISCOVER handoff | `handoffs:` frontmatter (an **array of objects** — `label`, `agent`, `prompt`, optional `send`; **never** a bare array) between stage agents + `persist` in their `tools:` + a body reference to the instruction. See [STAGES.md](STAGES.md#the-communication-protocol-document-cross-stage). |
 

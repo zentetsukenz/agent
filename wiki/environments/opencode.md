@@ -86,7 +86,7 @@ System prompt body (Markdown) — loom writes the role's deep workflow here.
 
 ### Invocation surface → `mode`
 
-The `mode` field encodes loom's [invocation surface](../glossary/index.md#invocation-surface)
+The `mode` field encodes loom's [invocation surface](../../CONTEXT.md#invocation-surface)
 facet ([ADR-012](../adr/adr-012-invocation-surface.md)) — a role's *second* scoped facet
 alongside its capability set:
 

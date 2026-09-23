@@ -19,6 +19,25 @@ adapters are. Turning it into `adapters/claude-code/` means answering the five
 | `commands/` | `/validate` · `/tick` · `/adr-new` |
 | `skills/` | **Symlinks** into `SKILLS/<bucket>/<slug>/` — never copies |
 
+## Who does what
+
+| Actor | Model | Role |
+|---|---|---|
+| **main session** | Opus | Front door. The human talks here first. Architecture, judgment, trade-offs, review. |
+| `editor` | Sonnet / Haiku | Mechanical application of specified edits — code and prose. |
+| `explore` | Haiku | Read-only locator — broad fan-out search, returns paths and a short answer. |
+| `pm` | Opus | The macro-PM resident agent. Owns the board. Pulled by `/tick`, never scheduled. |
+| `thoth` | Sonnet | Wiki scribe — OKF curation, crosslinks, audits, queries. |
+| `adapter-conformance` | Sonnet | Read-only reviewer: five ports answered, nothing restated that should be linked. |
+| `corpus-cartographer` | Sonnet | Graphify operator — builds and reads the knowledge graph. |
+
+**Standing delegation rule.** Route by default: decide *what* changes in the main session, hand
+the *application* to `editor`, hand bulk searching to `explore` — this repo's Haiku locator,
+which shadows Claude Code's built-in `Explore`. Do it inline only when the edit is trivial
+(under ~5 lines) or when the right wording only emerges while writing it — a subagent
+round-trip costs more context than it saves on small prose, and prose is what this repo is made
+of. Say which path was taken.
+
 ## The gate
 
 Two hooks, one script. `PostToolUse` fires after every `Write`/`Edit`/`Bash`; `Stop` fires before

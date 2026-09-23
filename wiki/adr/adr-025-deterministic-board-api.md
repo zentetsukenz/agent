@@ -40,7 +40,7 @@ session that reconstructs its picture from the board ([ADR-018](adr-018-macro-pr
   smaller/cheaper model drifts. The restart-safety guarantee was **aspirational** (stated in prose)
   rather than **executable**.
 
-The deeper reading: the **board is the interface** of the [altitude seam](../../wiki/glossary/index.md#altitude-seam),
+The deeper reading: the **board is the interface** of the [altitude seam](../../CONTEXT.md#altitude-seam),
 and it was **shallow** — operator and agent kept reaching in to repair or re-render it by hand.
 
 **Research on reuse** ([grill session, 2026-08-19]) found: no maintained open-source library
@@ -210,7 +210,7 @@ only the CLI *contract* (in illustrative pseudo-code); the *executable* lives ou
   The [build leaf (#20)](https://github.com/zentetsukenz/agent/issues/20) body/title and the
   [research ticket (#18)](https://github.com/zentetsukenz/agent/issues/18) title still say "five
   verbs" and reference `scripts/board/`; the glossary's
-  [Board reconcile](../glossary/index.md#board-reconcile) entry has been updated to the four-verb,
+  [Board reconcile](../../CONTEXT.md#board-reconcile) entry has been updated to the four-verb,
   `loom board …` / `scripts/loom/` reality; #18 and #20 still need updating.
 
 ## Alternatives considered

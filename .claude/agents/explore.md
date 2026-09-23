@@ -20,8 +20,10 @@ search:
 - `SKILLS/<bucket>/<slug>/SKILL.md` — buckets are `discovery`, `design`, `planning`,
   `implementation`, `verification`, `preservation`, `meta`. Each bucket has an `index.md`.
 - `wiki/` — OKF knowledge base. `wiki/adr/` (decisions, numbered `adr-NNN-*.md`),
-  `wiki/patterns/`, `wiki/principles/`, `wiki/glossary/index.md` (anchors, not one file per term),
-  `wiki/environments/`. Every subtree has `index.md` and `log.md`.
+  `wiki/patterns/`, `wiki/principles/`, `wiki/environments/`. Every subtree has `index.md` and
+  `log.md`.
+- `CONTEXT.md` — the definitional home for every term loom uses (anchors, not one file per
+  term).
 - `contract/` + `adapters/<harness>/` — the shared adapter core and its per-harness answers.
 - `workflows/`, `agents/`, `commands/`, `docs/` — prose.
 - `scripts/loom/` — the only executable code here; `scripts/validate.sh` is the gate.

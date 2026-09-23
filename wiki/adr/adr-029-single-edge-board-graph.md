@@ -119,7 +119,7 @@ This is the load-bearing scope guard — four ADR-025 commitments stand **untouc
   partial-supersession pointer at §6 and §8 (this ADR does not edit ADR-025 to keep that diff
   reviewable); the ADR [index](index.md) and [log](log.md) need a new row/entry; the domain
   model's sharpened terms (board member, membership edge, ordering edge, unmapped, takeable,
-  frontier) need to land in the [glossary](../glossary/index.md).
+  frontier) need to land in the [glossary](../../CONTEXT.md).
 
 ## Alternatives considered
 

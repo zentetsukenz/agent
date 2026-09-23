@@ -54,7 +54,7 @@ The utility roster (`explore`/`quick`/`deep`/`verifier`/`writing`) and the domai
 utilities (`frontend`/`visual-qa`), their purposes, archetypes, and capability sets are
 **generic** — see [contract/primitives.md](../../contract/primitives.md#utility-agents-cross-stage).
 OpenCode render bindings: each is a plain `.opencode/agents/<name>.md` with **`mode: subagent`**
-(the `dispatched` surface) so a [Dispatcher](../../wiki/glossary/index.md#dispatcher) reaches it
+(the `dispatched` surface) so a [Dispatcher](../../CONTEXT.md#dispatcher) reaches it
 via `@mention`/delegation but the `Tab` cycle hides it. A human never `Tab`-selects a utility.
 Resolve each capability set to OpenCode `permission:` keys via
 [references/capabilities.md](references/capabilities.md).

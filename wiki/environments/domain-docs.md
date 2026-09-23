@@ -21,10 +21,9 @@ Resolve the glossary and ADR locations in priority order:
 
 1. **`loom.toml`** — `paths.glossary` and `paths.adr` (when the loom adapter ships). Honor
    the configured paths.
-2. **Framework default** — `wiki/glossary/index.md` for the glossary and `wiki/adr/` for
+2. **Framework default** — `CONTEXT.md` at the repo root for the glossary and `wiki/adr/` for
    ADRs, when present.
-3. **Legacy fallback** — `CONTEXT.md` at the repo root for the glossary and `docs/adr/` for
-   ADRs, when neither of the above exists.
+3. **Legacy fallback** — `docs/adr/` for ADRs, when `wiki/adr/` doesn't exist.
 
 Use the resolved paths consistently for the rest of the operation. Create files lazily — only
 when there is something to write (the first resolved term, the first ADR).
@@ -35,7 +34,7 @@ Most repos have a single context: one glossary doc plus an ADR directory.
 
 ```
 /
-├── CONTEXT.md            ← glossary (or wiki/glossary/index.md)
+├── CONTEXT.md            ← glossary
 ├── docs/                 ← (or wiki/adr/)
 │   └── adr/
 │       ├── 0001-event-sourced-orders.md

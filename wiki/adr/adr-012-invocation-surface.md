@@ -19,13 +19,13 @@ user-invocable: true
 disable-model-invocation: false
 ```
 
-So the whole [utility (dispatched) agent](../glossary/index.md#utility-dispatched-agent) roster —
+So the whole [utility (dispatched) agent](../../CONTEXT.md#utility-dispatched-agent) roster —
 `explore`, `quick`, `deep`, `verifier`, `frontend`, `visual-qa` — ships **user-invocable**,
 appearing in the harness's agent picker right next to the lifecycle stage agents. A human can pick
 `deep` (or `visual-qa`, the screenshot-taker) straight from the UI.
 
 That contradicts the roster's own design. A utility is *defined* by receiving **dispatched** work
-from a [Dispatcher](../glossary/index.md#dispatcher) that sizes and routes it
+from a [Dispatcher](../../CONTEXT.md#dispatcher) that sizes and routes it
 ([ADR-008](adr-008-delivery-dispatchers.md)). Letting a human start `deep` directly bypasses the
 Orchestrator that gauges size and enforces gates — the same swiss-army collapse the dispatcher/
 utility split exists to prevent, reintroduced through the front door.
@@ -46,7 +46,7 @@ suppress an agent as a *handoff target*.
 ## Decision
 
 Treat **invocation surface** as a first-class facet of a
-[Role](../glossary/index.md#role) — parallel to its capability set
+[Role](../../CONTEXT.md#role) — parallel to its capability set
 ([ADR-006](adr-006-capability-based-roles.md)) — and scope it by the same discipline: **withhold
 an entry point to shape the role.** loom names a closed two-value vocabulary; the adapter maps each
 value to the harness's concrete flag pair.

@@ -15,7 +15,7 @@ description: Chronological record of significant changes to workflows
 - Added the [macro-pm](macro-pm/index.md) workflow — the reactive lifecycle *above* SDLC. A
   resident agent charts many efforts as nested [wayfinder](../SKILLS/planning/wayfinder/SKILL.md)
   maps on a single source of truth and dispatches buildable leaves down into SDLC runs via the
-  [altitude seam](../wiki/glossary/index.md#altitude-seam), looping forever. Gathers the previously
+  [altitude seam](../CONTEXT.md#altitude-seam), looping forever. Gathers the previously
   scattered macro-PM prose (tick loop, reactive state machine, two-vocabulary seam, mechanical
   routing, cross-cutting invariants) into one seed the resident (Hermes) adapter compiles.
   References wayfinder macro mode and ADR-018 rather than duplicating them. Grounds ADR-019.

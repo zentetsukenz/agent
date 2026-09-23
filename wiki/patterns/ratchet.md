@@ -8,9 +8,9 @@ timestamp: 2026-09-06T00:00:00Z
 
 # Ratchet Routing
 
-> **Applied vocabulary:** see the glossary for [Form slop](../glossary/index.md#form-slop),
-> [Recall slop](../glossary/index.md#recall-slop), [Judgment slop](../glossary/index.md#judgment-slop),
-> [Mechanism](../glossary/index.md#mechanism), and [Ratchet](../glossary/index.md#ratchet).
+> **Applied vocabulary:** see the glossary for [Form slop](../../CONTEXT.md#form-slop),
+> [Recall slop](../../CONTEXT.md#recall-slop), [Judgment slop](../../CONTEXT.md#judgment-slop),
+> [Mechanism](../../CONTEXT.md#mechanism), and [Ratchet](../../CONTEXT.md#ratchet).
 > This page is the conceptual reference; [ADR-026](../adr/adr-026-gate-mechanism-layer-model.md)
 > records the decision. It gives [Preservation](../../workflows/sdlc/preservation.md#feedback-loop-completes-the-cycle)'s
 > feedback loop the same routing discipline [quality-baseline](quality-baseline.md) already
@@ -32,9 +32,9 @@ destination.*
 
 | Slop kind | Destination | Why |
 |---|---|---|
-| [Judgment slop](../glossary/index.md#judgment-slop) | ADR / wiki / skill-creator (prose) | Irreducible — a tradeoff evaluated badly has no mechanical check; answered structurally by producer ≠ judge, never by more prose. |
-| [Form slop](../glossary/index.md#form-slop) | A new [`GATE.md`](../../GATE.md) `artifact` criterion | Paperwork undone is a shape check — the Gate's typed-criteria schema already exists for exactly this. |
-| [Recall slop](../glossary/index.md#recall-slop) | A [Mechanism](../glossary/index.md#mechanism), installed via [Port 5](../../contract/PORTS.md#port-5--mechanisminstall) | Fully mechanizable — a forgotten environment fact is re-checked by re-executing reality, not by describing it. |
+| [Judgment slop](../../CONTEXT.md#judgment-slop) | ADR / wiki / skill-creator (prose) | Irreducible — a tradeoff evaluated badly has no mechanical check; answered structurally by producer ≠ judge, never by more prose. |
+| [Form slop](../../CONTEXT.md#form-slop) | A new [`GATE.md`](../../GATE.md) `artifact` criterion | Paperwork undone is a shape check — the Gate's typed-criteria schema already exists for exactly this. |
+| [Recall slop](../../CONTEXT.md#recall-slop) | A [Mechanism](../../CONTEXT.md#mechanism), installed via [Port 5](../../contract/PORTS.md#port-5--mechanisminstall) | Fully mechanizable — a forgotten environment fact is re-checked by re-executing reality, not by describing it. |
 
 ## The first-occurrence rule
 
