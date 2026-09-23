@@ -10,7 +10,7 @@
 #   lint          0 syntax errors
 #   code-quality  none — no complexity/duplication tool; the distributable is small, reviewed by hand
 #   security      none — zero third-party dependencies (Node built-ins + `gh`), no scan surface
-#   coverage      96/96 tests passing, no regression below 96
+#   coverage      107/107 tests passing, no regression below 107
 #
 # Two command shapes below are load-bearing. Do not "simplify" them:
 #   * `node --check` validates only its FIRST argument, so a bare `**/*.js` would leave every file
@@ -24,11 +24,11 @@ set -uo pipefail
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT_DIR" || exit 1
 
-COVERAGE_FLOOR=96
+COVERAGE_FLOOR=107
 failed=0
 
 printf '== lint ==\n'
-if find scripts/loom -name '*.js' -print0 | xargs -0 -n1 node --check; then
+if find scripts/loom scripts/graph -name '*.js' -print0 | xargs -0 -n1 node --check; then
   printf 'lint: 0 syntax errors\n\n'
 else
   printf 'lint: FAILED — syntax errors above\n\n' >&2
@@ -36,7 +36,7 @@ else
 fi
 
 printf '== coverage ==\n'
-test_output="$(node --test 'scripts/loom/**/*.test.js' 2>&1)"
+test_output="$(node --test 'scripts/**/*.test.js' 2>&1)"
 test_status=$?
 printf '%s\n' "$test_output" | tail -20
 
