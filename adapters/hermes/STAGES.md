@@ -12,7 +12,7 @@ and their agents (`shaping`, `planner`, `orchestrator`, `closing`, `verifier`, `
 
 Under this adapter those stages run **one altitude down**, in a separate, headless-dispatchable
 **per-invocation** harness (e.g. OpenCode) that the resident agent dispatches into across the
-[altitude seam](../../wiki/glossary/index.md#altitude-seam). That harness has its own adapter and its
+[altitude seam](../../CONTEXT.md#altitude-seam). That harness has its own adapter and its
 own `STAGES.md`; loom holds only **prose** for the dispatch — the concrete micro harness and its CLI
 are a per-project setup choice ([ADR-019](../../wiki/adr/adr-019-loom-hermes-setup.md)).
 

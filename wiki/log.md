@@ -41,7 +41,7 @@ Initial wiki structure and content created.
 
 **Glossary** (1 file):
 
-- `glossary/index.md` — Key terms and concepts
+- `glossary/index.md` — Key terms and concepts (retired; content now lives in root `CONTEXT.md`)
 
 **Wiki Structure** (2 files):
 
@@ -57,6 +57,18 @@ Initial wiki structure and content created.
 
 ---
 
+## Harness-Agnostic Setup vocabulary
+
+**2026-07-21**
+
+### Added
+
+- Glossary: **Harness** and **Setup contract**; sharpened **Adapter** to loom's harness-adapter
+  sense (was generic). Bakes the harness-agnostic setup vocabulary that `SETUP.md` and
+  `adapters/*` rely on into the domain language.
+
+---
+
 ## Role-Scoped Capabilities
 
 **2026-07-24**
@@ -69,14 +81,57 @@ Initial wiki structure and content created.
 - `adr/adr-006-capability-based-roles.md`, `adr/adr-007-docs-lookup-capability.md`,
   `adr/adr-008-delivery-dispatchers.md`.
 - Glossary: **Capability**, **Role**, **Dispatcher**, **Utility (dispatched) agent**;
-  sharpened **Agent** and **Orchestrator**.
+  sharpened **Agent** (now also defined by its capability grant, not domain alone) and
+  **Orchestrator** (canonical Dispatcher: `delegate` yes, `edit` no).
 
 ### Changed
 
 - Mirai adapter: role-scoped capability grants; Delivery split into Planner + Orchestrator
   dispatchers plus a Verifier utility; per-stage quick base agent (`plan` for Shaping) +
   stance line; optional `docs-lookup` capability. See per-subtree logs
-  (`adr/log.md`, `patterns/log.md`, `glossary/log.md`) for detail.
+  (`adr/log.md`, `patterns/log.md`) for detail.
+
+---
+
+## Domain-Specialized Utility vocabulary
+
+**2026-07-27**
+
+### Added
+
+- Glossary: **Domain-specialized utility** — a Utility (dispatched) agent scoped to a problem
+  domain (e.g. frontend) rather than an intelligence tier; wires the domain's skill cluster.
+  Names the role kind introduced by the `frontend` agent
+  ([ADR-009](adr/adr-009-frontend-domain-utility.md)) and closes on the wisdom principle
+  "specialize by problem domain, not technology."
+
+---
+
+## Seam Artifact Protocol vocabulary
+
+**2026-07-30**
+
+### Added
+
+- Glossary: **Stage**, **Seam artifact**, **Ledger**, and **Communication protocol document** —
+  the vocabulary for the Seam Artifact Protocol
+  ([ADR-011](adr/adr-011-seam-artifact-protocol.md)): stages are the ownership seams, a seam
+  artifact is the baton, the ledger is its namespaced+manifested store, and the communication
+  protocol document is the per-project contract agents reference.
+
+---
+
+## Invocation Surface vocabulary
+
+**2026-07-31**
+
+### Added
+
+- Glossary: **Invocation surface** — the entry points that may *start* a role (human picker vs.
+  subagent dispatch), a facet parallel to the capability set. Names the two surfaces
+  `front-door` (stage agents; human/handoff-entered, not subagent-invocable) and `dispatched`
+  (the utility roster; subagent-only). Orthogonal to the dispatcher/utility split. Establishes
+  the vocabulary for [ADR-012](adr/adr-012-invocation-surface.md).
 
 ---
 
@@ -89,9 +144,13 @@ Initial wiki structure and content created.
 - `adr/adr-018-macro-project-management.md` — macro PM is a recursive wayfinding layer over
   SDLC runs (not a peer workflow), bound by an altitude-scoped substrate and a two-vocabulary
   label seam.
-- Glossary: **Altitude**, **Substrate**, **Altitude seam**, **Resident agent** — the
-  vocabulary the macro-PM protocol (and the pending wayfinder extension + `contract/`
-  interview) will reference. See `glossary/log.md` and `adr/log.md` for detail.
+- Glossary: **Altitude**, **Substrate**, **Altitude seam**, and **Resident agent** — altitude is
+  the macro/micro scale split, substrate generalizes "where the ledger lands" to three classes
+  (memory / committed folder / networked store) chosen per-project *and* per-altitude, the
+  altitude seam is the translator (two-vocabulary label protocol: `wayfinder:*` down, `sdlc:*`
+  up) joining the two, and the resident agent is the memory-bearing reactive worker that runs
+  the macro altitude over a networked source of truth (board = single source of truth; the
+  daemon is an adapter concern). See `adr/log.md` for detail.
 
 ### Changed
 
@@ -109,6 +168,54 @@ Initial wiki structure and content created.
   provisioning of the two label vocabularies, written into the comm-protocol document's macro
   section under the one-source-of-truth invariant. The resident daemon stays an adapter
   concern (no new port; ADR-005 preserved). Grounds ADR-018.
+
+---
+
+## System-Scoped QA vocabulary
+
+**2026-08-17**
+
+### Added
+
+- Glossary: **Standing regression suite** and **`qa:regression-failed` (regression origin)**,
+  and rewrote **Verification Culture** to carry the **iron law** — the vocabulary for
+  system-scoped QA ([ADR-020](adr/adr-020-system-scoped-qa.md)): the standing suite is the
+  system-scoped e2e asset that accretes 1:1 from user-facing efforts and runs in CI;
+  `qa:regression-failed` is the CI-posted *third origin* (neither `wayfinder:*` down nor
+  `sdlc:*` up) handled AFK by seeding a fresh terminating "restore-green" map; and Verification
+  Culture is now the iron-law principle (evidence before any claim, harness-agnostic), the
+  procedural skill being its operationalization.
+
+---
+
+## Dispatcher sharpened
+
+**2026-08-17**
+
+### Changed
+
+- Sharpened **Dispatcher** ([ADR-021](adr/adr-021-shaping-research-orchestrator.md)): **Shaping**
+  is now a second, *read-only* dispatcher (dispatches recon/research to `explore`, spikes to
+  `quick`/`deep`, stays `edit`-free), and being a Dispatcher is clarified as **orthogonal** to
+  the invocation surface — `delegate` governs *dispatching out*, the invocation surface governs
+  *being entered*, so a Dispatcher can be a `front-door` (Shaping) as well as `dispatched` (the
+  Orchestrator).
+
+---
+
+## Core/Gate/Mechanism vocabulary
+
+**2026-09-04**
+
+### Added
+
+- Glossary: **Form slop**, **Recall slop**, **Judgment slop**, **Gate**, **Evidence producer**,
+  **Criterion type**, **Mechanism**, **Graduation**, **Ratchet**, and **Re-executing reality** —
+  the vocabulary for the Core/Gate/Mechanism layer model
+  ([ADR-026](adr/adr-026-gate-mechanism-layer-model.md)): three layers, each owning one kind of
+  slop, each enforced by a mechanism suited to what it owns (reasoning + a different actor for
+  judgment slop; exit codes + withheld capabilities for form slop; re-executing reality for
+  recall slop).
 
 ---
 
@@ -138,7 +245,7 @@ Initial wiki structure and content created.
   `## Macro mode` section (**63 of 205 lines, 31%** of `SKILLS/planning/wayfinder/SKILL.md`, serving
   a resident PM rather than a charting human) becomes **`SKILLS/planning/altitude-handoff`**, named
   after [ADR-018](adr/adr-018-macro-project-management.md) #4's own framing — `stage-handoff`'s
-  PRODUCE/DISCOVER contract one [altitude](glossary/index.md#altitude) up. The dependency is
+  PRODUCE/DISCOVER contract one [altitude](../CONTEXT.md#altitude) up. The dependency is
   **one-way**: wayfinder ends with zero references to dispatch. Also names the new skill the spec
   for `board apply`'s six transitions, and confirms no new adapter port is owed.
 
@@ -149,5 +256,9 @@ Initial wiki structure and content created.
   wayfinding layer, mechanical router, two-vocabulary seam, altitude-scoped substrate) stands.
   Distinct from the clause [ADR-019](adr/adr-019-loom-hermes-setup.md) amended.
 - Glossary **See** lines for **Altitude**, **Altitude seam**, **Resident agent** and
-  **`qa:regression-failed`** now cite ADR-030. Their bodies still name `wayfinder` as the home of
-  dispatch, which holds until the atomic move lands the new skill.
+  **`qa:regression-failed`** now cite ADR-030, which moves dispatch out of `wayfinder` into
+  `SKILLS/planning/altitude-handoff`. Only the **See** lines change here: each term's body still
+  names `wayfinder` as the home of dispatch, which stays true until the atomic move
+  ([#51](https://github.com/zentetsukenz/agent/issues/51)) creates the skill — a glossary body
+  pointing at a file that does not exist yet would be a broken link, not a capture. The prose
+  rewiring lands with the move.

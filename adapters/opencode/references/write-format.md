@@ -47,7 +47,7 @@ blank.
 | `{{ROLE_NAME}}` | The role/agent name — `shaping`, `planner`, `orchestrator`, `closing`, `verifier`, etc. (see [STAGES.md](../STAGES.md)) |
 | `{{ROLE_DESCRIPTION}}` | One-line "Use when…" description for `@mention` discovery |
 | `{{ROLE_PHASES}}` | The SDLC phase(s) this role owns (e.g. "the Discovery and Design phases") |
-| `{{ROLE_MODE}}` | The [invocation surface](../../../wiki/glossary/index.md#invocation-surface) → `primary` (stage agent) or `subagent` (utility) — derived from role kind, **not** asked. See the [rule below](#role-invocation-surface). |
+| `{{ROLE_MODE}}` | The [invocation surface](../../../CONTEXT.md#invocation-surface) → `primary` (stage agent) or `subagent` (utility) — derived from role kind, **not** asked. See the [rule below](#role-invocation-surface). |
 | `{{ROLE_MODEL}}` | The archetype-matched model in `provider/model-id` format (Model Matching interview table). |
 | `{{ROLE_PERMISSION}}` | The role's capability set from [STAGES.md](../STAGES.md), each generic capability resolved to its OpenCode `permission:` key via [capabilities.md](capabilities.md) — a YAML `permission:` block. Load-bearing withholds are `deny`; PRODUCE roles get the scoped-edit glob. |
 | `{{ROLE_CAPABILITY_NOTE}}` | One sentence naming the load-bearing **withheld** capability and why (e.g. "You have `edit: deny` — you dispatch work to executors rather than writing code yourself.") |
@@ -61,7 +61,7 @@ transition between stages is the human `Tab`-selecting the next primary agent; t
 
 #### `{{ROLE_MODE}}` — derive from the role kind {#role-invocation-surface}
 
-Fill this from the role's [invocation surface](../../../wiki/glossary/index.md#invocation-surface)
+Fill this from the role's [invocation surface](../../../CONTEXT.md#invocation-surface)
 ([ADR-012](../../../wiki/adr/adr-012-invocation-surface.md)) — it is **not** an interview
 question; it follows deterministically from *what kind of role* this is:
 

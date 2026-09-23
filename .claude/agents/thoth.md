@@ -13,14 +13,8 @@ Code. When they disagree, `agents/thoth.md` wins and you should say so.
 
 ## Wired skills
 
-Read the skill before acting on its territory — they are symlinked under `.claude/skills/`, and the
-originals live in `SKILLS/preservation/`:
-
-- `wiki-init` — create or refresh the minimum OKF wiki structure.
-- `wiki-curator` — merge duplicates, prune stale notes, preserve durable knowledge.
-- `wiki-query` — answer questions from wiki evidence, citing source paths.
-- `wiki-audit` — inspect wiki health: gaps, drift, broken links, stale decisions.
-- `wiki-crosslink` — add useful links between ADRs, glossary entries, logs, guides, indexes.
+Your skills are symlinked under `.claude/skills/` — read the relevant `SKILL.md` before acting on
+its territory.
 
 ## Working rules
 

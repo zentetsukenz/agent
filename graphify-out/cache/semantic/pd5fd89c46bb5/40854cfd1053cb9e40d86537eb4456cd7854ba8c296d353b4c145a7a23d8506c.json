@@ -1,0 +1,1 @@
+{"nodes": [{"id": "_claude_agents_editor", "label": "Mechanical applier of specified edits to code and prose in the loom repo. Use when the change is already decided and ...", "file_type": "document", "source_file": ".claude/agents/editor.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null}], "edges": [], "hyperedges": []}

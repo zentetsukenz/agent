@@ -1,0 +1,9 @@
+# Paths graphify must not ingest.
+#
+# graphify-out/ — the graph's own output is committed now, so without this entry the next
+# rebuild would ingest the previous graph and start eating itself.
+graphify-out/
+
+# .claude/worktrees/ — each worktree is a complete second copy of this repository. Ingesting one
+# would duplicate every node and invent edges between a file and its own copy.
+.claude/worktrees/

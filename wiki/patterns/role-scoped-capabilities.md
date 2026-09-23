@@ -8,9 +8,9 @@ timestamp: 2026-07-24T00:00:00Z
 
 # Role-Scoped Capabilities
 
-> **Applied vocabulary:** see the glossary for [Capability](../glossary/index.md#capability),
-> [Role](../glossary/index.md#role), [Dispatcher](../glossary/index.md#dispatcher), and
-> [Utility (dispatched) agent](../glossary/index.md#utility-dispatched-agent). This page is
+> **Applied vocabulary:** see the glossary for [Capability](../../CONTEXT.md#capability),
+> [Role](../../CONTEXT.md#role), [Dispatcher](../../CONTEXT.md#dispatcher), and
+> [Utility (dispatched) agent](../../CONTEXT.md#utility-dispatched-agent). This page is
 > the conceptual reference; [ADR-006](../adr/adr-006-capability-based-roles.md) records the
 > decision to adopt it.
 
@@ -43,8 +43,8 @@ Capabilities are named independently of any tool:
 | `docs-lookup` | Query up-to-date external documentation (optional) |
 | `tasks` | Manage a task/todo list |
 
-Each [Adapter](../glossary/index.md#adapter) maps these generic names onto its
-[Harness](../glossary/index.md#harness)'s concrete tool names, and **tolerates deviation** —
+Each [Adapter](../../CONTEXT.md#adapter) maps these generic names onto its
+[Harness](../../CONTEXT.md#harness)'s concrete tool names, and **tolerates deviation** —
 the mapped name is discovered or confirmed against the harness's actual tool list, never
 assumed. Some map to stable aliases (`delegate` → Mirai's `agent`); others map to
 harness-/version-specific tool names (`persist` → a specific tool like `vscode/memory`)
@@ -81,13 +81,13 @@ UTILITY (dispatched) AGENT (holds edit/shell, not delegate-as-purpose)
       receives a scoped task, executes or verifies it, returns a result
 ```
 
-A [Dispatcher](../glossary/index.md#dispatcher) that could also edit tends to collapse into
+A [Dispatcher](../../CONTEXT.md#dispatcher) that could also edit tends to collapse into
 a do-everything agent that never delegates. Keeping the two kinds distinct is what lets a
 plan get *dispatched* rather than quietly hand-implemented by the planner/orchestrator.
 
 ## Utilities sit at real seams
 
-A [Utility (dispatched) agent](../glossary/index.md#utility-dispatched-agent) earns its own
+A [Utility (dispatched) agent](../../CONTEXT.md#utility-dispatched-agent) earns its own
 identity when **more than one dispatcher** hands it work — the
 [deep-modules](deep-modules.md) test: *one consumer is a hypothetical seam; two consumers is
 a real one.* A Verifier dispatched by both an Orchestrator (verify a change) and a
@@ -96,7 +96,7 @@ criteria → evidence*) hiding substantial checking behavior, reused across call
 
 Utilities can be scoped two ways. Most of the roster is scoped by **intelligence tier**
 (`explore`/`quick`/`deep`/`verifier`). A
-[domain-specialized utility](../glossary/index.md#domain-specialized-utility) is instead
+[domain-specialized utility](../../CONTEXT.md#domain-specialized-utility) is instead
 scoped by **problem domain** — it wires that domain's skill cluster. The `frontend` agent
 (dev + runtime debugging, wiring the frontend skill cluster and *delegating* pixel-looking
 to `visual-qa`) is the first — see [ADR-009](../adr/adr-009-frontend-domain-utility.md). This
@@ -106,7 +106,7 @@ technology."*
 ## Invocation surface — a second facet, scoped the same way
 
 Capabilities answer *what a role may do*. A parallel facet answers *who may start it*: the
-role's **[invocation surface](../glossary/index.md#invocation-surface)**. The same discipline
+role's **[invocation surface](../../CONTEXT.md#invocation-surface)**. The same discipline
 applies — **you shape a role by withholding an entry point, not by asking it not to be
 misused.**
 
@@ -120,7 +120,7 @@ Two entry points exist: a **human** (the harness's agent picker / UI front door)
 
 **Withholding the human front door is the forcing function.** A `dispatched` utility that
 were *also* user-invocable invites a human to run `deep` (or `frontend`) straight from the
-picker — bypassing the [Dispatcher](../glossary/index.md#dispatcher) that sizes and routes
+picker — bypassing the [Dispatcher](../../CONTEXT.md#dispatcher) that sizes and routes
 the work, reintroducing the very swiss-army collapse the dispatcher/utility split exists to
 prevent. Hiding it from the picker makes the dispatcher the only way in.
 
@@ -138,7 +138,7 @@ and `frontend` (`dispatched`) hold `delegate`; the surface differs anyway. `fron
 utility by role, so `dispatched` by surface — even though it delegates pixel-looking onward
 to `visual-qa`.
 
-Each [Adapter](../glossary/index.md#adapter) maps the two surfaces onto its harness's
+Each [Adapter](../../CONTEXT.md#adapter) maps the two surfaces onto its harness's
 concrete flags and tolerates deviation, the same way it maps capabilities. On Mirai:
 `front-door` = `user-invocable: true` + `disable-model-invocation: true`; `dispatched` =
 `user-invocable: false` + `disable-model-invocation: false`. The two remaining boolean

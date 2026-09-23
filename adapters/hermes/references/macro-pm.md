@@ -73,7 +73,7 @@ Two consequences follow, and both are load-bearing:
 - **HITL ticket outputs go to a networked artifact ref, not the on-disk micro ledger.** A macro
   `grilling`/`prototype`/`research` ticket resolved *at the macro altitude* produces bulky content a
   dispatched SDLC run must later reach across the harness boundary. It publishes to a networked
-  **[artifact ref](../../../wiki/glossary/index.md#artifact-ref)** — an orphan branch
+  **[artifact ref](../../../CONTEXT.md#artifact-ref)** — an orphan branch
   `loom-artifacts/<map-slug>` on the git host ([ADR-022](../../../wiki/adr/adr-022-reachable-artifact-substrate.md)) —
   and the ticket links the URL; the dispatched run's `shaping/<milestone>/` seam artifact carries that
   URL and the run **fetches on demand**. This is the networked class's *second instrument* (beside the
@@ -130,13 +130,13 @@ loom writes a **`wayfinder-macro` profile** (a front-door, resident role) into t
 
 ## The altitude seam — the translator
 
-The resident profile is the [altitude-seam](../../../wiki/glossary/index.md#altitude-seam)
+The resident profile is the [altitude-seam](../../../CONTEXT.md#altitude-seam)
 **translator**, reusing the existing PRODUCE/DISCOVER contract across the boundary — it wires
 **both** altitudes and the crossing between them (not just the single micro ledger a normal adapter
 wires):
 
 - **Down (dispatch a buildable leaf).** For a `wayfinder:task` ticket, translate the ticket + its
-  linked artifacts into a `shaping/<milestone>/` [seam artifact](../../../wiki/glossary/index.md#seam-artifact)
+  linked artifacts into a `shaping/<milestone>/` [seam artifact](../../../CONTEXT.md#seam-artifact)
   written into the SDLC run's **micro** ledger — a **shared, on-disk, gitignored** substrate
   ([capabilities.md](capabilities.md#persist--the-native-memory-tool-macro-continuity-only)), which
   Planning's DISCOVER gate already expects. Under [model (a)](#the-micro-dispatch-target--a-separate-per-invocation-harness)
@@ -185,7 +185,7 @@ and the on-disk micro substrate. The two never touch directly
 - [wayfinder macro mode](../../../SKILLS/planning/wayfinder/SKILL.md#macro-mode-dispatching-into-sdlc-runs) — the behavior the daemon runs.
 - [seam-artifact-protocol](../../../wiki/patterns/seam-artifact-protocol.md#substrate-is-also-altitude-scoped) — altitude-scoped substrate + the one-source-of-truth invariant.
 - [contract/interview.md §4f](../../../contract/interview.md#4f-macro-project-management-optional) — the macro setup questions this file renders.
-- Glossary: [Altitude](../../../wiki/glossary/index.md#altitude), [Substrate](../../../wiki/glossary/index.md#substrate), [Altitude seam](../../../wiki/glossary/index.md#altitude-seam), [Resident agent](../../../wiki/glossary/index.md#resident-agent).
+- Glossary: [Altitude](../../../CONTEXT.md#altitude), [Substrate](../../../CONTEXT.md#substrate), [Altitude seam](../../../CONTEXT.md#altitude-seam), [Resident agent](../../../CONTEXT.md#resident-agent).
 - [MAPPING.md §7](../MAPPING.md#7-communication-protocol-document--the-two-altitude-ledgers) — the two-altitude ledger wiring.
 - [capabilities.md](capabilities.md) — the toolsets the resident profile is granted.
 - [write-format.md](write-format.md) — the `{{MACRO_SECTION}}` / `{{ROLE_ONE_SOURCE_NOTE}}` placeholders.

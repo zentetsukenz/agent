@@ -14,7 +14,7 @@ picks the adapter; the adapter knows the harness's exact config format. The **ge
 of that contract (the five steps, `init`/`update` semantics, the six primitives, skill
 rosters, capability sets, model archetypes, interview questions, and invariant-checks) lives
 once in the shared [`contract/`](contract/index.md) core; each adapter references it and
-supplies only its four harness-specific [port obligations](contract/PORTS.md). See
+supplies only its five harness-specific [port obligations](contract/PORTS.md). See
 [ADR-013](wiki/adr/adr-013-shared-adapter-contract-core.md) (the shared core),
 [ADR-001](wiki/adr/adr-001-adapter-pattern.md) (adapter pattern) and
 [ADR-002](wiki/adr/adr-002-workflow-as-adapter-seed.md) (why setup is interpreted, not baked).

@@ -5,5 +5,24 @@
 .loom/
 .mirai
 
-# graphify knowledge-graph output — derived, rebuildable, never committed
-graphify-out/
+# graphify knowledge-graph output — the graph IS committed, deliberately.
+# This corpus is ~100% prose, so every node costs an LLM extraction pass; a cold clone cannot
+# rebuild it cheaply, and an agent bootstrapping from a graph needs the graph to be present.
+# Committed: graph.json, GRAPH_REPORT.md, .graphify_labels.json, cache/
+# cache/ is content-hash keyed — it is what makes a refresh incremental, not a speed nicety.
+#
+# Excluded below: a large derivative, an upstream churn defect, a local ledger, and two files
+# holding absolute machine-local paths.
+graphify-out/graph.html
+graphify-out/manifest.json
+graphify-out/cost.json
+graphify-out/.graphify_python
+graphify-out/.graphify_root
+
+# Cache internals that churn on every query or clone — the semantic extractions are the
+# part worth committing; these two are mtime/stat bookkeeping.
+graphify-out/cache/last_query_stamp
+graphify-out/cache/stat-index.json
+
+# Transient extraction chunks — merged into graph.json by scripts/graph/merge-extraction.js
+graphify-out/.graphify_chunk_*.json

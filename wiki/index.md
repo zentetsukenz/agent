@@ -22,7 +22,8 @@ environments, ADRs, and terminology, each subtree progressively disclosed via it
   authoritative per-adapter primitive docs (Mirai, OpenCode, Hermes)
 - **[ADRs](adr/index.md)** — chronological architectural decision records; the highest-signal
   source for *why* loom is shaped the way it is
-- **[Glossary](glossary/index.md)** — the ubiquitous language every other subtree assumes
+- **[Glossary](../CONTEXT.md)** — the ubiquitous language every other subtree assumes, now
+  the root-level `CONTEXT.md` rather than a wiki subtree
 
 ## How to use this wiki
 
@@ -35,7 +36,8 @@ environments, ADRs, and terminology, each subtree progressively disclosed via it
 ## Contributing
 
 1. Pick the right subtree — Principles (philosophy) / Patterns (reusable shape) /
-   Environments (setup reference) / ADR (a recorded decision) / Glossary (a term).
+   Environments (setup reference) / ADR (a recorded decision). A new term belongs in the
+   root [CONTEXT.md](../CONTEXT.md), not a wiki subtree.
 2. Every file opens with OKF frontmatter (`type:`, `title:`, `description:`).
 3. One concept per document; link, don't duplicate, content that exists elsewhere.
 4. Update the subtree's `index.md` and append to its `log.md`.

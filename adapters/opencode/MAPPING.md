@@ -57,7 +57,7 @@ and [STAGES.md](STAGES.md). OpenCode's render bindings for those primitives:
   OpenCode's no-edit guarantee from `plan` mode
   ([ADR-006](../../wiki/adr/adr-006-capability-based-roles.md)).
 - A **deep agent** carries the phase workflow prose + role capability set (as `permission:`) +
-  a `front-door` [invocation surface](../../wiki/glossary/index.md#invocation-surface)
+  a `front-door` [invocation surface](../../CONTEXT.md#invocation-surface)
   ([ADR-012](../../wiki/adr/adr-012-invocation-surface.md)): `mode: primary`.
 - **Delivery is split** ([ADR-008](../../wiki/adr/adr-008-delivery-dispatchers.md)); the old
   single `delivery.md` is retired (migration: [write-format.md](references/write-format.md#delivery-split-migration-deliverymd--dispatchers)).
@@ -71,7 +71,7 @@ The utility roster (`explore`/`quick`/`deep`/`verifier`/`writing`) and the domai
 utilities (`frontend`/`visual-qa`) are **generic** — see
 [contract/primitives.md](../../contract/primitives.md#utility-agents-cross-stage). OpenCode render
 bindings: each is a plain `.opencode/agents/<name>.md` with **`mode: subagent`** (the
-`dispatched` surface) so a [Dispatcher](../../wiki/glossary/index.md#dispatcher) can `@mention`/delegate
+`dispatched` surface) so a [Dispatcher](../../CONTEXT.md#dispatcher) can `@mention`/delegate
 to it but the `Tab` cycle hides it. The per-utility capability sets live in
 [STAGES.md](STAGES.md#utility-agents-cross-stage); resolve them to `permission:` keys via §6.
 
@@ -149,7 +149,7 @@ that is **local-only and blanket-gitignored**:
 | Generic obligation | OpenCode wiring |
 |---|---|
 | Communication protocol document | `.loom/handoffs/protocol.md` — a **local** Markdown file, pointed at from `opencode.json`'s `instructions:` array (so it merges into always-on context) and referenced from `AGENTS.md`. The protocol document is generated and referenced locally; like the rest of `.loom` it is **not committed** (it lives under the blanket `.loom/**` ignore — see the next row). |
-| [Ledger](../../wiki/glossary/index.md#ledger) substrate → `persist` target | A **`.loom/handoffs/`** on-disk folder — OpenCode has no harness memory tool, so the folder *is* the persistence. **Local-only, blanket-gitignored**: `.loom` is a local context-passing substrate, not version-controlled ([ADR-014](../../wiki/adr/adr-014-loom-opencode-setup.md); durable knowledge → wiki/ADRs; durable/reviewable Macro-PM artifacts → the reachable orphan-ref substrate, [ADR-022](../../wiki/adr/adr-022-reachable-artifact-substrate.md)). This on-disk substrate is also what lets OpenCode serve as a **micro dispatch target** for a resident macro agent (a [dispatch-target harness](../../wiki/patterns/harness-archetypes.md) — the folder is the shared ground both harnesses read, since memory cannot cross a harness boundary). |
+| [Ledger](../../CONTEXT.md#ledger) substrate → `persist` target | A **`.loom/handoffs/`** on-disk folder — OpenCode has no harness memory tool, so the folder *is* the persistence. **Local-only, blanket-gitignored**: `.loom` is a local context-passing substrate, not version-controlled ([ADR-014](../../wiki/adr/adr-014-loom-opencode-setup.md); durable knowledge → wiki/ADRs; durable/reviewable Macro-PM artifacts → the reachable orphan-ref substrate, [ADR-022](../../wiki/adr/adr-022-reachable-artifact-substrate.md)). This on-disk substrate is also what lets OpenCode serve as a **micro dispatch target** for a resident macro agent (a [dispatch-target harness](../../wiki/patterns/harness-archetypes.md) — the folder is the shared ground both harnesses read, since memory cannot cross a harness boundary). |
 | Ledger manifest | `.loom/handoffs/index.md` — seeded empty at setup; producers register rows. Local-only, under the blanket `.loom/**` ignore (not tracked). |
 | PRODUCE / DISCOVER handoff | No native transition. The producing primary agent writes the seam artifact + manifest row at its exit gate; the human then `Tab`-selects the next stage's primary agent, whose body instructs it to **DISCOVER** the ledger at its entry gate. Every agent carries no `edit`-free `persist` tool (there is none) — instead the ledger is plain files, so PRODUCE/DISCOVER roles need `read` + `edit` **scoped to `.loom/handoffs/`** (via a `permission: { edit: { "*": deny, ".loom/handoffs/**": allow } }` glob) so they can write the ledger without gaining general code-edit. See [STAGES.md §protocol](STAGES.md#the-communication-protocol-document-cross-stage). |
 

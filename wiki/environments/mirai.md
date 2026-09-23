@@ -141,7 +141,7 @@ agents** (explore, quick, deep, **verifier**, writing, frontend, visual-qa) are 
 [references/capabilities.md](../../adapters/mirai/references/capabilities.md).
 
 The `user-invocable` / `disable-model-invocation` pair encodes loom's
-[invocation surface](../glossary/index.md#invocation-surface) facet
+[invocation surface](../../CONTEXT.md#invocation-surface) facet
 ([ADR-012](../adr/adr-012-invocation-surface.md)) — a role's *second* scoped facet alongside
 its capability set (*who may start it*, not just *what it may do*). loom uses exactly two of
 the four flag combinations:

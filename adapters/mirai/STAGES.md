@@ -54,7 +54,7 @@ utilities (`frontend`/`visual-qa`), their purposes, archetypes, and capability s
 **generic** — see [contract/primitives.md](../../contract/primitives.md#utility-agents-cross-stage).
 Mirai render bindings: each is a plain `.mirai/agents/<name>.agent.md` with a **`dispatched`**
 invocation surface (`user-invocable:false` + `disable-model-invocation:false`) so a
-[Dispatcher](../../wiki/glossary/index.md#dispatcher) reaches it but the picker hides it. A human
+[Dispatcher](../../CONTEXT.md#dispatcher) reaches it but the picker hides it. A human
 never picks a utility directly. Resolve each capability set to Mirai tool names via
 [references/capabilities.md](references/capabilities.md).
 

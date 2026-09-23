@@ -10,6 +10,5 @@ wiki, where it is cross-linked with the rest of loom's domain language and kept 
 
 **→ [wiki/principles/wisdom.md](../wiki/principles/wisdom.md)**
 
-This `docs/` path is kept only as a stable link target for existing references
-(`docs/agent-spec.md`, `wiki/adr/adr-009-frontend-domain-utility.md`) — extend the wiki page,
-not this one.
+This `docs/` path is kept only as a stable link target for an existing reference
+(`wiki/adr/adr-009-frontend-domain-utility.md`) — extend the wiki page, not this one.

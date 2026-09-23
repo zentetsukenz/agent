@@ -18,9 +18,9 @@ Communicator-tier agent whose generic capability set
 read, search, shell, persist, interview, tasks (+ docs-lookup)   — no edit
 ```
 
-No `delegate`. But per the [glossary](../glossary/index.md#role), a role's kind is *defined* by
-whether it holds `delegate`: a [Dispatcher](../glossary/index.md#dispatcher) routes work to
-others; a [Utility](../glossary/index.md#utility-dispatched-agent) receives it. Without
+No `delegate`. But per the [glossary](../../CONTEXT.md#role), a role's kind is *defined* by
+whether it holds `delegate`: a [Dispatcher](../../CONTEXT.md#dispatcher) routes work to
+others; a [Utility](../../CONTEXT.md#utility-dispatched-agent) receives it. Without
 `delegate`, **Shaping cannot dispatch to any utility** — yet three parts of its own definition
 already require exactly that:
 
@@ -47,7 +47,7 @@ seam ([ADR-009](adr-009-frontend-domain-utility.md)); Shaping is where it belong
 ## Decision
 
 **Grant Shaping a read-only `delegate`, making it a read-only research orchestrator** — a
-[Dispatcher](../glossary/index.md#dispatcher) that still withholds `edit`:
+[Dispatcher](../../CONTEXT.md#dispatcher) that still withholds `edit`:
 
 ```
 read, search, shell, delegate, persist, interview, tasks (+ docs-lookup)   — no edit

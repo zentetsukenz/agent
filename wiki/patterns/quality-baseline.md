@@ -8,8 +8,8 @@ timestamp: 2026-08-03T00:00:00Z
 
 # Quality Baseline
 
-> **Applied vocabulary:** see the glossary for [Quality baseline](../glossary/index.md#quality-baseline),
-> [Quality aspect](../glossary/index.md#quality-aspect), and [Capability](../glossary/index.md#capability).
+> **Applied vocabulary:** see the glossary for [Quality baseline](../../CONTEXT.md#quality-baseline),
+> [Quality aspect](../../CONTEXT.md#quality-aspect), and [Capability](../../CONTEXT.md#capability).
 > This page is the conceptual reference; [ADR-017](../adr/adr-017-quality-baseline.md) records the
 > decision to adopt it. It gives a *standing floor* to the [quality gate](../../workflows/sdlc/implementation.md#quality-gates)
 > that [ADR-016](../adr/adr-016-embedded-review-gate.md) introduced.

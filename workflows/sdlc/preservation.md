@@ -74,15 +74,15 @@ Preservation feeds learnings back into the framework — but *where* depends on 
 slop the lesson is, per the routing rule in [Ratchet Routing](../../wiki/patterns/ratchet.md)
 ([ADR-026](../../wiki/adr/adr-026-gate-mechanism-layer-model.md)):
 
-- **[Judgment slop](../../wiki/glossary/index.md#judgment-slop)** (a tradeoff evaluated
+- **[Judgment slop](../../CONTEXT.md#judgment-slop)** (a tradeoff evaluated
   badly) → propose a new skill via
   [skill-creator](../../SKILLS/meta/skill-creator/SKILL.md), or record a hard-to-reverse
   decision as an ADR. This is the **existing** path and stays unchanged — judgment is
   irreducible, so prose remains its correct destination.
-- **[Form slop](../../wiki/glossary/index.md#form-slop)** (paperwork left undone) → a new
+- **[Form slop](../../CONTEXT.md#form-slop)** (paperwork left undone) → a new
   [`GATE.md`](../../GATE.md) criterion, typed `artifact` and naming its evidence-producer per
   that file's five-column schema — not an ADR or a skill.
-- **[Recall slop](../../wiki/glossary/index.md#recall-slop)** (a known environment fact
+- **[Recall slop](../../CONTEXT.md#recall-slop)** (a known environment fact
   forgotten) → a Mechanism installed via
   [Port 5](../../contract/PORTS.md#port-5--mechanisminstall), following the pattern
   `SKILLS/planning/task-sizing/scripts/size-score.sh` set. Ratchet on the **first**

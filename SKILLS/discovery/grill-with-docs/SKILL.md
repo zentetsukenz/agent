@@ -5,8 +5,7 @@ description: Grilling session that challenges your plan against the existing dom
 
 > **Path flexibility:** This skill reads and writes the project glossary and ADRs. Resolve
 > their locations per the [Domain Docs](../../../wiki/environments/domain-docs.md) environment
-> doc (`loom.toml#paths.*` → `wiki/glossary/index.md` + `wiki/adr/` → `CONTEXT.md` +
-> `docs/adr/`).
+> doc (`loom.toml#paths.*` → `CONTEXT.md` + `wiki/adr/` → `docs/adr/`).
 
 # Grill with Docs
 

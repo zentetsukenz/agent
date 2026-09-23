@@ -21,7 +21,7 @@ tags: [adapter, port, mechanism, distributable, install, layer-model, prose-firs
 
 The [Core/Gate/Mechanism layer model](adr-026-gate-mechanism-layer-model.md) introduced a
 **Mechanism layer**: scripts that kill *recall slop* by re-executing reality instead of
-describing it. The [graduation ladder](../glossary/index.md) says a mechanism starts
+describing it. The [graduation ladder](../../CONTEXT.md) says a mechanism starts
 skill-local (`SKILLS/<bucket>/<slug>/scripts/`, already legal per [SPEC.md](../../SPEC.md)) and,
 when a **second** caller needs it, graduates to a **shared distributable** — one installable,
 exposing namespaced verbs (`loom board add`, `loom size score`, `loom check gates`), following
@@ -206,5 +206,5 @@ adapter to a specific install command or path.
   references rather than restates.
 - [GATE.md](../../GATE.md) — the typed exit criteria whose `executable` rows a placed Mechanism is
   what makes runnable.
-- [glossary](../glossary/index.md) — the graduation ladder and the slop taxonomy grounding the
+- [glossary](../../CONTEXT.md) — the graduation ladder and the slop taxonomy grounding the
   Mechanism layer.

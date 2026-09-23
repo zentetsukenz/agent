@@ -123,7 +123,7 @@ own schema) is made by a following task; this ADR only authorises it.
 ## Consequences
 
 Grounded in the three kinds of slop this milestone named
-([glossary additions](../glossary/index.md)):
+([glossary additions](../../CONTEXT.md)):
 
 - **Form slop** (paperwork undone — artifact unwritten, field missing, gate unrun) is now
   caught by the Gate: an `artifact` or `executable` criterion fails instead of being
@@ -184,4 +184,4 @@ Other accepted consequences:
 - [contract/PORTS.md](../../contract/PORTS.md) — the "no schema" stance that gains one narrow Gate-layer exception.
 - [scripts/validate.sh](../../scripts/validate.sh) — the one mechanical gate, and the shape every executable criterion follows.
 - [workflows/sdlc/index.md](../../workflows/sdlc/index.md) — the six-phase lifecycle whose exit gates become typed.
-- [glossary](../glossary/index.md) — the slop taxonomy (form / recall / judgment) grounding the Consequences.
+- [glossary](../../CONTEXT.md) — the slop taxonomy (form / recall / judgment) grounding the Consequences.

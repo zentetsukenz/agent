@@ -20,7 +20,7 @@ into a concrete harness; they differ in *shape*, not in kind. See
 
 ## Two altitudes
 
-Macro-PM sits at the **macro [altitude](../../wiki/glossary/index.md#altitude)**; SDLC sits at the
+Macro-PM sits at the **macro [altitude](../../CONTEXT.md#altitude)**; SDLC sits at the
 **micro** altitude. Macro-PM does not re-implement planning or building — it **charts** effort too
 big for one SDLC run and **dispatches** buildable pieces down into SDLC runs, then integrates what
 they return.
@@ -37,7 +37,7 @@ they return.
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
-The macro→micro crossing is the [altitude seam](../../wiki/glossary/index.md#altitude-seam); the
+The macro→micro crossing is the [altitude seam](../../CONTEXT.md#altitude-seam); the
 resident agent is its **translator**. Rendering the resident agent onto a concrete
 [resident harness](../../wiki/patterns/harness-archetypes.md) (e.g. Hermes) is an **adapter**
 concern — this seed is harness-agnostic prose ([ADR-018](../../wiki/adr/adr-018-macro-project-management.md) #8).
@@ -208,7 +208,7 @@ The resident agent is the **translator** across the seam, reusing the
 **Cross-harness constraint.** When the resident (macro) harness dispatches into a *different*
 (micro) harness — the common case, since resident harnesses dispatch into per-invocation ones
 ([harness-archetypes](../../wiki/patterns/harness-archetypes.md)) — the micro ledger **must** be a
-**shared, on-disk** [substrate](../../wiki/glossary/index.md#substrate) both harnesses can read, and
+**shared, on-disk** [substrate](../../CONTEXT.md#substrate) both harnesses can read, and
 it is **gitignored** (ephemeral coordination is never version-controlled — durable knowledge goes to
 the wiki). Harness memory cannot carry the baton across a harness boundary. See the
 [seam-artifact protocol](../../wiki/patterns/seam-artifact-protocol.md#substrate-is-also-altitude-scoped).
@@ -266,4 +266,4 @@ Woven into every tick, not deferred:
 - [ADR-018](../../wiki/adr/adr-018-macro-project-management.md) — the decision behind macro-PM.
 - [harness-archetypes](../../wiki/patterns/harness-archetypes.md) — why a resident harness renders this seed and a per-invocation harness renders SDLC.
 - [seam-artifact-protocol](../../wiki/patterns/seam-artifact-protocol.md) — the ledger contract the altitude seam reuses; the substrate + one-source-of-truth rules.
-- [glossary: altitude, altitude seam, resident agent, substrate](../../wiki/glossary/index.md#altitude).
+- [glossary: altitude, altitude seam, resident agent, substrate](../../CONTEXT.md#altitude).

@@ -1,0 +1,1 @@
+{"nodes": [{"id": "commands_release_notes", "label": "Generate user-facing release notes from git history", "file_type": "document", "source_file": "commands/release-notes.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null}], "edges": [], "hyperedges": []}

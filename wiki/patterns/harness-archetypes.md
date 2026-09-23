@@ -8,8 +8,8 @@ timestamp: 2026-08-13T00:00:00Z
 
 # Harness Archetypes
 
-loom ships one [adapter](../glossary/index.md#adapter) per supported
-[harness](../glossary/index.md#harness) ([ADR-001](../adr/adr-001-adapter-pattern.md)). Those
+loom ships one [adapter](../../CONTEXT.md#adapter) per supported
+[harness](../../CONTEXT.md#harness) ([ADR-001](../adr/adr-001-adapter-pattern.md)). Those
 adapters look different on the surface — a GUI editor, a terminal CLI, a resident gateway agent —
 but the differences that actually change an adapter's **port answers** reduce to **two axes**. This
 pattern names them, so an adapter can say *"I am archetype X, therefore my invocation surface and
@@ -37,7 +37,7 @@ explains why one archetype inverts it.
 
 | Harness | Axis 1 — holds loop | Axis 2 — headless-dispatchable | Consequences (what follows) |
 |---|---|---|---|
-| **Mirai** | per-invocation (human) | **no** (GUI-only by design) | Stage agents are [`front-door`](../glossary/index.md#invocation-surface); utilities `dispatched`. **Not** a micro dispatch target — a human macro front-door at most. |
+| **Mirai** | per-invocation (human) | **no** (GUI-only by design) | Stage agents are [`front-door`](../../CONTEXT.md#invocation-surface); utilities `dispatched`. **Not** a micro dispatch target — a human macro front-door at most. |
 | **OpenCode** | per-invocation (human) | **yes** (`opencode --agent=…`) | Stage agents `front-door`; utilities `dispatched`. **A valid micro dispatch target** — a resident harness can drive it. |
 | **Hermes** | **resident** (agent) | it *dispatches* (n/a as a target) | Invocation **inverts**: the resident PM agent is the *only* `front-door`; **every SDLC stage agent becomes `dispatched`** — or, under a thin-macro adapter, is not rendered at all and is dispatched to a *per-invocation* harness. |
 
@@ -47,9 +47,9 @@ tool" and "a tool a resident agent can drive."
 
 ## Why the axes matter
 
-- **Axis 2 decides dispatch targets.** A [resident](../glossary/index.md#resident-agent) harness at
-  the macro [altitude](../glossary/index.md#altitude) dispatches SDLC runs *into* a
-  headless-dispatchable harness at the micro altitude (the [altitude seam](../glossary/index.md#altitude-seam)
+- **Axis 2 decides dispatch targets.** A [resident](../../CONTEXT.md#resident-agent) harness at
+  the macro [altitude](../../CONTEXT.md#altitude) dispatches SDLC runs *into* a
+  headless-dispatchable harness at the micro altitude (the [altitude seam](../../CONTEXT.md#altitude-seam)
   realized as a **cross-harness** boundary). Only a `dispatch-target: yes` harness can receive that
   dispatch. Mirai cannot; OpenCode can.
 - **Axis 1 decides invocation surface.** Per-invocation harnesses keep ADR-012's derivation as-is
@@ -59,8 +59,8 @@ tool" and "a tool a resident agent can drive."
   and only worth generalizing into the core if a *second* resident harness needs the same shape
   ("one adapter = a hypothetical seam, two = a real one", see [deep-modules](deep-modules.md)).
 - **Cross-harness dispatch constrains the substrate.** When the altitude seam crosses a harness
-  boundary, the micro [ledger](../glossary/index.md#ledger) must be a **shared, on-disk**
-  [substrate](../glossary/index.md#substrate) both harnesses can read — harness memory is private to
+  boundary, the micro [ledger](../../CONTEXT.md#ledger) must be a **shared, on-disk**
+  [substrate](../../CONTEXT.md#substrate) both harnesses can read — harness memory is private to
   one harness and cannot carry the baton across the boundary. See the
   [seam-artifact protocol](seam-artifact-protocol.md#substrate-is-also-altitude-scoped).
 

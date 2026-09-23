@@ -8,8 +8,8 @@
 > not a single "TheEngineer" orchestrator). The "60% barrier" framing and the
 > WRITE/SELECT/COMPRESS/ISOLATE strategies below are still cited by
 > [wiki/adr/adr-018-macro-project-management.md](../wiki/adr/adr-018-macro-project-management.md)
-> and duplicated more concisely in [docs/context-engineering.md](context-engineering.md) and
-> [wiki/principles/context-first.md](../wiki/principles/context-first.md) — prefer those.
+> and duplicated more concisely in
+> [wiki/principles/context-first.md](../wiki/principles/context-first.md) — prefer that.
 
 ---
 

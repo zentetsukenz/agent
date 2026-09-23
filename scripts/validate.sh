@@ -510,6 +510,18 @@ collect_markdown_files() {
   local -a queue=()
 
   [[ -d "$root" ]] || return 0
+
+  # The repo root ("." in LINK_ROOTS) is walked non-recursively: it holds root-level docs
+  # (VISION.md, SPEC.md, ...) alongside every subtree already covered by its own LINK_ROOTS
+  # entry, so a recursive walk from "." would just re-process SKILLS/wiki/workflows/... a
+  # second time (and sweep in subtrees, like scripts/, nobody asked to cover).
+  if [[ "$root" == "." ]]; then
+    for child in ./*.md; do
+      [[ -f "$child" ]] && printf '%s\n' "${child#./}"
+    done
+    return 0
+  fi
+
   queue=("$root")
 
   while ((${#queue[@]} > 0)); do
@@ -543,6 +555,11 @@ resolve_markdown_target() {
   local clean_target="$target"
   local candidate
   local skill_bucket_dir
+
+  # A root-level source file (no "/" in its path, e.g. VISION.md) leaves base_dir unchanged
+  # by the %/* strip above, not empty — normalize it to "." so relative targets resolve
+  # against the repo root instead of a bogus directory literally named after the source file.
+  [[ "$base_dir" == "$source_file" ]] && base_dir="."
 
   clean_target="${clean_target%%#*}"
   clean_target="${clean_target%%\?*}"
@@ -694,6 +711,9 @@ check_markdown_links() {
   local target
   local resolved
 
+  # See resolve_markdown_target's matching comment: a root-level file has no "/" to strip.
+  [[ "$base_dir" == "$file" ]] && base_dir="."
+
   printf 'checking links: %s\n' "$file"
 
   if [[ "${file%/*}" == "SKILLS" ]]; then
@@ -740,8 +760,10 @@ render_adapter_count() {
 # Orphan detection: a markdown file is discoverable if ANY tracked markdown file links to it
 # (whole-graph reachability, not just index.md — a SKILL sub-doc reached from its sibling
 # SKILL.md, or an adapter reference reached from setup.md, is NOT orphaned). Exemptions:
-#   - index.md  — the navigation spine itself; it is the referrer, need not be a referent.
-#   - log.md    — append-only per-subtree changelogs, entered by convention not by link.
+#   - index.md    — the navigation spine itself; it is the referrer, need not be a referent.
+#   - log.md      — append-only per-subtree changelogs, entered by convention not by link.
+#   - root-level  — VISION.md, SPEC.md, GATE.md, etc. are entry points a reader starts from
+#                   (like index.md, one level up), not pages routed to; exempt by location.
 # A genuine orphan is a content file no page routes to — unreachable, so effectively dead.
 check_orphans() {
   local roots="$1"
@@ -755,6 +777,8 @@ check_orphans() {
   for link_root in $roots; do
     while IFS= read -r source_file; do
       base_dir="${source_file%/*}"
+      # See resolve_markdown_target's matching comment: a root-level source has no "/" to strip.
+      [[ "$base_dir" == "$source_file" ]] && base_dir="."
       while IFS=$'\t' read -r _line target; do
         [[ -n "$target" ]] || continue
         [[ "$target" == \#* ]] && continue
@@ -792,6 +816,7 @@ check_orphans() {
     while IFS= read -r file; do
       base="${file##*/}"
       [[ "$base" == "index.md" || "$base" == "log.md" ]] && continue
+      [[ "$file" != */* ]] && continue
       if ! grep -qxF "$file" "$ref_file.sorted"; then
         report_error "$file" "orphan: no tracked markdown file links to it (unreachable)"
         ((orphans_flagged += 1))
@@ -875,8 +900,10 @@ validate_hermes_config
 
 # `docs` is included so the link/anchor/orphan checks cover the framework meta-docs too —
 # A2 found the link loop omitted it, which is how the dead links in docs/context-engineering.md
-# stayed invisible.
-LINK_ROOTS="SKILLS workflows wiki agents commands adapters contract docs"
+# stayed invisible. `.` (repo root) is included for the same reason: VISION.md, SPEC.md,
+# SETUP.md, GATE.md, REGISTRY.md, and friends sit outside every named subtree, so without it
+# they were never link/anchor/orphan-checked — how a broken link in GATE.md went unnoticed.
+LINK_ROOTS="SKILLS workflows wiki agents commands adapters contract docs ."
 
 for link_root in $LINK_ROOTS; do
   while IFS= read -r markdown_file; do

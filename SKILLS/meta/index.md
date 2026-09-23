@@ -9,3 +9,4 @@ description: Skills for creating, communicating, and compressing agent context
 | [caveman](caveman/SKILL.md) | Use terse high-signal communication |
 | [context-compression](context-compression/SKILL.md) | Compress state blobs to a token budget while preserving load-bearing decisions |
 | [edit-article](edit-article/SKILL.md) | Improve article structure, clarity, and prose for documentation work |
+| [graphify](graphify/SKILL.md) | Turn any input into a persistent knowledge graph with god nodes, community detection, and query/path/explain tools |

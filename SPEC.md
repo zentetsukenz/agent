@@ -77,7 +77,7 @@ All inter-framework links use **relative paths** from the `agent/` root:
 
 ```markdown
 [deep-modules](wiki/patterns/deep-modules.md)
-[context-compression](skills/meta/context-compression/SKILL.md)
+[context-compression](SKILLS/meta/context-compression/SKILL.md)
 ```
 
 Rules:
@@ -144,8 +144,8 @@ kept only as historical record of the paths considered.
 Path-resolving skills include a preamble that resolves paths at runtime in priority order:
 
 1. `loom.toml` `paths.*` section (if an adapter ever ships one — none does today)
-2. Framework-relative default (e.g. `wiki/adr/`, `wiki/glossary/index.md`)
-3. Legacy fallback (e.g. `docs/adr/`, `CONTEXT.md`)
+2. Framework default (e.g. `wiki/adr/` for ADRs; root `CONTEXT.md` for the glossary)
+3. Legacy fallback (e.g. `docs/adr/` for ADRs)
 
 This preamble is centralized in `wiki/environments/domain-docs.md` and referenced by
 `grill-with-docs`, `domain-model`, and `improve-codebase-architecture`.
@@ -156,7 +156,7 @@ This preamble is centralized in `wiki/environments/domain-docs.md` and reference
 
 loom installs into a project through a **harness-agnostic entrypoint** (`SETUP.md`) that
 runs a universal **setup contract** via the target harness's **adapter** (see
-`wiki/adr/adr-005-harness-agnostic-setup.md`; terms defined in `wiki/glossary/index.md`).
+`wiki/adr/adr-005-harness-agnostic-setup.md`; terms defined in root `CONTEXT.md`).
 Every adapter MUST conform to the following:
 
 - **Implements the five-step contract**: explore → interview → present & confirm →
