@@ -58,6 +58,24 @@ The read-only guarantee is the **withheld `edit`**, not the withheld `delegate`.
 `DISPATCHER (holds delegate, usually withholds edit)` — and ADR-021 granted exactly this to Shaping.
 This is the second member of that pattern, not a new one.
 
+> **The grant is necessary and not sufficient — measured, not predicted.** On Claude Code the
+> harness withholds nested dispatch: a subagent cannot spawn a subagent, whatever its `tools:` line
+> says. Granting `Task` in `corpus-cartographer`'s frontmatter is therefore **inert** here, verified
+> by a probe returning *"No such tool available: Task. Task is disabled for this session, in
+> subagents as well as here"* with nothing in `.claude/settings.json` disabling it.
+>
+> **Consequence: on a harness without nested dispatch, building the graph at depth is a
+> front-door job, not a subagent job.** `corpus-cartographer` keeps the grant — the interface
+> should still match the implementation, and the grant is live on harnesses that allow nesting —
+> but it operates queries, reads reports, and runs the repair and the gate. The extraction dispatch
+> belongs to whatever session holds the real dispatch capability.
+>
+> This is the same leaky seam one level further out: the *harness's* capability set is narrower
+> than the skill's implementation demands, and no port obligation currently names nested dispatch
+> as a harness property. [harness-archetypes](../patterns/harness-archetypes.md) has two axes —
+> who holds the loop, and headless-dispatchability — and neither captures *can a dispatched agent
+> itself dispatch*. That is a third axis this repository now has evidence for.
+
 **2. Install `scripts/graph-check.sh` as a Mechanism**, joining `scripts/validate.sh` (prose) and
 `scripts/quality.sh` (code). Per [ADR-026](adr-026-gate-mechanism-layer-model.md)'s layer model, each
 layer owns one kind of slop; this gate owns **context slop** — a graph that is internally consistent

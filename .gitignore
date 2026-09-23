@@ -23,3 +23,6 @@ graphify-out/.graphify_root
 # part worth committing; these two are mtime/stat bookkeeping.
 graphify-out/cache/last_query_stamp
 graphify-out/cache/stat-index.json
+
+# Transient extraction chunks — merged into graph.json by scripts/graph/merge-extraction.js
+graphify-out/.graphify_chunk_*.json
