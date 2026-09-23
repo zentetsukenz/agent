@@ -31,7 +31,7 @@ Two conditions on trusting it:
   commits behind and will not say so:
 
   ```sh
-  git diff --name-only "$(jq -r .built_at_commit graphify-out/graph.json)"..HEAD -- '*.md'
+  git diff --name-only "$(jq -r .built_at_commit graphify-out/graph.json)" HEAD -- '*.md' ':!graphify-out'
   ```
 
   Anything listed there is a change the graph has not seen. Refresh with `graphify update .`,
