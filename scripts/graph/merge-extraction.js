@@ -13,6 +13,7 @@
 
 const fs = require("node:fs");
 const path = require("node:path");
+const { gitLines } = require("./lib.js");
 
 function relativize(sourceFile, rootDir) {
   if (!sourceFile) return "";
@@ -133,9 +134,16 @@ function main() {
 
   const stats = mergeExtraction(graph, chunks, rootDir);
 
+  // Stamp the commit whose corpus this extraction actually read. The freshness check compares
+  // this against HEAD, so it has to be set by the step that performs real extraction — never by
+  // the repair pass, which can run over an unchanged corpus and would then claim a freshness it
+  // did not earn.
+  const head = (gitLines(["rev-parse", "HEAD"], rootDir)[0] || "").trim();
+  const stamped = head || raw.built_at_commit;
+
   fs.writeFileSync(
     graphPath,
-    JSON.stringify({ ...raw, nodes: graph.nodes, links: graph.links }, null, 2) + "\n",
+    JSON.stringify({ ...raw, built_at_commit: stamped, nodes: graph.nodes, links: graph.links }, null, 2) + "\n",
   );
 
   process.stdout.write(
@@ -143,7 +151,8 @@ function main() {
       `  ${before.nodes} -> ${graph.nodes.length} nodes, ${before.links} -> ${graph.links.length} edges\n` +
       `  nodes replaced: ${stats.replacedNodes}, added: ${stats.addedNodes}, duplicate ids skipped: ${stats.duplicateNodes}\n` +
       `  edges replaced: ${stats.replacedLinks}, added: ${stats.addedLinks}, duplicates skipped: ${stats.duplicateLinks}\n` +
-      `  edges dropped as dangling after replace: ${stats.droppedDangling}\n`,
+      `  edges dropped as dangling after replace: ${stats.droppedDangling}\n` +
+      `  stamped built_at_commit: ${stamped.slice(0, 7)}\n`,
   );
 }
 

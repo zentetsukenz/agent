@@ -63,4 +63,23 @@ if [[ -n "$new_errors" ]]; then
   exit 2
 fi
 
+# The context gate. Blocks on a CORRUPT graph — forked identities, dangling edges, a document the
+# graph cannot answer about, a link the corpus states that the graph lacks. Those make the graph
+# answer confidently and wrongly, which is worse than having none.
+#
+# Freshness is advisory here on purpose: editing any document makes the graph stale instantly, and
+# a rebuild is expensive, so blocking on staleness at edit time would make the repo unworkable.
+# A direct `bash scripts/graph-check.sh` and CI run strict, where staleness does block.
+if [[ -f "$REPO_ROOT/graphify-out/graph.json" ]]; then
+  if ! graph_output="$(node scripts/graph/check.js --advisory-freshness 2>&1)"; then
+    {
+      printf 'loom gate FAILED — the committed knowledge graph disagrees with the corpus:\n\n'
+      printf '%s\n' "$graph_output" | grep -E '^(FAIL|      )' || printf '%s\n' "$graph_output"
+      printf '\nRepair: node scripts/graph/canonicalize.js — then re-run bash scripts/graph-check.sh\n'
+      printf 'A graph that is internally consistent can still be false; these checks compare it to the corpus.\n'
+    } >&2
+    exit 2
+  fi
+fi
+
 exit 0

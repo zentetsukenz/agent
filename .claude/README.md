@@ -46,6 +46,18 @@ Verified failing (per `REGISTRY.md` discipline): with the baseline in place and 
 link added to `docs/wisdom.md`, the gate exited **2** and reported only the new violation; with the
 link reverted, it exited **0** while ADR-029's baselined break was still present.
 
+The gate also runs `scripts/graph/check.js` over the committed knowledge graph
+([ADR-031](../wiki/adr/adr-031-graph-is-gated-context.md)). Verified failing the same way: on a
+clean graph it exited **0**; with a phantom node injected by hand (`gate_doc`, claiming `GATE.md`
+while sourced from `contract/PORTS.md`) it exited **2** and named the fork; after
+`node scripts/graph/canonicalize.js` it exited **0** again with the graph identical to before the
+injection — 2065 nodes, 4491 edges either side.
+
+Freshness is **advisory** in the hook and blocking elsewhere. Editing any document makes the graph
+stale immediately and a rebuild is expensive, so blocking on staleness at edit time would make the
+repo unworkable; corruption is never acceptable, staleness is an expected state between rebuilds.
+A direct `bash scripts/graph-check.sh` runs strict.
+
 ## Why skills are symlinks
 
 An adapter *copies* `SKILLS/` into the harness directory. Here the harness directory and the source

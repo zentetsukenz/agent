@@ -180,6 +180,12 @@ function analyze(rootDir, graphPath) {
   findings.push({
     name: "markdown changed since the graph was built",
     count: staleFiles.length,
+    // Staleness is a different kind of problem from corruption. Editing any document makes the
+    // graph stale immediately, and a rebuild is expensive, so an edit-time hook that blocked on
+    // this would make the repository unworkable. Corruption is never acceptable; staleness is an
+    // expected state between rebuilds. The hook runs with --advisory-freshness; a direct run and
+    // CI do not, and there it blocks.
+    advisory: true,
     examples: staleFiles.slice(0, MAX_EXAMPLES),
     detail: graph.builtAtCommit
       ? `graph built at ${graph.builtAtCommit.slice(0, 7)}`
@@ -198,6 +204,8 @@ function main() {
     process.exit(2);
   }
 
+  // Staleness warns instead of blocking when the caller asks for it — see the freshness finding.
+  const advisoryFreshness = process.argv.includes("--advisory-freshness");
   const { findings, graph, tracked } = analyze(rootDir, graphPath);
 
   process.stdout.write(
@@ -207,10 +215,11 @@ function main() {
 
   let failed = 0;
   for (const finding of findings) {
-    const status = finding.count === 0 ? "ok  " : "FAIL";
-    if (finding.count !== 0) failed += 1;
+    const downgraded = advisoryFreshness && finding.advisory;
+    const status = finding.count === 0 ? "ok  " : downgraded ? "warn" : "FAIL";
+    if (finding.count !== 0 && !downgraded) failed += 1;
     process.stdout.write(`${status}  ${finding.name}: ${finding.count}\n`);
-    if (finding.count !== 0) {
+    if (finding.count !== 0 && !downgraded) {
       process.stdout.write(`      ${finding.detail}\n`);
       for (const example of finding.examples) process.stdout.write(`      - ${example}\n`);
       if (finding.count > finding.examples.length) {
