@@ -93,13 +93,24 @@ script carries the floors and the reasons its command shapes cannot be simplifie
 The floors are a [ratchet](CONTEXT.md#ratchet): they may be raised, never lowered. The rest of the
 repository — skills, wiki, workflows — is content-only and outside that baseline's scope.
 
-## The gate
+## The gates
 
-`scripts/validate.sh` is the mechanical enforcement of this constitution: frontmatter, link
-resolution, anchor existence, orphan reachability, and registry consistency.
+Three scripts mechanically enforce this constitution, one per kind of artifact loom ships:
 
-It blocks on **new** violations only. The rules for what may be recorded as accepted debt live in
-the header of `.claude/hooks/validate-baseline.txt` — the file they govern.
+| Gate | Guards | Fails on |
+|---|---|---|
+| `scripts/validate.sh` | **prose** | frontmatter, link resolution, anchor existence, orphan reachability, registry consistency |
+| `scripts/quality.sh` | **code** | the lint and coverage floors for `scripts/` |
+| `scripts/graph-check.sh` | **context** | a committed knowledge graph that disagrees with the corpus |
+
+The third is the newest and the least obvious. The graph is what an agent believes before it reads
+anything ([AGENTS.md](AGENTS.md)), so a graph that is internally consistent and externally false is
+worse than no graph — it answers confidently and wrongly. Every check in it compares the graph to
+the corpus rather than to itself, because the tool's own diagnostics cannot see the difference
+([ADR-031](wiki/adr/adr-031-graph-is-gated-context.md)).
+
+`validate.sh` blocks on **new** violations only. The rules for what may be recorded as accepted debt
+live in the header of `.claude/hooks/validate-baseline.txt` — the file they govern.
 
 ## Amendment
 

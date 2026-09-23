@@ -46,6 +46,9 @@ Where the graph and the documents disagree, the documents win.
 ## Before you commit
 
 ```sh
-bash scripts/validate.sh   # frontmatter, links, anchors, orphans — see CONSTITUTION.md#the-gate
-bash scripts/quality.sh    # the quality baseline: lint and coverage floors for scripts/loom/
+bash scripts/validate.sh     # prose: frontmatter, links, anchors, orphans
+bash scripts/quality.sh      # code: the lint and coverage floors
+bash scripts/graph-check.sh  # context: the graph, checked against the corpus
 ```
+
+See [CONSTITUTION.md](CONSTITUTION.md#the-gates) for what each one guards and why the third exists.
