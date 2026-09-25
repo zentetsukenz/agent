@@ -13,6 +13,9 @@ loom's vocabulary is **exact, not decorative**. `harness`, `workflow`, `altitude
 and the rest each mean one specific thing, and using them loosely produces work that looks right
 and is wrong. CONTEXT.md is the only place they are defined.
 
+Research under [docs/research/](docs/research/index.md) is dated, and it goes stale. Read its
+[freshness rule](docs/research/index.md#freshness) before you rely on any of it.
+
 ## Bootstrap — the fast path
 
 `graphify-out/` holds a committed knowledge graph of this corpus. Query it instead of reading

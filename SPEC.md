@@ -71,6 +71,31 @@ chronological order.
 
 ---
 
+## Research — dated pages
+
+Research goes stale. Every page under `docs/research/` other than its root `index.md` MUST carry
+the trust and lifecycle dates of
+[OKF v0.2](https://github.com/GoogleCloudPlatform/open-knowledge-format/blob/main/SPEC.md):
+
+```yaml
+---
+type: Research
+generated: { by: <actor>, at: <datetime> }   # when the content last meaningfully changed
+verified:
+  - { by: <actor>, at: <datetime> }          # one entry per fact-check; append, never replace
+stale_after: <datetime>                      # the page is stale once now >= stale_after
+sources:                                     # recommended
+  - { resource: <url>, title: <title>, last_modified: <date the source itself last changed> }
+---
+```
+
+Every `<datetime>` is UTC in exactly the form `YYYY-MM-DDTHH:MM:SSZ`. `scripts/validate.sh` blocks
+on a missing or malformed date. It lists pages past `stale_after` as **advisory** and never blocks
+on them, because the calendar alone must not break the gate. What a reader or writer does about a
+stale page is in [docs/research/index.md](docs/research/index.md#freshness).
+
+---
+
 ## Cross-linking convention
 
 All inter-framework links use **relative paths** from the `agent/` root:

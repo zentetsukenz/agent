@@ -13,9 +13,15 @@ Do not use this skill for comparative research, option scoring, or shortlist bui
 
 1. **Dispatch.** Spin up an `Explore`-style subagent (via `runSubagent`) to do the reading, so the calling session isn't blocked on it. Hand it the precise question — not a vague topic.
 2. **Primary sources only.** The subagent's job is to investigate against **primary sources** — official docs, source code, specs, first-party APIs — not a secondary write-up of them. Follow every claim back to the source that owns it.
-3. **Return distilled evidence, not raw context.** The subagent reads widely but reports back only the cited answer — the reading itself never enters the calling session's context. This is the point of dispatching: the expensive orchestrator stays lean while a cheap explorer does the reading (the [Arbor](https://arxiv.org/abs/2606.11926) Coordinator/Executor discipline — an Executor returns evidence, not its scratch context).
-4. **Write the findings.** One Markdown file, every claim cited with a source (path, URL, or doc section).
-5. **Save it where the repo already keeps such notes.** Match the existing convention if one exists (e.g. a `.scratch/` or `docs/research/` directory already in use). If there is none, default to `.scratch/research/<topic-slug>-<YYYY-MM-DD>.md` and say where you put it.
+3. **Date everything — research goes stale.** Record each source's own publication or
+   last-updated date and the day it was read, and give every fast-moving number (a version, a price,
+   a score, a star count) an *as of*. Before relying on research the repo already holds, check how
+   old it is: stale research is a lead to re-verify, not an answer. Where the repo dates research in
+   frontmatter (OKF `generated` / `verified` / `stale_after`), fill those fields and follow the
+   repo's own freshness rule.
+4. **Return distilled evidence, not raw context.** The subagent reads widely but reports back only the cited answer — the reading itself never enters the calling session's context. This is the point of dispatching: the expensive orchestrator stays lean while a cheap explorer does the reading (the [Arbor](https://arxiv.org/abs/2606.11926) Coordinator/Executor discipline — an Executor returns evidence, not its scratch context).
+5. **Write the findings.** One Markdown file, every claim cited with a source (path, URL, or doc section).
+6. **Save it where the repo already keeps such notes.** Match the existing convention if one exists (e.g. a `.scratch/` or `docs/research/` directory already in use). If there is none, default to `.scratch/research/<topic-slug>-<YYYY-MM-DD>.md` and say where you put it.
 
 ## When invoked as a wayfinder research ticket
 
@@ -25,7 +31,7 @@ A [wayfinder](../../planning/wayfinder/SKILL.md) `research` ticket resolves thro
 
 A single findings file containing:
 
-- The question being answered.
+- The question being answered, and the date it was researched.
 - The answer, in prose, with inline citations back to primary sources.
 - A short "sources consulted" list at the bottom (path/URL + what it confirmed).
 

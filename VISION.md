@@ -85,6 +85,6 @@ picture, that document changes or goes; the vision does not bend to fit it.
 | [SPEC.md](SPEC.md) | Conformance rules for individual files |
 | [SETUP.md](SETUP.md) | Installing Jacquard into a project |
 | [AGENTS.md](AGENTS.md) | How an agent bootstraps context before doing work here |
-| [Research, 2026-09](docs/research/2026-09-vision.md) | The literature behind this restatement — background, not authority |
+| [Research](docs/research/index.md) | The dated literature behind this vision, in three pillars — Model, Harness, Agent; background, not authority |
 
 Directory layout lives in [CONSTITUTION.md](CONSTITUTION.md#the-entities), so it is stated once.

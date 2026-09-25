@@ -17,6 +17,8 @@ links_checked=0
 anchors_checked=0
 orphans_flagged=0
 registry_checked=0
+research_dated=0
+research_stale=""
 mirai_present=0
 opencode_present=0
 hermes_present=0
@@ -883,6 +885,95 @@ check_gate_registry_join() {
   done <<< "$gate_executable_ids"
 }
 
+# Research goes stale, so every research page carries OKF v0.2 dates (SPEC.md, "Research — dated
+# pages"). A missing or malformed date is structural and blocks. A page past `stale_after` is only
+# ADVISORY: the calendar alone must never turn the gate red and block an unrelated commit — what a
+# reader does about a stale page is docs/research/index.md#freshness. Datetimes are fixed-width UTC
+# (YYYY-MM-DDTHH:MM:SSZ), so "now >= stale_after" is a plain string comparison — no `date -d`,
+# which GNU and BSD date spell differently.
+research_datetime_ok() {
+  [[ "$1" =~ ^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$ ]]
+}
+
+check_research_dates() {
+  local now file key value status
+  local generated_at verified_at stale_after verified_count
+
+  now="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+
+  while IFS= read -r file; do
+    # The root index routes and holds the freshness rule; it makes no claims to go stale.
+    [[ "$file" == "docs/research/index.md" || "${file##*/}" == "log.md" ]] && continue
+
+    set +e
+    frontmatter_value "$file" "type"
+    status=$?
+    set -e
+    if ((status != 0)); then
+      report_error "$file" "$(frontmatter_error "$status" "type")"
+      continue
+    fi
+
+    generated_at=""
+    verified_at=""
+    verified_count=0
+    stale_after=""
+
+    # One line per date found: "<top-level key> <value>". `at:` is read from inside the
+    # generated/verified mappings; stale_after is a top-level scalar.
+    while read -r key value; do
+      case "$key" in
+        generated) generated_at="$value" ;;
+        verified)
+          ((verified_count += 1))
+          if ! research_datetime_ok "$value"; then
+            verified_at="malformed:$value"
+          elif [[ "$verified_at" != malformed:* ]]; then
+            verified_at="$value"
+          fi
+          ;;
+        stale_after) stale_after="$value" ;;
+      esac
+    done < <(awk '
+      NR == 1 { if ($0 != "---") exit; fm = 1; next }
+      fm && $0 == "---" { exit }
+      fm {
+        if ($0 ~ /^[A-Za-z_]+:/) { top = $0; sub(/:.*/, "", top) }
+        if (top == "stale_after") {
+          v = $0; sub(/^stale_after:[[:space:]]*/, "", v); gsub(/"/, "", v); print "stale_after", v
+        } else if ((top == "generated" || top == "verified") && match($0, /at:[[:space:]]*[^,}[:space:]]+/)) {
+          v = substr($0, RSTART, RLENGTH); sub(/^at:[[:space:]]*/, "", v); gsub(/"/, "", v); print top, v
+        }
+      }
+    ' "$file")
+
+    if [[ -z "$generated_at" ]]; then
+      report_error "$file" "research page missing generated.at (OKF v0.2 date; see SPEC.md)"
+    elif ! research_datetime_ok "$generated_at"; then
+      report_error "$file" "generated.at '$generated_at' is not UTC YYYY-MM-DDTHH:MM:SSZ"
+    fi
+
+    if ((verified_count == 0)); then
+      report_error "$file" "research page missing verified[].at (OKF v0.2 date; see SPEC.md)"
+    elif [[ "$verified_at" == malformed:* ]]; then
+      report_error "$file" "verified.at '${verified_at#malformed:}' is not UTC YYYY-MM-DDTHH:MM:SSZ"
+    fi
+
+    if [[ -z "$stale_after" ]]; then
+      report_error "$file" "research page missing stale_after (OKF v0.2 date; see SPEC.md)"
+      continue
+    elif ! research_datetime_ok "$stale_after"; then
+      report_error "$file" "stale_after '$stale_after' is not UTC YYYY-MM-DDTHH:MM:SSZ"
+      continue
+    fi
+
+    ((research_dated += 1))
+    if [[ ! "$now" < "$stale_after" ]]; then
+      research_stale="$research_stale"$'\n'"  $file  (stale since $stale_after)"
+    fi
+  done < <(collect_markdown_files "docs/research")
+}
+
 printf 'Starting agent framework validation...\n'
 
 for skill_file in SKILLS/*/*/SKILL.md; do
@@ -915,6 +1006,8 @@ check_orphans "$LINK_ROOTS"
 
 check_gate_registry_join
 
+check_research_dates
+
 # Mandatory groups: fail unconditionally on zero. Deliberately NO directory-existence
 # guard here — a guard would re-mask a case-sensitivity bug (a lowercase glob legitimately
 # finding nothing on a case-sensitive filesystem).
@@ -922,6 +1015,7 @@ check_gate_registry_join
 ((wiki_validated > 0)) || report_error "wiki" "zero wiki files validated"
 ((links_checked > 0)) || report_error "(links)" "zero links checked"
 ((anchors_checked > 0)) || report_error "(anchors)" "zero anchors checked"
+((research_dated > 0)) || report_error "docs/research" "zero research pages date-checked"
 
 # Conditional adapter groups: skip when the adapter's root directory is absent, fail when
 # present but zero (installed-but-broken).
@@ -935,19 +1029,25 @@ if ((hermes_present == 1)); then
   ((hermes_validated > 0)) || report_error ".hermes" "adapter directory present but zero items validated"
 fi
 
+# Advisory only — never counted in `failures` (see check_research_dates).
+if [[ -n "$research_stale" ]]; then
+  printf 'advisory: %d research page(s) past stale_after — fact-check before relying (docs/research/index.md#freshness):%s\n' \
+    "$(printf '%s' "$research_stale" | grep -c .)" "$research_stale"
+fi
+
 if ((failures > 0)); then
-  printf 'validation failed: %d violation(s); skills: %d validated, wiki: %d validated, .mirai: %s, .opencode: %s, .hermes: %s, links: %d checked, anchors: %d checked, orphans: %d flagged, registry: %d checked\n' \
+  printf 'validation failed: %d violation(s); skills: %d validated, wiki: %d validated, .mirai: %s, .opencode: %s, .hermes: %s, links: %d checked, anchors: %d checked, orphans: %d flagged, registry: %d checked, research: %d dated\n' \
     "$failures" "$skills_validated" "$wiki_validated" \
     "$(render_adapter_count "$mirai_present" "$mirai_validated")" \
     "$(render_adapter_count "$opencode_present" "$opencode_validated")" \
     "$(render_adapter_count "$hermes_present" "$hermes_validated")" \
-    "$links_checked" "$anchors_checked" "$orphans_flagged" "$registry_checked" >&2
+    "$links_checked" "$anchors_checked" "$orphans_flagged" "$registry_checked" "$research_dated" >&2
   exit 1
 fi
 
-printf 'skills: %d validated, wiki: %d validated, .mirai: %s, .opencode: %s, .hermes: %s, links: %d checked, anchors: %d checked, orphans: %d flagged, registry: %d checked, all OK\n' \
+printf 'skills: %d validated, wiki: %d validated, .mirai: %s, .opencode: %s, .hermes: %s, links: %d checked, anchors: %d checked, orphans: %d flagged, registry: %d checked, research: %d dated, all OK\n' \
   "$skills_validated" "$wiki_validated" \
   "$(render_adapter_count "$mirai_present" "$mirai_validated")" \
   "$(render_adapter_count "$opencode_present" "$opencode_validated")" \
   "$(render_adapter_count "$hermes_present" "$hermes_validated")" \
-  "$links_checked" "$anchors_checked" "$orphans_flagged" "$registry_checked"
+  "$links_checked" "$anchors_checked" "$orphans_flagged" "$registry_checked" "$research_dated"
