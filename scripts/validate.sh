@@ -16,6 +16,7 @@ hermes_validated=0
 links_checked=0
 anchors_checked=0
 orphans_flagged=0
+stranded_flagged=0
 registry_checked=0
 research_dated=0
 research_stale=""
@@ -767,66 +768,153 @@ render_adapter_count() {
 #   - root-level  — VISION.md, SPEC.md, GATE.md, etc. are entry points a reader starts from
 #                   (like index.md, one level up), not pages routed to; exempt by location.
 # A genuine orphan is a content file no page routes to — unreachable, so effectively dead.
+# Every relative link in $1, resolved to a repo-relative path, one "source<TAB>target" line per
+# link (a bare directory link also yields its index.md). External, absolute and anchor-only
+# targets, and targets whose directory does not exist, yield nothing. The orphan and stranded
+# checks both read these lines, so they can never disagree about where a link points.
+link_edges_for_file() {
+  local source_file="$1"
+  local base_dir target clean cand dir leaf resolved_dir rel path _line
+
+  base_dir="${source_file%/*}"
+  # See resolve_markdown_target's matching comment: a root-level source has no "/" to strip.
+  [[ "$base_dir" == "$source_file" ]] && base_dir="."
+  while IFS=$'\t' read -r _line target; do
+    [[ -n "$target" ]] || continue
+    [[ "$target" == \#* ]] && continue
+    [[ "$target" == /* ]] && continue
+    [[ "$target" =~ ^[A-Za-z][A-Za-z0-9+.-]*: ]] && continue
+    clean="${target%%#*}"
+    clean="${clean%%\?*}"
+    [[ -n "$clean" ]] || continue
+    cand="$base_dir/$clean"
+    # A bare directory link resolves to that directory's index.md. Resolve the directory
+    # itself: splitting `../SKILLS/` at its last "/" would yield `SKILLS//index.md`.
+    if [[ -d "$cand" ]]; then
+      resolved_dir="$(cd "$cand" 2>/dev/null && pwd)" || continue
+      rel="${resolved_dir#"$ROOT_DIR"/}"
+      rel="${rel#"$ROOT_DIR"}"
+      if [[ -n "$rel" ]]; then path="$rel/index.md"; else path="index.md"; fi
+      printf '%s\t%s\n' "$source_file" "$path"
+      continue
+    fi
+    dir="${cand%/*}"
+    leaf="${cand##*/}"
+    resolved_dir="$(cd "$dir" 2>/dev/null && pwd)" || continue
+    rel="${resolved_dir#"$ROOT_DIR"/}"
+    rel="${rel#"$ROOT_DIR"}"
+    if [[ -n "$rel" ]]; then path="$rel/$leaf"; else path="$leaf"; fi
+    printf '%s\t%s\n' "$source_file" "$path"
+  done < <(extract_link_targets "$source_file")
+  return 0
+}
+
+# Link edges gathered once by check_orphans and reused by check_stranded — resolving every link
+# costs a subshell each, and the gate runs after every edit.
+LINK_EDGES=""
+
 check_orphans() {
   local roots="$1"
-  local link_root file base target clean cand dir leaf resolved_dir rel _line
-  local ref_file source_file base_dir
+  local link_root file base source_file ref_file
 
+  LINK_EDGES="$(mktemp)"
   ref_file="$(mktemp)"
 
-  # Reference set: normalize every resolvable relative link target (across ALL tracked md)
-  # to a repo-relative path, one per line.
+  # Reference set: every resolvable relative link target across all markdown under the roots.
   for link_root in $roots; do
     while IFS= read -r source_file; do
-      base_dir="${source_file%/*}"
-      # See resolve_markdown_target's matching comment: a root-level source has no "/" to strip.
-      [[ "$base_dir" == "$source_file" ]] && base_dir="."
-      while IFS=$'\t' read -r _line target; do
-        [[ -n "$target" ]] || continue
-        [[ "$target" == \#* ]] && continue
-        [[ "$target" == /* ]] && continue
-        [[ "$target" =~ ^[A-Za-z][A-Za-z0-9+.-]*: ]] && continue
-        clean="${target%%#*}"
-        clean="${clean%%\?*}"
-        [[ -n "$clean" ]] || continue
-        cand="$base_dir/$clean"
-        dir="${cand%/*}"
-        leaf="${cand##*/}"
-        resolved_dir="$(cd "$dir" 2>/dev/null && pwd)" || continue
-        rel="${resolved_dir#"$ROOT_DIR"/}"
-        rel="${rel#"$ROOT_DIR"}"
-        if [[ -n "$rel" ]]; then
-          printf '%s/%s\n' "$rel" "$leaf" >> "$ref_file"
-        else
-          printf '%s\n' "$leaf" >> "$ref_file"
-        fi
-        # A bare directory link resolves to that directory's index.md.
-        if [[ -d "$cand" ]]; then
-          if [[ -n "$rel" ]]; then
-            printf '%s/%s/index.md\n' "$rel" "$leaf" >> "$ref_file"
-          else
-            printf '%s/index.md\n' "$leaf" >> "$ref_file"
-          fi
-        fi
-      done < <(extract_link_targets "$source_file")
+      link_edges_for_file "$source_file" >> "$LINK_EDGES"
     done < <(collect_markdown_files "$link_root")
   done
 
-  sort -u "$ref_file" > "$ref_file.sorted"
+  cut -f2 "$LINK_EDGES" | sort -u > "$ref_file"
 
   for link_root in $roots; do
     while IFS= read -r file; do
       base="${file##*/}"
       [[ "$base" == "index.md" || "$base" == "log.md" ]] && continue
       [[ "$file" != */* ]] && continue
-      if ! grep -qxF "$file" "$ref_file.sorted"; then
+      if ! grep -qxF "$file" "$ref_file"; then
         report_error "$file" "orphan: no tracked markdown file links to it (unreachable)"
         ((orphans_flagged += 1))
       fi
     done < <(collect_markdown_files "$link_root")
   done
 
-  rm -f "$ref_file" "$ref_file.sorted"
+  rm -f "$ref_file"
+}
+
+# Everything traces to the vision (CONSTITUTION.md rule 5). A tracked file that cannot be traced
+# back to VISION.md is STRANDED:
+#   - a Markdown file traces when a chain of relative links leads to it from VISION.md;
+#   - any other tracked file traces when a reachable document links to it, or names its path —
+#     or one of its parent directories written as `dir/` — as a whole token, so one mention can
+#     account for a directory's contents.
+# graphify-out/ is generated and exempt. Stranded files are reviewed one by one, never bulk-
+# removed; the ones already known are baselined against the stranded-review issue. Needs git:
+# "tracked" is what the check is about, so outside a repository it fails closed.
+check_stranded() {
+  local tracked reached tokens covered file dir
+  local -a parts
+
+  if ! tracked="$(git ls-files 2>/dev/null)" || [[ -z "$tracked" ]]; then
+    report_error "(stranded)" "not a git work tree; cannot list tracked files (fail-closed)"
+    return 0
+  fi
+  tracked="$(printf '%s\n' "$tracked" | grep -v '^graphify-out/')"
+
+  # check_orphans walked the LINK_ROOTS; add the tracked Markdown it did not cover.
+  covered="$(mktemp)"
+  cut -f1 "$LINK_EDGES" | sort -u > "$covered"
+  while IFS= read -r file; do
+    [[ -f "$file" ]] && link_edges_for_file "$file" >> "$LINK_EDGES"
+  done < <(printf '%s\n' "$tracked" | grep '\.md$' | sort | comm -23 - "$covered")
+  rm -f "$covered"
+
+  reached="$(mktemp)"
+  awk -F'\t' '
+    { n[$1]++; adj[$1, n[$1]] = $2 }
+    END {
+      q[1] = "VISION.md"; seen["VISION.md"] = 1; head = 1; tail = 1
+      while (head <= tail) {
+        f = q[head++]
+        for (i = 1; i <= n[f]; i++) {
+          g = adj[f, i]
+          if (!(g in seen)) { seen[g] = 1; q[++tail] = g }
+        }
+      }
+      for (g in seen) print g
+    }
+  ' "$LINK_EDGES" | sort -u > "$reached"
+
+  # Every path-like token written in a reachable document: `scripts/loom/`, `.gitignore`, …
+  tokens="$(mktemp)"
+  while IFS= read -r file; do
+    [[ "$file" == *.md && -f "$file" ]] && cat "$file"
+  done < "$reached" | grep -oE '[A-Za-z0-9_.@+~-]+(/[A-Za-z0-9_.@+~-]*)*' | sort -u > "$tokens"
+
+  while IFS= read -r file; do
+    [[ -n "$file" ]] || continue
+    grep -qxF "$file" "$reached" && continue
+    if [[ "$file" == *.md ]]; then
+      report_error "$file" "stranded: not reachable from VISION.md by links (CONSTITUTION.md rule 5)"
+      ((stranded_flagged += 1))
+      continue
+    fi
+    grep -qxF "$file" "$tokens" && continue
+    IFS='/' read -r -a parts <<< "$file"
+    dir=""
+    local traced=0 i
+    for ((i = 0; i < ${#parts[@]} - 1; i++)); do
+      dir="${dir}${parts[i]}/"
+      if grep -qxF "$dir" "$tokens"; then traced=1; break; fi
+    done
+    ((traced == 1)) && continue
+    report_error "$file" "stranded: no document reachable from VISION.md links to or names it (CONSTITUTION.md rule 5)"
+    ((stranded_flagged += 1))
+  done <<< "$tracked"
+
+  rm -f "$reached" "$tokens" "$LINK_EDGES"
 }
 
 # Decision 9 invariant: "a mechanism grounding no criterion is dead code; a criterion with no
@@ -1003,6 +1091,7 @@ for link_root in $LINK_ROOTS; do
 done
 
 check_orphans "$LINK_ROOTS"
+check_stranded
 
 check_gate_registry_join
 
@@ -1036,18 +1125,18 @@ if [[ -n "$research_stale" ]]; then
 fi
 
 if ((failures > 0)); then
-  printf 'validation failed: %d violation(s); skills: %d validated, wiki: %d validated, .mirai: %s, .opencode: %s, .hermes: %s, links: %d checked, anchors: %d checked, orphans: %d flagged, registry: %d checked, research: %d dated\n' \
+  printf 'validation failed: %d violation(s); skills: %d validated, wiki: %d validated, .mirai: %s, .opencode: %s, .hermes: %s, links: %d checked, anchors: %d checked, orphans: %d flagged, stranded: %d flagged, registry: %d checked, research: %d dated\n' \
     "$failures" "$skills_validated" "$wiki_validated" \
     "$(render_adapter_count "$mirai_present" "$mirai_validated")" \
     "$(render_adapter_count "$opencode_present" "$opencode_validated")" \
     "$(render_adapter_count "$hermes_present" "$hermes_validated")" \
-    "$links_checked" "$anchors_checked" "$orphans_flagged" "$registry_checked" "$research_dated" >&2
+    "$links_checked" "$anchors_checked" "$orphans_flagged" "$stranded_flagged" "$registry_checked" "$research_dated" >&2
   exit 1
 fi
 
-printf 'skills: %d validated, wiki: %d validated, .mirai: %s, .opencode: %s, .hermes: %s, links: %d checked, anchors: %d checked, orphans: %d flagged, registry: %d checked, research: %d dated, all OK\n' \
+printf 'skills: %d validated, wiki: %d validated, .mirai: %s, .opencode: %s, .hermes: %s, links: %d checked, anchors: %d checked, orphans: %d flagged, stranded: %d flagged, registry: %d checked, research: %d dated, all OK\n' \
   "$skills_validated" "$wiki_validated" \
   "$(render_adapter_count "$mirai_present" "$mirai_validated")" \
   "$(render_adapter_count "$opencode_present" "$opencode_validated")" \
   "$(render_adapter_count "$hermes_present" "$hermes_validated")" \
-  "$links_checked" "$anchors_checked" "$orphans_flagged" "$registry_checked" "$research_dated"
+  "$links_checked" "$anchors_checked" "$orphans_flagged" "$stranded_flagged" "$registry_checked" "$research_dated"

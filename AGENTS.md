@@ -37,9 +37,8 @@ Two conditions on trusting it:
   git diff --name-only "$(jq -r .built_at_commit graphify-out/graph.json)" HEAD -- '*.md' ':!graphify-out'
   ```
 
-  Anything listed there is a change the graph has not seen. Refresh with `graphify update .`,
-  or fall back to reading. A full rebuild is expensive — this corpus is prose, so every node goes
-  through a language model — so refresh deliberately, not reflexively.
+  Anything listed there is a change the graph has not seen: read those files instead. Whoever
+  changed them owed the graph a regeneration — see [Before you commit](#before-you-commit).
 - **Query in loom's own words.** The matcher is case-folded substring plus IDF — no stemming, no
   synonyms. A question phrased in general English returns nothing useful. Read
   [CONTEXT.md](CONTEXT.md) first and query using the terms defined there.
@@ -49,9 +48,20 @@ Where the graph and the documents disagree, the documents win.
 ## Before you commit
 
 ```sh
-bash scripts/validate.sh     # prose: frontmatter, links, anchors, orphans
+bash scripts/validate.sh     # prose: frontmatter, links, anchors, orphans, stranded files
 bash scripts/quality.sh      # code: the lint and coverage floors
 bash scripts/graph-check.sh  # context: the graph, checked against the corpus
 ```
 
 See [CONSTITUTION.md](CONSTITUTION.md#the-gates) for what each one guards and why the third exists.
+A *stranded* file is one that does not trace back to VISION.md
+([rule 5](CONSTITUTION.md#the-binding-rules)); known ones are listed in
+`.claude/hooks/validate-baseline.txt` and reviewed one at a time.
+
+**Always regenerate the graph.** Every change ends with the graph re-extracted for every file
+changed since its `built_at_commit`: the graphify skill writes the extraction chunks, then
+`node scripts/graph/merge-extraction.js` and `node scripts/graph/canonicalize.js` fold them in.
+Re-extract the changed files only — this corpus is prose, so every node goes through a language
+model, and a full rebuild is rarely needed. The merge stamps `built_at_commit` with `HEAD`, so
+commit your change first, then regenerate and commit the graph; extracting before the commit leaves
+your own files reading as stale. The third gate then passes strict, freshness included.
