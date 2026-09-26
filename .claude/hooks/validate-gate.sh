@@ -75,7 +75,7 @@ if [[ -f "$REPO_ROOT/graphify-out/graph.json" ]]; then
     {
       printf 'loom gate FAILED — the committed knowledge graph disagrees with the corpus:\n\n'
       printf '%s\n' "$graph_output" | grep -E '^(FAIL|      )' || printf '%s\n' "$graph_output"
-      printf '\nRepair: node scripts/graph/canonicalize.js — then re-run bash scripts/graph-check.sh\n'
+      printf '\nRepair: AGENTS.md, "Always regenerate the graph" — canonicalize.js fixes forks and missing edges; graphify cluster-only . clusters new nodes; re-extract stale files. Then bash scripts/graph-check.sh\n'
       printf 'A graph that is internally consistent can still be false; these checks compare it to the corpus.\n'
     } >&2
     exit 2

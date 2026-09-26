@@ -9,6 +9,7 @@
 // worth running compares the graph to the corpus, never to itself.
 
 const { execFileSync } = require("node:child_process");
+const crypto = require("node:crypto");
 const fs = require("node:fs");
 const path = require("node:path");
 
@@ -32,7 +33,6 @@ function loadGraph(graphPath) {
   return {
     nodes: Array.isArray(data.nodes) ? data.nodes : [],
     links: Array.isArray(data.links) ? data.links : [],
-    builtAtCommit: data.built_at_commit || "",
     raw: data,
   };
 }
@@ -153,7 +153,63 @@ function endpointId(endpoint) {
   return endpoint || "";
 }
 
+// What the graph has SEEN. graphify's own change detection hashes each file's content
+// (`_md5_file` in graphify/detect.py) and stamps a file only when its extraction actually produced
+// output (upstream #2015). graphify keeps that record in graphify-out/manifest.json, which this
+// repo does not commit (its mtime/seen fields churn on every run), so loom keeps the same hashes
+// in a small committed file graphify never writes. A content hash — unlike the commit SHA this
+// replaced — survives rebase, squash and a fresh clone.
+const STAMPS_PATH = path.join("graphify-out", "extracted.json");
+
+function contentHash(rootDir, relPath) {
+  return crypto.createHash("md5").update(fs.readFileSync(path.join(rootDir, relPath))).digest("hex");
+}
+
+// The recorded hashes, or null when the record is missing or unreadable — callers fail closed.
+function loadStamps(rootDir) {
+  try {
+    const data = JSON.parse(fs.readFileSync(path.join(rootDir, STAMPS_PATH), "utf8"));
+    return data && data.files && typeof data.files === "object" ? data.files : null;
+  } catch {
+    return null;
+  }
+}
+
+// Sorted keys, and no entries for files that no longer exist, so the record diffs cleanly.
+function writeStamps(rootDir, files) {
+  const kept = Object.keys(files)
+    .filter((f) => fs.existsSync(path.join(rootDir, f)))
+    .sort();
+  const out = { files: Object.fromEntries(kept.map((f) => [f, files[f]])) };
+  fs.writeFileSync(path.join(rootDir, STAMPS_PATH), JSON.stringify(out, null, 2) + "\n");
+}
+
+// Each tracked file whose current content is not the content the graph last extracted.
+function staleFiles(rootDir, tracked, stamps) {
+  const stale = [];
+  for (const file of tracked) {
+    const seen = stamps[file];
+    if (!seen) {
+      stale.push(`${file}  (never extracted)`);
+      continue;
+    }
+    let now;
+    try {
+      now = contentHash(rootDir, file);
+    } catch {
+      continue;
+    }
+    if (now !== seen) stale.push(`${file}  (changed since extracted)`);
+  }
+  return stale;
+}
+
 module.exports = {
+  STAMPS_PATH,
+  contentHash,
+  loadStamps,
+  writeStamps,
+  staleFiles,
   stemFor,
   loadGraph,
   trackedMarkdown,

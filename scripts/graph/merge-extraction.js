@@ -13,7 +13,7 @@
 
 const fs = require("node:fs");
 const path = require("node:path");
-const { gitLines } = require("./lib.js");
+const { contentHash, loadStamps, writeStamps } = require("./lib.js");
 
 function relativize(sourceFile, rootDir) {
   if (!sourceFile) return "";
@@ -87,6 +87,7 @@ function mergeExtraction(graph, chunks, rootDir) {
 
   return {
     filesCovered: covered.size,
+    coveredFiles: [...covered].sort(),
     replacedNodes,
     addedNodes,
     duplicateNodes,
@@ -134,16 +135,20 @@ function main() {
 
   const stats = mergeExtraction(graph, chunks, rootDir);
 
-  // Stamp the commit whose corpus this extraction actually read. The freshness check compares
-  // this against HEAD, so it has to be set by the step that performs real extraction — never by
-  // the repair pass, which can run over an unchanged corpus and would then claim a freshness it
-  // did not earn.
-  const head = (gitLines(["rev-parse", "HEAD"], rootDir)[0] || "").trim();
-  const stamped = head || raw.built_at_commit;
+  // Record the content each covered file had when it was extracted — only the files this pass
+  // produced nodes for, never the rest (upstream #2015). It must be the extracting step that
+  // stamps: the repair pass runs over an unchanged corpus and would claim a freshness it did not
+  // earn. The commit SHA this replaced was orphaned by the first rebase.
+  const stamps = loadStamps(rootDir) || {};
+  for (const file of stats.coveredFiles) {
+    if (fs.existsSync(path.join(rootDir, file))) stamps[file] = contentHash(rootDir, file);
+  }
+  writeStamps(rootDir, stamps);
 
+  const { built_at_commit: _retired, ...rest } = raw;
   fs.writeFileSync(
     graphPath,
-    JSON.stringify({ ...raw, built_at_commit: stamped, nodes: graph.nodes, links: graph.links }, null, 2) + "\n",
+    JSON.stringify({ ...rest, nodes: graph.nodes, links: graph.links }, null, 2) + "\n",
   );
 
   process.stdout.write(
@@ -152,7 +157,7 @@ function main() {
       `  nodes replaced: ${stats.replacedNodes}, added: ${stats.addedNodes}, duplicate ids skipped: ${stats.duplicateNodes}\n` +
       `  edges replaced: ${stats.replacedLinks}, added: ${stats.addedLinks}, duplicates skipped: ${stats.duplicateLinks}\n` +
       `  edges dropped as dangling after replace: ${stats.droppedDangling}\n` +
-      `  stamped built_at_commit: ${stamped.slice(0, 7)}\n`,
+      `  stamped ${stats.coveredFiles.length} file(s) as extracted\n`,
   );
 }
 

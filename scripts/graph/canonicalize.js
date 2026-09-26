@@ -107,6 +107,24 @@ function canonicalize(graph, rootDir, tracked) {
     }
   }
 
+  // --- Pass 1b: fold a document's stand-in for a code file into that file's node ---------------
+  // A semantic pass over a document sometimes mints its own node for a script it mentions —
+  // `agents_validate_sh`, labelled `scripts/validate.sh`, sourced from AGENTS.md — instead of
+  // pointing at the file's real node. graphify's own loader (`build_from_json`) folds such a node
+  // into the file's node, so `graphify cluster-only .` sees the graph shrink and refuses to write.
+  // Fold it here first, so the committed graph is already what graphify would load.
+  for (const node of graph.nodes) {
+    if (node.file_type !== "code") continue;
+    const src = nodeSource(node);
+    if (!src.endsWith(".md")) continue;
+    const named = String(node.label || "").replace(/^[`'"]+|[`'"]+$/g, "").replace(/^\.\//, "");
+    if (!named.includes("/") || named === src) continue;
+    const existing = byId.get(normalizeId(stemFor(named)));
+    if (!existing || existing === node || nodeSource(existing) !== named) continue;
+    remap.set(node.id, existing.id);
+    merged.push(`${node.id} -> ${existing.id}`);
+  }
+
   const mergedIds = new Set(merged.map((m) => m.split(" -> ")[0]));
   graph.nodes = graph.nodes.filter((n) => !mergedIds.has(n.id));
 

@@ -11,12 +11,14 @@
 const path = require("node:path");
 const fs = require("node:fs");
 const {
+  STAMPS_PATH,
+  loadStamps,
+  staleFiles,
   loadGraph,
   trackedMarkdown,
   outboundLinks,
   nodeSource,
   endpointId,
-  gitLines,
   forkTargetFor,
   buildStemIndex,
 } = require("./lib.js");
@@ -170,26 +172,44 @@ function analyze(rootDir, graphPath) {
   });
 
   // --- 8. Freshness -----------------------------------------------------------------------
-  let staleFiles = [];
-  if (graph.builtAtCommit) {
-    staleFiles = gitLines(
-      ["diff", "--name-only", graph.builtAtCommit, "HEAD", "--", "*.md", ":!graphify-out"],
-      rootDir,
-    );
+  // Each tracked document's current content hash against the hash recorded when it was last
+  // extracted (graphify-out/extracted.json, lib.js). Content hashes survive rebase, squash and a
+  // fresh clone. The commit SHA this replaced was orphaned by the first rebase and then read as
+  // "nothing changed" — fail-open. A missing or unreadable record fails closed.
+  const stamps = loadStamps(rootDir);
+  if (!stamps) {
+    findings.push({
+      name: "extraction record readable",
+      count: 1,
+      examples: [STAMPS_PATH],
+      detail: "without it nothing says what the graph has seen — fail-closed",
+    });
+  } else {
+    const stale = staleFiles(rootDir, tracked, stamps);
+    findings.push({
+      name: "markdown changed since it was extracted",
+      count: stale.length,
+      // Staleness is a different kind of problem from corruption. Editing any document makes the
+      // graph stale immediately, and a rebuild is expensive, so an edit-time hook that blocked on
+      // this would make the repository unworkable. Corruption is never acceptable; staleness is an
+      // expected state between rebuilds. The hook runs with --advisory-freshness; a direct run and
+      // CI do not, and there it blocks.
+      advisory: true,
+      examples: stale.slice(0, MAX_EXAMPLES),
+      detail: "re-extract these files — AGENTS.md, \"Always regenerate the graph\"",
+    });
   }
+
+  // --- 9. Clustered ------------------------------------------------------------------------
+  // graphify's views — GRAPH_REPORT.md and graph.html — are built from communities. A node with
+  // none was written by a path that skipped `graphify cluster-only .`, so neither view can show
+  // it. That is how, on 2026-09-26, every research and VISION node was invisible in both.
+  const unclustered = graph.nodes.filter((n) => n.community === undefined || n.community === null);
   findings.push({
-    name: "markdown changed since the graph was built",
-    count: staleFiles.length,
-    // Staleness is a different kind of problem from corruption. Editing any document makes the
-    // graph stale immediately, and a rebuild is expensive, so an edit-time hook that blocked on
-    // this would make the repository unworkable. Corruption is never acceptable; staleness is an
-    // expected state between rebuilds. The hook runs with --advisory-freshness; a direct run and
-    // CI do not, and there it blocks.
-    advisory: true,
-    examples: staleFiles.slice(0, MAX_EXAMPLES),
-    detail: graph.builtAtCommit
-      ? `graph built at ${graph.builtAtCommit.slice(0, 7)}`
-      : "graph records no build commit",
+    name: "nodes without a community",
+    count: unclustered.length,
+    examples: unclustered.slice(0, MAX_EXAMPLES).map((n) => `${n.id}  (${nodeSource(n) || "no source"})`),
+    detail: "run `graphify cluster-only .`, then canonicalize.js — the report and HTML cannot show these",
   });
 
   return { findings, graph, tracked };

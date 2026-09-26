@@ -10,7 +10,7 @@
 #   lint          0 syntax errors
 #   code-quality  none — no complexity/duplication tool; the distributable is small, reviewed by hand
 #   security      none — zero third-party dependencies (Node built-ins + `gh`), no scan surface
-#   coverage      114/114 tests passing, no regression below 114
+#   coverage      123/123 tests passing, no regression below 123
 #
 # Two command shapes below are load-bearing. Do not "simplify" them:
 #   * `node --check` validates only its FIRST argument, so a bare `**/*.js` would leave every file
@@ -24,7 +24,7 @@ set -uo pipefail
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT_DIR" || exit 1
 
-COVERAGE_FLOOR=114
+COVERAGE_FLOOR=123
 failed=0
 
 printf '== lint ==\n'

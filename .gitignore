@@ -8,16 +8,21 @@
 # graphify knowledge-graph output — the graph IS committed, deliberately.
 # This corpus is ~100% prose, so every node costs an LLM extraction pass; a cold clone cannot
 # rebuild it cheaply, and an agent bootstrapping from a graph needs the graph to be present.
-# Committed: graph.json, GRAPH_REPORT.md, .graphify_labels.json, cache/
+# Committed: graph.json, GRAPH_REPORT.md, .graphify_labels.json (+ its .sig), extracted.json, cache/
+# extracted.json records what the graph has seen, by content hash — the freshness check reads it.
 # cache/ is content-hash keyed — it is what makes a refresh incremental, not a speed nicety.
 #
 # Excluded below: a large derivative, an upstream churn defect, a local ledger, and two files
 # holding absolute machine-local paths.
 graphify-out/graph.html
+graphify-out/.graphify_analysis.json
 graphify-out/manifest.json
 graphify-out/cost.json
 graphify-out/.graphify_python
 graphify-out/.graphify_root
+# `graphify cluster-only` backs up the graph it replaces into a dated directory. git history already
+# keeps every committed graph, so the backups are local only.
+graphify-out/[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]/
 
 # Cache internals that churn on every query or clone — the semantic extractions are the
 # part worth committing; these two are mtime/stat bookkeeping.

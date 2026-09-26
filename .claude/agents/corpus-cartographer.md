@@ -30,9 +30,11 @@ Scope is the whole repo, so the bootstrap documents and skills are in the graph 
 wiki. A rebuild is a deliberate, expensive choice — say what it will cost before running one, and
 prefer `graphify update .` so the cache does its job.
 
-Refresh after the corpus changes, not before: nothing gates the query path on staleness, and
-graphify's rebuild hook watches only *code* changes, which this repo has almost none of. A stale
-graph is silently trusted, which is worse than an absent one.
+Refresh after every change and after every pull, merge or rebase, and finish every refresh the
+same way: the procedure is [AGENTS.md, "Always regenerate the graph"](../../AGENTS.md#before-you-commit).
+Skipping its clustering step is how the report and `graph.html` fell days behind `graph.json` —
+every research and VISION node invisible in both. A stale graph is silently trusted, which is worse
+than an absent one.
 
 ## Extraction: dispatch, never inline
 
